@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>$if(pagetitle)$$pagetitle$$endif$</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="stylesheet" href="_css/chrome.css" />
+		<link rel="stylesheet" href="../_css/chrome.css" />
+		<link rel="stylesheet" href="../../_css/chrome.css" />
+		<link rel="stylesheet" href="../../../_css/chrome.css" />
+		<script src="_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="_js/doc.js" type="text/javascript"></script>
+		<script src="../_js/doc.js" type="text/javascript"></script>
+		<script src="../../_js/doc.js" type="text/javascript"></script>
+		<script src="../../../_js/doc.js" type="text/javascript"></script>
+	</head>
+	<body>
+		<div id="content">
+    
+    <h1 id="cin_play">
+      CIN_Play
+    </h1>
+    <h2 id="description">
+      Description
+    </h2>
+    <p>
+      Start cinema playback. Once the cinema is ready to be exposed to the viewer, the system sends a <code>SDL_VIDEOEXPOSE</code> event to tell the application to update its area. Video will be stretched to fit the screen.
+    </p>
+    <p>
+      When the video has finished playing, the application will receive an <code>SDL_USEREVENT</code> of type <code>SDL_CINEMA_EOS</code>.
+    </p>
+    <h2 id="syntax">
+      Syntax
+    </h2>
+    <blockquote>
+      <pre>
+<code>void CIN_Play(void);
+</code>
+</pre>
+    </blockquote>
+		</div>
+	</body>
+</html>

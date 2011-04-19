@@ -1,0 +1,1306 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>$if(pagetitle)$$pagetitle$$endif$</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="stylesheet" href="_css/chrome.css" />
+		<link rel="stylesheet" href="../_css/chrome.css" />
+		<link rel="stylesheet" href="../../_css/chrome.css" />
+		<link rel="stylesheet" href="../../../_css/chrome.css" />
+		<script src="_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="_js/doc.js" type="text/javascript"></script>
+		<script src="../_js/doc.js" type="text/javascript"></script>
+		<script src="../../_js/doc.js" type="text/javascript"></script>
+		<script src="../../../_js/doc.js" type="text/javascript"></script>
+	</head>
+	<body>
+		<div id="content">
+    
+    <h1 id="mojo.menu">
+      Mojo.Menu
+    </h1>
+    <h2 id="class-detail">
+      Class Detail
+    </h2>
+    <p>
+      Unlike all other widgets, Menu widgets are not declared in your scene view file, but are simply instantiated and have their actions handled from within your assistant completely. Menu widgets are thought to be above the scene elements, attached to the scene's window rather than a point in the scene, so it wouldn't work for their position to be determined within the HTML.
+    </p>
+    <p>
+      With any of the menu functions, you need to set up a command handler, which will receive the command events according to the precedence rules within the commander stack. See the Developer Guide - Menus for more information on the command handlers.
+    </p>
+    <h2 id="summary">
+      Summary
+    </h2>
+    <ul>
+      <li>Mojo.Menu.appMenu
+      </li>
+      <li>Mojo.Menu.commandMenu
+      </li>
+      <li>Mojo.Menu.viewMenu
+      </li>
+    </ul>
+    <hr>
+    <h2 id="detail">
+      Detail
+    </h2>
+    <h3 id="mojo.menu.appmenu">
+      Mojo.Menu.<strong>appMenu</strong>
+    </h3>
+    <h4 id="overview">
+      Overview
+    </h4>
+    <p>
+      The Application Menu appears in the upper-left corner of the screen when the user taps the left-hand side of the status bar. It includes some system-defined and some application-defined actions, and is intended to have an application-wide scope for the most part. The application list contains a few required actions: Edit, which is a item group including Cut, Copy and Paste; Preferences and Help, both of which are disabled by default. You are free to add any other items to the menu, and to enable Preferences and/or Help by hooking them to the appropriate actions for your application.
+    </p>
+    <h4 id="declaration">
+      Declaration
+    </h4>
+    <p>
+      The app menu is not declared in the scene HTML.
+    </p>
+    <h4 id="events">
+      Events
+    </h4>
+    <p>
+      Events for menus are sent via the commander chain. Scenes are automatically registered on the commander chain. To receive events, implement a handleCommand function in your scene assistant. The event's command field will contain the command associated with the menu item selected, specified as part of the items array.
+    </p>
+    <p>
+      Example:
+    </p>
+    <blockquote>
+      <pre>
+<code>handleCommand: function(event) {
+  if (event.type === Mojo.Event.command) {
+      switch (event.command) {
+          ...
+      }
+  }
+} 
+</code>
+</pre>
+    </blockquote>
+    <h4 id="instantiation">
+      Instantiation
+    </h4>
+    <blockquote>
+      <pre>
+<code>this.controller.setupWidget(Mojo.Menu.appMenu,
+this.attributes = {
+  omitDefaultItems: true
+},
+this.model = {
+  visible: true,
+  items: [
+      {label: &quot;About My App ...&quot;, command: 'do-myAbout'},
+      Mojo.Menu.editItem,
+      { label: &quot;Preferences...&quot;, command: 'do-myPrefs' },
+      { label: &quot;Help...&quot;, command: 'do-myHelp' }
+  ]
+}); 
+</code>
+</pre>
+    </blockquote>
+    <p>
+      Note that in the above example, the default app menu items (&quot;Preferences&quot;, &quot;Edit&quot;, and &quot;Help&quot;) will not be displayed. However, the Edit menu items are still desired, so in the &quot;items&quot; list, Mojo.Menu.editItem is added. If rich text edit menu items are required, but the defaults are being omitted, include Mojo.Menu.styleEditItem instead.
+    </p>
+    <h4 id="attribute-properties">
+      Attribute Properties
+    </h4>
+    <table border="1">
+      <tbody>
+        <tr>
+          <th>
+            Attribute Property
+          </th>
+          <th>
+            Type
+          </th>
+          <th>
+            Required
+          </th>
+          <th>
+            Default
+          </th>
+          <th>
+            Description
+          </th>
+        </tr>
+        <tr>
+          <td>
+            omitDefaultItems
+          </td>
+          <td>
+            Boolean
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            False
+          </td>
+          <td>
+            If true, then default menu items will not be added to this menu.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            richTextEditMenu
+          </td>
+          <td>
+            Boolean
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            False
+          </td>
+          <td>
+            If true, then the edit menu will also include Bold/Italics/Underline. (Only if <code>omitDefaultItems</code> is <code>false</code>. See note below.)
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h4 id="model-properties">
+      Model Properties
+    </h4>
+    <table border="1">
+      <tbody>
+        <tr>
+          <th>
+            Model Property
+          </th>
+          <th>
+            Type
+          </th>
+          <th>
+            Required
+          </th>
+          <th>
+            Default
+          </th>
+          <th>
+            Description
+          </th>
+        </tr>
+        <tr>
+          <td>
+            label
+          </td>
+          <td>
+            String
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            Null
+          </td>
+          <td>
+            Not displayed, future.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            visible
+          </td>
+          <td>
+            Boolean
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            TRUE
+          </td>
+          <td>
+            Current visibility of this menu.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            items
+          </td>
+          <td>
+            Array
+          </td>
+          <td>
+            Required
+          </td>
+          <td>
+            List items for this menu. See the table below.
+          </td>
+          <td></td>
+        </tr>
+      </tbody>
+    </table>
+    <h4 id="list-items">
+      List Items
+    </h4>
+    <table border="1">
+      <tbody>
+        <tr>
+          <th>
+            List Item
+          </th>
+          <th>
+            Type
+          </th>
+          <th>
+            Required
+          </th>
+          <th>
+            Default
+          </th>
+          <th>
+            Description
+          </th>
+        </tr>
+        <tr>
+          <td>
+            label
+          </td>
+          <td>
+            String
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            Null
+          </td>
+          <td>
+            User visible label for this item, not rendered for groups.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            icon
+          </td>
+          <td>
+            String
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            None
+          </td>
+          <td>
+            CSS class for icon to display in this item.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            iconPath
+          </td>
+          <td>
+            String
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            None
+          </td>
+          <td>
+            Path to image to display in menu item, relative to app's directory.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            width
+          </td>
+          <td>
+            Integer
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            None
+          </td>
+          <td>
+            Calculated based on item's width - specifies the width in pixels of this menu item. Overrides default calculations. Ignored for groups.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            items
+          </td>
+          <td>
+            Array
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            None
+          </td>
+          <td>
+            If specified, this item is a &quot;group&quot; that visually ties the child items together.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            toggleCmd
+          </td>
+          <td>
+            String
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            None
+          </td>
+          <td>
+            Only used when &quot;items&quot; is specified. Specify this property to make this group a &quot;toggle group&quot;. This string is the command of the currently selected &quot;choice&quot; item in this group, and this property is modified by the widget when a different choice is made.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            command
+          </td>
+          <td>
+            String
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            None
+          </td>
+          <td>
+            Specify to make this item a &quot;choice&quot;. It will then respond to a user tap by sending a <code>mojo-command</code> event through the commander chain with this string as the <code>command</code> property.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            disabled
+          </td>
+          <td>
+            Boolean
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            False
+          </td>
+          <td>
+            Menu choice is disabled when this is true. Only used for items which also specify <code>command</code>.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            submenu
+          </td>
+          <td>
+            String
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            Null
+          </td>
+          <td>
+            Specify to make this item a submenu item. It will then respond to a user tap by displaying the named menu as a popup submenu.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            template
+          </td>
+          <td>
+            String
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            Null
+          </td>
+          <td>
+            Path to HTML template for custom content to be inserted instead of a standard menu item. The template is rendered using this item model object for property substitution.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            checkEnabled
+          </td>
+          <td>
+            Boolean
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            False
+          </td>
+          <td>
+            If truthy, a <code>Mojo.Event.commandEnable</code> event will be sent through the commander chain each time this menu item is displayed or invoked via keyboard shortcut. If a commander calls <code>preventDefault()</code> on the event, then the menu item's model will be modified to disable the menu item. Otherwise it will be enabled. This can be used to lazily update the enable state of items in the app-menu or submenus.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Mojo.Menu.editItem
+          </td>
+          <td>
+            Boolean
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            None
+          </td>
+          <td>
+            If <code>omitDefaultItems</code> is <code>true</code>, retain the Edit menu items.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Mojo.Menu.styleEditItem
+          </td>
+          <td>
+            Boolean
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            None
+          </td>
+          <td>
+            If <code>omitDefaultItems</code> is <code>true</code>, retain the Edit menu items with formatting options.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h4 id="methods">
+      Methods
+    </h4>
+    <p>
+      The app menu does not have any methods.
+    </p>
+    <hr>
+    <h3 id="mojo.menu.commandmenu">
+      Mojo.Menu.<strong>commandMenu</strong>
+    </h3>
+    <h4 id="overview-1">
+      Overview
+    </h4>
+    <p>
+      The Command Menu presents items at the bottom of the screen, and is similar to the View Menu in most ways. Items will include variable-sized buttons, that can be combined into groups, and in a horizontal layout from left to right. As with the View Menu, button widths can be adjusted from within the items property width, and the framework adjusts the space between the buttons automatically.
+    </p>
+    <h4 id="declaration-1">
+      Declaration
+    </h4>
+    <p>
+      The command menu is not declared in the scene HTML.
+    </p>
+    <h4 id="events-1">
+      Events
+    </h4>
+    <p>
+      Events for menus are sent via the commander chain. Scenes are automatically registered on the commander chain. To receive events, implement a handleCommand function in your scene assistant. The event's command field will contain the command associated with the menu item selected, specified as part of the items array.
+    </p>
+    <p>
+      Example:
+    </p>
+    <blockquote>
+      <pre>
+<code>handleCommand: function(event) {
+  if (event.type === Mojo.Event.command) {
+      switch (event.command) {
+          ...
+      }
+  }
+} 
+</code>
+</pre>
+    </blockquote>
+    <h4 id="instantiation-1">
+      Instantiation
+    </h4>
+    <blockquote>
+      <pre>
+<code>this.controller.setupWidget(Mojo.Menu.commandMenu,
+  this.attributes = {
+      spacerHeight: 0,
+      menuClass: 'no-fade'
+  },
+  this.model = {
+      visible: true,
+      items: [
+          {icon: &quot;back&quot;, command: &quot;do-Previous&quot;},
+          { icon: 'forward', command: 'do-Next'}
+      ]
+  }
+); 
+</code>
+</pre>
+    </blockquote>
+    <h4 id="attribute-properties-1">
+      Attribute Properties
+    </h4>
+    <table border="1">
+      <tbody>
+        <tr>
+          <th>
+            Attribute Property
+          </th>
+          <th>
+            Type
+          </th>
+          <th>
+            Required
+          </th>
+          <th>
+            Default
+          </th>
+          <th>
+            Description
+          </th>
+        </tr>
+        <tr>
+          <td>
+            spacerHeight
+          </td>
+          <td>
+            Integer
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            Calculated
+          </td>
+          <td>
+            If specified, the spacer div associated with this menu will be the given height in pixels. This affects the size of the scene content, and whether the view menu &quot;pushes down&quot; other content in the scene.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            menuClass
+          </td>
+          <td>
+            String
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            .palm-default
+          </td>
+          <td>
+            Sets the style for the menu.<br>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h4 id="model-properties-1">
+      Model Properties
+    </h4>
+    <table border="1">
+      <tbody>
+        <tr>
+          <th>
+            Model Property
+          </th>
+          <th>
+            Type
+          </th>
+          <th>
+            Required
+          </th>
+          <th>
+            Default
+          </th>
+          <th>
+            Description
+          </th>
+        </tr>
+        <tr>
+          <td>
+            label
+          </td>
+          <td>
+            String
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            Null
+          </td>
+          <td>
+            Not displayed, future.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            visible
+          </td>
+          <td>
+            Boolean
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            TRUE
+          </td>
+          <td>
+            Current visibility of this menu.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            items
+          </td>
+          <td>
+            Array
+          </td>
+          <td>
+            Required
+          </td>
+          <td></td>
+          <td>
+            List items for this menu. See the table below.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h4 id="list-items-1">
+      List Items
+    </h4>
+    <table border="1">
+      <tbody>
+        <tr>
+          <th>
+            List Item
+          </th>
+          <th>
+            Type
+          </th>
+          <th>
+            Required
+          </th>
+          <th>
+            Default
+          </th>
+          <th>
+            Description
+          </th>
+        </tr>
+        <tr>
+          <td>
+            label
+          </td>
+          <td>
+            String
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            Null
+          </td>
+          <td>
+            User visible label for this item, not rendered for groups.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            icon
+          </td>
+          <td>
+            String
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            None
+          </td>
+          <td>
+            CSS class for icon to display in this item.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            iconPath
+          </td>
+          <td>
+            String
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            None
+          </td>
+          <td>
+            Path to image to display in menu item, relative to app's director.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            width
+          </td>
+          <td>
+            Integer
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            None
+          </td>
+          <td>
+            Calculated based on item's width - specifies the width in pixels of this menu item. Overrides default calculations. Ignored for groups.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            items
+          </td>
+          <td>
+            Array
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            None
+          </td>
+          <td>
+            If specified, this item is a &quot;group&quot; that visually ties the child items together.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            toggleCmd
+          </td>
+          <td>
+            String
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            None
+          </td>
+          <td>
+            Only used when &quot;items&quot; is specified. Specify this property to make this group a &quot;toggle group&quot;. This string is the command of the currently selected &quot;choice item in this group, and this property is modified by the widget when a different choice is made.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            command
+          </td>
+          <td>
+            String
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            None
+          </td>
+          <td>
+            Specify to make this item a &quot;choice&quot;. It will then respond to a user tap by sending a <code>mojo-command</code> event through the commander chain with this string as the <code>command</code> property.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            disabled
+          </td>
+          <td>
+            Boolean
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            False
+          </td>
+          <td>
+            Menu choice is disabled when this is true. Only used for items which also specify <code>command</code>.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            submenu
+          </td>
+          <td>
+            String
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            Null
+          </td>
+          <td>
+            Specify to make this item a submenu item. It will then respond to a user tap by displaying the named menu as a popup submenu.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            template
+          </td>
+          <td>
+            String
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            Null
+          </td>
+          <td>
+            Path to HTML template for custom content to be inserted instead of a standard menu item. The template is rendered using this item model object for property substitution.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            checkEnabled
+          </td>
+          <td>
+            Boolean
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            False
+          </td>
+          <td>
+            If truthy, a <code>Mojo.Event.commandEnable</code> event will be sent through the commander chain each time this menu item is displayed or invoked via keyboard shortcut. If a commander calls <code>preventDefault()</code> on the event, then the menu item's model will be modified to disable the menu item. Otherwise it will be enabled. This can be used to lazily update the enable state of items in the app-menu or submenus.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h4 id="methods-1">
+      Methods
+    </h4>
+    <p>
+      The command menu does not have any methods.
+    </p>
+    <hr>
+    <h3 id="mojo.menu.viewmenu">
+      Mojo.Menu.<strong>viewMenu</strong>
+    </h3>
+    <h4 id="overview-2">
+      Overview
+    </h4>
+    <p>
+      The View menu presents items as variable sized buttons, either singly or in groups across the top of the scene. The items are layed out in a horizontal sequence starting from the left of the screen to the right. The button widths can be adjusted from within the items property width, and the framework adjusts the space between the buttons automatically.
+    </p>
+    <h4 id="declaration-2">
+      Declaration
+    </h4>
+    <p>
+      The view menu is not declared in the scene HTML.
+    </p>
+    <h4 id="events-2">
+      Events
+    </h4>
+    <p>
+      Events for menus are sent via the commander chain. Scenes are automatically registered on the commander chain. To receive events, implement a handleCommand function in your scene assistant. The event's command field will contain the command associated with the menu item selected, specified as part of the items array.
+    </p>
+    <p>
+      Example:
+    </p>
+    <blockquote>
+      <pre>
+<code>handleCommand: function(event) {
+  if (event.type === Mojo.Event.command) {
+      switch (event.command) {
+          ...
+      }
+  }
+} 
+</code>
+</pre>
+    </blockquote>
+    <h4 id="instantiation-2">
+      Instantiation
+    </h4>
+    <blockquote>
+      <pre>
+<code>this.controller.setupWidget(Mojo.Menu.viewMenu,
+  this.attributes = {
+      spacerHeight: 0,
+      menuClass: 'no-fade'
+  },
+  this.model = {
+      visible: true,
+      items: [
+          { icon: , command: , label: &quot;  &quot;},
+          { label: &quot;My App Name&quot;, width: 210 },
+          { icon: '', command: '', label: &quot;  &quot;}
+      ]
+  }
+); 
+</code>
+</pre>
+    </blockquote>
+    <h4 id="attribute-properties-2">
+      Attribute Properties
+    </h4>
+    <table border="1">
+      <tbody>
+        <tr>
+          <th>
+            Attribute Property
+          </th>
+          <th>
+            Type
+          </th>
+          <th>
+            Required
+          </th>
+          <th>
+            Default
+          </th>
+          <th>
+            Description
+          </th>
+        </tr>
+        <tr>
+          <td>
+            spacerHeight
+          </td>
+          <td>
+            Integer
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            Calculated
+          </td>
+          <td>
+            If specified, the spacer div associated with this menu will be the given height in pixels. This affects the size of the scene content, and whether the view menu &quot;pushes down&quot; other content in the scene.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            menuClass
+          </td>
+          <td>
+            String
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            .palm-default
+          </td>
+          <td>
+            Sets the style for the menu.<br>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h4 id="model-properties-2">
+      Model Properties
+    </h4>
+    <table border="1">
+      <tbody>
+        <tr>
+          <th>
+            Model Property
+          </th>
+          <th>
+            Type
+          </th>
+          <th>
+            Required
+          </th>
+          <th>
+            Default
+          </th>
+          <th>
+            Description
+          </th>
+        </tr>
+        <tr>
+          <td>
+            label
+          </td>
+          <td>
+            String
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            Null
+          </td>
+          <td>
+            Not displayed, future.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            visible
+          </td>
+          <td>
+            Boolean
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            TRUE
+          </td>
+          <td>
+            Current visibility of this menu.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            items
+          </td>
+          <td>
+            Array
+          </td>
+          <td>
+            Required
+          </td>
+          <td></td>
+          <td>
+            List items for this menu. See the table below.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h4 id="list-items-2">
+      List Items
+    </h4>
+    <table border="1">
+      <tbody>
+        <tr>
+          <th>
+            List Item
+          </th>
+          <th>
+            Type
+          </th>
+          <th>
+            Required
+          </th>
+          <th>
+            Default
+          </th>
+          <th>
+            Description
+          </th>
+        </tr>
+        <tr>
+          <td>
+            label
+          </td>
+          <td>
+            String
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            Null
+          </td>
+          <td>
+            User visible label for this item, not rendered for groups.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            icon
+          </td>
+          <td>
+            String
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            None
+          </td>
+          <td>
+            CSS class for icon to display in this item.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            iconPath
+          </td>
+          <td>
+            String
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            None
+          </td>
+          <td>
+            Path to image to display in menu item, relative to app's director.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            width
+          </td>
+          <td>
+            Integer
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            None
+          </td>
+          <td>
+            Calculated based on item's width - specifies the width in pixels of this menu item. Overrides default calculations. Ignored for groups.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            items
+          </td>
+          <td>
+            Array
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            None
+          </td>
+          <td>
+            If specified, this item is a &quot;group&quot; that visually ties the child items together.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            toggleCmd
+          </td>
+          <td>
+            String
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            None
+          </td>
+          <td>
+            Only used when &quot;items&quot; is specified. Specify this property to make this group a &quot;toggle group&quot;. This string is the command of the currently selected &quot;choice item in this group, and this property is modified by the widget when a different choice is made.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            command
+          </td>
+          <td>
+            String
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            None
+          </td>
+          <td>
+            Specify to make this item a &quot;choice&quot;. It will then respond to a user tap by sending a <code>mojo-command</code> event through the commander chain with this string as the <code>command</code> property.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            disabled
+          </td>
+          <td>
+            Boolean
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            False
+          </td>
+          <td>
+            Menu choice is disabled when this is true. Only used for items which also specify <code>command</code>.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            submenu
+          </td>
+          <td>
+            String
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            Null
+          </td>
+          <td>
+            Specify to make this item a submenu item. It will then respond to a user tap by displaying the named menu as a popup submenu.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            template
+          </td>
+          <td>
+            String
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            Null
+          </td>
+          <td>
+            Path to HTML template for custom content to be inserted instead of a standard menu item. The template is rendered using this item model object for property substitution.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            checkEnabled
+          </td>
+          <td>
+            Boolean
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            False
+          </td>
+          <td>
+            If truthy, a <code>Mojo.Event.commandEnable</code> event will be sent through the commander chain each time this menu item is displayed or invoked via keyboard shortcut. If a commander calls <code>preventDefault()</code> on the event, then the menu item's model will be modified to disable the menu item. Otherwise it will be enabled. This can be used to lazily update the enable state of items in the app-menu or submenus.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h4 id="methods-2">
+      Methods
+    </h4>
+    <p>
+      The view menu does not have any methods.
+    </p>
+		</div>
+	</body>
+</html>

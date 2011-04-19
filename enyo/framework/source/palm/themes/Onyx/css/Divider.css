@@ -1,0 +1,68 @@
+/* Copyright 2009-2011 Hewlett-Packard Development Company, L.P. All rights reserved. */
+.enyo-divider,
+.enyo-divider-right-cap,
+.enyo-divider-left-cap {
+	height: 4px;
+	margin: 13px 0px;
+}
+
+.enyo-divider {
+	background: url(../images/divider.png) left top repeat-x;
+}
+
+.enyo-divider-right-cap,
+.enyo-divider-left-cap {
+	min-width: 3px;
+	border-width: 0px;
+	-webkit-border-image: url(../images/divider.png) 0 0 0 0 repeat repeat;
+}
+
+.enyo-divider-right-cap {
+	border-right-width: 0px;
+	margin-right: 7px;
+}
+
+.enyo-divider-left-cap {
+	border-left-width: 6px;
+	margin-left: 0px;
+
+	/* Needs to be effectively infinity compared to .enyo-divider-caption's
+ 	   flex so the left cap will take as much space as possible */
+	-webkit-box-flex: 1000;
+}
+
+.enyo-divider-icon {
+	margin: 0 6px;
+}
+
+.enyo-divider-icon-collapse {
+	margin: 0 6px 0 0;
+}
+
+.enyo-divider-caption {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	font-weight: bold;
+	font-size: 12pt;
+	color: #3a8bcb;
+
+	/* Needs to be effectively zero compared to .enyo-divider-left-cap's
+	   flex so the caption will flex but take as little space as possible
+	   and still truncate properly */
+	-webkit-box-flex: .1;
+}
+
+.enyo-divider-alpha {
+	background: url(../images/divider.png) left center repeat-x;
+	height: 30px;
+	line-height: 30px;
+	margin: 0 0 0 30px;
+}
+
+.enyo-divider-alpha-caption {
+	margin-left: -23px;
+	font-size: 12pt;
+	font-weight: bold;
+	color: #4299ea;
+}

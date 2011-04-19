@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>$if(pagetitle)$$pagetitle$$endif$</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="stylesheet" href="_css/chrome.css" />
+		<link rel="stylesheet" href="../_css/chrome.css" />
+		<link rel="stylesheet" href="../../_css/chrome.css" />
+		<link rel="stylesheet" href="../../../_css/chrome.css" />
+		<script src="_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="_js/doc.js" type="text/javascript"></script>
+		<script src="../_js/doc.js" type="text/javascript"></script>
+		<script src="../../_js/doc.js" type="text/javascript"></script>
+		<script src="../../../_js/doc.js" type="text/javascript"></script>
+	</head>
+	<body>
+		<div id="content">
+    
+    <h1 id="mojo.widget.progressbar">
+      Mojo.Widget.ProgressBar
+    </h1>
+    <h2 id="namespace-detail">
+      Namespace Detail
+    </h2>
+    <h3 id="overview">
+      Overview
+    </h3>
+    <p>
+      The ProgressBar is exactly the same as the <a href="progress-pill.html">ProgressPill</a> except that you use <code>x-mojo-element=&quot;ProgressBar&quot;</code> in your scene file. Otherwise, you would code it and manage just as you do the ProgressPill. In the default style, there isn't room for a title or any type of image on the bar, but the properties are supported nonetheless.
+    </p>
+    <p>
+      As with the ProgressPill, the ProgressBar is useful for showing progress while downloading, loading from a database, or just completing a long operation for which you have a sense of the duration. The indicator is designed to show a Bar image that corresponds to the model's value property, where a value of 0 has no bar exposed and a value of 1 has the bar in a complete position. To control the indicator, initialize its value at 0, then progressively update the model property until it reaches the value of 1. The best way to do this is by using an interval timer to which you can respond by increasing the progress indicator's value property incrementally and calling the updateModel function.
+    </p>
+    <h3 id="declaration">
+      Declaration
+    </h3>
+    <blockquote>
+      <pre>
+<code>&lt;div x-mojo-element=&quot;ProgressBar&quot; id=&quot;progressbarId&quot; class=&quot;progressbarClass&quot;
+  name=&quot;progressbarName&quot;&gt;&lt;/div&gt; 
+</code>
+</pre>
+    </blockquote>
+    <table border="1">
+      <tbody>
+        <tr>
+          <th width="20%">
+            Properties
+          </th>
+          <th width="10%">
+            Required
+          </th>
+          <th width="20%">
+            Value
+          </th>
+          <th width="50%">
+            Description
+          </th>
+        </tr>
+        <tr>
+          <td>
+            x-mojo-element
+          </td>
+          <td>
+            Required
+          </td>
+          <td>
+            ProgressBar
+          </td>
+          <td>
+            Declares the widget as type 'ProgressBar'.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            id
+          </td>
+          <td>
+            Required
+          </td>
+          <td>
+            Any String
+          </td>
+          <td>
+            Identifies the widget element for use when instantiating or rendering.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            class
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            Any String
+          </td>
+          <td>
+            There is no default class for ProgressBar, but you can assign one if you want to apply custom styling.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            name
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            Any String
+          </td>
+          <td>
+            Adds a unique name to the ProgressBar widget; generally used in templates.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="events">
+      Events
+    </h3>
+    <blockquote>
+      <pre>
+<code>Mojo.Event.listen(this.controller.get(&quot;progressbarId&quot;),
+  Mojo.Event.progressIconTap, this.handleUpdate);
+</code>
+</pre>
+    </blockquote>
+    <table border="1">
+      <tbody>
+        <tr>
+          <th width="30%">
+            Event Type
+          </th>
+          <th width="20%">
+            Value
+          </th>
+          <th width="50%">
+            Event Handling
+          </th>
+        </tr>
+        <tr>
+          <td>
+            Mojo.Event.progressIconTap
+          </td>
+          <td>
+            {model: this.controller.model}
+          </td>
+          <td>
+            The icon in the bar was tapped, app-specific action but usually cancel operation.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Mojo.Event.progressComplete
+          </td>
+          <td></td>
+          <td>
+            Progress is complete.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="instantiation">
+      Instantiation
+    </h3>
+    <blockquote>
+      <pre>
+<code>this.controller.setupWidget(&quot;progressbarId&quot;,
+  this.attributes = {
+      title: &quot;Progress Bar&quot;,
+      image: &quot;images/header-icon.png&quot;,
+      modelProperty: &quot;progress&quot;
+  },
+  this.model = {
+      iconPath: &quot;../images/progress-bar-background.png&quot;,
+      progress: 0
+  }
+); 
+</code>
+</pre>
+    </blockquote>
+    <h3 id="attribute-properties">
+      Attribute Properties
+    </h3>
+    <table border="1">
+      <tbody>
+        <tr>
+          <th width="15%">
+            Attribute Property
+          </th>
+          <th width="15%">
+            Type
+          </th>
+          <th width="15%">
+            Required
+          </th>
+          <th width="15%">
+            Default
+          </th>
+          <th width="40%">
+            Description
+          </th>
+        </tr>
+        <tr>
+          <td>
+            modelProperty
+          </td>
+          <td>
+            String
+          </td>
+          <td>
+            Optional
+          </td>
+          <td></td>
+          <td>
+            Widget's model property name.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            title
+          </td>
+          <td>
+            String
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            Null
+          </td>
+          <td>
+            Dynamic title to show on download bar.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            image
+          </td>
+          <td>
+            String
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            Null
+          </td>
+          <td>
+            File path relative to app folder for dynamic image to show on bar.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            icon
+          </td>
+          <td>
+            String
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            Null
+          </td>
+          <td>
+            CSS class for icon to display on the bar.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="model-properties">
+      Model Properties
+    </h3>
+    <table border="1">
+      <tbody>
+        <tr>
+          <th width="15%">
+            Model Property
+          </th>
+          <th width="15%">
+            Type
+          </th>
+          <th width="15%">
+            Required
+          </th>
+          <th width="15%">
+            Default
+          </th>
+          <th width="40%">
+            Description
+          </th>
+        </tr>
+        <tr>
+          <td>
+            value
+          </td>
+          <td>
+            Integer
+          </td>
+          <td>
+            Required
+          </td>
+          <td>
+            Null
+          </td>
+          <td>
+            Current value of widget.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            title
+          </td>
+          <td>
+            String
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            Null
+          </td>
+          <td>
+            Dynamic title to show on download bar.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            image
+          </td>
+          <td>
+            String
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            Null
+          </td>
+          <td>
+            File path relative to app folder for dynamic image to show on bar.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="methods">
+      Methods
+    </h3>
+    <p>
+      To invoke a method on a widget, use the scene controller's <code>get</code> method for the desired widget, and append <code>mojo</code> followed by the method.
+    </p>
+    <p>
+      Example:
+    </p>
+    <blockquote>
+      <pre>
+<code>this.controller.get('myWidget').mojo.getValue()
+</code>
+</pre>
+    </blockquote>
+    <table border="1">
+      <tbody>
+        <tr>
+          <th width="30%">
+            Method
+          </th>
+          <th width="20%">
+            Arguments
+          </th>
+          <th width="50%">
+            Description
+          </th>
+        </tr>
+        <tr>
+          <td>
+            reset
+          </td>
+          <td></td>
+          <td>
+            Resets the progress to 0.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            cancelProgress
+          </td>
+          <td></td>
+          <td>
+            Stops progress and leaves the progress pill visually where it was.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+		</div>
+	</body>
+</html>

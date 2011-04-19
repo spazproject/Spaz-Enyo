@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>$if(pagetitle)$$pagetitle$$endif$</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="stylesheet" href="_css/chrome.css" />
+		<link rel="stylesheet" href="../_css/chrome.css" />
+		<link rel="stylesheet" href="../../_css/chrome.css" />
+		<link rel="stylesheet" href="../../../_css/chrome.css" />
+		<script src="_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="_js/doc.js" type="text/javascript"></script>
+		<script src="../_js/doc.js" type="text/javascript"></script>
+		<script src="../../_js/doc.js" type="text/javascript"></script>
+		<script src="../../../_js/doc.js" type="text/javascript"></script>
+	</head>
+	<body>
+		<div id="content">
+    
+    <h1 id="mojo.widget.button">
+      Mojo.Widget.Button
+    </h1>
+    <h2 id="namespace-detail">
+      Namespace Detail
+    </h2>
+    <h3 id="overview">
+      Overview
+    </h3>
+    <p>
+      Buttons are the most basic UI element, which allow an action to be bound to a region. Buttons have a text label that can be updated dynamically. Button widgets are automatically styled to look like other buttons within the webOS.
+    </p>
+    <h3 id="declaration">
+      Declaration
+    </h3>
+    <blockquote>
+      <pre>
+<code>&lt;div x-mojo-element=&quot;Button&quot; id=&quot;buttonId&quot; class=&quot;buttonClass&quot; name=&quot;buttonName&quot;&gt;&lt;/div&gt;   
+</code>
+</pre>
+    </blockquote>
+    <table border="1">
+      <tbody>
+        <tr>
+          <th width="20%">
+            Properties
+          </th>
+          <th width="10%">
+            Required
+          </th>
+          <th width="20%">
+            Value
+          </th>
+          <th width="50%">
+            Description
+          </th>
+        </tr>
+        <tr>
+          <td>
+            x-mojo-element
+          </td>
+          <td>
+            Required
+          </td>
+          <td>
+            Button
+          </td>
+          <td>
+            Declares the widget as type 'Button'.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            id
+          </td>
+          <td>
+            Required
+          </td>
+          <td>
+            Any String
+          </td>
+          <td>
+            Identifies the widget element for use when instantiating or rendering; should be unique in the document.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            class
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            Any String
+          </td>
+          <td>
+            All buttons belong to the class palm-button, but you can override this with a custom class.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            name
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            Any String
+          </td>
+          <td>
+            Adds a unique name to the button widget; generally used in templates.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="events">
+      Events
+    </h3>
+    <blockquote>
+      <pre>
+<code>Mojo.Event.listen(this.controller.get(&quot;buttonId&quot;),Mojo.Event.tap, this.handleUpdate); 
+</code>
+</pre>
+    </blockquote>
+    <table border="1">
+      <tbody>
+        <tr>
+          <th width="30%">
+            Event Type
+          </th>
+          <th width="20%">
+            Value
+          </th>
+          <th width="50%">
+            Event Handling
+          </th>
+        </tr>
+        <tr>
+          <td>
+            Mojo.Event.tap
+          </td>
+          <td>
+            None
+          </td>
+          <td>
+            Respond to button tap
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="instantiation">
+      Instantiation
+    </h3>
+    <blockquote>
+      <pre>
+<code>this.controller.setupWidget(&quot;buttonId&quot;,
+  this.attributes = {
+  },
+  this.model = {
+      label : &quot;BUTTON&quot;,
+      disabled: false
+  }
+);
+</code>
+</pre>
+    </blockquote>
+    <h3 id="attribute-properties">
+      Attribute Properties
+    </h3>
+    <table border="1">
+      <tbody>
+        <tr>
+          <th width="15%">
+            Attribute Property
+          </th>
+          <th width="15%">
+            Type
+          </th>
+          <th width="15%">
+            Required
+          </th>
+          <th width="15%">
+            Default
+          </th>
+          <th width="40%">
+            Description
+          </th>
+        </tr>
+        <tr>
+          <td>
+            label
+          </td>
+          <td>
+            String
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            null
+          </td>
+          <td>
+            Button's label if none is supplied by the model
+          </td>
+        </tr>
+        <tr>
+          <td>
+            type
+          </td>
+          <td>
+            String
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            Mojo.Widget.defaultButton
+          </td>
+          <td>
+            Type options:
+            <ul>
+              <li>Mojo.Widget.defaultButton - simple pushbutton
+              </li>
+              <li>Mojo.Widget.activityButton- pushbutton with spinner activated on tap of the button
+              </li>
+            </ul>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            disabledProperty
+          </td>
+          <td>
+            String
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            &quot;disabled&quot;
+          </td>
+          <td>
+            Model property name for disabled
+          </td>
+        </tr>
+        <tr>
+          <td>
+            labelProperty
+          </td>
+          <td>
+            String
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            &quot;label&quot;
+          </td>
+          <td>
+            Model property name for label
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="model-properties">
+      Model Properties
+    </h3>
+    <table border="1">
+      <tbody>
+        <tr>
+          <th width="15%">
+            Model Property
+          </th>
+          <th width="15%">
+            Type
+          </th>
+          <th width="15%">
+            Required
+          </th>
+          <th width="15%">
+            Default
+          </th>
+          <th width="40%">
+            Description
+          </th>
+        </tr>
+        <tr>
+          <td>
+            buttonLabel
+          </td>
+          <td>
+            String
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            null
+          </td>
+          <td>
+            <b>DEPRECATED</b> Button's label
+          </td>
+        </tr>
+        <tr>
+          <td>
+            buttonClass
+          </td>
+          <td>
+            String
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            primary
+          </td>
+          <td>
+            Model property that has the CSS class name of this button. Legal values are: &quot;primary&quot;, &quot;secondary&quot;, &quot;affirmative&quot;, and &quot;negative&quot;.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            disabled
+          </td>
+          <td>
+            Boolean
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            FALSE
+          </td>
+          <td>
+            If true, button is inactive
+          </td>
+        </tr>
+        <tr>
+          <td>
+            label
+          </td>
+          <td>
+            String
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            null
+          </td>
+          <td>
+            Button's label
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="methods">
+      Methods
+    </h3>
+    <p>
+      To invoke a method on a widget, use the scene controller's <code>get</code> method for the desired widget, and append <code>mojo</code> followed by the method.
+    </p>
+    <p>
+      Example:
+    </p>
+    <blockquote>
+      <pre>
+<code>this.controller.get('myWidget').mojo.getValue()
+</code>
+</pre>
+    </blockquote>
+    <table border="1">
+      <tbody>
+        <tr>
+          <th width="30%">
+            Method
+          </th>
+          <th width="20%">
+            Arguments
+          </th>
+          <th width="50%">
+            Description
+          </th>
+        </tr>
+        <tr>
+          <td>
+            activate
+          </td>
+          <td>
+            None
+          </td>
+          <td>
+            For an activity button, start the spinner
+          </td>
+        </tr>
+        <tr>
+          <td>
+            deactivate
+          </td>
+          <td>
+            None
+          </td>
+          <td>
+            For an activity button, stop the spinner
+          </td>
+        </tr>
+      </tbody>
+    </table>
+		</div>
+	</body>
+</html>

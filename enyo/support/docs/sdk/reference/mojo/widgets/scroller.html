@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>$if(pagetitle)$$pagetitle$$endif$</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="stylesheet" href="_css/chrome.css" />
+		<link rel="stylesheet" href="../_css/chrome.css" />
+		<link rel="stylesheet" href="../../_css/chrome.css" />
+		<link rel="stylesheet" href="../../../_css/chrome.css" />
+		<script src="_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="_js/doc.js" type="text/javascript"></script>
+		<script src="../_js/doc.js" type="text/javascript"></script>
+		<script src="../../_js/doc.js" type="text/javascript"></script>
+		<script src="../../../_js/doc.js" type="text/javascript"></script>
+	</head>
+	<body>
+		<div id="content">
+    
+    <h1 id="mojo.widget.scroller">
+      Mojo.Widget.Scroller
+    </h1>
+    <h2 id="namespace-detail">
+      Namespace Detail
+    </h2>
+    <h3 id="overview">
+      Overview
+    </h3>
+    <p>
+      The Scroller widget provides all scrolling behavior. One is installed automatically in every scene (you can disable this behavior by having a truthy value in the disableSceneScroller property in the scene arguments to pushScene and you can have any number of additional scrollers anywhere in the DOM.
+    </p>
+    <p>
+      You can select one of six scrolling modes currently, specified in the mode property of the widget's attributes:
+    </p>
+    <ol style="list-style-type: decimal">
+      <li>
+        <p>
+          free: allow scrolling along the x and y axis.
+        </p>
+      </li>
+      <li>
+        <p>
+          horizontal: allow scrolling only along the horizontal axis.
+        </p>
+      </li>
+      <li>
+        <p>
+          vertical: allow scrolling only along the vertical axis.
+        </p>
+      </li>
+      <li>
+        <p>
+          dominant: allow scrolling along the horizontal or vertical axis, but not both at once. The direction of the intial drag will determine the axis of scrolling.
+        </p>
+      </li>
+      <li>
+        <p>
+          horizontal-snap: In this mode, scrolling is locked to the horizontal axis, but snaps to points determined by the position of the block elements found in the model's snapElements property. As the scroller scrolls from snap point to snap point it will send a propertyChange event.
+        </p>
+      </li>
+      <li>
+        <p>
+          vertical-snap: similarly, this mode locks scrolling to the vertical axis, but snaps to points determined by the elements in the snapElements property array
+        </p>
+      </li>
+    </ol>
+    <p>
+      The Scroller declaration MUST wrap the scrolled contents within its scope.
+    </p>
+    <h3 id="declaration">
+      Declaration
+    </h3>
+    <blockquote>
+      <pre>
+<code>&lt;div x-mojo-element=&quot;Scroller&quot; id=&quot;scrollerId&quot; class=&quot;scrollerClass&quot;
+  name=&quot;scrollerName&quot;&gt;
+  &lt;div&gt; TARGET SCROLL CONTENT &lt;/div&gt;
+&lt;/div&gt;
+</code>
+</pre>
+    </blockquote>
+    <table border="1">
+      <tbody>
+        <tr>
+          <th>
+            Properties
+          </th>
+          <th>
+            Required
+          </th>
+          <th>
+            Value
+          </th>
+          <th>
+            Description
+          </th>
+        </tr>
+        <tr>
+          <td>
+            x-mojo-element
+          </td>
+          <td>
+            Required
+          </td>
+          <td>
+            Scroller
+          </td>
+          <td>
+            Declares the widget as type 'Scroller'.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            id
+          </td>
+          <td>
+            Required
+          </td>
+          <td>
+            Any String
+          </td>
+          <td>
+            Identifies the widget element for use when instantiating or rendering.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            class
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            Any String
+          </td>
+          <td>
+            Scroller uses .palm-scroller-container by default, but you can override this setting.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            name
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            Any String
+          </td>
+          <td>
+            Adds a unique name to the Scroller widget; generally used in templates.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="events">
+      Events
+    </h3>
+    <blockquote>
+      <pre>
+<code>this.controller.listen(this.controller.get(&quot;scrollerId&quot;),
+  'Mojo.Event.propertyChange', this.handleUpdate);
+</code>
+</pre>
+    </blockquote>
+    <table border="1">
+      <tbody>
+        <tr>
+          <th>
+            Event Type
+          </th>
+          <th>
+            Value
+          </th>
+          <th>
+            Event Handling
+          </th>
+        </tr>
+        <tr>
+          <td>
+            Mojo.Event.propertyChange
+          </td>
+          <td>
+            None
+          </td>
+          <td>
+            Respond to Scroller value change.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Mojo.Event.scrollStarting
+          </td>
+          <td>
+            None
+          </td>
+          <td>
+            When contained in a scroller, down action followed by movement generates a scroll-starting event.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="instantiation">
+      Instantiation
+    </h3>
+    <blockquote>
+      <pre>
+<code>this.controller.setupWidget(&quot;scrollerId&quot;,
+  this.attributes = {
+      mode: 'vertical
+  },
+  this.model = {
+      snapElements: {
+          x: [DOMElement, DOMElement, DOMElement, ...]
+      }
+  }
+); 
+</code>
+</pre>
+    </blockquote>
+    <h3 id="attribute-properties">
+      Attribute Properties
+    </h3>
+    <table border="1">
+      <tbody>
+        <tr>
+          <th>
+            Attribute Property
+          </th>
+          <th>
+            Type
+          </th>
+          <th>
+            Required
+          </th>
+          <th>
+            Default
+          </th>
+          <th>
+            Description
+          </th>
+        </tr>
+        <tr>
+          <td>
+            mode
+          </td>
+          <td>
+            String
+          </td>
+          <td>
+            Required
+          </td>
+          <td>
+            value
+          </td>
+          <td>
+            Scrolling mode; one of: free, vertical, horizontal, dominant, vertical-snap, horizontal-snap
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="model-properties">
+      Model Properties
+    </h3>
+    <table border="1">
+      <tbody>
+        <tr>
+          <th>
+            Model Property
+          </th>
+          <th>
+            Type
+          </th>
+          <th>
+            Required
+          </th>
+          <th>
+            Default
+          </th>
+          <th>
+            Description
+          </th>
+        </tr>
+        <tr>
+          <td>
+            snapElements
+          </td>
+          <td>
+            Object
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            none
+          </td>
+          <td>
+            Object containing array of DOM elements used as snap points for horizontal or vertical scrolling under the appropriate component, e.g.,<br>
+            {y: [DOMElement, DOMElement, DOMElement, ...]}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="methods">
+      Methods
+    </h3>
+    <p>
+      To invoke a method on a widget, use the scene controller's <code>get</code> method for the desired widget, and append <code>mojo</code> followed by the method.
+    </p>
+    <p>
+      Example:
+    </p>
+    <blockquote>
+      <pre>
+<code>this.controller.get('myWidget').mojo.getValue()
+</code>
+</pre>
+    </blockquote>
+    <table border="1">
+      <tbody>
+        <tr>
+          <th>
+            Method
+          </th>
+          <th>
+            Arguments
+          </th>
+          <th>
+            Description
+          </th>
+        </tr>
+        <tr>
+          <td>
+            adjustBy
+          </td>
+          <td>
+            Integer {deltaX}, Integer {deltaY}
+          </td>
+          <td>
+            Adjust the current scroll position by the given amount. Safe to call from scroll listeners while animating.<br>
+            Does not cause listeners to be notified of any changes.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            createThreshholder
+          </td>
+          <td>
+            functionToCall, element, inThreshhold
+          </td>
+          <td>
+            Creates a function suitable for use as a moved method that calls the passed-in function only after the given element's containing scroller has moved more than the threshhold in pixels.<br>
+            Safe to call from scroll listeners while animating.<br>
+            Does not cause listeners to be notified of any changes.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            getScrollPosition
+          </td>
+          <td></td>
+          <td>
+            Returns an object with &quot;left&quot; and &quot;top&quot; properties indicating the current scroll position: {left: nnn px, top: nnn px}.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            getState
+          </td>
+          <td></td>
+          <td>
+            Returns the current scroll state for use in a future call to setState.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            revealBottom
+          </td>
+          <td></td>
+          <td>
+            Jumps the scroll to reveal the bottom of the content being scrolled.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            revealElement
+          </td>
+          <td>
+            HTML Element
+          </td>
+          <td>
+            Jumps the scroll to reveal a specific element; only scrolls vertically.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            revealTop
+          </td>
+          <td>
+            Object
+          </td>
+          <td>
+            Jumps the scroll to reveal the top of the content being scrolled.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            scrollerSize
+          </td>
+          <td></td>
+          <td>
+            Returns the size of the scroller's view port in pixels: {height:nnn, width:nnn}.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            scrollTo
+          </td>
+          <td>
+            Integer {x-coord}, Integer {x-coord}, Boolean {animate}, Boolean {supressNotification}
+          </td>
+          <td>
+            Jumps the scroll to the x,y coordinates specified. If either of the coordinates are undefined, they are ignored.<br>
+            Pass true for <code>animate</code> to animate the scroll.<br>
+            Pass true for <code>suppressNotification</code> to prevent a non-animated scroll from notifying listeners.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            setMode
+          </td>
+          <td>
+            String {newMode}
+          </td>
+          <td>
+            Sets the mode of the scroller, which controls which drag directions cause scrolling. Choices are 'free', 'dominant', 'horizontal', 'horizontal-snap', and 'vertical'.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            setSnapIndex
+          </td>
+          <td>
+            Number {snapIndex}, Boolean {animate}
+          </td>
+          <td>
+            Sets the snap index for a snap scroller and scrolls to the new position; pass true to animate.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            setState
+          </td>
+          <td>
+            Object {scrollState}, Boolean {animate}
+          </td>
+          <td>
+            Jumps the scroll to the value specified in scrollState; pass true to animate the scroll.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+		</div>
+	</body>
+</html>

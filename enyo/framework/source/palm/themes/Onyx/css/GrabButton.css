@@ -1,0 +1,8 @@
+/* Copyright 2009-2011 Hewlett-Packard Development Company, L.P. All rights reserved. */
+.enyo-grabbutton {
+	background-image: url(../images/grabbutton.png);
+	width: 46px;
+	height: 54px;
+	position: absolute;
+	left: 0;
+}

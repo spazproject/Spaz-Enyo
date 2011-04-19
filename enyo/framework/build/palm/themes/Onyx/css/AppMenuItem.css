@@ -1,0 +1,13 @@
+/* Copyright 2009-2011 Hewlett-Packard Development Company, L.P. All rights reserved. */
+.enyo-appmenu-item.enyo-item {
+	-webkit-border-image: url(../images/appmenu-divider.png) 0 0 2 0 stretch;
+	border-bottom: 2px;
+}
+
+.enyo-appmenu-item.enyo-held {
+	background-image: url(../images/appmenu-highlight.png);
+}
+
+.enyo-appmenu-item.enyo-item.enyo-menu-last {
+	border-bottom: 0;
+}

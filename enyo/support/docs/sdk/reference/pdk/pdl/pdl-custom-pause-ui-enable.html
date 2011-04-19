@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>$if(pagetitle)$$pagetitle$$endif$</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="stylesheet" href="_css/chrome.css" />
+		<link rel="stylesheet" href="../_css/chrome.css" />
+		<link rel="stylesheet" href="../../_css/chrome.css" />
+		<link rel="stylesheet" href="../../../_css/chrome.css" />
+		<script src="_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="_js/doc.js" type="text/javascript"></script>
+		<script src="../_js/doc.js" type="text/javascript"></script>
+		<script src="../../_js/doc.js" type="text/javascript"></script>
+		<script src="../../../_js/doc.js" type="text/javascript"></script>
+	</head>
+	<body>
+		<div id="content">
+    
+    <h1 id="pdl_custompauseuienable">
+      PDL_CustomPauseUiEnable
+    </h1>
+    <h2 id="description">
+      Description
+    </h2>
+    <p>
+      By default, the system assumes an application has a UI for handling a reactivation from a pause. If your application does not, it can call this function with <code>PDL_FALSE</code> to use the system's UI for reactivation, which requires the user to tap a play icon to resume (see screenshot).
+    </p>
+    <p>
+      <strong>Note:</strong>
+    </p>
+    <p>
+      Does not disable phone ringing or messages.
+    </p>
+    <h2 id="syntax">
+      Syntax
+    </h2>
+    <blockquote>
+      <pre>
+<code>PDL_Err PDL_CustomPauseUiEnable(PDL_bool Enable);     
+</code>
+</pre>
+    </blockquote>
+    <h2 id="returns">
+      Returns
+    </h2>
+    <blockquote>
+      <pre>
+<code>PDL_ECONNECTION — Unable to communicate with app card.
+PDL_NOERROR — Success.                 
+</code>
+</pre>
+    </blockquote>
+    <p>
+      <img src="/images/palm/pdk_pdl_custompause.jpg" alt="image"><br>
+      System UI for resuming the application
+    </p>
+		</div>
+	</body>
+</html>

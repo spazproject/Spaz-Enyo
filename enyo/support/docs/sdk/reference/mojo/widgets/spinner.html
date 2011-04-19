@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>$if(pagetitle)$$pagetitle$$endif$</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="stylesheet" href="_css/chrome.css" />
+		<link rel="stylesheet" href="../_css/chrome.css" />
+		<link rel="stylesheet" href="../../_css/chrome.css" />
+		<link rel="stylesheet" href="../../../_css/chrome.css" />
+		<script src="_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="_js/doc.js" type="text/javascript"></script>
+		<script src="../_js/doc.js" type="text/javascript"></script>
+		<script src="../../_js/doc.js" type="text/javascript"></script>
+		<script src="../../../_js/doc.js" type="text/javascript"></script>
+	</head>
+	<body>
+		<div id="content">
+    
+    <h1 id="mojo.widget.spinner">
+      Mojo.Widget.Spinner
+    </h1>
+    <h2 id="namespace-detail">
+      Namespace Detail
+    </h2>
+    <h3 id="overview">
+      Overview
+    </h3>
+    <p>
+      The Spinner widget provides all spinner behavior. Use the spinner to indicate that activity is taking place. The framework uses it as part of the activity button type, and you'll see it in many of the core applications. There are two sizes: the large Spinner is 128 pixels wide (and high) and the small Spinner is 32 pixels. (These dimensions are for the Pre screen and may vary on other devices, but the proportions and fit within the UI will be maintained.) All attribute properties are optional, but the <code>spinnerSize</code> is commonly used; set it to &quot;large&quot;, the default, or &quot;small&quot;. To start the Spinner, set its model property (default name is 'spinning') to <code>true</code>; to stop it, set the property to <code>false</code>.
+    </p>
+    <h3 id="declaration">
+      Declaration
+    </h3>
+    <blockquote>
+      <pre>
+<code>&lt;div x-mojo-element=&quot;Spinner&quot; id=&quot;spinnerId&quot; class=&quot;spinnerClass&quot;
+  name=&quot;spinnerName&quot;&gt;&lt;/div&gt;
+</code>
+</pre>
+    </blockquote>
+    <table border="1">
+      <tbody>
+        <tr>
+          <th>
+            Properties
+          </th>
+          <th>
+            Required
+          </th>
+          <th>
+            Value
+          </th>
+          <th>
+            Description
+          </th>
+        </tr>
+        <tr>
+          <td>
+            x-mojo-element
+          </td>
+          <td>
+            Required
+          </td>
+          <td>
+            Spinner
+          </td>
+          <td>
+            Declares the widget as type 'Spinner'.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            id
+          </td>
+          <td>
+            Required
+          </td>
+          <td>
+            Any String
+          </td>
+          <td>
+            Identifies the widget element for use when instantiating or rendering.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            class
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            Any String
+          </td>
+          <td>
+            Spinner uses .palm-spinner-container by default, but you can override this setting.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            name
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            Any String
+          </td>
+          <td>
+            Adds a unique name to the Spinner widget; generally used in templates.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="events">
+      Events
+    </h3>
+    <p>
+      The Spinner widget has no events.
+    </p>
+    <h3 id="instantiation">
+      Instantiation
+    </h3>
+    <blockquote>
+      <pre>
+<code>this.controller.setupWidget(&quot;spinnerId&quot;,
+  this.attributes = {
+      spinnerSize: &quot;large&quot;
+  },
+  this.model = {
+      spinning: false
+  }
+); 
+</code>
+</pre>
+    </blockquote>
+    <h3 id="attribute-properties">
+      Attribute Properties
+    </h3>
+    <table border="1">
+      <tbody>
+        <tr>
+          <th>
+            Attribute Property
+          </th>
+          <th>
+            Type
+          </th>
+          <th>
+            Required
+          </th>
+          <th>
+            Default
+          </th>
+          <th>
+            Description
+          </th>
+        </tr>
+        <tr>
+          <td>
+            property
+          </td>
+          <td>
+            String
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            spinning
+          </td>
+          <td>
+            <b>DEPRECATED</b> Name of model property for this widget instance
+          </td>
+        </tr>
+        <tr>
+          <td>
+            modelProperty
+          </td>
+          <td>
+            String
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            spinning
+          </td>
+          <td>
+            Name of model property for this widget instance; default is &quot;spinning&quot;.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            spinnerSize
+          </td>
+          <td>
+            String
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            Mojo.Widget.spinnerSmall
+          </td>
+          <td>
+            Either Mojo.Widget.spinnerLarge or Mojo.Widget.spinnerSmall (small=32 or large=128).
+          </td>
+        </tr>
+        <tr>
+          <td>
+            superClass
+          </td>
+          <td>
+            String
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            .palm-activity-indicator
+          </td>
+          <td>
+            Specifies the CSS class name for the background image when you specify a custom.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            startFrameCount
+          </td>
+          <td>
+            Integer
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            None
+          </td>
+          <td>
+            If the spinner widget is in custom mode, this specifies the number of frames allocated to the pre-main loop animation.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            mainFrameCount
+          </td>
+          <td>
+            Integer
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            10
+          </td>
+          <td>
+            If the spinner widget is in custom mode, this specifies the number of frames allocated to the main loop animation.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            finalFrameCount
+          </td>
+          <td>
+            Integer
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            None
+          </td>
+          <td>
+            If the spinner widget is in custom mode, this specifies the number of frames allocated to the post-main loop animation.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            frameHeight
+          </td>
+          <td>
+            Integer
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            small
+          </td>
+          <td>
+            Explicitly sets the frame height of the animation (small=32 or large=128).
+          </td>
+        </tr>
+        <tr>
+          <td>
+            fps
+          </td>
+          <td>
+            Integer
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            10
+          </td>
+          <td>
+            Number of frames per second
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="model-properties">
+      Model Properties
+    </h3>
+    <table border="1">
+      <tbody>
+        <tr>
+          <th>
+            Model Property
+          </th>
+          <th>
+            Type
+          </th>
+          <th>
+            Required
+          </th>
+          <th>
+            Default
+          </th>
+          <th>
+            Description
+          </th>
+        </tr>
+        <tr>
+          <td>
+            spinning
+          </td>
+          <td>
+            Boolean
+          </td>
+          <td>
+            Required
+          </td>
+          <td>
+            false
+          </td>
+          <td>
+            Spinner state; true is spinning.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="methods">
+      Methods
+    </h3>
+    <p>
+      To invoke a method on a widget, use the scene controller's <code>get</code> method for the desired widget, and append <code>mojo</code> followed by the method.
+    </p>
+    <p>
+      Example:
+    </p>
+    <blockquote>
+      <pre>
+<code>this.controller.get('myWidget').mojo.getValue()
+</code>
+</pre>
+    </blockquote>
+    <table border="1">
+      <tbody>
+        <tr>
+          <th>
+            Method
+          </th>
+          <th>
+            Arguments
+          </th>
+          <th>
+            Description
+          </th>
+        </tr>
+        <tr>
+          <td>
+            start
+          </td>
+          <td>
+            None
+          </td>
+          <td>
+            Starts the spinner.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            stop
+          </td>
+          <td>
+            None
+          </td>
+          <td>
+            Stops the spinner.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            toggle
+          </td>
+          <td>
+            None
+          </td>
+          <td>
+            Changes the spinner state (spinning to not, stopped to spinning).
+          </td>
+        </tr>
+      </tbody>
+    </table>
+		</div>
+	</body>
+</html>

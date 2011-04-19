@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>$if(pagetitle)$$pagetitle$$endif$</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="stylesheet" href="_css/chrome.css" />
+		<link rel="stylesheet" href="../_css/chrome.css" />
+		<link rel="stylesheet" href="../../_css/chrome.css" />
+		<link rel="stylesheet" href="../../../_css/chrome.css" />
+		<script src="_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="_js/doc.js" type="text/javascript"></script>
+		<script src="../_js/doc.js" type="text/javascript"></script>
+		<script src="../../_js/doc.js" type="text/javascript"></script>
+		<script src="../../../_js/doc.js" type="text/javascript"></script>
+	</head>
+	<body>
+		<div id="content">
+    
+    <h1 id="mojo.controller.appcontroller">
+      Mojo.Controller.AppController
+    </h1>
+    <h2 id="class-detail">
+      Class Detail
+    </h2>
+    <p>
+      The application controller is responsible for creating the application assistant and providing the interfaces for creating and managing stages. The following describes the class - the controller will get instantiated for you. You can get the instance of the controller with Mojo.Controller.getAppController().The controller object is typically accessed using this.controller.
+    </p>
+    <h2 id="method-summary">
+      Method Summary
+    </h2>
+    <ul>
+      <li>Mojo.Controller.AppController.<strong>closeAllStages()</strong>
+      </li>
+      <li>Mojo.Controller.AppController.<strong>closeStage(stageName)</strong>
+      </li>
+      <li>Mojo.Controller.AppController.<strong>createStageWithCallback(stageArguments, onCreate, optionalStageType)</strong>
+      </li>
+      <li>Mojo.Controller.AppController.<strong>getActiveStageController(stageType)</strong>
+      </li>
+      <li>Mojo.Controller.AppController.<strong>getScreenOrientation()</strong>
+      </li>
+      <li>Mojo.Controller.AppController.<strong>getStageController(stageName)</strong>
+      </li>
+      <li>Mojo.Controller.AppController.<strong>getStageProxy(stageName)</strong>
+      </li>
+      <li>Mojo.Controller.AppController.<strong>launch(appId, params, onSuccess, onFailure)</strong>
+      </li>
+      <li>Mojo.Controller.AppController.<strong>open(params, onSuccess, onFailure)</strong>
+      </li>
+      <li>Mojo.Controller.AppController.<strong>playSoundNotification(soundClass, soundFile, duration)</strong>
+      </li>
+      <li>Mojo.Controller.AppController.<strong>removeAllBanners()</strong>
+      </li>
+      <li>Mojo.Controller.AppController.<strong>removeBanner(category)</strong>
+      </li>
+      <li>Mojo.Controller.AppController.<strong>sendToNotificationChain(notificationData)</strong>
+      </li>
+      <li>Mojo.Controller.AppController.<strong>showBanner(bannerParams, launchArguments, category)</strong>
+      </li>
+    </ul>
+    <hr>
+    <h2 id="method-detail">
+      Method Detail
+    </h2>
+    <h3 id="mojo.controller.appcontroller.closeallstages">
+      Mojo.Controller.AppController.<strong>closeAllStages</strong>()
+    </h3>
+    <p>
+      Function to close all stages.
+    </p>
+    <hr>
+    <h3 id="mojo.controller.appcontroller.closestagestagename">
+      Mojo.Controller.AppController.<strong>closeStage</strong>(stageName)
+    </h3>
+    <p>
+      Function to close a stage.
+    </p>
+    <h4 id="parameters">
+      Parameters
+    </h4>
+    <ul>
+      <li>{String} <strong>stageName</strong> - The name of the stage.
+      </li>
+    </ul>
+    <hr>
+    <h3 id="mojo.controller.appcontroller.createstagewithcallbackstagearguments-oncreate-optionalstagetype">
+      Mojo.Controller.AppController.<strong>createStageWithCallback</strong>(stageArguments, onCreate, optionalStageType)
+    </h3>
+    <p>
+      Method to create a new stage and be called back when the stage is loaded. You can bind as much data to your callback function as needed, eliminating the need to pass parameters in the URI. The callback function can use the passed-in stage controller to push the first scene.
+    </p>
+    <h4 id="parameters-1">
+      Parameters
+    </h4>
+    <ul>
+      <li>
+        <p>
+          {String|Object} <strong>stageArguments</strong> - If a string, the name of the new stage. If a stage exists with this name, its contents will be replaced. If an object, supported properties are:
+        </p>
+        <table border="1">
+          <tr>
+            <th>
+              Property
+            </th>
+            <th>
+              Type
+            </th>
+            <th>
+              Required
+            </th>
+            <th>
+              Description
+            </th>
+          </tr>
+          <tr>
+            <td>
+              name
+            </td>
+            <td>
+              string
+            </td>
+            <td>
+              Required
+            </td>
+            <td>
+              Stage name
+            </td>
+          </tr>
+          <tr>
+            <td>
+              assistantName
+            </td>
+            <td>
+              string
+            </td>
+            <td>
+              Optional
+            </td>
+            <td>
+              Name of stageAssistant
+            </td>
+          </tr>
+          <tr>
+            <td>
+              htmlFilePath
+            </td>
+            <td>
+              string
+            </td>
+            <td>
+              Optional
+            </td>
+            <td>
+              Path to initial HTML file of the new stage. Only valid if htmlFileName is specified.
+            </td>
+          </tr>
+          <tr>
+            <td>
+              htmlFileName
+            </td>
+            <td>
+              string
+            </td>
+            <td>
+              Optional
+            </td>
+            <td>
+              The file name of the HTML file of the new stage.
+            </td>
+          </tr>
+          <tr>
+            <td>
+              lightweight
+            </td>
+            <td>
+              boolean
+            </td>
+            <td>
+              Optional
+            </td>
+            <td>
+              Defines stage as a lightweight stage. Should always be set to true.
+            </td>
+          </tr>
+          <tr>
+            <td>
+              height
+            </td>
+            <td>
+              integer
+            </td>
+            <td>
+              Optional
+            </td>
+            <td>
+              Popup stages only. Height of stage in pixels.
+            </td>
+          </tr>
+          <tr>
+            <td>
+              clickableWhenLocked
+            </td>
+            <td>
+              boolean
+            </td>
+            <td>
+              Optional
+            </td>
+            <td>
+              Dashboard stages only. Allows dashboard to receive tap events when locked.
+            </td>
+          </tr>
+        </table>
+        <p>
+          If you call createStageWithCallback without specifying <code>htmlFileName</code>, the new stage will use the application's main HTML file (which defaults to index.html in the application's root directory, but may be specified in the <code>appinfo.json</code> file).
+        </p>
+        <p>
+          If you specify <code>htmlFileName</code> without <code>htmlFilePath</code>, the framework will look in the application's root directory for a file with the specified name.
+        </p>
+        <p>
+          By providing both <code>htmlFilePath</code> and <code>htmlFileName</code>, you can specify an HTML file anywhere in your application's directory structure. When specifying <code>htmlFilePath</code>, you should use <code>Mojo.appPath</code> to get your app's root directory and append the remainder of the desired path. For example, you could set <code>htmlFilePath</code> to <code>Mojo.appPath + &quot;rest/of/path&quot;</code> and <code>htmlFileName</code> to <code>&quot;file&quot;</code>.
+        </p>
+      </li>
+      <li>
+        <p>
+          {Function} <strong>onCreate</strong> - A function that is called once the new stage is fully loaded. It is passed the new stage controller as its first parameter.
+        </p>
+      </li>
+      <li>
+        <p>
+          {String} <strong>optionalStageType</strong> - The type of stage to create. See Mojo.Controller.StageType in controller.js for legal values.
+        </p>
+      </li>
+    </ul>
+    <hr>
+    <h3 id="mojo.controller.appcontroller.getactivestagecontrollerstagetype">
+      Mojo.Controller.AppController.<strong>getActiveStageController</strong>(stageType)
+    </h3>
+    <p>
+      Function to return the first currently focused stage.
+    </p>
+    <h4 id="parameters-2">
+      Parameters
+    </h4>
+    <ul>
+      <li>{String} <strong>stageType</strong> - optional parameter to limit the focused stage returned to the specified type. See Mojo.Controller.StageType for details on stageType.
+      </li>
+    </ul>
+    <hr>
+    <h3 id="string-mojo.controller.appcontroller.getscreenorientation">
+      {string} Mojo.Controller.AppController.<strong>getScreenOrientation</strong>()
+    </h3>
+    <p>
+      Returns the current orientation of the physical screen.
+    </p>
+    <h4 id="returns">
+      Returns
+    </h4>
+    <p>
+      {string} one of 'up', 'down', 'left', or 'right'.
+    </p>
+    <hr>
+    <h3 id="mojo.controller.appcontroller.getstagecontrollerstagename">
+      Mojo.Controller.AppController.<strong>getStageController</strong>(stageName)
+    </h3>
+    <p>
+      Function to get the stage controller for a stage. Returns undefined if the stage does not exist, or is not yet fully constructed.
+    </p>
+    <h4 id="parameters-3">
+      Parameters
+    </h4>
+    <ul>
+      <li>{String} <strong>stageName</strong> - The name of the stage.
+      </li>
+    </ul>
+    <hr>
+    <h3 id="mojo.controller.appcontroller.getstageproxystagename">
+      Mojo.Controller.AppController.<strong>getStageProxy</strong>(stageName)
+    </h3>
+    <p>
+      Function to get a controller or proxy object for a stage. Returns the stage controller if available, but if the stage is still in the process of being created a proxy object will be returned instead. This proxy implements delegateToSceneAssistant(), and will delegate the calls as expected when the stage is available.
+    </p>
+    <h4 id="parameters-4">
+      Parameters
+    </h4>
+    <ul>
+      <li>{String} <strong>stageName</strong> - The name of the stage.
+      </li>
+    </ul>
+    <hr>
+    <h3 id="object-mojo.controller.appcontroller.launchappid-params-onsuccess-onfailure">
+      {Object} Mojo.Controller.AppController.<strong>launch</strong>(appId, params, onSuccess, onFailure)
+    </h3>
+    <p>
+      Launch another application, with optional parameters.
+    </p>
+    <h4 id="parameters-5">
+      Parameters
+    </h4>
+    <ul>
+      <li>{String} <strong>appId</strong> - Application ID of application to launch.
+      </li>
+      <li>{Object} <strong>params</strong> - Launch parameters to send to the launched application.
+      </li>
+      <li>{Function} <strong>onSuccess</strong> - Function that is called if the launch is successful. Default is to do nothing.
+      </li>
+      <li>{Function} <strong>onFailure</strong> - Function that is called if the launch fails. Default is to do nothing.
+      </li>
+    </ul>
+    <h4 id="returns-1">
+      Returns
+    </h4>
+    <p>
+      The Mojo.Service.Request object used to make the launch request.
+    </p>
+    <hr>
+    <h3 id="object-mojo.controller.appcontroller.openparams-onsuccess-onfailure">
+      {Object} Mojo.Controller.AppController.<strong>open</strong>(params, onSuccess, onFailure)
+    </h3>
+    <p>
+      Launch an application appropriate for &quot;opening&quot; the data indicated in the launch parameters.
+    </p>
+    <h4 id="parameters-6">
+      Parameters
+    </h4>
+    <ul>
+      <li>{Object} <strong>params</strong> - Launch parameters to send to the opening application
+      </li>
+      <li>{Function} <strong>onSuccess</strong> - Function that is called if the open is successful. Default is to do nothing.
+      </li>
+      <li>{Function} <strong>onFailure</strong> - Function that is called if the open fails. Default is to do nothing.
+      </li>
+    </ul>
+    <h4 id="returns-2">
+      Returns
+    </h4>
+    <p>
+      The Mojo.Service.Request object used to make the launch request.
+    </p>
+    <hr>
+    <h3 id="mojo.controller.appcontroller.playsoundnotificationsoundclass-soundfile-duration">
+      Mojo.Controller.AppController.<strong>playSoundNotification</strong>(soundClass, soundFile, duration)
+    </h3>
+    <p>
+      Immediately play a notification sound. Note that soundClass should be set to &quot;notifications&quot;. If you need the device to vibrate, set soundClass to &quot;vibrate&quot;.
+    </p>
+    <h4 id="parameters-7">
+      Parameters
+    </h4>
+    <ul>
+      <li>{String} <strong>soundClass</strong> - class of the sound
+      </li>
+      <li>{String} <strong>soundFile</strong> - partial or full path to the sound file
+      </li>
+      <li>{String} <strong>duration</strong> - duration of sound in ms
+      </li>
+    </ul>
+    <hr>
+    <h3 id="mojo.controller.appcontroller.removeallbanners">
+      Mojo.Controller.AppController.<strong>removeAllBanners</strong>()
+    </h3>
+    <p>
+      Remove all pending banner messages from the banner area. Will not remove messages that are already displayed.
+    </p>
+    <hr>
+    <h3 id="mojo.controller.appcontroller.removebannercategory">
+      Mojo.Controller.AppController.<strong>removeBanner</strong>(category)
+    </h3>
+    <p>
+      Remove a banner from the banner area. The category parameter defaults to 'banner'. Will not remove messages that are already displayed.
+    </p>
+    <h4 id="parameters-8">
+      Parameters
+    </h4>
+    <ul>
+      <li>{String} <strong>category</strong> - Value defined by the application and usually same one used in showBanner. It is used if you have more than one kind of banner message.
+      </li>
+    </ul>
+    <hr>
+    <h3 id="mojo.controller.appcontroller.sendtonotificationchainnotificationdata">
+      Mojo.Controller.AppController.<strong>sendToNotificationChain</strong>(notificationData)
+    </h3>
+    <p>
+      Hand the passed-in notification data to everyone in the commander stack of the focused window (scene assistant, stage assistant, app assistant, usually), calling considerForNotification, if present, on each. Each assistant before the app assistant should return the notification data with any properties that aren't needed for building a notification removed. The app assistant can then use the remaining data (in its own considerForNotification function) to call showBanner or to create or update a dashboard stage.
+    </p>
+    <h4 id="parameters-9">
+      Parameters
+    </h4>
+    <ul>
+      <li>
+        <strong>notificationData</strong>
+      </li>
+    </ul>
+    <hr>
+    <h3 id="mojo.controller.appcontroller.showbannerbannerparams-launcharguments-category">
+      Mojo.Controller.AppController.<strong>showBanner</strong>(bannerParams, launchArguments, category)
+    </h3>
+    <p>
+      Show the message text from the bannerParams in the banner area. The launchArguments will be used to launch or relaunch the application if the banner is touched. The category parameter defaults to 'banner'. New banners of each category will replace existing banners of the same category.
+    </p>
+    <h4 id="parameters-10">
+      Parameters
+    </h4>
+    <ul>
+      <li>
+        <p>
+          {String|object} <strong>bannerParams</strong> - Can be either a string, in which case it is simply message text, or an object with the following properties:
+        </p>
+        <table border="1">
+          <tr>
+            <th>
+              Property
+            </th>
+            <th>
+              Description
+            </th>
+          </tr>
+          <tr>
+            <td>
+              messageText
+            </td>
+            <td>
+              text to display
+            </td>
+          </tr>
+          <tr>
+            <td>
+              soundClass
+            </td>
+            <td>
+              string containing the sound class to use
+            </td>
+          </tr>
+          <tr>
+            <td>
+              soundFile
+            </td>
+            <td>
+              partial or full path to a sound file to play
+            </td>
+          </tr>
+          <tr>
+            <td>
+              icon
+            </td>
+            <td>
+              partial or full path to an icon to show
+            </td>
+          </tr>
+          <tr>
+            <td>
+              soundDuration
+            </td>
+            <td>
+              duration of sound in milliseconds
+            </td>
+          </tr>
+        </table>
+      </li>
+      <li>
+        <p>
+          {String} <strong>launchArguments</strong> - Arguments sent to the application when it is launched or relaunched if the banner is touched.
+        </p>
+      </li>
+      <li>
+        <p>
+          {String} <strong>category</strong> - Value defined by the application. It is used if you have more than one kind of banner message. Without categories, any banner shown would replace an existing banner that had not yet been shown.
+        </p>
+      </li>
+    </ul>
+		</div>
+	</body>
+</html>

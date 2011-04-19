@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>$if(pagetitle)$$pagetitle$$endif$</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="stylesheet" href="_css/chrome.css" />
+		<link rel="stylesheet" href="../_css/chrome.css" />
+		<link rel="stylesheet" href="../../_css/chrome.css" />
+		<link rel="stylesheet" href="../../../_css/chrome.css" />
+		<script src="_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="_js/doc.js" type="text/javascript"></script>
+		<script src="../_js/doc.js" type="text/javascript"></script>
+		<script src="../../_js/doc.js" type="text/javascript"></script>
+		<script src="../../../_js/doc.js" type="text/javascript"></script>
+	</head>
+	<body>
+		<div id="content">
+    
+    <h1 id="pdl_enablecompass">
+      PDL_EnableCompass
+    </h1>
+    <h2 id="description">
+      Description
+    </h2>
+    <p>
+      Activates or deactivates compass tracking. You must activate compass tracking before any calls to <code>PDL_GetCompass</code>.
+    </p>
+    <h2 id="syntax">
+      Syntax
+    </h2>
+    <blockquote>
+      <pre>
+<code>PDL_Err PDL_EnableCompass(PDL_bool activate);     
+</code>
+</pre>
+    </blockquote>
+    <h2 id="returns">
+      Returns
+    </h2>
+    <blockquote>
+      <pre>
+<code>PDL_ECONNECTION -- Unable to communicate with app card.
+PDL_EOTHER -- Compass not currently supported for plug-ins.
+PDL_NOERROR -- Success.                 
+</code>
+</pre>
+    </blockquote>
+		</div>
+	</body>
+</html>

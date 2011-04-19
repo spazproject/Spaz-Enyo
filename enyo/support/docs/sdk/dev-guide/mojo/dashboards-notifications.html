@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>$if(pagetitle)$$pagetitle$$endif$</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="stylesheet" href="_css/chrome.css" />
+		<link rel="stylesheet" href="../_css/chrome.css" />
+		<link rel="stylesheet" href="../../_css/chrome.css" />
+		<link rel="stylesheet" href="../../../_css/chrome.css" />
+		<script src="_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="_js/doc.js" type="text/javascript"></script>
+		<script src="../_js/doc.js" type="text/javascript"></script>
+		<script src="../../_js/doc.js" type="text/javascript"></script>
+		<script src="../../../_js/doc.js" type="text/javascript"></script>
+	</head>
+	<body>
+		<div id="content">
+    
+    <h1 id="dashboards-and-notifications">
+      Dashboards and Notifications
+    </h1>
+    <p>
+      Applications can post <em>banner notifications</em> which subtly appear in the notification bar below the main window and are typically followed by a Dashboard panel to allow for deferred action on the notification. Or for more urgent actions, a <em>pop-up notification</em> appears out of the notification bar and forces the card view or foreground card to shrink to fit into a minimized area. All notifications and dashboards are non-modal, meaning the user can continue to interact with whatever is in the foreground view until they are ready to address the notifications or interact with the dashboard.
+    </p>
+    <p>
+      <strong>Known Issues:</strong>
+    </p>
+    <p>
+      The full framework CSS is not automatically loaded when creating pop-up or dashboard stages. Currently some of the styles that you can use in a card stage or main application window are not available within non-card stages. This will be addressed over time as the dashboard styles are enhanced to get to parity but for now you may have to copy the selectors and style properties to your application CSS from the framework CSS.
+    </p>
+    <h2 id="banner-notifications">
+      Banner Notifications
+    </h2>
+    <p>
+      Banner notifications don't require their own stage and as such are relatively easy to construct. The most basic notification is a single line of text which is truncated to fit the screen width, and a scaled version of the calling application's icon, shown immediately to the left of the message.
+    </p>
+    <blockquote>
+      <pre>
+<code>Mojo.Controller.getAppController().showBanner(&quot;Dave? Dave? What are you doing, Dave?&quot;,
+  {source: 'notification'});
+</code>
+</pre>
+    </blockquote>
+    <p>
+      If the user taps the message, the framework will relaunch your application by calling its handleLaunch method. This is true whether your application is maximized, minimized, or closed. The second argument in the arguments list above is used to pass launch parameters to your application.
+    </p>
+    <p>
+      There is an optional third argument, called category, which can be used to manage sequences of notifications. Since banner notifications must display for a fixed period of time, they will queue up if there are more notifications than can be displayed within a given period of time. If there is more than one banner notification queued within a specific category, the framework will discard all the but the most recent one. By default all banner notifications belong to the category 'banner' so if you want to avoid having your notifications replaced by other default banners, or if you have multiple notification streams to manage, you will want to define a category for your notifications.
+    </p>
+    <p>
+      Applications should only use banner notifications when not in focus, either minimized (with a card view but not the foreground card) or in the background (without a card stage). Typically the banner should be followed by a Dashboard stage if the user doesn't tap on the banner, so that it appears that the Dashboard is a reminder of the ignored banner. However, neither of these guidelines are enforced by the framework.
+    </p>
+    <h2 id="pop-up-notifications">
+      Pop-up Notifications
+    </h2>
+    <p>
+      A pop-up notification combines the immediacy of a notification with the interactivity of a dashboard panel and presents itself to the user in a direct style that's guaranteed to get attention. The core system uses pop-ups very sparingly:
+    </p>
+    <ul>
+      <li>incoming phone calls
+      </li>
+      <li>imminent calendar event
+      </li>
+      <li>USB mode
+      </li>
+      <li>low memory or battery low condition
+      </li>
+    </ul>
+    <p>
+      Design decisions aside, you can create a pop-up notification by creating a stage and pushing a pop-up scene onto it.
+    </p>
+    <blockquote>
+      <pre>
+<code>var appController = Mojo.Controller.getAppController();
+var pushPopup = function(stageController) {
+  stageController.pushScene('myPopup', &quot;Warning, warning, everybody to get from street!&quot;);
+};
+appController.createStageWithCallback({name: &quot;popupStage&quot;, lightweight: true, height: 305},
+  pushPopup, 'popupalert');
+</code>
+</pre>
+    </blockquote>
+    <p>
+      You can see that this is a simple version of the create stage function, where the callback is defined pushPopup, and then createStageWithCallback() creates the stage and sets up the callback.
+    </p>
+    <p>
+      Specific to pop-ups is the option to set the optional height property, instead of using the default value. The default is 200 pixels on the Pre, but will be adjusted on other devices to scale appropriately. Use &quot;popupalert&quot; as the last argument to indicate that this is a pop-up stage. As in the general case, you specify the stage name and lightweight properties and include the callback function as the second argument.
+    </p>
+    <p>
+      You can do most anything within a pop-up scene that you can do in any other scene, but UI conventions dictate that you limit your actions to simple messages and selections. The only critical action is that your pop-up assistant must close the window on exit to close the stage and remove it from the display.
+    </p>
+    <blockquote>
+      <pre>
+<code>this.controller.window.close();
+</code>
+</pre>
+    </blockquote>
+    <h2 id="dashboard-panels">
+      Dashboard Panels
+    </h2>
+    <p>
+      A banner notification that is not tapped is assumed to be ignored or missed. Generally, the application should create a Dashboard panel with a summary of the notification, or accumulated notifications if several have been posted without any actions taken.
+    </p>
+    <p>
+      You will create a Dashboard panel just as you do any stage, but declare it as a dashboard stage type. This code sample simulates an application that is generating repeated notifications, presumably in a minimized or background state. In this simulation, it will pass a message and count to the dashboard, incrementing the count each iteration.
+    </p>
+    <p>
+      The first time it's called, a new dashboard stage is created, and the dashboard's scene is pushed with a count of 1 and a message entered into a text field. For subsequent calls where the stage exists, delegateToSceneAssistant is used to indirectly call the dashboard assistant's update method with an updated count and the message as arguments. Use this along with getStageProxy to insure that even if the stage is in the progress of instantiation, the update will be handled properly.
+    </p>
+    <blockquote>
+      <pre>
+<code>var appController = Mojo.Controller.getAppController();
+var message = this.textModel.value;
+this.dashboardcount = this.dashboardcount+1;
+var count = this.dashboardcount;
+var dashboardStage = appController.getStageProxy(&quot;myDashboard&quot;);
+if(dashboardStage) {
+  dashboardStage.delegateToSceneAssistant(&quot;updateDashboard&quot;, message, count);
+} else {
+  this.dashboardcount=1;
+  count = this.dashboardcount;
+  var pushDashboard = function(stageController){
+      stageController.pushScene('dashboard', message, count);
+  };
+  appController.createStageWithCallback({name: &quot;myDashboard&quot;, lightweight: true},
+      pushDashboard, 'dashboard');
+};
+</code>
+</pre>
+    </blockquote>
+    <p>
+      Dashboard stages will have scene assistants and view templates since they are often dealing with dynamic data. You would use the same techniques described above in &quot;Pop-up Notifications&quot; to render scenes and handle updates, but you would also want an updateDashboard method:
+    </p>
+    <blockquote>
+      <pre>
+<code>DashboardAssistant.prototype.updateDashboard = function(message, count) {
+  var info = {message: message, count: count};
+  // Use render to convert the object and its properties along with a view file
+  // into a string containing HTML
+  var renderedInfo = Mojo.View.render({object: info, template: 'dashboard/item-info'});
+  var infoElement = this.controller.get('dashboardinfo');
+  infoElement.update(renderedInfo);
+};
+DashboardAssistant.prototype.launchMain = function() {
+  var appController = Mojo.Controller.getAppController();
+  appController.assistant.handleLaunch({source:&quot;notification&quot;});
+  this.controller.window.close();
+};
+</code>
+</pre>
+    </blockquote>
+    <p>
+      You will also want to handle taps to the Dashboard panel by calling your application's handleLaunch method and closing the window, which closes the stage.
+    </p>
+    <p>
+      Dashboard panels can be used specifically to provide ambient information for a background application, such as a traffic monitor, location-based service or other applications that provide status and an occasional notification when an event occurs. This is a particular type of background application called a <em>Dashboard Application</em> and is covered more fully in <a href="background-applications.html">Background Applications</a>.
+    </p>
+    <p>
+      When working with Dashboard stages, keep in mind:
+    </p>
+    <ul>
+      <li>
+        <p>
+          the full framework CSS is not loaded for use within a Dashboard stage automatically. Currently many of the styles that you can use in a card stage or main application window will are not available within the Dashboard stage. This will improve over time as the Dashboard styles are enhanced to get to parity but for now you may have to copy the selectors and style properties to your application CSS.
+        </p>
+      </li>
+      <li>
+        <p>
+          add a listener to the Mojo.Event.stageActivate event to be notified when the user taps on the Notification bar to bring up the Dashboard view which causes all dashboard panels to be maximized.
+        </p>
+      </li>
+      <li>
+        <p>
+          add a listener to Mojo.Event.stageDeactivate for minimize events; all dashboards are minimized when the user taps away from the Dashboard view restoring the card view or activating a card window.
+        </p>
+      </li>
+    </ul>
+		</div>
+	</body>
+</html>

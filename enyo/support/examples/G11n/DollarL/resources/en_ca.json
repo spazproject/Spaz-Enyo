@@ -1,0 +1,11 @@
+{
+	"A new security policy has been implemented for your Exchange ActiveSync account.  When you end the call, you will be able to change your password.": "A new security policy has been implemented for your Exchange ActiveSync account.  When you end the call, you will be able to change your password.",
+	"Call failed: Not on fixed dialing list.": "Call failed: Not on fixed dialling list.",
+	"Dialing": "Dialling",
+	"Number not on fixed dialing list.": "Number not on fixed dialling list.",
+	"PIN doesn't match": "PIN does not match",
+	"Programming unsuccessful.  Call #{value}": "Programming unsuccessful.  Call #{value}",
+	"Record New Greeting": "Record new greeting",
+	"Unable to change PIN: PINs don't match.": "Unable to change PIN: PINs do not match.",
+	"Unable to unlock PUK: PINs don't match.": "Unable to unlock PUK: PINs do not match."
+}

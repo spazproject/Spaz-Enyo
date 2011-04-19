@@ -1,0 +1,13 @@
+/* Copyright 2009-2011 Hewlett-Packard Development Company, L.P. All rights reserved. */
+.enyo-test-runner {
+	font-size: 12px;
+}
+
+.enyo-test-header {
+	padding: 10px;
+	border-bottom: 1px solid black;
+	background: navy;
+	color: white;
+	font-weight: bold;
+	font-size: 16px;
+}

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>$if(pagetitle)$$pagetitle$$endif$</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="stylesheet" href="_css/chrome.css" />
+		<link rel="stylesheet" href="../_css/chrome.css" />
+		<link rel="stylesheet" href="../../_css/chrome.css" />
+		<link rel="stylesheet" href="../../../_css/chrome.css" />
+		<script src="_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="_js/doc.js" type="text/javascript"></script>
+		<script src="../_js/doc.js" type="text/javascript"></script>
+		<script src="../../_js/doc.js" type="text/javascript"></script>
+		<script src="../../../_js/doc.js" type="text/javascript"></script>
+	</head>
+	<body>
+		<div id="content">
+    
+    <h1 id="device-file-system-access">
+      Device File System Access
+    </h1>
+    <p>
+      Applications can access the file system using the SDL file abstraction or by directly calling the POSIX (Portable Operating System Interface for UniX) file functions.
+    </p>
+    <h2 id="finding-your-applications-directory-on-the-device">
+      Finding your application's directory on the device
+    </h2>
+    <p>
+      When an application is launched, its current working directory is &quot;/&quot;. You can use the Palm Development Library's <a href="/reference/pdk/pdl/pdl-get-calling-path.html">PDL_GetCallingPath</a> function to find your application's location on the device.
+    </p>
+    <p>
+      <strong>Note:</strong>
+    </p>
+    <p>
+      Do not hard code the application's absolute path--this is subject to change.
+    </p>
+    <h2 id="saving-persistent-application-data-on-the-device">
+      Saving persistent application data on the device
+    </h2>
+    <p>
+      You can use the Palm Development Library's <a href="/reference/pdk/pdl/pdl-get-data-file-path.html">PDL_GetDataFilePath</a> function to get a safe location on the device for saving application data. This location is segregated from the application's installed files, allowing you to replace or remove the application without destroying its generated data files.
+    </p>
+    <p>
+      Additionally, all applications have access to the <code>/media/internal/</code> directory.
+    </p>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>$if(pagetitle)$$pagetitle$$endif$</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="stylesheet" href="_css/chrome.css" />
+		<link rel="stylesheet" href="../_css/chrome.css" />
+		<link rel="stylesheet" href="../../_css/chrome.css" />
+		<link rel="stylesheet" href="../../../_css/chrome.css" />
+		<script src="_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="_js/doc.js" type="text/javascript"></script>
+		<script src="../_js/doc.js" type="text/javascript"></script>
+		<script src="../../_js/doc.js" type="text/javascript"></script>
+		<script src="../../../_js/doc.js" type="text/javascript"></script>
+	</head>
+	<body>
+		<div id="content">
+    
+    <h1 id="mojo">
+      Mojo
+    </h1>
+    <h2 id="namespace-detail">
+      Namespace Detail
+    </h2>
+    <p>
+      This section contains some methods that can be used to debug your applications and other utility functions (assert, require, loadScriptWithCallback...)
+    </p>
+    <h2 id="method-summary">
+      Method Summary
+    </h2>
+    <ul>
+      <li>Mojo.<strong>assert</strong>(expression, message, messageProperties)
+      </li>
+      <li>Mojo.<strong>assertArray</strong>(expectedArray, message, messageProperties)
+      </li>
+      <li>Mojo.<strong>assertClass</strong>(object, constructorFunction, message, messageProperties)
+      </li>
+      <li>Mojo.<strong>assertDefined</strong>(value, message, messageProperties)
+      </li>
+      <li>Mojo.<strong>assertElement</strong>(expectedElement, message, messageProperties)
+      </li>
+      <li>Mojo.<strong>assertEqual</strong>(expected, actual, message, messageProperties)
+      </li>
+      <li>Mojo.<strong>assertFalse</strong>(expression, message, messageProperties)
+      </li>
+      <li>Mojo.<strong>assertFunction</strong>(expectedFunction, message, messageProperties)
+      </li>
+      <li>Mojo.<strong>assertMatch</strong>(regex, testValue, message, messageProperties)
+      </li>
+      <li>Mojo.<strong>assertNumber</strong>(expectedNumber, message, messageProperties)
+      </li>
+      <li>Mojo.<strong>assertProperty</strong>(properties)
+      </li>
+      <li>Mojo.<strong>assertString</strong>(expectedString, message, messageProperties)
+      </li>
+      <li>Mojo.<strong>doNothing</strong>()
+      </li>
+      <li>Mojo.<strong>loadScriptWithCallback</strong>(path, callback, optionalDocument)
+      </li>
+      <li>Mojo.<strong>parseJSON</strong>(jsonText)
+      </li>
+      <li>Mojo.<strong>require</strong>(expression, message, messageProperties)
+      </li>
+      <li>Mojo.<strong>requireArray</strong>(expectedArray, message, messageProperties)
+      </li>
+      <li>Mojo.<strong>requireClass</strong>(object, constructorFunction, message, messageProperties)
+      </li>
+      <li>Mojo.<strong>requireDefined</strong>(value, message, messageProperties)
+      </li>
+      <li>Mojo.<strong>requireElement</strong>(expectedElement, message, messageProperties)
+      </li>
+      <li>Mojo.<strong>requireEqual</strong>(expected, actual, message, messageProperties)
+      </li>
+      <li>Mojo.<strong>requireFalse</strong>(expression, message, messageProperties)
+      </li>
+      <li>Mojo.<strong>requireFunction</strong>(expectedFunction, message, messageProperties)
+      </li>
+      <li>Mojo.<strong>requireMatch</strong>(regex, testValue, message, messageProperties)
+      </li>
+      <li>Mojo.<strong>requireNumber</strong>(expectedNumber, message, messageProperties)
+      </li>
+      <li>Mojo.<strong>requireProperty</strong>(properties)
+      </li>
+      <li>Mojo.<strong>requireString</strong>(expectedString, message, messageProperties)
+      </li>
+    </ul>
+    <hr>
+    <h2 id="method-detail">
+      Method Detail
+    </h2>
+    <h3 id="string-mojo.assertexpression-message-messageproperties">
+      {String} Mojo.<strong>assert</strong>(expression, message, messageProperties)
+    </h3>
+    <p>
+      Writes an error to the log if expression doesn't evaluate to boolean true.
+    </p>
+    <p>
+      The Mojo.require or Mojo.assert methods will do the same, except that require will throw an exception when their requirements aren't met. These are intended to be used in cases where framework code or application cannot reasonably continue if the requirements aren't met.
+    </p>
+    <p>
+      Example:
+    </p>
+    <blockquote>
+      <pre>
+<code>Mojo.assert(dogs &gt; 3,
+  &quot;expected dogs to be greater than #{count}, but it was #{amount}&quot;,
+  {count: 3, amount: dogs}) 
+</code>
+</pre>
+    </blockquote>
+    <h4 id="parameters">
+      Parameters
+    </h4>
+    <ul>
+      <li>{Boolean} <strong>expression</strong> - expression that must evaluate to true
+      </li>
+      <li>{String} <strong>message</strong> - a custom message to use if the assertion fails. This message will be run through template evaluation against the messageProperies object, so you can include details of the assertion failure in the message.
+      </li>
+      <li>{Object} <strong>messageProperties</strong> - object containing values to use with template evaluation.
+      </li>
+    </ul>
+    <h4 id="returns">
+      Returns
+    </h4>
+    <p>
+      {String} the message that was written to the log.
+    </p>
+    <hr>
+    <h3 id="string-mojo.assertarrayexpectedarray-message-messageproperties">
+      {string} Mojo.<strong>assertArray</strong>(expectedArray, message, messageProperties)
+    </h3>
+    <p>
+      Writes an error to the log if expectedArray fails the Prototype isArray method.
+    </p>
+    <h4 id="parameters-1">
+      Parameters
+    </h4>
+    <ul>
+      <li>{Boolean} <strong>expectedArray</strong> - object that must be an array
+      </li>
+      <li>{String} <strong>message</strong> - a custom message to use if the assertion fails. This message will be run through template evaluation against the messageProperies object, so you can include details of the assertion failure in the message.
+      </li>
+      <li>{Object} <strong>messageProperties</strong> - object containing values to use with template evaluation.
+      </li>
+    </ul>
+    <h4 id="returns-1">
+      Returns
+    </h4>
+    <p>
+      The message that was written to the log.
+    </p>
+    <hr>
+    <h3 id="string-mojo.assertclassobject-constructorfunction-message-messageproperties">
+      {string} Mojo.<strong>assertClass</strong>(object, constructorFunction, message, messageProperties)
+    </h3>
+    <p>
+      Writes an error to the log if targetObject wasn't constructed by the passed-in constructor function.
+    </p>
+    <h4 id="parameters-2">
+      Parameters
+    </h4>
+    <ul>
+      <li>{Object} <strong>object</strong> - object to check for constructing function.
+      </li>
+      <li>{Function} <strong>constructorFunction</strong> - expected constructor function.
+      </li>
+      <li>{String} <strong>message</strong> - a custom message to use if the assertion fails. This message will be run through template evaluation against the messageProperies object, so you can include details of the assertion failure in the message.
+      </li>
+      <li>{Object} <strong>messageProperties</strong> - object containing values to use with template evaluation.
+      </li>
+    </ul>
+    <h4 id="returns-2">
+      Returns
+    </h4>
+    <p>
+      The message that was written to the log.
+    </p>
+    <hr>
+    <h3 id="string-mojo.assertdefinedvalue-message-messageproperties">
+      {string} Mojo.<strong>assertDefined</strong>(value, message, messageProperties)
+    </h3>
+    <p>
+      Writes an error to the log if value evaluates to undefined.
+    </p>
+    <h4 id="parameters-3">
+      Parameters
+    </h4>
+    <ul>
+      <li>{Boolean} <strong>value</strong> - value that must not evaluate to undefined
+      </li>
+      <li>{String} <strong>message</strong> - a custom message to use if the assertion fails. This message will be run through template evaluation against the messageProperies object, so you can include details of the assertion failure in the message.
+      </li>
+      <li>{Object} <strong>messageProperties</strong> - object containing values to use with template evaluation.
+      </li>
+    </ul>
+    <h4 id="returns-3">
+      Returns
+    </h4>
+    <p>
+      The message that was written to the log.
+    </p>
+    <hr>
+    <h3 id="string-mojo.assertelementexpectedelement-message-messageproperties">
+      {string} Mojo.<strong>assertElement</strong>(expectedElement, message, messageProperties)
+    </h3>
+    <p>
+      Writes an error to the log if expectedElement fails the Prototype isElement method.
+    </p>
+    <h4 id="parameters-4">
+      Parameters
+    </h4>
+    <ul>
+      <li>{Boolean} <strong>expectedElement</strong> - object that must be an element
+      </li>
+      <li>{String} <strong>message</strong> - a custom message to use if the assertion fails. This message will be run through template evaluation against the messageProperies object, so you can include details of the assertion failure in the message.
+      </li>
+      <li>{Object} <strong>messageProperties</strong> - object containing values to use with template evaluation.
+      </li>
+    </ul>
+    <h4 id="returns-4">
+      Returns
+    </h4>
+    <p>
+      The message that was written to the log.
+    </p>
+    <hr>
+    <h3 id="string-mojo.assertequalexpected-actual-message-messageproperties">
+      {string} Mojo.<strong>assertEqual</strong>(expected, actual, message, messageProperties)
+    </h3>
+    <p>
+      Writes an error to the log if expected === actual is not true.
+    </p>
+    <h4 id="parameters-5">
+      Parameters
+    </h4>
+    <ul>
+      <li>{anything} <strong>expected</strong> - expected value
+      </li>
+      <li>{anything} <strong>actual</strong> - actual value
+      </li>
+      <li>{String} <strong>message</strong> - a custom message to use if the assertion fails. This message will be run through template evaluation against the messageProperies object, so you can include details of the assertion failure in the message.
+      </li>
+      <li>{Object} <strong>messageProperties</strong> - object containing values to use with template evaluation.
+      </li>
+    </ul>
+    <h4 id="returns-5">
+      Returns
+    </h4>
+    <p>
+      The message that was written to the log.
+    </p>
+    <hr>
+    <h3 id="string-mojo.assertfalseexpression-message-messageproperties">
+      {string} Mojo.<strong>assertFalse</strong>(expression, message, messageProperties)
+    </h3>
+    <p>
+      Writes an error to the log if expression evaluates to boolean true.
+    </p>
+    <h4 id="parameters-6">
+      Parameters
+    </h4>
+    <ul>
+      <li>{Boolean} <strong>expression</strong> - expression that must evaluate to false
+      </li>
+      <li>{String} <strong>message</strong> - a custom message to use if the assertion fails. This message will be run through template evaluation against the messageProperies object, so you can include details of the assertion failure in the message.
+      </li>
+      <li>{Object} <strong>messageProperties</strong> - object containing values to use with template evaluation.
+      </li>
+    </ul>
+    <h4 id="returns-6">
+      Returns
+    </h4>
+    <p>
+      The message that was written to the log.
+    </p>
+    <hr>
+    <h3 id="string-mojo.assertfunctionexpectedfunction-message-messageproperties">
+      {string} Mojo.<strong>assertFunction</strong>(expectedFunction, message, messageProperties)
+    </h3>
+    <p>
+      Writes an error to the log if expectedFunction fails the Prototype isFunction method.
+    </p>
+    <h4 id="parameters-7">
+      Parameters
+    </h4>
+    <ul>
+      <li>{Boolean} <strong>expectedFunction</strong> - object that must be a function
+      </li>
+      <li>{String} <strong>message</strong> - a custom message to use if the assertion fails. This message will be run through template evaluation against the messageProperies object, so you can include details of the assertion failure in the message.
+      </li>
+      <li>{Object} <strong>messageProperties</strong> - object containing values to use with template evaluation.
+      </li>
+    </ul>
+    <h4 id="returns-7">
+      Returns
+    </h4>
+    <p>
+      The message that was written to the log.
+    </p>
+    <hr>
+    <h3 id="string-mojo.assertmatchregex-testvalue-message-messageproperties">
+      {string} Mojo.<strong>assertMatch</strong>(regex, testValue, message, messageProperties)
+    </h3>
+    <p>
+      Writes an error to the log if the regex doesn't match the testValue.
+    </p>
+    <h4 id="parameters-8">
+      Parameters
+    </h4>
+    <ul>
+      <li>{Regex} <strong>regex</strong> - regex to match
+      </li>
+      <li>{String} <strong>testValue</strong> - string to attempt to match against the regex.
+      </li>
+      <li>{String} <strong>message</strong> - a custom message to use if the assertion fails. This message will be run through template evaluation against the messageProperies object, so you can include details of the assertion failure in the message.
+      </li>
+      <li>{Object} <strong>messageProperties</strong> - object containing values to use with template evaluation.
+      </li>
+    </ul>
+    <h4 id="returns-8">
+      Returns
+    </h4>
+    <p>
+      The message that was written to the log.
+    </p>
+    <hr>
+    <h3 id="string-mojo.assertnumberexpectednumber-message-messageproperties">
+      {string} Mojo.<strong>assertNumber</strong>(expectedNumber, message, messageProperties)
+    </h3>
+    <p>
+      Writes an error to the log if expectedNumber fails the Prototype isNumber method.
+    </p>
+    <h4 id="parameters-9">
+      Parameters
+    </h4>
+    <ul>
+      <li>{Boolean} <strong>expectedNumber</strong> - object that must be a number
+      </li>
+      <li>{String} <strong>message</strong> - a custom message to use if the assertion fails. This message will be run through template evaluation against the messageProperies object, so you can include details of the assertion failure in the message.
+      </li>
+      <li>{Object} <strong>messageProperties</strong> - object containing values to use with template evaluation.
+      </li>
+    </ul>
+    <h4 id="returns-9">
+      Returns
+    </h4>
+    <p>
+      The message that was written to the log.
+    </p>
+    <hr>
+    <h3 id="mojo.assertpropertyproperties">
+      Mojo.<strong>assertProperty</strong>(properties)
+    </h3>
+    <p>
+      Writes an error to the log if targetObject doesn't have values for the property name or names passed in.
+    </p>
+    <h4 id="parameters-10">
+      Parameters
+    </h4>
+    <ul>
+      <li>{String||Array} <strong>properties</strong> - individual name or array of names of properties to check
+      </li>
+    </ul>
+    <hr>
+    <h3 id="string-mojo.assertstringexpectedstring-message-messageproperties">
+      {string} Mojo.<strong>assertString</strong>(expectedString, message, messageProperties)
+    </h3>
+    <p>
+      Writes an error to the log if expectedString fails the Prototype isString method.
+    </p>
+    <h4 id="parameters-11">
+      Parameters
+    </h4>
+    <ul>
+      <li>{Boolean} <strong>expectedString</strong> - object that must be a string
+      </li>
+      <li>{String} <strong>message</strong> - a custom message to use if the assertion fails. This message will be run through template evaluation against the messageProperies object, so you can include details of the assertion failure in the message.
+      </li>
+      <li>{Object} <strong>messageProperties</strong> - object containing values to use with template evaluation.
+      </li>
+    </ul>
+    <h4 id="returns-10">
+      Returns
+    </h4>
+    <p>
+      The message that was written to the log.
+    </p>
+    <hr>
+    <h3 id="mojo.donothing">
+      Mojo.<strong>doNothing</strong>()
+    </h3>
+    <p>
+      A simple empty function useful as a stub.
+    </p>
+    <hr>
+    <h3 id="mojo.loadscriptwithcallbackpath-callback-optionaldocument">
+      Mojo.<strong>loadScriptWithCallback</strong>(path, callback, optionalDocument)
+    </h3>
+    <p>
+      Asynchronously load a JavaScript file by adding a script tag to the header of the document.
+    </p>
+    <h4 id="parameters-12">
+      Parameters
+    </h4>
+    <ul>
+      <li>{String} <strong>path</strong> - Path to the source file. If relative it is relative to the document.
+      </li>
+      <li>{Function} <strong>callback</strong> - Function that is called when the script either completes loading or fails to load.
+      </li>
+      <li>{HTMLDocument} <strong>optionalDocument</strong> - Document to which to add the script tag. Defaults to the global document.
+      </li>
+    </ul>
+    <hr>
+    <h3 id="mojo.parsejsonjsontext">
+      Mojo.<strong>parseJSON</strong>(jsonText)
+    </h3>
+    <p>
+      Parses a text string of encoded in JSON, returning a JavaScript object (result) when successful.
+    </p>
+    <h4 id="parameters-13">
+      Parameters
+    </h4>
+    <ul>
+      <li>{String} <strong>jsonText</strong> - input string with encoded JSON
+      </li>
+    </ul>
+    <hr>
+    <h3 id="string-mojo.requireexpression-message-messageproperties">
+      {String} Mojo.<strong>require</strong>(expression, message, messageProperties)
+    </h3>
+    <p>
+      Writes an error to the log if expression doesn't evaluate to boolean true.
+    </p>
+    <p>
+      The Mojo.require and Mojo.assert methods will do the same thing, except that Mojo.require will throw an exception when its requirements aren't met. The Mojo.requireXxxx methods are intended to be used in cases where framework code or application cannot reasonably continue if the requirements aren't met.
+    </p>
+    <p>
+      Example:
+    </p>
+    <blockquote>
+      <pre>
+<code>Mojo.require(dogs &gt; 3,
+  &quot;expected dogs to be greater than #{count}, but it was #{amount}&quot;,
+  {count: 3, amount: dogs}) 
+</code>
+</pre>
+    </blockquote>
+    <h4 id="parameters-14">
+      Parameters
+    </h4>
+    <ul>
+      <li>{Boolean} <strong>expression</strong> - expression that must evaluate to true
+      </li>
+      <li>{String} <strong>message</strong> - a custom message to use if the assertion fails. This message will be run through template evaluation against the messageProperies object, so you can include details of the assertion failure in the message.
+      </li>
+      <li>{Object} <strong>messageProperties</strong> - object containing values to use with template evaluation.
+      </li>
+    </ul>
+    <h4 id="returns-11">
+      Returns
+    </h4>
+    <p>
+      {String} the message that was written to the log.
+    </p>
+    <hr>
+    <h3 id="string-mojo.requirearrayexpectedarray-message-messageproperties">
+      {string} Mojo.<strong>requireArray</strong>(expectedArray, message, messageProperties)
+    </h3>
+    <p>
+      Writes an error to the log if expectedArray fails the Prototype isArray method and throws an exception.
+    </p>
+    <h4 id="parameters-15">
+      Parameters
+    </h4>
+    <ul>
+      <li>{Boolean} <strong>expectedArray</strong> - object that must be an array
+      </li>
+      <li>{String} <strong>message</strong> - a custom message to use if the assertion fails. This message will be run through template evaluation against the messageProperies object, so you can include details of the assertion failure in the message.
+      </li>
+      <li>{Object} <strong>messageProperties</strong> - object containing values to use with template evaluation.
+      </li>
+    </ul>
+    <h4 id="returns-12">
+      Returns
+    </h4>
+    <p>
+      The message that was written to the log.
+    </p>
+    <hr>
+    <h3 id="string-mojo.requireclassobject-constructorfunction-message-messageproperties">
+      {string} Mojo.<strong>requireClass</strong>(object, constructorFunction, message, messageProperties)
+    </h3>
+    <p>
+      Writes an error to the log if targetObject wasn't constructed by the passed in constructor function and throws an exception.
+    </p>
+    <h4 id="parameters-16">
+      Parameters
+    </h4>
+    <ul>
+      <li>{Object} <strong>object</strong> - object to check for constructing function.
+      </li>
+      <li>{Function} <strong>constructorFunction</strong> - expected constructor function.
+      </li>
+      <li>{String} <strong>message</strong> - a custom message to use if the assertion fails. This message will be run through template evaluation against the messageProperies object, so you can include details of the assertion failure in the message.
+      </li>
+      <li>{Object} <strong>messageProperties</strong> - object containing values to use with template evaluation.
+      </li>
+    </ul>
+    <h4 id="returns-13">
+      Returns
+    </h4>
+    <p>
+      The message that was written to the log.
+    </p>
+    <hr>
+    <h3 id="string-mojo.requiredefinedvalue-message-messageproperties">
+      {string} Mojo.<strong>requireDefined</strong>(value, message, messageProperties)
+    </h3>
+    <p>
+      Writes an error to the log if value evaluates to undefined and throws an exception.
+    </p>
+    <h4 id="parameters-17">
+      Parameters
+    </h4>
+    <ul>
+      <li>{Boolean} <strong>value</strong> - value that must not evaluate to undefined
+      </li>
+      <li>{String} <strong>message</strong> - a custom message to use if the assertion fails. This message will be run through template evaluation against the messageProperies object, so you can include details of the assertion failure in the message.
+      </li>
+      <li>{Object} <strong>messageProperties</strong> - object containing values to use with template evaluation.
+      </li>
+    </ul>
+    <h4 id="returns-14">
+      Returns
+    </h4>
+    <p>
+      The message that was written to the log.
+    </p>
+    <hr>
+    <h3 id="string-mojo.requireelementexpectedelement-message-messageproperties">
+      {string} Mojo.<strong>requireElement</strong>(expectedElement, message, messageProperties)
+    </h3>
+    <p>
+      Writes an error to the log if expectedElement fails the Prototype isElement method and throws an exception.
+    </p>
+    <h4 id="parameters-18">
+      Parameters
+    </h4>
+    <ul>
+      <li>{Boolean} <strong>expectedElement</strong> - object that must be an element
+      </li>
+      <li>{String} <strong>message</strong> - a custom message to use if the assertion fails. This message will be run through template evaluation against the messageProperies object, so you can include details of the assertion failure in the message.
+      </li>
+      <li>{Object} <strong>messageProperties</strong> - object containing values to use with template evaluation.
+      </li>
+    </ul>
+    <h4 id="returns-15">
+      Returns
+    </h4>
+    <p>
+      The message that was written to the log.
+    </p>
+    <hr>
+    <h3 id="string-mojo.requireequalexpected-actual-message-messageproperties">
+      {string} Mojo.<strong>requireEqual</strong>(expected, actual, message, messageProperties)
+    </h3>
+    <p>
+      Writes an error to the log if expected === actual is not true and throws an exception.
+    </p>
+    <h4 id="parameters-19">
+      Parameters
+    </h4>
+    <ul>
+      <li>{anything} <strong>expected</strong> - expected value
+      </li>
+      <li>{anything} <strong>actual</strong> - actual value
+      </li>
+      <li>{String} <strong>message</strong> - a custom message to use if the assertion fails. This message will be run through template evaluation against the messageProperies object, so you can include details of the assertion failure in the message.
+      </li>
+      <li>{Object} <strong>messageProperties</strong> - object containing values to use with template evaluation.
+      </li>
+    </ul>
+    <h4 id="returns-16">
+      Returns
+    </h4>
+    <p>
+      The message that was written to the log.
+    </p>
+    <hr>
+    <h3 id="string-mojo.requirefalseexpression-message-messageproperties">
+      {string} Mojo.<strong>requireFalse</strong>(expression, message, messageProperties)
+    </h3>
+    <p>
+      Writes an error to the log if expression evaluates to boolean true and throws an exception.
+    </p>
+    <h4 id="parameters-20">
+      Parameters
+    </h4>
+    <ul>
+      <li>{Boolean} <strong>expression</strong> - expression that must evaluate to false
+      </li>
+      <li>{String} <strong>message</strong> - a custom message to use if the assertion fails. This message will be run through template evaluation against the messageProperies object, so you can include details of the assertion failure in the message.
+      </li>
+      <li>{Object} <strong>messageProperties</strong> - object containing values to use with template evaluation.
+      </li>
+    </ul>
+    <h4 id="returns-17">
+      Returns
+    </h4>
+    <p>
+      The message that was written to the log
+    </p>
+    <hr>
+    <h3 id="string-mojo.requirefunctionexpectedfunction-message-messageproperties">
+      {string} Mojo.<strong>requireFunction</strong>(expectedFunction, message, messageProperties)
+    </h3>
+    <p>
+      Writes an error to the log if expectedFunction fails the Prototype isFunction method and throws an exception.
+    </p>
+    <h4 id="parameters-21">
+      Parameters
+    </h4>
+    <ul>
+      <li>{Boolean} <strong>expectedFunction</strong> - object that must be a function
+      </li>
+      <li>{String} <strong>message</strong> - a custom message to use if the assertion fails. This message will be run through template evaluation against the messageProperies object, so you can include details of the assertion failure in the message.
+      </li>
+      <li>{Object} <strong>messageProperties</strong> - object containing values to use with template evaluation.
+      </li>
+    </ul>
+    <h4 id="returns-18">
+      Returns
+    </h4>
+    <p>
+      The message that was written to the log.
+    </p>
+    <hr>
+    <h3 id="string-mojo.requirematchregex-testvalue-message-messageproperties">
+      {string} Mojo.<strong>requireMatch</strong>(regex, testValue, message, messageProperties)
+    </h3>
+    <p>
+      Writes an error to the log if the regex doesn't match the testValue and throws an exception.
+    </p>
+    <h4 id="parameters-22">
+      Parameters
+    </h4>
+    <ul>
+      <li>{Regex} <strong>regex</strong> - regex to match
+      </li>
+      <li>{String} <strong>testValue</strong> - string to attempt to match against the regex.
+      </li>
+      <li>{String} <strong>message</strong> - a custom message to use if the assertion fails. This message will be run through template evaluation against the messageProperies object, so you can include details of the assertion failure in the message.
+      </li>
+      <li>{Object} <strong>messageProperties</strong> - object containing values to use with template evaluation.
+      </li>
+    </ul>
+    <h4 id="returns-19">
+      Returns
+    </h4>
+    <p>
+      The message that was written to the log.
+    </p>
+    <hr>
+    <h3 id="string-mojo.requirenumberexpectednumber-message-messageproperties">
+      {string} Mojo.<strong>requireNumber</strong>(expectedNumber, message, messageProperties)
+    </h3>
+    <p>
+      Writes an error to the log if expectedNumber fails the Prototype isNumber method and throws an exception.
+    </p>
+    <h4 id="parameters-23">
+      Parameters
+    </h4>
+    <ul>
+      <li>{Boolean} <strong>expectedNumber</strong> - object that must be a number
+      </li>
+      <li>{String} <strong>message</strong> - a custom message to use if the assertion fails. This message will be run through template evaluation against the messageProperies object, so you can include details of the assertion failure in the message.
+      </li>
+      <li>{Object} <strong>messageProperties</strong> - object containing values to use with template evaluation.
+      </li>
+    </ul>
+    <h4 id="returns-20">
+      Returns
+    </h4>
+    <p>
+      The message that was written to the log.
+    </p>
+    <hr>
+    <h3 id="mojo.requirepropertyproperties">
+      Mojo.<strong>requireProperty</strong>(properties)
+    </h3>
+    <p>
+      Writes an error to the log if targetObject doesn't have values for the property name or names passed in and throws an exception.
+    </p>
+    <h4 id="parameters-24">
+      Parameters
+    </h4>
+    <ul>
+      <li>{String||Array} <strong>properties</strong> - individual name or array of names of properties to check
+      </li>
+    </ul>
+    <hr>
+    <h3 id="string-mojo.requirestringexpectedstring-message-messageproperties">
+      {string} Mojo.<strong>requireString</strong>(expectedString, message, messageProperties)
+    </h3>
+    <p>
+      Writes an error to the log if expectedString fails the Prototype isString method and throws an exception.
+    </p>
+    <h4 id="parameters-25">
+      Parameters
+    </h4>
+    <ul>
+      <li>{Boolean} <strong>expectedString</strong> - object that must be a string
+      </li>
+      <li>{String} <strong>message</strong> - a custom message to use if the assertion fails. This message will be run through template evaluation against the messageProperies object, so you can include details of the assertion failure in the message.
+      </li>
+      <li>{Object} <strong>messageProperties</strong> - object containing values to use with template evaluation.
+      </li>
+    </ul>
+    <h4 id="returns-21">
+      Returns
+    </h4>
+    <p>
+      The message that was written to the log.
+    </p>
+		</div>
+	</body>
+</html>

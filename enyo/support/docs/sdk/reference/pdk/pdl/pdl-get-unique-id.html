@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>$if(pagetitle)$$pagetitle$$endif$</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="stylesheet" href="_css/chrome.css" />
+		<link rel="stylesheet" href="../_css/chrome.css" />
+		<link rel="stylesheet" href="../../_css/chrome.css" />
+		<link rel="stylesheet" href="../../../_css/chrome.css" />
+		<script src="_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="_js/doc.js" type="text/javascript"></script>
+		<script src="../_js/doc.js" type="text/javascript"></script>
+		<script src="../../_js/doc.js" type="text/javascript"></script>
+		<script src="../../../_js/doc.js" type="text/javascript"></script>
+	</head>
+	<body>
+		<div id="content">
+    
+    <h1 id="pdl_getuniqueid">
+      PDL_GetUniqueID
+    </h1>
+    <h2 id="description">
+      Description
+    </h2>
+    <p>
+      Sets the passed buffer variable to the device's unique ID. buffer should be at least 64 bytes long, though not all of it may be used. You <strong>must</strong> set bufferLen to a value greater than or equal to 64.
+    </p>
+    <h2 id="syntax">
+      Syntax
+    </h2>
+    <blockquote>
+      <pre>
+<code>PDL_Err PDL_GetUniqueID(char *buffer, int bufferLen);     
+</code>
+</pre>
+    </blockquote>
+    <p>
+      <strong>Note:</strong>
+    </p>
+    <p>
+      This function opens and reads a file. Your app should call it once, then cache the ID. This function should <strong>not</strong> be called in a performance-critical loop.
+    </p>
+    <table border="0">
+      <tbody>
+        <tr>
+          <th>
+            Argument
+          </th>
+          <th>
+            Description
+          </th>
+        </tr>
+        <tr>
+          <td>
+            buffer
+          </td>
+          <td>
+            Pointer to the buffer.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            bufferLen
+          </td>
+          <td>
+            Length of the buffer. Should be greater than or equal to 64.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h2 id="returns">
+      Returns
+    </h2>
+    <blockquote>
+      <pre>
+<code>PDL_INVALIDINPUT — buffer is NULL.
+PDL_STRINGTOOSMALL — Passed bufferLen is less than 64.
+PDL_SYSTEMERROR_FILE — Could not access or read ID file.
+PDL_NOERROR — Success.                  
+</code>
+</pre>
+    </blockquote>
+		</div>
+	</body>
+</html>

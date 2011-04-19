@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>$if(pagetitle)$$pagetitle$$endif$</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="stylesheet" href="_css/chrome.css" />
+		<link rel="stylesheet" href="../_css/chrome.css" />
+		<link rel="stylesheet" href="../../_css/chrome.css" />
+		<link rel="stylesheet" href="../../../_css/chrome.css" />
+		<script src="_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="_js/doc.js" type="text/javascript"></script>
+		<script src="../_js/doc.js" type="text/javascript"></script>
+		<script src="../../_js/doc.js" type="text/javascript"></script>
+		<script src="../../../_js/doc.js" type="text/javascript"></script>
+	</head>
+	<body>
+		<div id="content">
+    
+    <h1 id="command-menu-area">
+      Command Menu Area
+    </h1>
+    <p>
+      All scenes have a Command menu area at the bottom that contains command buttons. There are either several buttons with each triggering a command or a group of buttons whereby the user can select only one of the commands.
+    </p>
+    <p>
+      The following table provides additional information with image examples.
+    </p>
+    <table border="0">
+      <tbody>
+        <tr>
+          <th>
+            Item
+          </th>
+          <th>
+            Description
+          </th>
+          <th>
+            Example
+          </th>
+        </tr>
+        <tr>
+          <td>
+            Command buttons
+          </td>
+          <td>
+            Located in the Command menu area at the bottom of a scene. Use command buttons for the most important actions performed in a scene. These buttons can display text labels, icons, or both. Up to five buttons fit comfortably in the Command menu area. However, try to use fewer if you can. Implemented by using Mojo.Menu.commandMenu.<br>
+            <br>
+            <strong>Tip:</strong> To create Command Button icons, make a 32 by 64 px (W x H) PNG file (24 bit/pixel RGB with a 1-bit alpha channel). Draw a 24 by 24 px monochrome image in the top 32 px for the not pressed in state, and draw 24 by 24 px for the pressed in state in the lower 32 px.
+          </td>
+          <td>
+            <p>
+              <img src="/images/palm/ui_summary/commandButtons.jpg" border="0" align="absmiddle">
+            </p>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Command button groups
+          </td>
+          <td>
+            Located in the Command menu area at the bottom of a scene. Each group has two or more command buttons, and the user can press only one at a time. Command button groups set the context of a scene or set the value in a controller. Implemented by adding a Menu Group to the Command Menu area, and then adding menu commands or icons to the group. The example shows how the Calendar application uses this group for switching among the Day, Week, and Month views. Implemented using Mojo.Menu.commandMenu with icons in a Menu Group.
+          </td>
+          <td>
+            <img src="/images/palm/ui_summary/RB_anim.gif" border="0" align="absmiddle">
+          </td>
+        </tr>
+      </tbody>
+    </table>
+		</div>
+	</body>
+</html>

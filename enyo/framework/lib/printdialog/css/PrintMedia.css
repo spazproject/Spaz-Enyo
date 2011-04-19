@@ -1,0 +1,7 @@
+/* Copyright 2009-2011 Hewlett-Packard Development Company, L.P. All rights reserved. */
+/*
+ * This css is included for media='print' to ensure that print dialog gets hidden and not printed.
+ */
+.print-dialog {
+    display: none;
+}

@@ -1,0 +1,43 @@
+/* Copyright 2009-2011 Hewlett-Packard Development Company, L.P. All rights reserved. */
+.enyo-toggle-button {
+	min-width: 32px;
+	height: 30px;
+	line-height: 30px;
+	margin: 3px 0;
+	vertical-align: middle;
+}
+
+.enyo-toggle-button.on {
+	border-width: 0px 36px 0px 15px;
+	-webkit-border-image: url(../images/toggle-button.png) 1 36 97 15 repeat repeat;
+}
+
+.enyo-toggle-button.off {
+	border-width: 0px 15px 0px 36px;
+	-webkit-border-image: url(../images/toggle-button.png) 33 15 65 36 repeat repeat;
+}
+
+.enyo-toggle-button.disabled.on {
+	border-width: 0px 36px 0px 15px;
+	-webkit-border-image: url(../images/toggle-button.png) 65 36 33 15 repeat repeat;
+}
+
+.enyo-toggle-button.disabled.off {
+	border-width: 0px 15px 0px 36px;
+	-webkit-border-image: url(../images/toggle-button.png) 97 15 1 36 repeat repeat;
+}
+
+.enyo-toggle-label-off, .enyo-toggle-label-on {
+	text-transform: uppercase;
+	color: white;
+	font-size: 15px;
+	font-weight: bold;
+}
+
+.enyo-toggle-label-off {
+	padding-left: 0px;
+}
+
+.enyo-toggle-label-on {
+	padding-right: 0px;
+}

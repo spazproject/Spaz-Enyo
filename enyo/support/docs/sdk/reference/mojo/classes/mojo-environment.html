@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>$if(pagetitle)$$pagetitle$$endif$</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="stylesheet" href="_css/chrome.css" />
+		<link rel="stylesheet" href="../_css/chrome.css" />
+		<link rel="stylesheet" href="../../_css/chrome.css" />
+		<link rel="stylesheet" href="../../../_css/chrome.css" />
+		<script src="_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="_js/doc.js" type="text/javascript"></script>
+		<script src="../_js/doc.js" type="text/javascript"></script>
+		<script src="../../_js/doc.js" type="text/javascript"></script>
+		<script src="../../../_js/doc.js" type="text/javascript"></script>
+	</head>
+	<body>
+		<div id="content">
+    
+    <h1 id="mojo.environment">
+      Mojo.Environment
+    </h1>
+    <h2 id="namespace-detail">
+      Namespace Detail
+    </h2>
+    <h2 id="summary">
+      Summary
+    </h2>
+    <ul>
+      <li>Mojo.Environment.<strong>AZERTY</strong>
+      </li>
+      <li>Mojo.Environment.<strong>AZERTY_ACC</strong>
+      </li>
+      <li>Mojo.Environment.<strong>build</strong>
+      </li>
+      <li>Mojo.Environment.<strong>DeviceInfo</strong>
+      </li>
+      <li>Mojo.Environment.<strong>QWERTY</strong>
+      </li>
+      <li>Mojo.Environment.<strong>QWERTZ</strong>
+      </li>
+      <li>Mojo.Environment.<strong>QWERTZ_ACC</strong>
+      </li>
+    </ul>
+    <hr>
+    <h2 id="detail">
+      Detail
+    </h2>
+    <h3 id="mojo.environment.azerty">
+      Mojo.Environment.<strong>AZERTY</strong>
+    </h3>
+    <p>
+      AZERTY keyboard type.
+    </p>
+    <hr>
+    <h3 id="mojo.environment.azerty_acc">
+      Mojo.Environment.<strong>AZERTY_ACC</strong>
+    </h3>
+    <p>
+      Accented AZERTY keyboard type.
+    </p>
+    <hr>
+    <h3 id="mojo.environment.build">
+      Mojo.Environment.<strong>build</strong>
+    </h3>
+    <p>
+      Provides the build number to applications. Use this to determine if the feature you need is available in this device's build of version 1 framework
+    </p>
+    <h4 id="since">
+      Since
+    </h4>
+    <p>
+      1.2
+    </p>
+    <hr>
+    <h3 id="mojo.environment.deviceinfo">
+      Mojo.Environment.<strong>DeviceInfo</strong>
+    </h3>
+    <p>
+      Provides information on the platform on which the application is running. It is a JSON object containing:
+    </p>
+    <table border="1">
+      <tr>
+        <th>
+          Property
+        </th>
+        <th>
+          Type
+        </th>
+        <th>
+          Description
+        </th>
+      </tr>
+      <tr>
+        <td>
+          bluetoothAvailable
+        </td>
+        <td>
+          Boolean
+        </td>
+        <td>
+          True if bluetooth is available on device
+        </td>
+      </tr>
+      <tr>
+        <td>
+          carrierName
+        </td>
+        <td>
+          String
+        </td>
+        <td>
+          Name of carrier
+        </td>
+      </tr>
+      <tr>
+        <td>
+          coreNaviButton
+        </td>
+        <td>
+          Boolean
+        </td>
+        <td>
+          True if physical core navi button available on device
+        </td>
+      </tr>
+      <tr>
+        <td>
+          keyboardAvailable
+        </td>
+        <td>
+          Boolean
+        </td>
+        <td>
+          True if physical keyboard available on device
+        </td>
+      </tr>
+      <tr>
+        <td>
+          keyboardSlider
+        </td>
+        <td>
+          Boolean
+        </td>
+        <td>
+          True if keyboard slider available on device
+        </td>
+      </tr>
+      <tr>
+        <td>
+          keyboardType
+        </td>
+        <td>
+          String
+        </td>
+        <td>
+          Keyboard type (e.g. Mojo.Environment.QWERTY; refer to full list of keyboard types)
+        </td>
+      </tr>
+      <tr>
+        <td>
+          maximumCardWidth
+        </td>
+        <td>
+          Integer
+        </td>
+        <td>
+          Maximum card width in pixels
+        </td>
+      </tr>
+      <tr>
+        <td>
+          maximumCardHeight
+        </td>
+        <td>
+          Integer
+        </td>
+        <td>
+          Maximum card height in pixels
+        </td>
+      </tr>
+      <tr>
+        <td>
+          minimumCardWidth
+        </td>
+        <td>
+          Integer
+        </td>
+        <td>
+          Minimum card width in pixels
+        </td>
+      </tr>
+      <tr>
+        <td>
+          minimumCardHeight
+        </td>
+        <td>
+          Integer
+        </td>
+        <td>
+          Minimum card height in pixels
+        </td>
+      </tr>
+      <tr>
+        <td>
+          modelName
+        </td>
+        <td>
+          String
+        </td>
+        <td>
+          Model name of device in UTF-8 format
+        </td>
+      </tr>
+      <tr>
+        <td>
+          modelNameAscii
+        </td>
+        <td>
+          String
+        </td>
+        <td>
+          Model name of device in ASCII format
+        </td>
+      </tr>
+      <tr>
+        <td>
+          platformVersion
+        </td>
+        <td>
+          String
+        </td>
+        <td>
+          Full OS version string in the form &quot;Major.Minor.Dot.Sub&quot;
+        </td>
+      </tr>
+      <tr>
+        <td>
+          platformVersionDot
+        </td>
+        <td>
+          Integer
+        </td>
+        <td>
+          Subset of OS version string: Dot version number
+        </td>
+      </tr>
+      <tr>
+        <td>
+          platformVersionMajor
+        </td>
+        <td>
+          Integer
+        </td>
+        <td>
+          Subset of OS version string: Major version number
+        </td>
+      </tr>
+      <tr>
+        <td>
+          platformVersionMinor
+        </td>
+        <td>
+          Integer
+        </td>
+        <td>
+          Subset of OS version string: Minor version number
+        </td>
+      </tr>
+      <tr>
+        <td>
+          screenWidth
+        </td>
+        <td>
+          Integer
+        </td>
+        <td>
+          Width in pixels
+        </td>
+      </tr>
+      <tr>
+        <td>
+          screenHeight
+        </td>
+        <td>
+          Integer
+        </td>
+        <td>
+          Height in pixels
+        </td>
+      </tr>
+      <tr>
+        <td>
+          serialNumber
+        </td>
+        <td>
+          String
+        </td>
+        <td>
+          Device serial number
+        </td>
+      </tr>
+      <tr>
+        <td>
+          touchableRows
+        </td>
+        <td>
+          Integer
+        </td>
+        <td>
+          Number of rows
+        </td>
+      </tr>
+      <tr>
+        <td>
+          wifiAvailable
+        </td>
+        <td>
+          Boolean
+        </td>
+        <td>
+          True if WiFi available on device
+        </td>
+      </tr>
+    </table>
+    <p>
+      Use touchable rows to lay out the screen of your application per the HI user interface guidelines.
+    </p>
+    <hr>
+    <h3 id="mojo.environment.qwerty">
+      Mojo.Environment.<strong>QWERTY</strong>
+    </h3>
+    <p>
+      QWERTY keyboard type.
+    </p>
+    <hr>
+    <h3 id="mojo.environment.qwertz">
+      Mojo.Environment.<strong>QWERTZ</strong>
+    </h3>
+    <p>
+      QWERTZ keyboard type.
+    </p>
+    <hr>
+    <h3 id="mojo.environment.qwertz_acc">
+      Mojo.Environment.<strong>QWERTZ_ACC</strong>
+    </h3>
+    <p>
+      Accented QWERTZ keyboard type.
+    </p>
+		</div>
+	</body>
+</html>

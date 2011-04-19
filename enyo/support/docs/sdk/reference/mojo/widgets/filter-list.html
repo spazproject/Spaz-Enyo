@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>$if(pagetitle)$$pagetitle$$endif$</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="stylesheet" href="_css/chrome.css" />
+		<link rel="stylesheet" href="../_css/chrome.css" />
+		<link rel="stylesheet" href="../../_css/chrome.css" />
+		<link rel="stylesheet" href="../../../_css/chrome.css" />
+		<script src="_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="_js/doc.js" type="text/javascript"></script>
+		<script src="../_js/doc.js" type="text/javascript"></script>
+		<script src="../../_js/doc.js" type="text/javascript"></script>
+		<script src="../../../_js/doc.js" type="text/javascript"></script>
+	</head>
+	<body>
+		<div id="content">
+    
+    <h1 id="mojo.widget.filterlist">
+      Mojo.Widget.FilterList
+    </h1>
+    <h2 id="namespace-detail">
+      Namespace Detail
+    </h2>
+    <h4 id="overview">
+      Overview
+    </h4>
+    <p>
+      When your list is best navigated with a search field, particularly one where you would instantly filter the list as each character is typed into the field, you would want to use the FilterList widget. It is intended to display a variable length list of objects, which can be filtered through a call back function.
+    </p>
+    <p>
+      The widget has a text field displayed above a list, where the list is the result of applying the contents of the text field against some off-screen data source. The text field is hidden when empty, its initial state, but it is given focus in the scene so that any typing is captured in the field. As soon as the first character is entered, the framework displays the field and calls the specified filterFunction.
+    </p>
+    <h3 id="declaration">
+      Declaration
+    </h3>
+    <blockquote>
+      <pre>
+<code>&lt;div x-mojo-element=&quot;FilterList&quot; id=&quot;listId&quot; class=&quot;listClass&quot; name=&quot;listName&quot;&gt;&lt;/div&gt; 
+</code>
+</pre>
+    </blockquote>
+    <table border="1">
+      <tbody>
+        <tr>
+          <th width="20%">
+            Properties
+          </th>
+          <th width="10%">
+            Required
+          </th>
+          <th width="20%">
+            Value
+          </th>
+          <th width="50%">
+            Description
+          </th>
+        </tr>
+        <tr>
+          <td>
+            x-mojo-element
+          </td>
+          <td>
+            Required
+          </td>
+          <td>
+            FilterList
+          </td>
+          <td>
+            Declares the widget as type 'FilterList'.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            id
+          </td>
+          <td>
+            Required
+          </td>
+          <td>
+            Any String
+          </td>
+          <td>
+            Identifies the widget element for use when instantiating or rendering.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="events">
+      Events
+    </h3>
+    <blockquote>
+      <pre>
+<code>Mojo.Event.listen(this.controller.get(&quot;filterlistId&quot;), Mojo.Event.listTap, this.handleUpdate);
+</code>
+</pre>
+    </blockquote>
+    <table border="1">
+      <tbody>
+        <tr>
+          <th width="30%">
+            Event Type
+          </th>
+          <th width="20%">
+            Value
+          </th>
+          <th width="50%">
+            Event Handling
+          </th>
+        </tr>
+        <tr>
+          <td>
+            Mojo.Event.listChange
+          </td>
+          <td>
+            {model:this.controller.model, item:dataObj, index: index + this.renderOffset, originalEvent:event}
+          </td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>
+            Mojo.Event.listTap
+          </td>
+          <td>
+            event.value or model.value
+          </td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>
+            Mojo.Event.listAdd
+          </td>
+          <td>
+            &#160;
+          </td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>
+            Mojo.Event.listDelete
+          </td>
+          <td>
+            event.item<br>
+            event.index
+          </td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>
+            Mojo.Event.listReorder
+          </td>
+          <td>
+            event.item<br>
+            event.toIndex<br>
+            event.fromIndex
+          </td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>
+            Mojo.Event.filter
+          </td>
+          <td>
+            event.filterString
+          </td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>
+            Mojo.Event.filterImmediate
+          </td>
+          <td>
+            event.filterString
+          </td>
+          <td></td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="instantiation">
+      Instantiation
+    </h3>
+    <blockquote>
+      <pre>
+<code>this.controller.setupWidget(&quot;filterlistId&quot;,
+  this.attributes = {
+      itemTemplate: &quot;filterlistscene/static-list-entry&quot;,
+      listTemplate: &quot;filterlistscene/static-list-container&quot;,
+      addItemLabel: $L(&quot;Add ...&quot;),
+      swipeToDelete: true,
+      reorderable: true,
+      filterFunction: this.filterFunction.bind(this),
+      delay: 350,
+      emptyTemplate:&quot;filterlist/emptylist&quot;
+  },
+  this.model = {
+      disabled: false
+  }
+);
+</code>
+</pre>
+    </blockquote>
+    <h3 id="attribute-properties">
+      Attribute Properties
+    </h3>
+    <table border="1">
+      <tbody>
+        <tr>
+          <th width="15%">
+            Attribute Property
+          </th>
+          <th width="15%">
+            Type
+          </th>
+          <th width="15%">
+            Required
+          </th>
+          <th width="15%">
+            Default
+          </th>
+          <th width="40%">
+            Description
+          </th>
+        </tr>
+        <tr>
+          <td>
+            filterFunction
+          </td>
+          <td>
+            Function
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            None
+          </td>
+          <td>
+            Called to load items when the list is scrolled or filter changes. Function definition: filterFunction (filterString, listWidget, offset, count)
+          </td>
+        </tr>
+        <tr>
+          <td>
+            delay
+          </td>
+          <td>
+            Integer
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            300
+          </td>
+          <td>
+            Delay after entry before filter function is called (in ms)
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <p>
+      The FilterList widget also includes all attributes available in the List widget.
+    </p>
+    <h3 id="model-properties">
+      Model Properties
+    </h3>
+    <table border="1">
+      <tbody>
+        <tr>
+          <th width="15%">
+            Model Property
+          </th>
+          <th width="15%">
+            Type
+          </th>
+          <th width="15%">
+            Required
+          </th>
+          <th width="15%">
+            Default
+          </th>
+          <th width="40%">
+            Description
+          </th>
+        </tr>
+        <tr>
+          <td>
+            disabled
+          </td>
+          <td>
+            Boolean
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            False
+          </td>
+          <td>
+            If true, filter field is disabled.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="methods">
+      Methods
+    </h3>
+    <p>
+      To invoke a method on a widget, use the scene controller's <code>get</code> method for the desired widget, and append <code>mojo</code> followed by the method.
+    </p>
+    <p>
+      Example:
+    </p>
+    <blockquote>
+      <pre>
+<code>this.controller.get('myWidget').mojo.getValue()
+</code>
+</pre>
+    </blockquote>
+    <table border="1">
+      <tbody>
+        <tr>
+          <th width="30%">
+            Method
+          </th>
+          <th width="20%">
+            Arguments
+          </th>
+          <th width="50%">
+            Description
+          </th>
+        </tr>
+        <tr>
+          <td>
+            getList
+          </td>
+          <td>
+            none
+          </td>
+          <td>
+            Gets the List widget associated with this FilterList.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            close
+          </td>
+          <td>
+            none
+          </td>
+          <td>
+            Closes the FilterField associated with this FilterList.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            open
+          </td>
+          <td>
+            none
+          </td>
+          <td>
+            Opens the FilterField associated with this FilterList.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            setCount
+          </td>
+          <td>
+            count (Integer)
+          </td>
+          <td>
+            Sets the count in the bubble in the FilterField associated with this FilterList.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <p>
+      The FilterList also includes all methods available in the <a href="list.html">List</a> and <a href="filter-field.html">FilterField</a> widgets.
+    </p>
+		</div>
+	</body>
+</html>

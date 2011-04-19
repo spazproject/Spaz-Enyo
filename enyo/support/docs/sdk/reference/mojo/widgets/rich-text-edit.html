@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>$if(pagetitle)$$pagetitle$$endif$</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="stylesheet" href="_css/chrome.css" />
+		<link rel="stylesheet" href="../_css/chrome.css" />
+		<link rel="stylesheet" href="../../_css/chrome.css" />
+		<link rel="stylesheet" href="../../../_css/chrome.css" />
+		<script src="_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="_js/doc.js" type="text/javascript"></script>
+		<script src="../_js/doc.js" type="text/javascript"></script>
+		<script src="../../_js/doc.js" type="text/javascript"></script>
+		<script src="../../../_js/doc.js" type="text/javascript"></script>
+	</head>
+	<body>
+		<div id="content">
+    
+    <h1 id="mojo.widget.richtextedit">
+      Mojo.Widget.RichTextEdit
+    </h1>
+    <h2 id="namespace-detail">
+      Namespace Detail
+    </h2>
+    <h3 id="overview">
+      Overview
+    </h3>
+    <p>
+      There is a simple RichTextEdit widget that behaves exactly like a multiline text field, but in addition supports applying Bold, Italic and Underline styles to arbitrary runs of text within the field. You declare an <code>x-mojo-element=&quot;RichTextEdit&quot;</code> DIV in your scene and set it up in your assistant without attributes or a model.
+    </p>
+    <p>
+      To enable the styling, set the richTextEditMenu property to true in the AppMenu attributes (see <a href="/reference/mojo/classes/mojo-menu.html">Menus</a> for more information on the App Menu).
+    </p>
+    <h3 id="declaration">
+      Declaration
+    </h3>
+    <blockquote>
+      <pre>
+<code>&lt;div x-mojo-element=&quot;RichTextEdit&quot; id=&quot;richTextEditId&quot; class=&quot;message-rte&quot;
+  name=&quot;richTextEdit&quot;&gt;&lt;/div&gt;
+</code>
+</pre>
+    </blockquote>
+    <table border="1">
+      <tbody>
+        <tr>
+          <th>
+            Properties
+          </th>
+          <th>
+            Required
+          </th>
+          <th>
+            Value
+          </th>
+          <th>
+            Description
+          </th>
+        </tr>
+        <tr>
+          <td>
+            x-mojo-element
+          </td>
+          <td>
+            Required
+          </td>
+          <td>
+            RichTextEdit
+          </td>
+          <td>
+            Declares the widget as type 'RichTextEdit'.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            id
+          </td>
+          <td>
+            Required
+          </td>
+          <td>
+            Any String
+          </td>
+          <td>
+            Identifies the widget element for use when instantiating or rendering.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            class
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            Any String
+          </td>
+          <td>
+            Provide your own unique class and override the framework's styles.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            name
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            Any String
+          </td>
+          <td>
+            Adds a unique name to the RichTextEdit widget; generally used in templates.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="events">
+      Events
+    </h3>
+    <blockquote>
+      <pre>
+<code>this.controller.listen(this.controller.get(&quot;richtexteditId&quot;), &quot;blur&quot;,
+  this.handleUpdate);
+</code>
+</pre>
+    </blockquote>
+    <table border="1">
+      <tbody>
+        <tr>
+          <th>
+            Event Type
+          </th>
+          <th>
+            Value
+          </th>
+          <th>
+            Event Handling
+          </th>
+        </tr>
+        <tr>
+          <td>
+            blur
+          </td>
+          <td>
+            N/A
+          </td>
+          <td>
+            Removes focus from the element.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            focus
+          </td>
+          <td>
+            N/A
+          </td>
+          <td>
+            Puts focus on the element.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="instantiation">
+      Instantiation
+    </h3>
+    <blockquote>
+      <pre>
+<code>this.controller.setupWidget(&quot;richtexteditId&quot;,
+  this.attributes = {
+  },
+  this.model = {
+  }
+); 
+</code>
+</pre>
+    </blockquote>
+    <p>
+      <strong>Get or Set Content</strong>
+    </p>
+    <p>
+      To obtain or set the content of the RichTextEdit field, use the widget's innerHTML property:
+    </p>
+    <blockquote>
+      <pre>
+<code>var myRichText = this.controller.get('richtexteditId').innerHTML;
+var newText = &quot;&lt;strong&gt;Hello!&lt;/strong&gt; &lt;em&gt;This is a&lt;/em&gt; &lt;u&gt;test&lt;/u&gt;.&quot;;
+this.controller.get(&quot;richTextEditId&quot;).innerHTML = newText;
+</code>
+</pre>
+    </blockquote>
+    <h3 id="attribute-properties">
+      Attribute Properties
+    </h3>
+    <p>
+      The RichTextEdit widget has no attributes.
+    </p>
+    <h3 id="model-properties">
+      Model Properties
+    </h3>
+    <p>
+      The RichTextEdit widget has no model properties.
+    </p>
+    <h3 id="methods">
+      Methods
+    </h3>
+    <p>
+      The RichTextEdit widget has no methods.
+    </p>
+		</div>
+	</body>
+</html>

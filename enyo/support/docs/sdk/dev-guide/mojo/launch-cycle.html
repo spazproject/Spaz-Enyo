@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>$if(pagetitle)$$pagetitle$$endif$</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="stylesheet" href="_css/chrome.css" />
+		<link rel="stylesheet" href="../_css/chrome.css" />
+		<link rel="stylesheet" href="../../_css/chrome.css" />
+		<link rel="stylesheet" href="../../../_css/chrome.css" />
+		<script src="_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="_js/doc.js" type="text/javascript"></script>
+		<script src="../_js/doc.js" type="text/javascript"></script>
+		<script src="../../_js/doc.js" type="text/javascript"></script>
+		<script src="../../../_js/doc.js" type="text/javascript"></script>
+	</head>
+	<body>
+		<div id="content">
+    
+    <h1 id="application-launch-cycle">
+      Application Launch Cycle
+    </h1>
+    <p>
+      When an application is launched, a new DOM page is created and the application's base document is loaded -- either <code>index.html</code> or the file named by the main property in <code>appinfo.json</code>. This document must request loading of <code>mojo.js</code>:
+    </p>
+    <blockquote>
+      <pre>
+<code>&lt;script src=&quot;/usr/palm/frameworks/mojo/mojo.js&quot;
+  type=&quot;text/javascript&quot; x-mojo-version=&quot;1&quot; &gt;   
+</code>
+</pre>
+    </blockquote>
+    <p>
+      Once loaded, <code>mojo.js</code> is executed, initializing the Prototype library and loading the requested framework version. The rest of the base document is processed, typically loading application stylesheets, before loading required application sources from sources.json.
+    </p>
+    <p>
+      The framework creates an application controller object and an application assistant if the application provides one. The application then calls the assistant's setup method, which sets up asynchronous operations such as database loading or Ajax requests.
+    </p>
+    <p>
+      Many application assistants have a <code>handleLaunch</code> method as an entry point for launch directly from the framework; the <code>handleLaunch</code> method is called after setup; you can consolidate all launch handling here.
+    </p>
+    <p>
+      A stage controller is created. If the application includes a defined Stage Assistant, it is instantiated and its setup method is called. If there is no Stage Assistant, or if the stage assistant does not push an initial scene, then the framework looks for a scene named main to push as the first scene.
+    </p>
+    <p>
+      The simplest single-card applications do not need either an application assistant or a stage assistant.
+    </p>
+    <h2 id="scene-lifecycle">
+      Scene Lifecycle
+    </h2>
+    <p>
+      Once a scene is pushed, it sets in motion another cycle managed by the framework. Scenes are pushed onto other scenes, popped to reveal a previously pushed scene, bringing it back to the foreground, or sometimes a combination of pushes and pops simulate swapping scenes, or popping multiple scenes to get to a particular point in the scene stack. The framework manages the transition of one scene to another, and maintains the scene stack and related controllers.
+    </p>
+    <h3 id="lifecycle-details">
+      Lifecycle Details
+    </h3>
+    <p>
+      A scene is pushed by an assistant within the same application or as a result of external actions. These actions could be from another application using a service call or a cross-app scene push (see &quot;Services&quot; for a description of these features) or they could be as a result of a user action at the System UI level, such as moving an app from foreground to background, tapping the notification bar, or any of a number of other actions.
+    </p>
+    <h4 id="initialize">
+      initialize
+    </h4>
+    <p>
+      The scene lifecycle is initiated once a scene is pushed. The framework looks for a constructor function matching the pushed scene's name and if found, calls it, creating the scene and adding it to the DOM. Alternately, the framework will call the SceneAssistant's <code>initialize</code> method if using the <code>Class.Create</code> function. Any input arguments must be retained as properties to the scene assistant and any other initialization actions performed. The framework gets the scene assistant and attaches a controller to it, then finds the scene's view template and loads it into the DOM.
+    </p>
+    <p>
+      A naming convention allows the framework to correlate the scene name specified in the <code>pushScene</code> call with the SceneAssistant and the scene's view file. The convention is that if a scene named first is pushed, then the framework will look for a scene assistant in the loaded JavaScript code with the name FirstAssistant. The full algorithm will search for the assistant constructor using the scene name with dashes removed, each word converted to camel case, and the string 'Assistant' appended to the end. For example, if the scene were named my-first-scene then the scene assistant's constructor function would be named MyFirstSceneAssistant.
+    </p>
+    <p>
+      The scene's view file is also located by convention. The framework will look for a view file at this location: <code>app/views/first/first-scene.html</code>, where <code>first</code> is again the name of the pushed scene. Here the scene's name is used for the views directory, and as a prefix to the scene template file.
+    </p>
+    <p>
+      <img src="/images/palm/Scene-Lifecycle.png"><br>
+      <br>
+      Once initialized, the framework sequentially calls different scene methods, alternating those calls with transition tasks. Setup follows initialize to handle widget setup and other scene preparations. Between <code>setup</code> and <code>activate</code>, there are two other methods for scene assistants, <code>ready</code> and <code>aboutToActivate</code>, which are designed to give applications some finer-grained access within the lifecyle.
+    </p>
+    <p>
+      Once activated, the scene is in view until a new scene is pushed. When that occurs, the new scene's constructor function is called, followed by a call to the current scene's <code>deactivate</code> method and the lifecycle starts with a new scene. If the scene is popped, perhaps the user swipes back or the application is closed, then the <code>deactivate</code> method call is followed immediately with a call to the <code>cleanup</code> method and the scene is removed from the DOM. There is very little time for <code>deactivate</code> and <code>cleanup</code>; the scene removal from the DOM is happening virtually at the same time, so only the most minimal processing can take place here. There is no time, for instance, to save databases; you need to save data as you go along.
+    </p>
+    <h4 id="scene-assistant-methods---summary">
+      Scene Assistant Methods - Summary
+    </h4>
+    <table border="0">
+      <tbody>
+        <tr>
+          <th>
+            Method
+          </th>
+          <th>
+            Description
+          </th>
+        </tr>
+        <tr>
+          <td>
+            <strong>initialize</strong>
+          </td>
+          <td>
+            A call to the constructor function or the initialize method if using the Class.Create function. Any input arguments must be retained as properties to the scene object and any other initialization actions performed. The framework creates the scene assistant, attaches a controller to it and puts the scene's view template into the DOM.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <strong>setup</strong>
+          </td>
+          <td>
+            Called before scene is visible, before any transitions take place, and before widgets are instantiated. Used to set up widgets, add event listeners or perform other tasks that are needed before the scene is rendered. Once this is complete, the framework completes the transition and the scene's activate method is called where it can follow the frameworks rendering tasks with any of it's own and begin whatever active operations it is designed for. The scene transition begins after this method returns.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <strong>ready</strong>
+          </td>
+          <td>
+            After the scene assistant's setup method completes, the framework instantiates the widgets and creates the widget assistants. At this point, the scene assistant's ready method is called to give access to the widgets after they've been instantiated.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <strong>aboutToActivate</strong>
+          </td>
+          <td>
+            Just before the scene is activated, the aboutToActivate method is called for any final preparation. When this method is called, there is less than 500 ms before the scene activates; the framework will not wait for the aboutToActivate work to complete, so you have to limit what's done in this method.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <strong>activate</strong>
+          </td>
+          <td>
+            Called each time the scene becomes the top scene on the stack. When the scene is pushed, this is after scene is visible, and after the on-stage transition is complete. Otherwise, it's called when the &quot;covering scene&quot; is popped, and this one is once again the top of the stack. This is intended for setup work that should be repeated each time the scene becomes active. There may be arguments passed into the activate method, in the case of a cross-app scene push.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <strong>deactivate</strong>
+          </td>
+          <td>
+            Called each time the scene is no longer the top scene on the stack (when it's popped, or when another scene is pushed on top). In the case where the scene is being popped, this is called before the off-stage transition begins.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <strong>cleanup</strong>
+          </td>
+          <td>
+            Called when the scene is popped from the scene stack, after any transitions are complete, but before removing the scene from the DOM. Scene assistants may release any external resources associated with the scene, or provide default save/cancel behavior.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="pushing-and-popping-a-scene---an-example">
+      Pushing and Popping a Scene - An Example
+    </h3>
+    <h4 id="push---adding-the-scene">
+      Push - Adding the Scene
+    </h4>
+    <p>
+      An app calls <code>stageController.pushScene('myScene')</code>.
+    </p>
+    <ul>
+      <li>
+        <p>
+          A DIV is created with the view HTML for the new scene, and inserted into the DOM.
+        </p>
+      </li>
+      <li>
+        <p>
+          A <code>SceneController</code> for myScene is instantiated.
+        </p>
+      </li>
+      <li>
+        <p>
+          A scene assistant for myScene is instantiated, if available.
+        </p>
+      </li>
+      <li>
+        <p>
+          The new scene is placed on the stage's scene stack.
+        </p>
+      </li>
+      <li>
+        <p>
+          SceneController and assistant's <code>setup()</code> methods are called.
+        </p>
+      </li>
+      <li>
+        <p>
+          The scene transition begins.
+        </p>
+      </li>
+      <li>
+        <p>
+          Widgets (divs that specify <code>x-mojo-element</code>) are instantiated and added to the DOM.
+        </p>
+      </li>
+      <li>
+        <p>
+          The assistant's <code>ready()</code> method is called.
+        </p>
+      </li>
+      <li>
+        <p>
+          The widgets are rendered; the scene transition completes.
+        </p>
+      </li>
+      <li>
+        <p>
+          The assistant's <code>aboutToActivate()</code> method is called.
+        </p>
+        <p>
+          At this point, the scene should now be ready for initial display, even if the app is waiting for a service request to complete to provide dynamic data to fill out the scene.
+        </p>
+      </li>
+      <li>
+        <p>
+          The StageController transitions the scene onto the stage.
+        </p>
+      </li>
+      <li>
+        <p>
+          When the transition is complete, the scene controller and assistant's <code>activate()</code> method is called, and the scene is ready for action.
+        </p>
+      </li>
+    </ul>
+    <h4 id="scene-is-active">
+      Scene is Active
+    </h4>
+    <p>
+      This is the main portion of the scene's lifecycle, and all user interaction occurs here.
+    </p>
+    <ul>
+      <li>
+        <p>
+          User interacts with scene.
+        </p>
+      </li>
+      <li>
+        <p>
+          Another scene may get pushed on top of the current one.
+        </p>
+        <ul>
+          <li>The current scene's <code>deactivate()</code> method is called.
+          </li>
+          <li>The new scene's <code>setup()</code> and <code>activate()</code> methods are called.
+          </li>
+          <li>More scenes may be pushed onto and popped off of the scene stack, but these do not affect the scene we're following.
+          </li>
+        </ul>
+      </li>
+      <li>
+        <p>
+          Eventually, the scene &quot;covering&quot; our scene is popped, and our scene becomes active again.
+        </p>
+        <ul>
+          <li>The covering scene's <code>cleanup()</code> method is called, and it is removed from the document and scene stack.
+          </li>
+          <li>Our scene's <code>activate()</code> method is called, since it is once again the top scene on the stack.
+          </li>
+        </ul>
+      </li>
+    </ul>
+    <h3 id="pop---removing-the-scene">
+      Pop - Removing the Scene
+    </h3>
+    <p>
+      At some point, app calls <code>stageController.popScene()</code> to pop 'myScene'.
+    </p>
+    <ul>
+      <li>
+        <p>
+          The scene controller and assistant's <code>deactivate()</code> methods are called.
+        </p>
+      </li>
+      <li>
+        <p>
+          The StageController transitions the scene off the stage.
+        </p>
+      </li>
+      <li>
+        <p>
+          The SceneController and assistant's cleanup() methods are called.
+        </p>
+        <ul>
+          <li>The SceneController removes the scene's div from the document body.
+          </li>
+        </ul>
+      </li>
+      <li>
+        <p>
+          The StageController removes the scene from the scene stack.
+        </p>
+      </li>
+    </ul>
+		</div>
+	</body>
+</html>

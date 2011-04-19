@@ -1,0 +1,22 @@
+/* Copyright 2009-2011 Hewlett-Packard Development Company, L.P. All rights reserved. */
+.enyo-progress-slider {
+	height: 10px;
+	border-width: 0 4px;
+	-webkit-border-image: url(../images/slider-track.png) 0 4 0 4 repeat repeat;
+	-webkit-box-sizing: border-box;
+	position:relative;
+}
+
+.enyo-progress-slider-alt-bar, .enyo-progress-slider > .enyo-progress-bar-inner {
+	height: 10px;
+	border-width: 0 4px;
+	margin: 0 -4px;
+	position: absolute;
+	-webkit-border-image: url(../images/slider-progress.png) 0 4 0 4 repeat repeat;
+}
+
+.enyo-progress-slider-alt-bar {
+	z-index:5; /* under primary progress */
+	-webkit-border-image: url(../images/slider-progress-secondary.png) 0 4 0 4 repeat repeat;
+	-webkit-transition: width 0.3s ease;
+}

@@ -1,0 +1,32 @@
+/* Copyright 2009-2011 Hewlett-Packard Development Company, L.P. All rights reserved. */
+.enyo-button-header {
+	text-align: left;
+	height: 50px;
+	line-height: 50px;
+	border-width: 0 25px;
+	display: inline-block;
+	color: white;
+	padding: 0;
+}
+
+.enyo-button-header-client {
+	margin: 0px -6px;
+	height: 100%;
+	display: block;
+}
+
+.enyo-button-header.enyo-button {
+	-webkit-border-image: url(../images/palm-menu-button.png) 0 25 200 25;
+}
+
+.enyo-button-header.enyo-button-down {
+	-webkit-border-image: url(../images/palm-menu-button.png) 50 25 150 25;
+}
+
+.enyo-button-header.enyo-button-depressed {
+	-webkit-border-image: url(../images/palm-menu-button.png) 100 25 100 25;
+}
+
+.enyo-button-header.enyo-button-depressed.enyo-button-down {
+	-webkit-border-image: url(../images/palm-menu-button.png) 150 25 50 25;
+}

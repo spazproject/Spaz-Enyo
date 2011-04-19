@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>$if(pagetitle)$$pagetitle$$endif$</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="stylesheet" href="_css/chrome.css" />
+		<link rel="stylesheet" href="../_css/chrome.css" />
+		<link rel="stylesheet" href="../../_css/chrome.css" />
+		<link rel="stylesheet" href="../../../_css/chrome.css" />
+		<script src="_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="_js/doc.js" type="text/javascript"></script>
+		<script src="../_js/doc.js" type="text/javascript"></script>
+		<script src="../../_js/doc.js" type="text/javascript"></script>
+		<script src="../../../_js/doc.js" type="text/javascript"></script>
+	</head>
+	<body>
+		<div id="content">
+    
+    <h1 id="mojo.widget.datepicker">
+      Mojo.Widget.DatePicker
+    </h1>
+    <h2 id="namespace-detail">
+      Namespace Detail
+    </h2>
+    <h3 id="overview">
+      Overview
+    </h3>
+    <p>
+      The DatePicker offers selection of the month, day and year. It is one of the simple picker widgets which present their choices as a linear sequence of values that wraps around; when you scroll to the end of the sequence, it simply continues back at the beginning. The Date and Time pickers use the JavaScript Date object to represent the chosen date in their data model.
+    </p>
+    <h3 id="declaration">
+      Declaration
+    </h3>
+    <blockquote>
+      <pre>
+<code>&lt;div x-mojo-element=&quot;DatePicker&quot; id=&quot;datepickerId&quot; class=&quot;datepickerClass&quot;
+  name=&quot;datepickerName&quot;&gt;&lt;/div&gt; 
+</code>
+</pre>
+    </blockquote>
+    <table border="1">
+      <tbody>
+        <tr>
+          <th width="20%">
+            Properties
+          </th>
+          <th width="10%">
+            Required
+          </th>
+          <th width="20%">
+            Value
+          </th>
+          <th width="50%">
+            Description
+          </th>
+        </tr>
+        <tr>
+          <td>
+            x-mojo-element
+          </td>
+          <td>
+            Required
+          </td>
+          <td>
+            DatePicker
+          </td>
+          <td>
+            Declares the widget as type 'DatePicker'.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            id
+          </td>
+          <td>
+            Required
+          </td>
+          <td>
+            Any String
+          </td>
+          <td>
+            Identifies the widget element for use when instantiating or rendering.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            class
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            Any String
+          </td>
+          <td>
+            There is no default class for DatePicker, but you can assign one if you want to apply custom styling.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            name
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            Any String
+          </td>
+          <td>
+            Adds a unique name to the DatePicker widget; generally used in templates.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="events">
+      Events
+    </h3>
+    <blockquote>
+      <pre>
+<code>this.controller.listen(this.controller.get(&quot;datepickerId&quot;),'mojo-propertyChange', this.handleUpdate);
+</code>
+</pre>
+    </blockquote>
+    <table border="1">
+      <tbody>
+        <tr>
+          <th width="30%">
+            Event Type
+          </th>
+          <th width="20%">
+            Value
+          </th>
+          <th width="50%">
+            Event Handling
+          </th>
+        </tr>
+        <tr>
+          <td>
+            Mojo.Event.propertyChange
+          </td>
+          <td>
+            event.value
+          </td>
+          <td>
+            Respond to DatePicker value change or model.time
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="instantiation">
+      Instantiation
+    </h3>
+    <blockquote>
+      <pre>
+<code>var todayDate = new Date();
+this.controller.setupWidget(&quot;datepickerId&quot;,
+  this.attributes = {
+      label: 'Date',
+      modelProperty: 'time'
+      // one may override the default modelProperty
+      // so as to share a Date object with a time picker
+  },
+  this.model = {
+      time: todayDate
+  }
+); 
+</code>
+</pre>
+    </blockquote>
+    <h3 id="attribute-properties">
+      Attribute Properties
+    </h3>
+    <table border="1">
+      <tbody>
+        <tr>
+          <th width="15%">
+            Attribute Property
+          </th>
+          <th width="15%">
+            Type
+          </th>
+          <th width="15%">
+            Required
+          </th>
+          <th width="15%">
+            Default
+          </th>
+          <th width="40%">
+            Description
+          </th>
+        </tr>
+        <tr>
+          <td>
+            label
+          </td>
+          <td>
+            String
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            'Date'
+          </td>
+          <td>
+            Label displayed for the widget controls.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            labelPlacement
+          </td>
+          <td>
+            String
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            Mojo.Widget.labelPlacementLeft
+          </td>
+          <td>
+            Mojo.Widget.labelPlacementRight: places label on right, value on left.<br>
+            Mojo.Widget.labelPlacementLeft: places label on left, value on right.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            modelProperty
+          </td>
+          <td>
+            String
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            date
+          </td>
+          <td>
+            Model property name for date object.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            month
+          </td>
+          <td>
+            Boolean
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            true
+          </td>
+          <td>
+            Specifies whether or not to include the month in your date picker; default is true.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            day
+          </td>
+          <td>
+            Boolean
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            true
+          </td>
+          <td>
+            Specifies whether or not to include the day in your date picker; default is true.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            year
+          </td>
+          <td>
+            Boolean
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            true
+          </td>
+          <td>
+            Specifies whether or not to include the year in your date picker; default is true.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            maxYear
+          </td>
+          <td>
+            Integer
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            2099
+          </td>
+          <td>
+            Specifies max year in year capsule if enabled.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            minYear
+          </td>
+          <td>
+            Integer
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            1900
+          </td>
+          <td>
+            Specifies min year in year capsule if enabled.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="model-properties">
+      Model Properties
+    </h3>
+    <table border="1">
+      <tbody>
+        <tr>
+          <th width="15%">
+            Model Property
+          </th>
+          <th width="15%">
+            Type
+          </th>
+          <th width="15%">
+            Required
+          </th>
+          <th width="15%">
+            Default
+          </th>
+          <th width="40%">
+            Description
+          </th>
+        </tr>
+        <tr>
+          <td>
+            date
+          </td>
+          <td>
+            Date Object
+          </td>
+          <td>
+            Required
+          </td>
+          <td>
+            null
+          </td>
+          <td>
+            Date object to set initial widget value and updated value after user selection.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="methods">
+      Methods
+    </h3>
+    <p>
+      The DatePicker widget has no methods.
+    </p>
+		</div>
+	</body>
+</html>

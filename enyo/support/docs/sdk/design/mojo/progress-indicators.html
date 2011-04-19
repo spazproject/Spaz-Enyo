@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>$if(pagetitle)$$pagetitle$$endif$</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="stylesheet" href="_css/chrome.css" />
+		<link rel="stylesheet" href="../_css/chrome.css" />
+		<link rel="stylesheet" href="../../_css/chrome.css" />
+		<link rel="stylesheet" href="../../../_css/chrome.css" />
+		<script src="_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="_js/doc.js" type="text/javascript"></script>
+		<script src="../_js/doc.js" type="text/javascript"></script>
+		<script src="../../_js/doc.js" type="text/javascript"></script>
+		<script src="../../../_js/doc.js" type="text/javascript"></script>
+	</head>
+	<body>
+		<div id="content">
+    
+    <h1 id="progress-indicators">
+      Progress Indicators
+    </h1>
+    <p>
+      Progress indicators display the amount of a task that is currently complete, given the task's entire length. There are four types of progress indicators that show the overall timing length of the task and the amount of a task that has been completed.
+    </p>
+    <p>
+      The following table provides additional information with image examples after the table.
+    </p>
+    <table border="0">
+      <tbody>
+        <tr>
+          <th>
+            Type
+          </th>
+          <th>
+            Description<br>
+          </th>
+        </tr>
+        <tr>
+          <td>
+            Progress pill
+          </td>
+          <td>
+            Use this indicator to show download progress, loading from a database or progress during a long operation, and you know the task's approximate duration. The horizontal bar in the pill updates as the task progresses. Tap the X to cancel the task. Implemented by using the Mojo.Widget.ProgressPill API.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Progress slider
+          </td>
+          <td>
+            Commonly used in audio/video applications where you know how long the content is, want the user to know where they are in the playback process, and allow them to control it. The tracking slider moves as the content plays. Drag it to move the &quot;playback head&quot; or tap anywhere along the slider to reposition it. Implemented by using the Mojo.Widget.ProgressSlider API.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Progress bar
+          </td>
+          <td>
+            Use this indicator to show the progress of a task (e.g., launching, initializing, etc.) and you know the task's approximate duration. The progress bar only shows the progress; the user cannot cancel the task. Implemented by using the Mojo.Widget.ProgressBar API.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Inline progress bar
+          </td>
+          <td>
+            Commonly used in lists that display the names of song files. Allows the user to tap a list item and hear a preview.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="figure">
+      <img src="/images/palm/ui_summary/progressTypes_medium.png" title="Progress Indicator Types" alt="image">
+      <p class="caption">
+        image
+      </p>
+    </div>
+    <p>
+      Examples of Progress Indicators
+    </p>
+		</div>
+	</body>
+</html>

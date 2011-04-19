@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>$if(pagetitle)$$pagetitle$$endif$</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="stylesheet" href="_css/chrome.css" />
+		<link rel="stylesheet" href="../_css/chrome.css" />
+		<link rel="stylesheet" href="../../_css/chrome.css" />
+		<link rel="stylesheet" href="../../../_css/chrome.css" />
+		<script src="_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="_js/doc.js" type="text/javascript"></script>
+		<script src="../_js/doc.js" type="text/javascript"></script>
+		<script src="../../_js/doc.js" type="text/javascript"></script>
+		<script src="../../../_js/doc.js" type="text/javascript"></script>
+	</head>
+	<body>
+		<div id="content">
+    
+    <h1 id="mojo.drag">
+      Mojo.Drag
+    </h1>
+    <h2 id="namespace-detail">
+      Namespace Detail
+    </h2>
+    <h2 id="method-summary">
+      Method Summary
+    </h2>
+    <ul>
+      <li>Mojo.Drag.<strong>setupDropContainer</strong>(element, dropClient)
+      </li>
+      <li>Mojo.Drag.<strong>startDragging</strong>(sceneController, element, startEvent, options)
+      </li>
+    </ul>
+    <hr>
+    <h2 id="method-detail">
+      Method Detail
+    </h2>
+    <h3 id="mojo.drag.setupdropcontainerelement-dropclient">
+      Mojo.Drag.<strong>setupDropContainer</strong>(element, dropClient)
+    </h3>
+    <p>
+      Configures given element to be available as a valid destination for drag-and-drop items.
+    </p>
+    <h4 id="parameters">
+      Parameters
+    </h4>
+    <ul>
+      <li>
+        <p>
+          {string} <strong>element</strong> - The DOM element to act as a container for dragged items.
+        </p>
+      </li>
+      <li>
+        <p>
+          {object} <strong>dropClient</strong> - An object implementing the interface described below, in order to interact with dragged &amp; dropped elements. dropClient must be an object with the following properties:
+        </p>
+        <ul>
+          <li>
+            <p>
+              dragEnter(element) - function called whenever the item is first dragged over this container.
+            </p>
+          </li>
+          <li>
+            <p>
+              dragHover(element) - function called whenever the item moves over this container.
+            </p>
+          </li>
+          <li>
+            <p>
+              dragLeave(element) - function called whenever the item is dragged outside this container.
+            </p>
+          </li>
+          <li>
+            <p>
+              dragDrop(element, newItem) - function called when the item is dropped over this container.
+            </p>
+          </li>
+          <li>
+            <p>
+              newItem - true if item came from a different container.
+            </p>
+          </li>
+          <li>
+            <p>
+              dragRemove(element) - function called when a contained item is dropped on a different container.
+            </p>
+          </li>
+          <li>
+            <p>
+              dragDatatype - String, optional. Only draggers with a matching datatype can enter/drop on this container.
+            </p>
+          </li>
+        </ul>
+      </li>
+    </ul>
+    <hr>
+    <h3 id="mojo.drag.startdraggingscenecontroller-element-startevent-options">
+      Mojo.Drag.<strong>startDragging</strong>(sceneController, element, startEvent, options)
+    </h3>
+    <p>
+      This function can be used to start dragging an element, and returns an active &quot;dragger&quot; object. This usually happens when the mouse is down, and maybe before the dragStart event actually occurs. In some cases, it's called when a hold event occurs (for stuff dragged on a push-and-hold), and in other cases, it's called on mousedown or dragStart.
+    </p>
+    <p>
+      The dragger sets things up for dragging, and prevents the drag from causing the scene to be scrolled. Both dragEnd and tap events will cause the drag operation to end, since dragStart/dragEnd events may never occur if there are no mousemove events. This sort of &quot;aborted&quot; drag operation is treated like any other, and will still cause the appropriate enter and drop methods to be called on the container.
+    </p>
+    <h4 id="parameters-1">
+      Parameters
+    </h4>
+    <ul>
+      <li>
+        <p>
+          {string} <strong>sceneController</strong> - The controller for the scene containing the element to be dragged.
+        </p>
+      </li>
+      <li>
+        <p>
+          {string} <strong>element</strong> - DOM element to begin dragging.
+        </p>
+      </li>
+      <li>
+        <p>
+          {Event} <strong>startEvent</strong> - The user event which began the drag...generally a mousedown event on the element being dragged. Used for hit detection with containers.
+        </p>
+      </li>
+      <li>
+        <p>
+          {hash} <strong>options</strong> - Hash of the following optional values:
+        </p>
+        <ul>
+          <li>
+            <p>
+              draggingClass - CSS class to apply when dragging starts, and remove when it's finished.
+            </p>
+          </li>
+          <li>
+            <p>
+              preventVertical - Boolean, true indicates vertical dragging is disallowed. Defaults to false.
+            </p>
+          </li>
+          <li>
+            <p>
+              preventHorizontal - Boolean, true indicates horizontal dragging is disallowed. Defaults to false.
+            </p>
+          </li>
+          <li>
+            <p>
+              allowExit - Boolean, true indicates the item can be dragged out of its current container, into other containers. Defaults to false.
+            </p>
+          </li>
+          <li>
+            <p>
+              preventDropReset - Boolean, true indicates element should not be returned to its original position, etc., when dropped. This can be accomplished after the fact by calling resetElement() on the dragger.
+            </p>
+          </li>
+          <li>
+            <p>
+              datatype - String, this element will only be able to be dropped on containers that specify the same datatype.
+            </p>
+          </li>
+          <li>
+            <p>
+              autoscroll - Boolean, true indicates the scene should be scrolled when dragged elements reach the edges of the visible area.
+            </p>
+          </li>
+          <li>
+            <p>
+              maxHorizontalPixel - int, max pixel object is allowed to be dragged to horizontally; default is undefined/free motion.
+            </p>
+          </li>
+          <li>
+            <p>
+              minHorizontalPixel - int, min pixel object is allowed to be dragged to horizontally; default is undefined/free motion.
+            </p>
+          </li>
+          <li>
+            <p>
+              maxVerticalPixel - int, max pixel object is allowed to be dragged to vertically; default is undefined/free motion.
+            </p>
+          </li>
+          <li>
+            <p>
+              minVerticalPixel - int, min pixel object is allowed to be dragged to vertically; default is undefined/free motion.
+            </p>
+          </li>
+        </ul>
+      </li>
+    </ul>
+		</div>
+	</body>
+</html>

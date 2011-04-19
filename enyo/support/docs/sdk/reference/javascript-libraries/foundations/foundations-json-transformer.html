@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>$if(pagetitle)$$pagetitle$$endif$</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="stylesheet" href="_css/chrome.css" />
+		<link rel="stylesheet" href="../_css/chrome.css" />
+		<link rel="stylesheet" href="../../_css/chrome.css" />
+		<link rel="stylesheet" href="../../../_css/chrome.css" />
+		<script src="_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="_js/doc.js" type="text/javascript"></script>
+		<script src="../_js/doc.js" type="text/javascript"></script>
+		<script src="../../_js/doc.js" type="text/javascript"></script>
+		<script src="../../../_js/doc.js" type="text/javascript"></script>
+	</head>
+	<body>
+		<div id="content">
+    
+    <h1 id="foundations.json.transformer">
+      Foundations.JSON.Transformer
+    </h1>
+    <h2 id="transformer.initialize">
+      Transformer.initialize
+    </h2>
+    <p>
+      Register a template containing a set of named transforms. This template is then used for all other operations.
+    </p>
+    <h3 id="syntax">
+      Syntax
+    </h3>
+    <pre>
+    void initialize(<em>template object</em>);
+</pre>
+    <h3 id="parameters">
+      Parameters
+    </h3>
+    <table border="1">
+      <thead>
+        <tr>
+          <th>
+            Argument
+          </th>
+          <th>
+            Required
+          </th>
+          <th>
+            Type
+          </th>
+          <th>
+            Description
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <em>template object</em>
+          </td>
+          <td>
+            Yes
+          </td>
+          <td>
+            any
+          </td>
+          <td>
+            JSON object containing set of named transforms.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="returns">
+      Returns
+    </h3>
+    <blockquote>
+      <pre>
+<code>None.
+</code>
+</pre>
+    </blockquote>
+    <p>
+      <strong>Example</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>var jsonlib = MojoLoader.require({name:&quot;foundations.json&quot;, version: &quot;1.0&quot;});
+var fjson = jsonlib[&quot;foundations.json&quot;];
+var myTransformer = new fjson.Transformer();
+var template =  { &quot;user&quot;: { FirstName: &quot;!{person.displayName}&quot;, LastName: &quot;!{person.surname}&quot;, Country : &quot;USA&quot;, State:&quot;CA&quot;, Location: &quot;!{person.building}&quot; } };
+myTransformer.initialize(template);
+</code>
+</pre>
+    </blockquote>
+    <hr>
+    <h2 id="transformer.merge">
+      Transformer.merge
+    </h2>
+    <p>
+      Merge two different JSON data objects.
+    </p>
+    <h3 id="syntax-1">
+      Syntax
+    </h3>
+    <pre>
+   merge (<em>olddata</em>, <em>newdata</em>);
+</pre>
+    <h3 id="parameters-1">
+      Parameters
+    </h3>
+    <table border="1">
+      <thead>
+        <tr>
+          <th>
+            Argument
+          </th>
+          <th>
+            Required
+          </th>
+          <th>
+            Type
+          </th>
+          <th>
+            Description
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <em>olddata</em>
+          </td>
+          <td>
+            Yes
+          </td>
+          <td>
+            any
+          </td>
+          <td>
+            JSON data object(s) that are going to be merged with the new objects.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <em>newdata</em>
+          </td>
+          <td>
+            Yes
+          </td>
+          <td>
+            any
+          </td>
+          <td>
+            JSON data object(s) that are going to be merged with old data.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="returns-1">
+      Returns
+    </h3>
+    <pre>
+    {
+        <em>merged data</em>
+    }
+</pre>
+    <table border="1">
+      <thead>
+        <tr>
+          <th>
+            Argument
+          </th>
+          <th>
+            Required
+          </th>
+          <th>
+            Type
+          </th>
+          <th>
+            Description
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <em>merged data</em>
+          </td>
+          <td>
+            Yes
+          </td>
+          <td>
+            any
+          </td>
+          <td>
+            JSON data object(s)—old data object(s) merged with new data object(s).
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <p>
+      <strong>Example</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>var jsonlib = MojoLoader.require({name:&quot;foundations.json&quot;, version: &quot;1.0&quot;});
+var fjson = jsonlib[&quot;foundations.json&quot;];
+var myTransformer = new fjson.Transformer();
+olddata = {&quot;displayName&quot;: &quot;Fred&quot;};
+newdata = {&quot;street&quot;: &quot;Main&quot;};
+Mojo.Log.info(&quot;FoundJSON: merge =&quot;+ JSON.stringify(myTransformer.merge(olddata, newdata)));
+</code>
+</pre>
+    </blockquote>
+    <p>
+      <strong>Example Output</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>FoundJSON: merge ={&quot;displayName&quot;:&quot;Fred&quot;,&quot;street&quot;:&quot;Main&quot;},
+</code>
+</pre>
+    </blockquote>
+    <hr>
+    <h2 id="transformer.transform">
+      Transformer.transform
+    </h2>
+    <p>
+      Transform JSON data object(s) according to a set of named transforms in a registered template.
+    </p>
+    <p>
+      A simple template might look as follows:
+    </p>
+    <blockquote>
+      <pre>
+<code>{ &quot;to&quot;: { name: &quot;!{displayName}&quot;, type: &quot;first&quot; }
+</code>
+</pre>
+    </blockquote>
+    <p>
+      The <code>!{...}</code> indicates a jsonPath expression that should be evaluated for the given data.
+    </p>
+    <h3 id="syntax-2">
+      Syntax
+    </h3>
+    <pre>
+    transform (<em>data</em>);
+</pre>
+    <h3 id="parameters-2">
+      Parameters
+    </h3>
+    <table border="1">
+      <thead>
+        <tr>
+          <th>
+            Argument
+          </th>
+          <th>
+            Required
+          </th>
+          <th>
+            Type
+          </th>
+          <th>
+            Description
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <em>data</em>
+          </td>
+          <td>
+            Yes
+          </td>
+          <td>
+            any
+          </td>
+          <td>
+            JSON data object(s) that are going to be transformed given the set of named transforms in the last registered template.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="returns-2">
+      Returns
+    </h3>
+    <pre>
+    {
+        <em>transformed data</em>
+    }
+</pre>
+    <p>
+      <strong>Example</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>var jsonlib = MojoLoader.require({name:&quot;foundations.json&quot;, version: &quot;1.0&quot;});
+var fjson = jsonlib[&quot;foundations.json&quot;];
+var myTransformer = new fjson.Transformer();
+var template =  { &quot;user&quot;: { FirstName: &quot;!{person.displayName}&quot;, LastName: &quot;!{person.surname}&quot;, Country : &quot;USA&quot;, State:&quot;CA&quot;, Location: &quot;!{person.building}&quot; } };
+myTransformer.initialize(template);
+var data = { &quot;person&quot;: {&quot;displayName&quot; : &quot;Fred&quot;, &quot;surname&quot; : &quot;Flintstone&quot;, &quot;building&quot;:&quot;3-1&quot; }};
+
+Mojo.Log.info(&quot;FoundJSON: transform =&quot;+ JSON.stringify(myTransformer.transform(data)));    
+</code>
+</pre>
+    </blockquote>
+    <p>
+      <strong>Example Output</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>FoundJSON: transform ={&quot;user&quot;:{&quot;FirstName&quot;:&quot;Fred&quot;,&quot;LastName&quot;:&quot;Flintstone&quot;,&quot;Country&quot;:&quot;USA&quot;,&quot;State&quot;:&quot;CA&quot;,&quot;Location&quot;:&quot;3-1&quot;}} 
+</code>
+</pre>
+    </blockquote>
+    <hr>
+    <h2 id="transformer.transformandmerge">
+      Transformer.transformAndMerge
+    </h2>
+    <p>
+      Transform the new data with the registered template and merge it with the old data.
+    </p>
+    <h3 id="syntax-3">
+      Syntax
+    </h3>
+    <pre>
+    transformAndMerge (<em>olddata</em>, <em>newdata</em>);
+</pre>
+    <h3 id="parameters-3">
+      Parameters
+    </h3>
+    <table border="1">
+      <thead>
+        <tr>
+          <th>
+            Argument
+          </th>
+          <th>
+            Required
+          </th>
+          <th>
+            Type
+          </th>
+          <th>
+            Description
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <em>olddata</em>
+          </td>
+          <td>
+            Yes
+          </td>
+          <td>
+            any
+          </td>
+          <td>
+            JSON data object(s) that are going to be merged with the new objects.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <em>newdata</em>
+          </td>
+          <td>
+            Yes
+          </td>
+          <td>
+            any
+          </td>
+          <td>
+            JSON data object(s) that are going to be transformed (if template registered) then merged with old data.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="returns-3">
+      Returns
+    </h3>
+    <pre>
+    {
+        <em>merged data</em>
+    }
+</pre>
+    <table border="1">
+      <thead>
+        <tr>
+          <th>
+            Argument
+          </th>
+          <th>
+            Required
+          </th>
+          <th>
+            Type
+          </th>
+          <th>
+            Description
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <em>merged data</em>
+          </td>
+          <td>
+            Yes
+          </td>
+          <td>
+            any
+          </td>
+          <td>
+            JSON data object(s)—old data object(s) merged with new data object(s).
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <p>
+      <strong>Example</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>var jsonlib = MojoLoader.require({name:&quot;foundations.json&quot;, version: &quot;1.0&quot;});
+var fjson = jsonlib[&quot;foundations.json&quot;];
+var myTransformer = new fjson.Transformer();
+var template = { &quot;Address&quot; : &quot;!{street}&quot;};
+myTransformer.initialize(template);
+olddata = {&quot;displayName&quot;: &quot;Fred&quot;};
+newdata = {&quot;street&quot;: &quot;Main&quot;};
+Mojo.Log.info(&quot;FoundJSON: transformAndmerge =&quot;+ JSON.stringify(myTransformer.transformAndMerge(olddata, newdata)));    
+</code>
+</pre>
+    </blockquote>
+    <p>
+      <strong>Example Output</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>FoundJSON: transformAndMerge ={&quot;displayName&quot;:&quot;Fred&quot;,&quot;Address&quot;:&quot;Main&quot;},
+</code>
+</pre>
+    </blockquote>
+		</div>
+	</body>
+</html>

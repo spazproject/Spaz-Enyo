@@ -1,0 +1,21 @@
+/* Copyright 2009-2011 Hewlett-Packard Development Company, L.P. All rights reserved. */
+.enyo-listselector-arrow {
+	min-height: 34px;
+	width: 14px;
+	background: url(../images/menu-arrow.png) center right no-repeat;
+}
+
+.enyo-listselector-label {
+	float: right;
+	margin: 1px 4px 0px 4px;
+	line-height: 34px;
+	font-size: 14px;
+	color: #1F75BF;
+	text-transform: uppercase;
+	white-space: nowrap;
+}
+
+.enyo-listselector-item {
+	border: 0;
+	padding: 0;
+}

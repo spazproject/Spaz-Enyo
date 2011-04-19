@@ -1,0 +1,19 @@
+/* Copyright 2009-2011 Hewlett-Packard Development Company, L.P. All rights reserved. */
+.enyo-picker-label {
+	color: #1F75BF;
+	font-size: 14px;
+	text-shadow: white 0px 1px 0px;
+	text-transform: uppercase;
+	padding-right: 5px;
+}
+
+.enyo-picker-popup {
+	font-size: inherited;
+	border-width: 19px;
+	-webkit-border-image: url(../images/popup-picker.png) 19;
+}
+
+.enyo-picker-item-selected {
+	font-weight: bold;
+	background: #fff;
+}

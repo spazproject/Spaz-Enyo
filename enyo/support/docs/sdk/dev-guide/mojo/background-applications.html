@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>$if(pagetitle)$$pagetitle$$endif$</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="stylesheet" href="_css/chrome.css" />
+		<link rel="stylesheet" href="../_css/chrome.css" />
+		<link rel="stylesheet" href="../../_css/chrome.css" />
+		<link rel="stylesheet" href="../../../_css/chrome.css" />
+		<script src="_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="_js/doc.js" type="text/javascript"></script>
+		<script src="../_js/doc.js" type="text/javascript"></script>
+		<script src="../../_js/doc.js" type="text/javascript"></script>
+		<script src="../../../_js/doc.js" type="text/javascript"></script>
+	</head>
+	<body>
+		<div id="content">
+    
+    <h1 id="background-applications">
+      Background Applications
+    </h1>
+    <p>
+      The preceding pages cover much of what is needed to create a background application. Background applications could be considered to be either of these types:
+    </p>
+    <ul>
+      <li>
+        <p>
+          minimized application--an application that has a card stage (or window) but is not in the foreground view
+        </p>
+      </li>
+      <li>
+        <p>
+          dashboard--an application that has a dashboard stage (or panel) but no card stage
+        </p>
+      </li>
+    </ul>
+    <h2 id="minimized-application">
+      Minimized Application
+    </h2>
+    <p>
+      This is simply an application with a card stage that is not in the foreground view. There are some guidelines for minimized applications:
+    </p>
+    <ul>
+      <li>
+        <p>
+          Generally an application should not post notifications or create a Dashboard stage unless the application is minimized or without any card stage at all. When the applications is maximized, all the user interface should be presented in the card view.
+        </p>
+      </li>
+      <li>
+        <p>
+          You can add a listener to the stageController's document element for Mojo.Event.stageDeactivate events which will indicate that the application is being minimized. A Mojo.Event.stageActivate event is sent when the application moves back into focus and is maximized. This will allow you to customize your application's behavior around these states. For example:
+        </p>
+        <blockquote>
+          <pre>
+<code>MainAssistant.prototype.setup = function(){
+  -
+  -
+  -
+  this.activateHandler=this.activateWindow.bind(this);
+  Mojo.Event.listen(this.controller.stageController.document,
+      Mojo.Event.stageActivate, this.activateHandler);
+  this.deactivateHandler=this.deactivateWindow.bind(this);
+  Mojo.Event.listen(this.controller.stageController.document,
+      Mojo.Event.stageDeactivate, this.deactivateHandler);
+};
+MainAssistant.prototype.activateWindow = function(event) {
+  Mojo.Log.info(&quot;.................. Main Assistant - Maximized State&quot;);
+};
+MainAssistant.prototype.deactivateWindow = function(event) {
+  Mojo.Log.info(&quot;.................. Main Assistant - Minimized State&quot;);
+};
+</code>
+</pre>
+        </blockquote>
+      </li>
+      <li>
+        <p>
+          When minimized, suspend application behavior that isn't necessary and lengthen polling cycles where possible. Since the application is minimized, it won't be immediately seen by the user, so work done to update the display isn't required. System calls, data connections, and similar requests should be limited where possible as they consume CPU and power, and lengthy operations will impact the responsiveness of the maximized application.
+        </p>
+      </li>
+    </ul>
+    <h2 id="dashboard-application">
+      Dashboard Application
+    </h2>
+    <p>
+      For some applications, the card stage can be closed and the application will continue to function using a Dashboard stage as the primary user interface. Email or messaging applications are classic examples of this, but some applications may find that the Dashboard is a better primary stage for their purpose. Consider a weather application, traffic monitor, friend finder or other location-based applications as possible Dashboard applications.
+    </p>
+    <p>
+      A typical Dashboard application will have three components:
+    </p>
+    <ul>
+      <li>
+        <p>
+          the application assistant; opens the card stage at launch, and the dashboard stage when directed to.
+        </p>
+      </li>
+      <li>
+        <p>
+          the card stage and scene assistant; enables or disables the application and captures settings and preferences that drive the application behavior and feature set.
+        </p>
+      </li>
+      <li>
+        <p>
+          the dashboard stage and scene assistant; presents information gathered by the application, handles periodic wake-up events to update the information, and supports limited interaction.
+        </p>
+      </li>
+    </ul>
+    <p>
+      Dashboard applications will have a parent window attached to the application controller and handles just the start-up events. The Dashboard will be updated as new status and information is available and notifications will be posted. If the Dashboard is closed for any reason, HP webOS will close the parent window and the application will be fully closed.
+    </p>
+    <p>
+      Most of this structure should be familiar; it combines techniques that have been covered in Advanced Application Guidelines and Dashboards and Notifications. The background processing is new. In this application model, setTimeout() is used to schedule periodic wakeup calls within the Dashboard scene. This extended sample shows how you might create a Dashboard that:
+    </p>
+    <ul>
+      <li>
+        <p>
+          creates the initial Dashboard on launch...
+        </p>
+      </li>
+      <li>
+        <p>
+          sets up a wakeup cycle every 5 minutes and initiates the dashboard stage when the application is enabled through the card stage...
+        </p>
+      </li>
+      <li>
+        <p>
+          handles wakeups; in this demonstration, a new banner notification is posted, the dashboard is updated and a new wakeup timeout is scheduled...
+        </p>
+      </li>
+      <li>
+        <p>
+          closes the application when the user closes the dashboard.
+        </p>
+      </li>
+    </ul>
+    <blockquote>
+      <pre>
+<code>function DashboardAssistant() {
+  this.message = &quot;Tracking Notifications&quot;;
+  this.count = dashboardCount;
+}
+
+DashboardAssistant.prototype.setup = function() {
+  // Display the dashboard
+  this.updateDashboard(this.message, this.count);
+  
+  // Set up wakeup handler and first wakeup event
+  this.wakeupFunction = this.wakeupHandler.bind(this);
+  this.wakeupTaskId = this.controller.window.setTimeout(this.wakeupFunction, 300000);
+};
+
+DashboardAssistant.prototype.wakeupHandler = function() {
+  var bannerMessage = &quot;An update from MyApp&quot;;
+
+  var bannerParams = {
+      messageText: bannerMessage,
+      soundClass: &quot;alerts&quot;
+  };
+
+  Mojo.Controller.getAppController().showBanner(bannerParams, {source: &quot;notification&quot;}, &quot;MyApp&quot;);
+
+  // Update dashboard
+  dashboardCount = dashboardCount+1;
+  this.updateDashboard(this.message, dashboardCount);
+  this.wakeupTaskId = this.controller.window.setTimeout(this.wakeupFunction, 300000);
+};
+
+DashboardAssistant.prototype.updateDashboard = function(message, count) {
+  var info = {message: message, count: count};
+
+  // Use render to convert the object and its properties along with a view file into a string
+  // containing HTML
+  var renderedInfo = Mojo.View.render({object: info, template: 'dashboard/item-info'});
+  var infoElement = this.controller.get('dashboardinfo');
+  infoElement.innerHTML = renderedinfo;
+};
+
+// Close the dashboard
+DashboardAssistant.prototype.cleanup = function() {
+  this.controller.window.clearTimeout(this.wakeupTaskId);
+  var appController = Mojo.Controller.getAppController();
+  appController.closeStage(dashboardStage);
+};
+</code>
+</pre>
+    </blockquote>
+    <p>
+      Of course, the use of setTimeout() will only wake up the application when the device is already awake or awakened for other reasons. If the device is asleep, then it won't be awakened, so you need to account for that in the timeout processing.
+    </p>
+    <h2 id="alarms">
+      Alarms
+    </h2>
+    <p>
+      To wake your application even while the device sleeps, use the Alarms service. It will not launch your application if it isn't running, but will wake the application in other cases. To modify the above sample to use Alarms, substitute a service call in place of setTimeout(). Pass the wakeup function (i.e., <code>this.wakeupHandler.bind(this)</code>) as the onSuccess callback in the service call.
+    </p>
+    <h2 id="additional-guidelines">
+      Additional Guidelines
+    </h2>
+    <p>
+      These are some additional guidelines for background applications:
+    </p>
+    <ul>
+      <li>
+        <p>
+          Conserve power; poll as infrequently as possible. Space out your requests and implement degrading intervals that lengthen the longer your polling does not produce an event or data change.
+        </p>
+      </li>
+      <li>
+        <p>
+          Limit notifications; use the dashboard to update state and status and limit even banner notifications to important information.
+        </p>
+      </li>
+      <li>
+        <p>
+          Avoid background processing; while you're running, the user doesn't see any UI and your processing can have an adverse impact on the UI the user does see.
+        </p>
+      </li>
+    </ul>
+		</div>
+	</body>
+</html>

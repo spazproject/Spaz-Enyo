@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>$if(pagetitle)$$pagetitle$$endif$</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="stylesheet" href="_css/chrome.css" />
+		<link rel="stylesheet" href="../_css/chrome.css" />
+		<link rel="stylesheet" href="../../_css/chrome.css" />
+		<link rel="stylesheet" href="../../../_css/chrome.css" />
+		<script src="_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="_js/doc.js" type="text/javascript"></script>
+		<script src="../_js/doc.js" type="text/javascript"></script>
+		<script src="../../_js/doc.js" type="text/javascript"></script>
+		<script src="../../../_js/doc.js" type="text/javascript"></script>
+	</head>
+	<body>
+		<div id="content">
+    
+    <h1 id="mojo.depot">
+      Mojo.Depot
+    </h1>
+    <h2 id="class-detail">
+      Class Detail
+    </h2>
+    <p>
+      Depot is an API that allows you to store JavaScript objects in a database. Today it is implemented as a framework wrapper around HTML5 active record access; but this could change in the future.
+    </p>
+    <p>
+      You can create a new Depot like this:
+    </p>
+    <blockquote>
+      <pre>
+<code>var db = new Mojo.Depot(options, onSuccess, onFailure);
+</code>
+</pre>
+    </blockquote>
+    <p>
+      where <code>options</code> is an object whose properties contain a number of options for opening or creating a Depot.
+    </p>
+    <blockquote>
+      <pre>
+<code>Attribute       Type                            Required    Default     Description
+---------------------------------------------------------------------------------------------------------------------------------
+name            String                          Required                Name used for the HTML5 database name.
+version         Number                          Optional    1           Version number used for the HTML5 database.
+displayName     String                          Optional    name        Name that would be used in user interface that the user sees.
+                                                                        regarding this database. Not currently used.
+estimatedSize   Number                          Optional                Estimated size for this database.
+replace         Boolean                         ?           ?           A truthy value for replace will cause any existing data for this
+                                                                        depot to be discarded and a new, empty depot to be created.
+filters         Array                           Optional                List of strings that objects in the depot can use as filters.
+identifiers     {String:(Function|Object), ...} Optional                Hash containing key-value pairs of identifiers with either
+                                                                        constructor functions or objects whose constructor function to use.
+                                                                        Identifier string must be non-falsy.     
+</code>
+</pre>
+      <p>
+        Callback functions:
+      </p>
+    </blockquote>
+    <blockquote>
+      <pre>
+<code>{Function} onSuccess  Callback function that is called if the depot is successfully opened or created.
+{Function} onFailure  Callback function that is called with an error string if an error occurs.
+
+The following error codes may be returned to onFailure:
+Code  Situation
+0     The transaction failed for reasons unrelated to the database itself and not covered by any other error code.
+1     The statement failed for database reasons not covered by any other error code.
+2     The statement failed because the expected version of the database didn't match the actual database version.
+3     The statement failed because the data returned from the database was too large.
+      The SQL &quot;LIMIT&quot; modifier might be useful to reduce the size of the result set.
+4     The statement failed because there was not enough remaining storage space,
+      or the storage quota was reached and the user declined to give more space to the database.
+5     The statement failed because the transaction's first statement was a read-only statement,
+      and a subsequent statement in the same transaction tried to modify the database, but the
+      transaction failed to obtain a write lock before another transaction obtained a write lock
+      and changed a part of the database that the former transaction was depending upon.
+6     An INSERT, UPDATE, or REPLACE statement failed due to a constraint failure.
+      For example, because a row was being inserted and the value given for the primary key column
+      duplicated the value of an existing row. 
+</code>
+</pre>
+    </blockquote>
+    <h2 id="method-summary">
+      Method Summary
+    </h2>
+    <ul>
+      <li>Mojo.Depot.<strong>add</strong>(key, value, onSuccess, onFailure)
+      </li>
+      <li>Mojo.Depot.<strong>discard</strong>(key, onSuccess, onFailure)
+      </li>
+      <li>Mojo.Depot.<strong>get</strong>(key, onSuccess, onFailure)
+      </li>
+      <li>Mojo.Depot.<strong>remove</strong>(bucket, key, onSuccess, onFailure)
+      </li>
+      <li>Mojo.Depot.<strong>removeAll</strong>(onSuccess, onFailure)
+      </li>
+    </ul>
+    <hr>
+    <h2 id="method-detail">
+      Method Detail
+    </h2>
+    <h3 id="mojo.depot.addkey-value-onsuccess-onfailure">
+      Mojo.Depot.<strong>add</strong>(key, value, onSuccess, onFailure)
+    </h3>
+    <p>
+      Function to add an object, identified by a key, to the depot. The default bucket is used.
+    </p>
+    <h4 id="parameters">
+      Parameters
+    </h4>
+    <ul>
+      <li>{String} <strong>key</strong> - Key to identify an object to be stored in the depot. If an object with this key already exists in the default bucket, it will be replaced.
+      </li>
+      <li>{Object} <strong>value</strong> - Object to store in the depot.
+      </li>
+      <li>{Function} <strong>onSuccess</strong> - Callback function that is called if the object is successfully stored in the depot.
+      </li>
+      <li>{Function} <strong>onFailure</strong> - Callback function that is called with an error string if an error occurs and the object is not successfully stored in the depot.
+      </li>
+    </ul>
+    <hr>
+    <h3 id="mojo.depot.discardkey-onsuccess-onfailure">
+      Mojo.Depot.<strong>discard</strong>(key, onSuccess, onFailure)
+    </h3>
+    <p>
+      Function to remove an object, identified by a key, from the depot. The default bucket is used.
+    </p>
+    <h4 id="parameters-1">
+      Parameters
+    </h4>
+    <ul>
+      <li>{String} <strong>key</strong> - Key to identify an object to be removed from the depot.
+      </li>
+      <li>{Function} <strong>onSuccess</strong> - Callback function that is called if the object is successfully removed from the depot.
+      </li>
+      <li>{Function} <strong>onFailure</strong> - Callback function that is called with an error string if an error occurs and the object is not successfully removed from the depot.
+      </li>
+    </ul>
+    <h4 id="since">
+      Since
+    </h4>
+    <p>
+      1.2
+    </p>
+    <hr>
+    <h3 id="mojo.depot.getkey-onsuccess-onfailure">
+      Mojo.Depot.<strong>get</strong>(key, onSuccess, onFailure)
+    </h3>
+    <p>
+      Function to get an object, identified by a key, from the depot. The default bucket specified by <code>_defaultBucketName</code> is used.
+    </p>
+    <h4 id="parameters-2">
+      Parameters
+    </h4>
+    <ul>
+      <li>{String} <strong>key</strong> - Key to identify an object that was stored in the depot.
+      </li>
+      <li>{Function} <strong>onSuccess</strong> - Callback function that is called if the object is successfully retrieved from the depot. This function is passed the retrieved object as its first parameter. If there is no object for this key, null will be passed to the onSuccess callback.
+      </li>
+      <li>{Function} <strong>onFailure</strong> - Callback function that is called if an error occurs, other than there being no object for the specified key. It is called with an error string as the only argument.
+      </li>
+    </ul>
+    <hr>
+    <h3 id="mojo.depot.removebucket-key-onsuccess-onfailure">
+      Mojo.Depot.<strong>remove</strong>(bucket, key, onSuccess, onFailure)
+    </h3>
+    <p>
+      Function to remove an object, identified by a bucket and key, from the depot.
+    </p>
+    <h4 id="parameters-3">
+      Parameters
+    </h4>
+    <ul>
+      <li>{String} <strong>bucket</strong> - Bucket to identify the namespace of the key; if not specified or null, <code>_defaultBucketName</code> is used.
+      </li>
+      <li>{String} <strong>key</strong> - Key to identify an object to be removed from the depot.
+      </li>
+      <li>{Function} <strong>onSuccess</strong> - Callback function that is called if the object is successfully removed from the depot.
+      </li>
+      <li>{Function} <strong>onFailure</strong> - Callback function that is called with an error string if an error occurs and the object is not successfully removed from the depot.
+      </li>
+    </ul>
+    <hr>
+    <h3 id="mojo.depot.removeallonsuccess-onfailure">
+      Mojo.Depot.<strong>removeAll</strong>(onSuccess, onFailure)
+    </h3>
+    <p>
+      Function to delete the data from the current depot database.
+    </p>
+    <h4 id="parameters-4">
+      Parameters
+    </h4>
+    <ul>
+      <li>{Function} <strong>onSuccess</strong> - Callback function that is called if the data is successfully deleted.
+      </li>
+      <li>{Function} <strong>onFailure</strong> - Callback function that is called if the data could not be deleted.
+      </li>
+    </ul>
+		</div>
+	</body>
+</html>

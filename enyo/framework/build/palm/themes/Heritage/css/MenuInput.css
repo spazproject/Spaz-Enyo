@@ -1,0 +1,16 @@
+/* Copyright 2009-2011 Hewlett-Packard Development Company, L.P. All rights reserved. */
+.enyo-menu-input {
+	height: 50px;
+	line-height: 50px;
+	border-width: 0 25px;
+	-webkit-border-image: url(../images/palm-menu-input.png) 0 25 50 25 stretch stretch;
+}
+
+.enyo-menu-input-focus {
+	-webkit-border-image: url(../images/palm-menu-input.png) 50 25 0 25 stretch stretch;
+}
+
+.enyo-menu-input-inner {
+	color: white;
+	font-size: 16px;
+}

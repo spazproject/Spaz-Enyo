@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>$if(pagetitle)$$pagetitle$$endif$</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="stylesheet" href="_css/chrome.css" />
+		<link rel="stylesheet" href="../_css/chrome.css" />
+		<link rel="stylesheet" href="../../_css/chrome.css" />
+		<link rel="stylesheet" href="../../../_css/chrome.css" />
+		<script src="_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="_js/doc.js" type="text/javascript"></script>
+		<script src="../_js/doc.js" type="text/javascript"></script>
+		<script src="../../_js/doc.js" type="text/javascript"></script>
+		<script src="../../../_js/doc.js" type="text/javascript"></script>
+	</head>
+	<body>
+		<div id="content">
+    
+    <h1 id="mojo.widget.listselector">
+      Mojo.Widget.ListSelector
+    </h1>
+    <h2 id="namespace-detail">
+      Namespace Detail
+    </h2>
+    <h3 id="overview">
+      Overview
+    </h3>
+    <p>
+      List selectors can be used for pop-up multiple-choice style editing of values. The current value of the ListSelector is always available in the model.value property. The ListSelector also contains a hidden input field with the current value, so it may be wrapped in a form if desired.
+    </p>
+    <h3 id="declaration">
+      Declaration
+    </h3>
+    <blockquote>
+      <pre>
+<code>&lt;div x-mojo-element=&quot;ListSelector&quot; id=&quot;listselectorId&quot;
+  class=&quot;listselectorClass&quot;  name=&quot;listselectorName&quot;&gt;&lt;/div&gt; 
+</code>
+</pre>
+    </blockquote>
+    <table border="1">
+      <tbody>
+        <tr>
+          <th width="20%">
+            Properties
+          </th>
+          <th width="10%">
+            Required
+          </th>
+          <th width="20%">
+            Value
+          </th>
+          <th width="50%">
+            Description
+          </th>
+        </tr>
+        <tr>
+          <td>
+            x-mojo-element
+          </td>
+          <td>
+            Required
+          </td>
+          <td>
+            ListSelector
+          </td>
+          <td>
+            Declares the widget as type 'ListSelector'.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            id
+          </td>
+          <td>
+            Required
+          </td>
+          <td>
+            Any String
+          </td>
+          <td>
+            Identifies the widget element for use when instantiating or rendering.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            class
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            Any String
+          </td>
+          <td>
+            ListSelector uses .palm-list-selector by default, but you can override with this setting.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            name
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            Any String
+          </td>
+          <td>
+            Adds a unique name to the ListSelector widget; generally used in templates.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="events">
+      Events
+    </h3>
+    <blockquote>
+      <pre>
+<code>Mojo.Event.listen(this.controller.get(&quot;listselectorId&quot;),
+  Mojo.Event.propertyChange, this.handleUpdate);
+</code>
+</pre>
+    </blockquote>
+    <table border="1">
+      <tbody>
+        <tr>
+          <th width="30%">
+            Event Type
+          </th>
+          <th width="20%">
+            Value
+          </th>
+          <th width="50%">
+            Event Handling
+          </th>
+        </tr>
+        <tr>
+          <td>
+            Mojo.Event.propertyChange
+          </td>
+          <td>
+            event.value or model.value
+          </td>
+          <td></td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="instantiation">
+      Instantiation
+    </h3>
+    <blockquote>
+      <pre>
+<code>this.controller.setupWidget(&quot;listselectorId&quot;,
+  this.attributes = {
+      choices: [
+          {label: &quot;One&quot;, value: 1},
+          {label: &quot;Two&quot;, value: 2},
+          {label: &quot;Three&quot;, value: 3}
+      ]
+  },
+  this.model = {
+      value: 3,
+      disabled: false
+  }
+); 
+</code>
+</pre>
+    </blockquote>
+    <h3 id="attribute-properties">
+      Attribute Properties
+    </h3>
+    <table border="1">
+      <tbody>
+        <tr>
+          <th width="15%">
+            Attribute Property
+          </th>
+          <th width="15%">
+            Type
+          </th>
+          <th width="15%">
+            Required
+          </th>
+          <th width="15%">
+            Default
+          </th>
+          <th width="40%">
+            Description
+          </th>
+        </tr>
+        <tr>
+          <td>
+            labelPlacement
+          </td>
+          <td>
+            String
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            Mojo.Widget.labelPlacementRight
+          </td>
+          <td>
+            Mojo.Widget.labelPlacementRight: places label on right, value on left.<br>
+            Mojo.Widget.labelPlacementLeft: places label on left, value on right.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            modelProperty
+          </td>
+          <td>
+            String
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            value
+          </td>
+          <td>
+            Model property name for ListSelector state.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            disabledProperty
+          </td>
+          <td>
+            String
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            disabled
+          </td>
+          <td>
+            Model property name for disabled boolean.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            label
+          </td>
+          <td>
+            String
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            Null
+          </td>
+          <td>
+            Label for the entire list, shown next to selected value in smaller, blue text.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            multiline
+          </td>
+          <td>
+            Boolean
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            false
+          </td>
+          <td>
+            If true, long labels will wrap to the next line instead of being truncated.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            choices
+          </td>
+          <td>
+            Array
+          </td>
+          <td>
+            Required
+          </td>
+          <td>
+            null
+          </td>
+          <td>
+            List of values for the popup. Must be defined in either the model or attributes and contain at least two items:<br>
+            [{label: &lt;displayName&gt;, value: &lt;value set in object&gt;}, {label: &lt;displayName&gt;, value: &lt;value set in object&gt;}, ... {label: &lt;displayName&gt;, value: &lt;value set in object&gt;}]
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="model-properties">
+      Model Properties
+    </h3>
+    <table border="1">
+      <tbody>
+        <tr>
+          <th width="15%">
+            Model Property
+          </th>
+          <th width="15%">
+            Type
+          </th>
+          <th width="15%">
+            Required
+          </th>
+          <th width="15%">
+            Default
+          </th>
+          <th width="40%">
+            Description
+          </th>
+        </tr>
+        <tr>
+          <td>
+            value
+          </td>
+          <td>
+            User-defined
+          </td>
+          <td>
+            Required
+          </td>
+          <td>
+            none
+          </td>
+          <td>
+            value of widget
+          </td>
+        </tr>
+        <tr>
+          <td>
+            disabled
+          </td>
+          <td>
+            Boolean
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            false
+          </td>
+          <td>
+            If true, ListSelector is inactive.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            choices
+          </td>
+          <td>
+            Array
+          </td>
+          <td>
+            Required
+          </td>
+          <td>
+            null
+          </td>
+          <td>
+            List of values for the popup. Must be defined in either the model or attributes and contain at least two items:<br>
+            [{label: &lt;displayName&gt;, value: &lt;value set in object&gt;},<br>
+            {label: &lt;displayName&gt;, value: &lt;value set in object&gt;},<br>
+            ... {label: &lt;displayName&gt;, value: &lt;value set in object&gt;}]
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <p>
+      * - A choices array must be present in either the attributes or model. If the choices are dynamic, meaning changeable after setup, then it should be in the model; otherwise in attributes.
+    </p>
+    <h3 id="methods">
+      Methods
+    </h3>
+    <p>
+      The ListSelector widget does not have any methods.
+    </p>
+		</div>
+	</body>
+</html>

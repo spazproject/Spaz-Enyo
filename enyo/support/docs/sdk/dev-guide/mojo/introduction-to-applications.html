@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>$if(pagetitle)$$pagetitle$$endif$</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="stylesheet" href="_css/chrome.css" />
+		<link rel="stylesheet" href="../_css/chrome.css" />
+		<link rel="stylesheet" href="../../_css/chrome.css" />
+		<link rel="stylesheet" href="../../../_css/chrome.css" />
+		<script src="_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="_js/doc.js" type="text/javascript"></script>
+		<script src="../_js/doc.js" type="text/javascript"></script>
+		<script src="../../_js/doc.js" type="text/javascript"></script>
+		<script src="../../../_js/doc.js" type="text/javascript"></script>
+	</head>
+	<body>
+		<div id="content">
+    
+    <h1 id="introduction-to-applications">
+      Introduction to Applications
+    </h1>
+    <p>
+      An HP webOS application is similar to a conventional web application but has some additional structure that allows it function like a native application. webOS applications are structured according to the conventions specified by the Mojo Framework described in <a href="/dev-guide/mojo/introduction-to-applications.html">Application Structure</a>. By following these conventions, the framework can infer how to run the application without using complicated configuration files, and developers can quickly set up an application skeleton to begin their work.
+    </p>
+    <p>
+      webOS applications follow the Model-View-Controller (MVC) pattern, with framework-supplied controllers performing a considerable amount of the work on behalf of the application. An application provides assistants to handle application-specific functions, coordinating with the controllers and the application's view files. Each application has a single application controller and an optional assistant, but within the application there will be multiple controllers/assistants, one for each of the application's stages and scenes. Stages and scenes correspond to different windows and views of the application, and are described in more detail in the next section.
+    </p>
+    <p>
+      The view files are HTML fragments, with special tags for insertion of Mojo widgets and other dynamic data. You can use templates to render directly in the scene but you'll usually pass template names in widget setup or when creating new scenes.
+    </p>
+    <h2 id="stages-and-scenes">
+      Stages and Scenes
+    </h2>
+    <p>
+      webOS is designed around a multi-tasking user experience, which leads to specific UI requirements for additional application structure beyond what is found in the classic web application model. This structure includes two important concepts: stages and scenes.
+    </p>
+    <p>
+      A stage is similar to a conventional HTML window or browser tab. Applications can have one or more stages, but typically the primary stage will correspond to the application's card. Other stages might include a dashboard, a pop-up notification, or secondary cards for handling specific activities within the application. Refer to email as an example of a multi-stage application, where the main card holds the account lists, inbox and displays the email contents, but new emails are composed in a separate card to allow for switching between composition and other email activities. Each card is a separate stage, but still part of a single application.
+    </p>
+    <p>
+      Scenes are mutually exclusive views of the application within a stage. Most applications will have multiple scenes within the same stage, but very simple applications might have just a single scene. An application must have at least one scene. You will need to specifically activate (or push) a scene into the view and pop the scene when it's no longer needed. Typically, a new scene is pushed after a user action, such as a tap on a UI widget, and an old scene is popped when the user gestures back.
+    </p>
+    <p>
+      Again using email as an example: from the <strong>accounts</strong> scene, <em>tap</em> an account pushing the <strong>inbox</strong> scene into view, then from the inbox, <em>tap</em> a message, pushing the <strong>message</strong> scene. After reading the message, you can gesture <em>back</em>, which pops the <strong>message</strong> scene to return to the <strong>inbox</strong> scene. Again <em>back</em>, pops the <strong>inbox</strong> scene to the <strong>account</strong> scene.
+    </p>
+    <p>
+      As the terms imply, scenes are managed like a stack with new scenes pushed onto and off of the stack with the last scene on the stack visible in the view. Mojo manages the scene stack, but you will need to direct the action through provided functions and respond to UI events that trigger scene transitions.
+    </p>
+    <h2 id="controllers-and-assistants">
+      Controllers and Assistants
+    </h2>
+    <p>
+      Mojo provides three controller objects: AppController, StageController and SceneController, all of which are contained in the Mojo.Controller namespace. All applications will have at least one SceneAssistant which has a sceneController instance, and an application cannot have more than one appController and corresponding AppAssistant. Beyond that, the number and types of controllers depends on the application design.
+    </p>
+    <p>
+      A diagram showing the relationship between these objects is shown in the figure below, and includes a couple of additional objects that support the controllers. StageManager is an object that works cooperatively with the AppController to manage the active stages. Similarly, SceneStack works with the StageController to provide methods for managing the scene stack but you will not access its methods directly; rather access is through the StageController methods.
+    </p>
+    <p>
+      <img src="/images/palm/Controller_Classes.png"><br>
+    </p>
+    <h3 id="appcontroller-and-appassistant">
+      AppController and AppAssistant
+    </h3>
+    <p>
+      The application controller is responsible for creating the application assistant and providing the interfaces for creating and managing stages.
+    </p>
+    <p>
+      The AppController and the use of stages within an application will be covered in depth in Advanced Topics. Each application has just one app controller and may optionally have a single App Assistant to create and manage stages. The AppAssistant is useful for handling cross-app functions, global data, and asynchronous operations, but all that can be done in the StageAssistant or a SceneAssistant for applications that have just a single stage.
+    </p>
+    <p>
+      An application does not need an AppAssistant if there is just a single Card stage and the application does not need to run headless, or as a background application.
+    </p>
+    <h3 id="stagecontroller-and-stageassistant">
+      StageController and StageAssistant
+    </h3>
+    <p>
+      The stage controller provides functions to create and manage scenes. An application can have multiple stageController objects and each stageController can have a StageAssistant. A StageAssistant is not an instance of StageController but actually a delegate of the controller. The assistant has a controller property set to a reference of the associated controller, which is used to directly call the controller's methods. The assistant can define methods as well.
+    </p>
+    <h3 id="scenecontroller-and-sceneassistant">
+      SceneController and SceneAssistant
+    </h3>
+    <p>
+      You will use the scene controller to manage objects and elements within the scene. Each stageController has a stack of sceneControllers. When a scene is pushed, a new sceneController is created and pushed onto the stack. As with the stage, each sceneController has a SceneAssistant delegate that, after initialization, will have its controller property set to a reference of the sceneController.
+    </p>
+    <p>
+      To illustrate this, let's go back to the Email application. It has multiple stages: one to handle the dashboard along with the card stage and compose stages, and there are multiple scenes. A subset of the complete application hierarchy is shown below: there is a single appController, three stageControllers (List, Compose and Notification), and each stageController has one or more SceneAssistants that it may use.
+    </p>
+    <p>
+      <img src="/images/palm/EmailHierarchy.png"><br>
+    </p>
+    <h3 id="scene-stack">
+      Scene Stack
+    </h3>
+    <p>
+      The most common methods are pushScene and popScene, but there are other methods that you will use to manage the scenestack. Though they are available in both classes, you should access the methods through Mojo.Controller.stageController and not through Mojo.SceneStack. While you should refer to the <a href="/reference/mojo.html">APIs</a> for a complete and up-to-date list of available stageController methods, some of the more commonly used methods include:
+    </p>
+    <ul>
+      <li>
+        <p>
+          pushScene (targetScene, sceneArguments)--Pushes a new scene, passing in the optional sceneArguments.
+        </p>
+      </li>
+      <li>
+        <p>
+          popScene(returnValue)--Removes a scene from the scene stack, passing the returnValue to the newly revealed scene's activate method.
+        </p>
+      </li>
+      <li>
+        <p>
+          popScenesTo (targetScene, returnValue)--Removes scenes from the scene stack until the targetScene is reached, or there are no scenes remaining on the stack, passing the returnValue to the new scene's activate method.
+        </p>
+      </li>
+      <li>
+        <p>
+          swapScene (targetScene, sceneArguments)--Pops the current scene and simultaneously pushes a new scene without activating and deactivating any underlying scenes, passing in the optional sceneArguments.
+        </p>
+      </li>
+      <li>
+        <p>
+          topScene()--Returns the topmost scene from this stage.
+        </p>
+      </li>
+      <li>
+        <p>
+          getScenes()--Returns an array of scene controllers currently on the stack;
+        </p>
+      </li>
+      <li>
+        <p>
+          activeScene()--Returns the currently active scene from this stage, if any.
+        </p>
+      </li>
+    </ul>
+    <p>
+      Where used, sceneArguments and returnValue can be any number of arguments of any type. Any arguments not consumed by the controllers are simply passed through to the target scene.
+    </p>
+    <h2 id="views">
+      Views
+    </h2>
+    <p>
+      Much of the user interface in Mojo is assembled out of text files containing fragments of HTML and special tags indicating locations to insert dynamic data. This system is very similar to the one used by Ruby on Rails, except that there is no provision for including executable JavaScript in template files the way that one can with Rails template files.
+    </p>
+    <p>
+      Developers can use templates directly by calling Mojo.View.render, but more often they will pass names of templates as part of widget setup or use them implicitly in scene creation.
+    </p>
+    <h3 id="template-files">
+      Template Files
+    </h3>
+    <p>
+      A template is specified by a partial path or full path. If it is a partial path, the views folder in the application is used as the base for constructing the full path to the file. You can share templates between scenes or between widgets if that's useful. By convention, templates are organized by scene name, but this is not required.
+    </p>
+    <p>
+      In this version of Mojo, files are the only way to provide view templates. For a future version we are considering allowing you to specify a function instead, to allow &quot;builder&quot; style markup creation.
+    </p>
+    <p>
+      There's further discussion of templates in <a href="/dev-guide/mojo/all-about-widgets/anatomy-of-a-widget.html">Anatomy of a Widget</a> and within the description of <a href="/dev-guide/mojo/all-about-widgets/lists.html">Lists</a>.
+    </p>
+    <h3 id="rendering">
+      Rendering
+    </h3>
+    <p>
+      Rendering is the term applied to taking a template file and a target object and creating a string of HTML markup ready for insertion into the DOM.
+    </p>
+    <p>
+      If the object is an array, the template is repeatedly rendered with each object in the array.
+    </p>
+    <h3 id="property-substitution">
+      Property Substitution
+    </h3>
+    <p>
+      During rendering, tags of the form <code>#{identifier}</code> are replaced with the equivalently named property from the target object. Such property identifiers are allowed to have periods in them, which will cause the view system to do successive property lookups, just as would be done in a JavaScript expression. This is not a JavaScript expression, though, so function calls or other operations are not allowed.
+    </p>
+    <h3 id="escaping">
+      Escaping
+    </h3>
+    <p>
+      By default, the result of the property lookup is included directly in the resulting string. This can lead to problems if the property value contains unexpected HTML markup. If Mojo.View.escapeHTMLInTemplates is set to true (see the documentation on the <a href="/reference/config/framework_config.json.html">framework_config.json</a> file for how to set this), all such property values will be properly escaped.
+    </p>
+    <p>
+      In cases where you expect HTML markup in a property value, put a '-' character in front of the property identifier, like <code>#{-listItems}</code>. This instructs render to skip the escaping step for this property substitution.
+    </p>
+    <h3 id="formatters">
+      Formatters
+    </h3>
+    <p>
+      It is possible to use JavaScript functions to format property values before substitution. See <a href="/reference/mojo/classes/mojo-model.html">Mojo.Model.format</a>.
+    </p>
+    <h3 id="localization">
+      Localization
+    </h3>
+    <p>
+      In order to support localized text in template files, render will look first in the applications resource directory for the locale for a template specified by partial path. For example, if you called render with a template path 'main/details' and the current locale was &quot;es_us&quot; (for the US variant of Spanish), the template would be looked for first as <code>'resources/es_us/views/main/details.html'</code>, falling back to <code>'views/main/details.html'</code> if the localized version wasn't found.
+    </p>
+    <p>
+      For more info about localizing Mojo applications, see <a href="/dev-guide/mojo/localization.html">Localization</a>.
+    </p>
+		</div>
+	</body>
+</html>

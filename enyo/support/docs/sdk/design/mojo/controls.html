@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>$if(pagetitle)$$pagetitle$$endif$</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="stylesheet" href="_css/chrome.css" />
+		<link rel="stylesheet" href="../_css/chrome.css" />
+		<link rel="stylesheet" href="../../_css/chrome.css" />
+		<link rel="stylesheet" href="../../../_css/chrome.css" />
+		<script src="_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="_js/doc.js" type="text/javascript"></script>
+		<script src="../_js/doc.js" type="text/javascript"></script>
+		<script src="../../_js/doc.js" type="text/javascript"></script>
+		<script src="../../../_js/doc.js" type="text/javascript"></script>
+	</head>
+	<body>
+		<div id="content">
+    
+    <h1 id="controls">
+      Controls
+    </h1>
+    <p>
+      Controls are common for most scenes. The HP webOS platform offers several types of control designs from check boxes and various buttons to a horizontal slider.
+    </p>
+    <p>
+      The following table provides additional information with image examples.
+    </p>
+    <table border="0">
+      <tbody>
+        <tr>
+          <th>
+            Type
+          </th>
+          <th>
+            Description
+          </th>
+          <th>
+            Example
+          </th>
+        </tr>
+        <tr>
+          <td>
+            Check box
+          </td>
+          <td>
+            This control turns a value on or off. It appears as a box with two states, unchecked (&quot;off&quot;) and checked (&quot;on&quot;). Implemented by using the Mojo.Widget.Checkbox API.<br>
+            <br>
+            When labeling a check box, use words or phrases that clearly indicate what the on and off state means. For example, &quot;Display alerts&quot; makes sense on a check box because the &quot;on&quot; state means &quot;display alerts&quot; and &quot;off&quot; means &quot;do not display alerts.&quot; Use check boxes anywhere in a scene. To display several of them, it helps to display one check box per line in a palm-list control for easy tapping of the check box target.
+          </td>
+          <td>
+            <img src="/images/palm/ui_summary/checkboxes.jpg" border="0" align="absmiddle">
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Button, multi-toggle
+          </td>
+          <td>
+            This is a control that toggles between multiple states. Successive presses cycle through the options. The Music application is a good example. Load some music files, press Shuffle All, and then tap the icon in the lower right-side corner. It toggles between three states: Play all songs once, Repeat all, and Repeat 1 song.
+          </td>
+          <td>
+            <img src="/images/palm/ui_summary/multiToggleButton.JPG" border="0" width="200" height="73">
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Button, push
+          </td>
+          <td>
+            <p>
+              Use a push button to trigger an action. After pressing a button, it temporarily appears pressed in and then returns to its not pressed in state. Implemented by using the Mojo.Widget.Button API. There are various types of standard buttons available, such as Primary/Secondary buttons, Affirmative/Negative buttons (for constructive/destructive actions), and so on.
+            </p>
+          </td>
+          <td>
+            <img src="/images/palm/ui_summary/pushbuttons.gif" border="0" align="absmiddle">
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Button, segmented
+          </td>
+          <td>
+            Use a segmented button to offer users a set of options (buttons) where only one may be chosen at a time. Segmented buttons are displayed in a group. Implemented using the Mojo.Widget.RadioButton API.<br>
+            <br>
+            Examples: In the first segmented button group, the pressed button is SMALL and it appears pressed in with the background and text colors inverted. Pressing another button resets SMALL to the not pressed in state, and that next pressed button appears pressed in. In the second segmented button group, the pressed button is FEMALE.
+          </td>
+          <td>
+            <img src="/images/palm/ui_summary/radioButtons.jpg" border="0" align="absmiddle">
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Button, toggle
+          </td>
+          <td>
+            <p>
+              This is a control that turns something on or off. They look like traditional switches, and have two states: on and off. Implemented using the Mojo.Widget.ToggleButton API.
+            </p>
+            <p>
+              When labeling a toggle button, use words or phrases that clearly indicate each state. For example, the label &quot;Wi-Fi&quot; makes sense on a toggle that looks like a switch (you can turn that service on/off).
+            </p>
+          </td>
+          <td>
+            <img src="/images/palm/ui_summary/toggleButton.gif" border="0" width="200" height="73">
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Slider
+          </td>
+          <td>
+            This is a horizontal slider with a control knob that the user can press and drag to the desired location. Specify the minimum (left side) and maximum (right side) values. Optionally indicate intermediate choices that trigger additional behavior. Implemented using the Mojo.Widget.Slider API.
+          </td>
+          <td>
+            <p>
+              <img src="/images/palm/ui_summary/slider.jpg" border="0" align="absmiddle">
+            </p>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+		</div>
+	</body>
+</html>

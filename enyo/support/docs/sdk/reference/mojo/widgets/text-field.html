@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>$if(pagetitle)$$pagetitle$$endif$</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="stylesheet" href="_css/chrome.css" />
+		<link rel="stylesheet" href="../_css/chrome.css" />
+		<link rel="stylesheet" href="../../_css/chrome.css" />
+		<link rel="stylesheet" href="../../../_css/chrome.css" />
+		<script src="_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="_js/doc.js" type="text/javascript"></script>
+		<script src="../_js/doc.js" type="text/javascript"></script>
+		<script src="../../_js/doc.js" type="text/javascript"></script>
+		<script src="../../../_js/doc.js" type="text/javascript"></script>
+	</head>
+	<body>
+		<div id="content">
+    
+    <h1 id="mojo.widget.textfield">
+      Mojo.Widget.TextField
+    </h1>
+    <h2 id="namespace-detail">
+      Namespace Detail
+    </h2>
+    <h3 id="overview">
+      Overview
+    </h3>
+    <p>
+      This is a widget that extends the functionality of an input type = text HTML element with hint text and text correction behavior. The field defaults to a single-line, scrolling text field with fixed horizontal and vertical dimensions, which will submit the text (i.e., generate a Mojo.Event.propertyChange event) when it loses focus. The contents of the field will be passed to your event handler in both event.value and the widget's model.value.
+    </p>
+    <h3 id="declaration">
+      Declaration
+    </h3>
+    <blockquote>
+      <pre>
+<code>&lt;div x-mojo-element=&quot;TextField&quot; id=&quot;textFieldId&quot; class=&quot;textFieldClass&quot;
+  name=&quot;textFieldName&quot;&gt;&lt;/div&gt;
+</code>
+</pre>
+    </blockquote>
+    <table border="1">
+      <tbody>
+        <tr>
+          <th>
+            Properties
+          </th>
+          <th>
+            Required
+          </th>
+          <th>
+            Value
+          </th>
+          <th>
+            Description
+          </th>
+        </tr>
+        <tr>
+          <td>
+            x-mojo-element
+          </td>
+          <td>
+            Required
+          </td>
+          <td>
+            TextField
+          </td>
+          <td>
+            Declares the widget as type 'TextField'.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            id
+          </td>
+          <td>
+            Required
+          </td>
+          <td>
+            Any String
+          </td>
+          <td>
+            Identifies the widget element for use when instantiating or rendering.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            class
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            Any String
+          </td>
+          <td>
+            Provide your own unique class and override the framework's styles.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            name
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            Any String
+          </td>
+          <td>
+            Adds a unique name to the TextField widget; generally used in templates.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="events">
+      Events
+    </h3>
+    <blockquote>
+      <pre>
+<code>Mojo.Event.listen(this.controller.get(&quot;textFieldId&quot;),
+  Mojo.Event.propertyChange, this.handleUpdate);
+</code>
+</pre>
+    </blockquote>
+    <table border="1">
+      <tbody>
+        <tr>
+          <th>
+            Event Type
+          </th>
+          <th>
+            Value
+          </th>
+          <th>
+            Event Handling
+          </th>
+        </tr>
+        <tr>
+          <td>
+            Mojo.Event.propertyChange
+          </td>
+          <td colspan="2">
+            {model:model, property:property, value:value, oldValue: oldValue, originalEvent: originalEvent}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="instantiation">
+      Instantiation
+    </h3>
+    <blockquote>
+      <pre>
+<code>this.controller.setupWidget(&quot;textFieldId&quot;,
+  this.attributes = {
+      hintText: $L(&quot;  ... and hit Enter&quot;),
+      multiline: false,
+      enterSubmits: false,
+      focus: true
+  },
+  this.model = {
+      value: ,
+      disabled: false
+  }
+); 
+</code>
+</pre>
+    </blockquote>
+    <h3 id="attribute-properties">
+      Attribute Properties
+    </h3>
+    <table border="1">
+      <tbody>
+        <tr>
+          <th>
+            Attribute Property
+          </th>
+          <th>
+            Type
+          </th>
+          <th>
+            Required
+          </th>
+          <th>
+            Default
+          </th>
+          <th>
+            Description
+          </th>
+        </tr>
+        <tr>
+          <td>
+            modelProperty
+          </td>
+          <td>
+            String
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            value
+          </td>
+          <td>
+            Model property name for selector value
+          </td>
+        </tr>
+        <tr>
+          <td>
+            disabledProperty
+          </td>
+          <td>
+            String
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            disabled
+          </td>
+          <td>
+            Model property name for disabled boolean
+          </td>
+        </tr>
+        <tr>
+          <td>
+            hintText
+          </td>
+          <td>
+            String
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            None
+          </td>
+          <td>
+            Initially displayed string; supplanted by model value if supplied.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            textFieldName
+          </td>
+          <td>
+            String
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            None
+          </td>
+          <td>
+            <b>DEPRECATED</b> If supplied, the textarea will have this name, so that when it is serialized, the property can be easily pulled out.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            inputName
+          </td>
+          <td>
+            String
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            None
+          </td>
+          <td>
+            If supplied, the textarea will have this name, so that when it is serialized, the property can be easily pulled out.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            multiline
+          </td>
+          <td>
+            Boolean
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            FALSE
+          </td>
+          <td>
+            Auto line wrapping to field width
+          </td>
+        </tr>
+        <tr>
+          <td>
+            charsAllow
+          </td>
+          <td>
+            Function
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            None
+          </td>
+          <td>
+            Function must return 'true' to allow input character, or 'false' if not allowed; note: this event is sent as a result of a keyPress event, so you must check against key codes matching ASCII characters.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            focus
+          </td>
+          <td>
+            Boolean
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            FALSE
+          </td>
+          <td>
+            <b>DEPRECATED</b> If true, field has focus on scene push.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            autoFocus
+          </td>
+          <td>
+            Boolean
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            FALSE
+          </td>
+          <td>
+            If true, field has focus on scene push.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            modifierState
+          </td>
+          <td>
+            String
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            None
+          </td>
+          <td>
+            initial state of modifier keys for this field. Can be:<br>
+            Mojo.Widget.shiftLock (shifts all characters typed),<br>
+            Mojo.Widget.numLock (uses the &quot;Num&quot; character equivalent for all characters typed),<br>
+            Mojo.Widget.shiftSingle (shifts the first character typed),<br>
+            Mojo.Widget.numSingle (uses &quot;Num&quot; character equivalent for the first character typed)
+          </td>
+        </tr>
+        <tr>
+          <td>
+            autoResize
+          </td>
+          <td>
+            Boolean
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            FALSE
+          </td>
+          <td>
+            <b>DEPRECATED</b> Automatically grow field horizontally.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            growWidth
+          </td>
+          <td>
+            Boolean
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            FALSE
+          </td>
+          <td>
+            Automatically grow field horizontally.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            autoResizeMax
+          </td>
+          <td>
+            Integer
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            None
+          </td>
+          <td>
+            Maximum width of field
+          </td>
+        </tr>
+        <tr>
+          <td>
+            enterSubmits
+          </td>
+          <td>
+            Boolean
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            FALSE
+          </td>
+          <td>
+            When used in conjunction with multiline, if this is set, then enter key will submit rather than newline.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            limitResize
+          </td>
+          <td>
+            Boolean
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            FALSE
+          </td>
+          <td>
+            Limit height resize (scrolls text rather than grow field).
+          </td>
+        </tr>
+        <tr>
+          <td>
+            preventResize
+          </td>
+          <td>
+            Boolean
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            FALSE
+          </td>
+          <td>
+            There will be no resizing in any dimension.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            holdToEnable
+          </td>
+          <td>
+            Boolean
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            FALSE
+          </td>
+          <td>
+            If the TextField is disabled, tapping and holding and releasing will enable it; if disabled is not set, this is ignored.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            focusMode
+          </td>
+          <td>
+            String
+          </td>
+          <td>
+            Optional
+          </td>
+          <td></td>
+          <td>
+            Sets the cursor mode when the field gets focus. Options are:<br>
+            Mojo.Widget.focusSelectMode<br>
+            Mojo.Widget.focusInsertMode<br>
+            Mojo.Widget.focusAppendMode<br>
+            Either text will all be selected (Select), or a cursor will appear where the user tapped (Insert) or the cursor will go to the end of the text (Append).
+          </td>
+        </tr>
+        <tr>
+          <td>
+            changeOnKeyPress
+          </td>
+          <td>
+            Boolean
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            FALSE
+          </td>
+          <td>
+            If true, sends a propertyChange event on every character change to a field; otherwise only when focus is lost.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            textReplacement
+          </td>
+          <td>
+            Boolean
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            TRUE
+          </td>
+          <td>
+            <b>DEPRECATED</b> Whether to enable the SmartTextEngine services of PalmSysMgr. Enabled by default in the TextField.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            maxLength
+          </td>
+          <td>
+            Integer
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            No Limit
+          </td>
+          <td>
+            Maximum character length of field; does not apply to multiline fields where an exception will be thrown.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            requiresEnterKey
+          </td>
+          <td>
+            Boolean
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            FALSE
+          </td>
+          <td>
+            Enter key required to submit; other navigation will not generate submit event.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            holdToEdit
+          </td>
+          <td>
+            Boolean
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            FALSE
+          </td>
+          <td>
+            Tap and Hold to focus/edit; Tap only will be ignored.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            autoCapitalization
+          </td>
+          <td>
+            Boolean
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            FALSE
+          </td>
+          <td>
+            <b>DEPRECATED</b> The first letter of each word (determined by whitespace) is capitalized.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            emoticons
+          </td>
+          <td>
+            Boolean
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            FALSE
+          </td>
+          <td>
+            Enable emoticons on this field.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            autoReplace
+          </td>
+          <td>
+            Boolean
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            True
+          </td>
+          <td>
+            Whether to enable the SmartTextEngine services of PalmSysMgr. Enabled by default in the TextField.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            textCase
+          </td>
+          <td>
+            String
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            Mojo.Widget.steMode<br>
+            SentenceCase
+          </td>
+          <td>
+            Use this to change the autocapitalization on the TextField. Options are:<br>
+            Mojo.Widget.steModeSentenceCase (capitalization like a sentence),<br>
+            Mojo.Widget.steModeTitleCase (capitalize first letter of each word),<br>
+            Mojo.Widget.steModeLowerCase (no capitalization)
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="model-properties">
+      Model Properties
+    </h3>
+    <table border="1">
+      <tbody>
+        <tr>
+          <th>
+            Model Property
+          </th>
+          <th>
+            Type
+          </th>
+          <th>
+            Required
+          </th>
+          <th>
+            Default
+          </th>
+          <th>
+            Description
+          </th>
+        </tr>
+        <tr>
+          <td>
+            value
+          </td>
+          <td>
+            String
+          </td>
+          <td>
+            Required
+          </td>
+          <td>
+            Null
+          </td>
+          <td>
+            Initial and updated value of widget
+          </td>
+        </tr>
+        <tr>
+          <td>
+            disabled
+          </td>
+          <td>
+            Boolean
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            false
+          </td>
+          <td>
+            If true, toggle is inactive.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="methods">
+      Methods
+    </h3>
+    <p>
+      To invoke a method on a widget, use the scene controller's <code>get</code> method for the desired widget, and append <code>mojo</code> followed by the method.
+    </p>
+    <p>
+      Example:
+    </p>
+    <blockquote>
+      <pre>
+<code>this.controller.get('myWidget').mojo.getValue()
+</code>
+</pre>
+    </blockquote>
+    <table border="1">
+      <tbody>
+        <tr>
+          <th>
+            Method
+          </th>
+          <th>
+            Arguments
+          </th>
+          <th>
+            Description
+          </th>
+        </tr>
+        <tr>
+          <td>
+            focus
+          </td>
+          <td>
+            none
+          </td>
+          <td>
+            Focuses the input part of the text field.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            blur
+          </td>
+          <td>
+            none
+          </td>
+          <td>
+            Blurs the input part of the text field.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            getValue
+          </td>
+          <td>
+            none
+          </td>
+          <td>
+            Gets the plaintext value of the text field.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            setText
+          </td>
+          <td>
+            String
+          </td>
+          <td>
+            <b>DEPRECATED</b> Sets the plaintext value of the text field; also used by alt char picker to set the value.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            setValue
+          </td>
+          <td>
+            String
+          </td>
+          <td>
+            Sets the plaintext value of the text field.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            getCursorPosition
+          </td>
+          <td>
+            none
+          </td>
+          <td>
+            Returns an object with {selectionStart: int, selectionEnd: int} that describes the position of the cursor; if start is not equal to end, then there is text selected.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            setCursorPosition
+          </td>
+          <td>
+            start, end
+          </td>
+          <td>
+            Sets the cursor position in the input portion of the TextField; if start and end are not the same, then this will select the text between START and END; if start and/or end occur in invalid positions, they will be changed to valid positions at the end of the text if they were larger than the size of the value, or at the beginning, if they are smaller than the size of the value; empty text will result in a cursor at the start of the TextField.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <p>
+      Set <code>x-mojo-focus-highlight=true</code> on any parent div to have the focus class applied to it as well when the TextField widget becomes focused.
+    </p>
+		</div>
+	</body>
+</html>

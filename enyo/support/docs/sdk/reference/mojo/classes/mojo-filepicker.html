@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>$if(pagetitle)$$pagetitle$$endif$</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="stylesheet" href="_css/chrome.css" />
+		<link rel="stylesheet" href="../_css/chrome.css" />
+		<link rel="stylesheet" href="../../_css/chrome.css" />
+		<link rel="stylesheet" href="../../../_css/chrome.css" />
+		<script src="_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="_js/doc.js" type="text/javascript"></script>
+		<script src="../_js/doc.js" type="text/javascript"></script>
+		<script src="../../_js/doc.js" type="text/javascript"></script>
+		<script src="../../../_js/doc.js" type="text/javascript"></script>
+	</head>
+	<body>
+		<div id="content">
+    
+    <h1 id="mojo.filepicker">
+      Mojo.FilePicker
+    </h1>
+    <h2 id="namespace-detail">
+      Namespace Detail
+    </h2>
+    <p>
+      Method for picking a file from the device's local storage. Allows for selection by file type, with filtering for file extensions. This is the only sanctioned method for selecting a file from the file system.
+    </p>
+    <p>
+      <strong>Note:</strong>
+    </p>
+    <p>
+      It is not safe to push a new scene while handling the onSelect or onCancel callbacks from a Mojo.FilePicker. This is because the file picker is a separate scene, and is the active scene when the callback occurs. Instead, store the return data, and use it when your scene is reactivated.
+    </p>
+    <h2 id="method-summary">
+      Method Summary
+    </h2>
+    <p>
+      Mojo.FilePicker.<strong>pickFile</strong>(params, stageController)
+    </p>
+    <hr>
+    <h2 id="method-detail">
+      Method Detail
+    </h2>
+    <h3 id="mojo.filepicker.pickfileparams-stagecontroller">
+      Mojo.FilePicker.<strong>pickFile</strong>(params, stageController)
+    </h3>
+    <h4 id="parameters">
+      Parameters
+    </h4>
+    <ul>
+      <li>{Object} <strong>params</strong> - Object containing information about the file to select as described above.
+      </li>
+      <li>{Object} <strong>stageController</strong> - The calling application's stage assistant.
+      </li>
+    </ul>
+    <p>
+      params object description:
+    </p>
+    <table>
+      <tr>
+        <th>
+          Type
+        </th>
+        <th>
+          Name
+        </th>
+        <th>
+          Required
+        </th>
+        <th>
+          Description
+        </th>
+      </tr>
+      <tr>
+        <td>
+          function
+        </td>
+        <td>
+          params.onSelect
+        </td>
+        <td>
+          Required
+        </td>
+        <td>
+          Method to call after selection is made and scene is returned to. The onSelect function is passed an object of the format described below as its first parameter.
+        </td>
+      </tr>
+      <tr>
+        <td>
+          function
+        </td>
+        <td>
+          params.onCancel
+        </td>
+        <td>
+          Optional
+        </td>
+        <td>
+          Method to call after selection is canceled and scene is returned to.
+        </td>
+      </tr>
+      <tr>
+        <td>
+          array
+        </td>
+        <td>
+          params.kinds
+        </td>
+        <td>
+          Optional
+        </td>
+        <td>
+          Array of pseudo types, which will result in a radio button widget at the bottom of the picker to allow the user to select among the specified file types. Allowable values are &quot;image&quot;, &quot;audio&quot;, &quot;video&quot;, and &quot;file&quot;. The default is that all kinds will be selectable.<br>
+          <br>
+          If only one type is needed, use &quot;kind:&quot; along with the desired file type (string only, not an array) instead.
+        </td>
+      </tr>
+      <tr>
+        <td>
+          string
+        </td>
+        <td>
+          params.defaultKind
+        </td>
+        <td>
+          Optional
+        </td>
+        <td>
+          The view to go to when the picker is first displayed. Allowable values are &quot;image&quot;, &quot;audio&quot;, &quot;video&quot;, or &quot;file&quot;. If no default is specified, the initially selected type will be &quot;file&quot;.
+        </td>
+      </tr>
+      <tr>
+        <td>
+          string
+        </td>
+        <td>
+          params.actionType
+        </td>
+        <td>
+          Optional
+        </td>
+        <td>
+          Selects the button text to be displayed when selecting a file of &quot;image&quot; type. If set to &quot;attach&quot;, button will display &quot;Attach Photo&quot;. If set to &quot;open&quot;, button will display &quot;Open Photo&quot;. Default is &quot;open&quot;.
+        </td>
+      </tr>
+      <tr>
+        <td>
+          string
+        </td>
+        <td>
+          params.actionName
+        </td>
+        <td>
+          Optional
+        </td>
+        <td>
+          String to override the default string defined by actionType. Replaces the text on the button that would otherwise say &quot;Attach Photo&quot; or &quot;Open Photo&quot;.
+        </td>
+      </tr>
+      <tr>
+        <td>
+          array
+        </td>
+        <td>
+          params.extensions
+        </td>
+        <td>
+          Optional
+        </td>
+        <td>
+          Array of file extensions (e.g., &quot;pdf&quot;) to filter the files displayed in the picker. If not selected, there will not be any filtering by extension.
+        </td>
+      </tr>
+      <tr>
+        <td>
+          object
+        </td>
+        <td>
+          params.crop
+        </td>
+        <td>
+          Optional
+        </td>
+        <td>
+          Object of the form <code>crop: { width: 150, height: 150 }</code>. When an image is selected, a cropping box of the specified size will be overlayed onto the image. The image can be moved by user gestures under the cropping box. When the select or attach button is pressed, information about the cropping position will be returned, in addition to the base image information.
+        </td>
+      </tr>
+    </table>
+    <h4 id="example-params">
+      Example params
+    </h4>
+    <blockquote>
+      <pre>
+<code>{ kind: 'file', extensions: ['pdf', 'txt'] }
+{ kinds: ['audio', 'video'], defaultKind: 'video' }
+{ actionType: 'attach', kinds: ['image'], crop: { width: 150, height: 150 } }
+{ actionType: 'attach', kinds: ['image'] }
+{ actionType: 'attach', kinds: ['audio', 'video'], defaultKind: 'audio' }
+{ actionName: 'Select', kinds: ['other'] }
+</code>
+</pre>
+    </blockquote>
+    <h4 id="returned-parameters">
+      Returned parameters
+    </h4>
+    <p>
+      The following table describes the parameters returned for each file type. Path information (<code>fullPath</code> and <code>iconPath</code>) should be treated as opaque strings, and can be used directly with in-app <code>&lt;img&gt;</code> tags, etc., without the need for additional parsing. Formats are shown for reference only.
+    </p>
+    <table>
+      <tr>
+        <th>
+          Return type
+        </th>
+        <th>
+          Return parameters
+        </th>
+        <th>
+          Type
+        </th>
+      </tr>
+      <tr>
+        <td rowspan="5">
+          &quot;video&quot;
+        </td>
+        <td>
+          fullPath, in the form {&quot;fullPath&quot;: &quot;/full/path/to/file.ext&quot;}
+        </td>
+        <td>
+          string
+        </td>
+      </tr>
+      <tr>
+        <td>
+          iconPath, in the form {&quot;iconPath: &quot;/full/path/to/icon/name.ext:0:0:&quot;}
+        </td>
+        <td>
+          string
+        </td>
+      </tr>
+      <tr>
+        <td>
+          attachmentType
+        </td>
+        <td>
+          string (&quot;video&quot;)
+        </td>
+      </tr>
+      <tr>
+        <td>
+          size
+        </td>
+        <td>
+          number (bytes)
+        </td>
+      </tr>
+      <tr>
+        <td>
+          isTmpVideoFile
+        </td>
+        <td>
+          boolean
+        </td>
+      </tr>
+      <tr>
+        <td rowspan="3">
+          &quot;image&quot;
+        </td>
+        <td>
+          fullPath, in the form {&quot;fullPath&quot;: &quot;/full/path/to/file.ext&quot;}
+        </td>
+        <td>
+          string
+        </td>
+      </tr>
+      <tr>
+        <td>
+          iconPath, in the form {&quot;iconPath: &quot;/full/path/to/icon/name.ext:0:0:&quot;}
+        </td>
+        <td>
+          string
+        </td>
+      </tr>
+      <tr>
+        <td>
+          attachmentType
+        </td>
+        <td>
+          string (&quot;image&quot;)
+        </td>
+      </tr>
+      <tr>
+        <td rowspan="2">
+          &quot;file&quot;
+        </td>
+        <td>
+          fullPath, in the form {&quot;fullPath&quot;: &quot;/full/path/to/file.ext&quot;}
+        </td>
+        <td>
+          string
+        </td>
+      </tr>
+      <tr>
+        <td>
+          size
+        </td>
+        <td>
+          number (bytes)
+        </td>
+      </tr>
+      <tr>
+        <td rowspan="2">
+          &quot;audio&quot;
+        </td>
+        <td>
+          fullPath, in the form {&quot;fullPath&quot;: &quot;/full/path/to/file.ext&quot;}
+        </td>
+        <td>
+          string
+        </td>
+      </tr>
+      <tr>
+        <td>
+          iconPath, in the form {&quot;iconPath: &quot;/full/path/to/icon/name.ext:0:0:&quot;}
+        </td>
+        <td>
+          string
+        </td>
+      </tr>
+    </table>
+    <h4 id="sample-returns">
+      Sample returns
+    </h4>
+    <blockquote>
+      <pre>
+<code>{&quot;fullPath&quot;: &quot;/media/internal/Open Source Information.pdf&quot;, &quot;size&quot;: &quot;262375&quot;}
+
+{&quot;fullPath&quot;: &quot;/media/internal/wallpapers/04.jpg&quot;,
+  &quot;iconPath&quot;: &quot;/var/luna/data/extractfs/media/internal/wallpapers/04.jpg:0:0:&quot;,
+  &quot;attachmentType&quot;: &quot;image&quot;}
+</code>
+</pre>
+    </blockquote>
+    <p>
+      If &quot;crop&quot; parameters are specified for an image file, the following parameters will also be returned, in addition to the &quot;fullPath&quot;, &quot;iconPath&quot;, and &quot;attachmentType&quot; values. The example below contains sample values.
+    </p>
+    <blockquote>
+      <pre>
+<code>&quot;cropInfo&quot;: {
+  &quot;window&quot;: {
+      &quot;focusX&quot;: 0.765625,
+      &quot;focusY&quot;: 0.84375,
+      &quot;sourceImage&quot;: &quot;/media/internal/wallpapers/06.jpg&quot;,
+      &quot;scale&quot;: 1,
+      &quot;sourceWidth&quot;: 320,
+      &quot;sourceHeight&quot;: 480,
+      &quot;suggestedXSize&quot;: 150, //Size of crop specified
+      &quot;suggestedYSize&quot;: 150,
+      &quot;suggestedScale&quot;: 100, //Scale of the image
+      &quot;suggestedXTop&quot;: 170, //Position of the upper left corner
+      &quot;suggestedYTop&quot;: 330
+  },
+  &quot;full&quot;: {
+      &quot;focusX&quot;: 0.765625,
+      &quot;focusY&quot;: 0.84375,
+      &quot;sourceImage&quot;: &quot;/media/internal/wallpapers/06.jpg&quot;,
+      &quot;scale&quot;: 1,
+      &quot;sourceWidth&quot;: 320,
+      &quot;sourceHeight&quot;: 480,
+      &quot;suggestedXSize&quot;: 320,
+      &quot;suggestedYSize&quot;: 480,
+      &quot;suggestedScale&quot;: 100,
+      &quot;suggestedXTop&quot;: 85,
+      &quot;suggestedYTop&quot;: 165
+  }
+} 
+</code>
+</pre>
+    </blockquote>
+    <h4 id="example-use">
+      Example use
+    </h4>
+    <blockquote>
+      <pre>
+<code>var self = this; //Retain the reference for the callback
+var params = { defaultKind: 'image',
+  onSelect: function(file){
+      self.controller.get('selection').innerHTML = Object.toJSON(file);
+  }
+}
+
+Mojo.FilePicker.pickFile(params, this.controller.stageController);
+</code>
+</pre>
+    </blockquote>
+		</div>
+	</body>
+</html>

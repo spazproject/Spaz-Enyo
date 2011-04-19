@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>$if(pagetitle)$$pagetitle$$endif$</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="stylesheet" href="_css/chrome.css" />
+		<link rel="stylesheet" href="../_css/chrome.css" />
+		<link rel="stylesheet" href="../../_css/chrome.css" />
+		<link rel="stylesheet" href="../../../_css/chrome.css" />
+		<script src="_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="_js/doc.js" type="text/javascript"></script>
+		<script src="../_js/doc.js" type="text/javascript"></script>
+		<script src="../../_js/doc.js" type="text/javascript"></script>
+		<script src="../../../_js/doc.js" type="text/javascript"></script>
+	</head>
+	<body>
+		<div id="content">
+    
+    <h1 id="foundations.json.schema">
+      Foundations.JSON.Schema
+    </h1>
+    <h2 id="schema.validate">
+      Schema.validate
+    </h2>
+    <p>
+      You can use this API to determine if a JSON data object is valid JSON. Optionally, you can also validate it against a passed JSON schema object.
+    </p>
+    <h3 id="syntax">
+      Syntax
+    </h3>
+    <pre>
+    Schema.validate( {<em>instance object</em>}, {<em>schema object</em>});
+</pre>
+    <h3 id="parameters">
+      Parameters
+    </h3>
+    <table border="1">
+      <thead>
+        <tr>
+          <th>
+            Argument
+          </th>
+          <th>
+            Required
+          </th>
+          <th>
+            Type
+          </th>
+          <th>
+            Description
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <em>instance object</em>
+          </td>
+          <td>
+            Yes
+          </td>
+          <td>
+            any
+          </td>
+          <td>
+            JSON data object.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <em>schema object</em>
+          </td>
+          <td>
+            No
+          </td>
+          <td>
+            any
+          </td>
+          <td>
+            JSON schema object.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="returns">
+      Returns
+    </h3>
+    <blockquote>
+      <pre>
+<code>{
+  valid  : boolean,
+  errors : [
+      {
+          property : string,
+          message  : string
+      }
+  ]
+}
+</code>
+</pre>
+    </blockquote>
+    <table border="1">
+      <thead>
+        <tr>
+          <th>
+            Argument
+          </th>
+          <th>
+            Required
+          </th>
+          <th>
+            Type
+          </th>
+          <th>
+            Description
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            valid
+          </td>
+          <td>
+            Yes
+          </td>
+          <td>
+            boolean
+          </td>
+          <td>
+            Is instance object valid according to schema flag.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            errors
+          </td>
+          <td>
+            Yes
+          </td>
+          <td>
+            array
+          </td>
+          <td>
+            Array of inline objects. Returns empty array (&quot;[]&quot;) if no errors.
+          </td>
+        </tr>
+        <tr bgcolor="blanchedAlmond">
+          <td>
+            errors[n].property
+          </td>
+          <td>
+            No
+          </td>
+          <td>
+            string
+          </td>
+          <td>
+            Property that had the error.
+          </td>
+        </tr>
+        <tr bgcolor="blanchedAlmond">
+          <td>
+            errors[n].message
+          </td>
+          <td>
+            No
+          </td>
+          <td>
+            string
+          </td>
+          <td>
+            Error message
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <p>
+      <strong>Example</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>var jsonlib = MojoLoader.require({name:&quot;foundations.json&quot;, version: &quot;1.0&quot;});
+var fjson = jsonlib[&quot;foundations.json&quot;];
+var jsonSchema = {&quot;id&quot;:&quot;com.palm.schema.test:1&quot;, 
+  &quot;type&quot;: &quot;object&quot;, 
+  &quot;properties&quot; : { &quot;_kind&quot; : {&quot;type&quot;: &quot;string&quot;, &quot;value&quot;:&quot;com.palm.schema.test:1&quot;},
+      &quot;foo&quot;: {&quot;type&quot;: &quot;string&quot;, &quot;description&quot;: &quot;foo string&quot;},
+      &quot;bar&quot;: {&quot;type&quot;: &quot;string&quot;, &quot;description&quot;: &quot;bar string&quot;},
+      &quot;isMember&quot;: {&quot;type&quot;: &quot;boolean&quot;, &quot;description&quot; : &quot;Is member flag&quot; }
+  }
+};
+
+var BadObj = {&quot;_kind&quot;:&quot;com.palm.schema.test:1&quot;, &quot;foo&quot;:&quot;myFoo&quot;, &quot;bar&quot;:&quot;myBar&quot;, &quot;isMember&quot;: &quot;true&quot;};
+
+Mojo.Log.info(&quot;FoundJSON: BadObj validate &quot;+ JSON.stringify(fjson.Schema.validate(BadObj, jsonSchema)));
+</code>
+</pre>
+    </blockquote>
+    <p>
+      <strong>Example Output</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>{&quot;valid&quot;:false,&quot;errors&quot;:[{&quot;property&quot;:&quot;isMember&quot;,&quot;message&quot;:&quot;string value found, but a boolean is required&quot;}]}
+</code>
+</pre>
+    </blockquote>
+    <hr>
+    <h2 id="schema.checkpropertychange">
+      Schema.checkPropertyChange
+    </h2>
+    <p>
+      Checks an object property for a valid value given its schema. Unlike the validate method, it assumes the passed schema object is valid.
+    </p>
+    <h3 id="syntax-1">
+      Syntax
+    </h3>
+    <pre>
+    Schema.checkPropertyChange( {<em>instance object</em>}, {<em>schema object</em>}, "<em>property</em>");
+</pre>
+    <h3 id="parameters-1">
+      Parameters
+    </h3>
+    <table border="1">
+      <thead>
+        <tr>
+          <th>
+            Argument
+          </th>
+          <th>
+            Required
+          </th>
+          <th>
+            Type
+          </th>
+          <th>
+            Description
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <em>instance object</em>
+          </td>
+          <td>
+            Yes
+          </td>
+          <td>
+            any
+          </td>
+          <td>
+            JSON data object.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <em>schema object</em>
+          </td>
+          <td>
+            Yes
+          </td>
+          <td>
+            any
+          </td>
+          <td>
+            JSON schema object. It is assumed this is valid.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <em>property</em>
+          </td>
+          <td>
+            Yes
+          </td>
+          <td>
+            string
+          </td>
+          <td>
+            Name of schema property.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="returns-1">
+      Returns
+    </h3>
+    <blockquote>
+      <pre>
+<code>{
+  valid  : boolean,
+  errors : [
+      {
+          property : string,
+          message  : string
+      }
+  ]
+}
+</code>
+</pre>
+    </blockquote>
+    <table border="1">
+      <thead>
+        <tr>
+          <th>
+            Argument
+          </th>
+          <th>
+            Required
+          </th>
+          <th>
+            Type
+          </th>
+          <th>
+            Description
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            valid
+          </td>
+          <td>
+            Yes
+          </td>
+          <td>
+            boolean
+          </td>
+          <td>
+            Is instance object valid according to schema flag.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            errors
+          </td>
+          <td>
+            Yes
+          </td>
+          <td>
+            array
+          </td>
+          <td>
+            Array of inline objects. Returns empty array (&quot;[]&quot;) if no errors.
+          </td>
+        </tr>
+        <tr bgcolor="blanchedAlmond">
+          <td>
+            errors[n].property
+          </td>
+          <td>
+            No
+          </td>
+          <td>
+            string
+          </td>
+          <td>
+            Property that had the error.
+          </td>
+        </tr>
+        <tr bgcolor="blanchedAlmond">
+          <td>
+            errors[n].message
+          </td>
+          <td>
+            No
+          </td>
+          <td>
+            string
+          </td>
+          <td>
+            Error message
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <p>
+      <strong>Example</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>var jsonlib = MojoLoader.require({name:&quot;foundations.json&quot;, version: &quot;1.0&quot;});
+var fjson = jsonlib[&quot;foundations.json&quot;];
+var jsonSchema = {&quot;id&quot;:&quot;com.palm.schema.test:1&quot;,
+  &quot;type&quot;: &quot;object&quot;,
+  &quot;properties&quot; : { &quot;_kind&quot; : {&quot;type&quot;: &quot;string&quot;, &quot;value&quot;:&quot;com.palm.schema.test:1&quot;},
+      &quot;foo&quot;: {&quot;type&quot;: &quot;string&quot;, &quot;description&quot;: &quot;foo string&quot;},
+      &quot;bar&quot;: {&quot;type&quot;: &quot;string&quot;, &quot;description&quot;: &quot;bar string&quot;},
+      &quot;isMember&quot;: {&quot;type&quot;: &quot;boolean&quot;, &quot;description&quot; : &quot;Is member flag&quot; }
+  }
+};
+
+var BadObj = {&quot;_kind&quot;:&quot;com.palm.schema.test:1&quot;, &quot;foo&quot;:&quot;myFoo&quot;, &quot;bar&quot;:&quot;myBar&quot;, &quot;isMember&quot;: &quot;true&quot;};
+var GoodObj = {&quot;_kind&quot;:&quot;com.palm.schema.test:1&quot;, &quot;foo&quot;:&quot;myFoo&quot;, &quot;bar&quot;:&quot;myBar&quot;, &quot;isMember&quot;: true};
+Mojo.Log.info(&quot;FoundJSON: checkPropertyChange good object &quot;+ JSON.stringify(fjson.Schema.checkPropertyChange(GoodObj, jsonSchema, &quot;isMember&quot;)));
+Mojo.Log.info(&quot;FoundJSON: checkPropertyChange bad object &quot;+ JSON.stringify(fjson.Schema.checkPropertyChange(BadObj, jsonSchema, &quot;isMember&quot;)));
+</code>
+</pre>
+    </blockquote>
+    <p>
+      <strong>Example Output</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>FoundJSON: checkPropertyChange good object {&quot;valid&quot;:true,&quot;errors&quot;:[]}, 
+FoundJSON: checkPropertyChange bad object {&quot;valid&quot;:false,&quot;errors&quot;:[{&quot;property&quot;:&quot;isMember.isMember&quot;,&quot;message&quot;:&quot;string value found, but a boolean is required&quot;}]}
+</code>
+</pre>
+    </blockquote>
+		</div>
+	</body>
+</html>

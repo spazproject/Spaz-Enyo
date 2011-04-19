@@ -1,0 +1,9 @@
+{
+	"id": "com.palm.enyo",
+	"version": "1.0.0",
+	"vendor": "enyo",
+	"type": "web",
+	"main": "index.html",
+	"title": "Enyo Framework",
+	"icon": "icon.png"
+}

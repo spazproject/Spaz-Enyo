@@ -1,0 +1,58 @@
+/* Copyright 2009-2011 Hewlett-Packard Development Company, L.P. All rights reserved. */
+.enyo-menuitem {
+}
+
+/*
+	FIXME: rounded items in a popup have a slightly smaller radius than in a group
+	can we just change this?
+*/
+.enyo-menuitem .enyo-item.rounded {
+	-webkit-border-radius: 8px;
+}
+
+.enyo-menuitem .enyo-item.rounded.enyo-first {
+	-webkit-border-bottom-right-radius: 0;
+	-webkit-border-bottom-left-radius: 0;
+}
+
+.enyo-menuitem .enyo-item.rounded.enyo-middle {
+	-webkit-border-radius: 0;
+}
+
+.enyo-menuitem .enyo-item.rounded.enyo-last {
+	-webkit-border-top-right-radius: 0;
+	-webkit-border-top-left-radius: 0;
+}
+
+.enyo-menuitem-caption {
+	text-overflow: ellipsis;
+	white-space:nowrap;
+	overflow: hidden;
+	padding: 2px 0;
+}
+
+.enyo-menuitem-icon {
+	padding: 2px 8px;
+}
+
+.enyo-menuitem-arrow.enyo-button-depressed,
+.enyo-menuitem-arrow.enyo-button-down {
+	background: url(../images/menuitem-arrow.png) center -24px;
+}
+
+.enyo-menuitem-arrow {
+	height: 24px;
+	width: 30px;
+	background: url(../images/menuitem-arrow.png) center 0px;
+}
+
+.enyo-menuitem.enyo-checked .enyo-menucheckitem-caption {
+	background: url(../images/checkmark.png) center right no-repeat;
+}
+
+.enyo-menucheckitem-caption {
+	text-overflow: ellipsis;
+	white-space:nowrap;
+	overflow: hidden;
+	padding: 2px 34px 2px 0;
+}

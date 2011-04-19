@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>$if(pagetitle)$$pagetitle$$endif$</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="stylesheet" href="_css/chrome.css" />
+		<link rel="stylesheet" href="../_css/chrome.css" />
+		<link rel="stylesheet" href="../../_css/chrome.css" />
+		<link rel="stylesheet" href="../../../_css/chrome.css" />
+		<script src="_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="_js/doc.js" type="text/javascript"></script>
+		<script src="../_js/doc.js" type="text/javascript"></script>
+		<script src="../../_js/doc.js" type="text/javascript"></script>
+		<script src="../../../_js/doc.js" type="text/javascript"></script>
+	</head>
+	<body>
+		<div id="content">
+    
+    <h1 id="pdl_isapplicensedfordevice">
+      PDL_isAppLicensedForDevice
+    </h1>
+    <p>
+      This API allows Plug-in apps to check if the app has been licensed for the host device.
+    </p>
+    <p>
+      The first time the app runs and the call is made, the API goes over the network to Palm to verify the license. If licensed, the result is cached and the call always returns 1 each time the app is run after that. Failure always results in the API's trying again.
+    </p>
+    <h2 id="syntax">
+      Syntax
+    </h2>
+    <blockquote>
+      <pre>
+<code>int PDL_isAppLicensedForDevice(const char *appid);      
+</code>
+</pre>
+    </blockquote>
+    <table border="1">
+      <thead>
+        <tr>
+          <th>
+            Argument
+          </th>
+          <th>
+            Description
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            appid
+          </td>
+          <td>
+            Application ID, i.e., &quot;com.mycompany.myapp&quot;
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h2 id="returns">
+      Returns
+    </h2>
+    <blockquote>
+      <pre>
+<code>0 - The app is not licensed.
+1 - The app is licensed.
+</code>
+</pre>
+    </blockquote>
+    <h2 id="example">
+      Example
+    </h2>
+    <blockquote>
+      <pre>
+<code>if (PDL_isAppLicensedForDevice(&quot;com.mycompany.myapp&quot;) ==0)
+  fprintf(stdout, &quot;This device is not licensed for this application&quot;);
+else
+  fprintf(stdout, &quot;This device is licensed for this application&quot;);
+</code>
+</pre>
+    </blockquote>
+    <p>
+      To include this call in your make file, use the -lcplite option to link with the copy protection library that comes with the PDK.
+    </p>
+    <p>
+      <strong>Note:</strong>
+    </p>
+    <p>
+      If your app is using copy protection, you should make sure your executable is stripped of symbols. You can use the strip utility program that comes with the ARM compiler to remove symbols from your executable.
+    </p>
+    <p>
+      In Windows, you can find this utility at <code>C:\\Program Files\\CodeSourcery\\Sourcery G++ Lite\\arm-none-linux-gnueabi\\bin\\strip.exe</code>. No output file needs to be specified; symbols are removed in-place.
+    </p>
+		</div>
+	</body>
+</html>

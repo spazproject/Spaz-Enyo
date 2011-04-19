@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>$if(pagetitle)$$pagetitle$$endif$</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="stylesheet" href="_css/chrome.css" />
+		<link rel="stylesheet" href="../_css/chrome.css" />
+		<link rel="stylesheet" href="../../_css/chrome.css" />
+		<link rel="stylesheet" href="../../../_css/chrome.css" />
+		<script src="_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="_js/doc.js" type="text/javascript"></script>
+		<script src="../_js/doc.js" type="text/javascript"></script>
+		<script src="../../_js/doc.js" type="text/javascript"></script>
+		<script src="../../../_js/doc.js" type="text/javascript"></script>
+	</head>
+	<body>
+		<div id="content">
+    
+    <h1 id="mojo.widget.checkbox">
+      Mojo.Widget.CheckBox
+    </h1>
+    <h2 id="namespace-detail">
+      Namespace Detail
+    </h2>
+    <h3 id="overview">
+      Overview
+    </h3>
+    <p>
+      A CheckBox widget, like a <a href="toggle-button.html">ToggleButton</a>, is used to control and indicate a binary state value in one element. Which widget to use is really a matter of design preference as they serve almost an identical function. Tapping a CheckBox will toggle its state, presenting or removing a &quot;checkmark&quot; depending on the previous state. The framework handles the display changes and will manage the widget's data model for you, toggling between two states that you defined at setup time.
+    </p>
+    <h3 id="declaration">
+      Declaration
+    </h3>
+    <blockquote>
+      <pre>
+<code>&lt;div x-mojo-element=&quot;CheckBox&quot; id=&quot;checkboxId&quot; class=&quot;checkboxClass&quot; name=&quot;checkboxName&quot;&gt;&lt;/div&gt;
+</code>
+</pre>
+    </blockquote>
+    <table border="1">
+      <tbody>
+        <tr>
+          <th width="20%">
+            Properties
+          </th>
+          <th width="10%">
+            Required
+          </th>
+          <th width="20%">
+            Value
+          </th>
+          <th width="50%">
+            Description
+          </th>
+        </tr>
+        <tr>
+          <td>
+            x-mojo-element
+          </td>
+          <td>
+            Required
+          </td>
+          <td>
+            CheckBox
+          </td>
+          <td>
+            Declares the widget as type 'CheckBox'
+          </td>
+        </tr>
+        <tr>
+          <td>
+            id
+          </td>
+          <td>
+            Required
+          </td>
+          <td>
+            Any String
+          </td>
+          <td>
+            Identifies the widget element for use when instantiating or rendering.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="events">
+      Events
+    </h3>
+    <blockquote>
+      <pre>
+<code>Mojo.Event.listen(this.controller.get(&quot;checkboxId&quot;), Mojo.Event.propertyChange, this.handleUpdate);
+</code>
+</pre>
+    </blockquote>
+    <table border="1">
+      <tbody>
+        <tr>
+          <th width="30%">
+            Event Type
+          </th>
+          <th width="20%">
+            Value
+          </th>
+          <th width="50%">
+            Event Handling
+          </th>
+        </tr>
+        <tr>
+          <td>
+            Mojo.Event.propertyChange
+          </td>
+          <td>
+            none
+          </td>
+          <td>
+            Sends an event with the added properties 'model' and 'value'; Model is the model supplied when the application first set up the widget with a value updated to reflect the state of the checkbox; value represents the current value of the checkbox regardless of model.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="instantiation">
+      Instantiation
+    </h3>
+    <blockquote>
+      <pre>
+<code>this.controller.setupWidget(&quot;checkboxId&quot;,
+  this.attributes = {
+      trueValue: &quot;On&quot;,
+      falseValue: &quot;Off&quot;
+  },
+  this.model = {
+      value: false,
+      disabled: false
+  }
+); 
+</code>
+</pre>
+    </blockquote>
+    <h3 id="attribute-properties">
+      Attribute Properties
+    </h3>
+    <table border="1">
+      <tbody>
+        <tr>
+          <th width="15%">
+            Attribute Property
+          </th>
+          <th width="15%">
+            Type
+          </th>
+          <th width="15%">
+            Required
+          </th>
+          <th width="15%">
+            Default
+          </th>
+          <th width="40%">
+            Description
+          </th>
+        </tr>
+        <tr>
+          <td>
+            modelProperty
+          </td>
+          <td>
+            String
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            &quot;value&quot;
+          </td>
+          <td>
+            Model property name for checkbox state.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            disabledProperty
+          </td>
+          <td>
+            String
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            &quot;disabled&quot;
+          </td>
+          <td>
+            Model property name for disabled boolean.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            trueValue
+          </td>
+          <td>
+            String
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            true
+          </td>
+          <td>
+            Value to set model property when true.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            falseValue
+          </td>
+          <td>
+            String
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            false
+          </td>
+          <td>
+            Value to set model property when false.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            fieldName
+          </td>
+          <td>
+            String
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            none
+          </td>
+          <td>
+            <b>DEPRECATED</b> Identifier for the value of the checkbox; used when the checkbox is used in html forms.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            inputName
+          </td>
+          <td>
+            String
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            none
+          </td>
+          <td>
+            Identifier for the value of the checkbox; used when the checkbox is used in html forms.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="model-properties">
+      Model Properties
+    </h3>
+    <table border="1">
+      <tbody>
+        <tr>
+          <th width="15%">
+            Model Property
+          </th>
+          <th width="15%">
+            Type
+          </th>
+          <th width="15%">
+            Required
+          </th>
+          <th width="15%">
+            Default
+          </th>
+          <th width="40%">
+            Description
+          </th>
+        </tr>
+        <tr>
+          <td>
+            value
+          </td>
+          <td>
+            User-defined
+          </td>
+          <td>
+            Required
+          </td>
+          <td>
+            none
+          </td>
+          <td>
+            Current value of widget.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            disabled
+          </td>
+          <td>
+            Boolean
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            false
+          </td>
+          <td>
+            If true, checkbox is inactive.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="methods">
+      Methods
+    </h3>
+    <p>
+      The CheckBox widget does not have any methods.
+    </p>
+		</div>
+	</body>
+</html>

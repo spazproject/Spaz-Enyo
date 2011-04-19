@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>$if(pagetitle)$$pagetitle$$endif$</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="stylesheet" href="_css/chrome.css" />
+		<link rel="stylesheet" href="../_css/chrome.css" />
+		<link rel="stylesheet" href="../../_css/chrome.css" />
+		<link rel="stylesheet" href="../../../_css/chrome.css" />
+		<script src="_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="_js/doc.js" type="text/javascript"></script>
+		<script src="../_js/doc.js" type="text/javascript"></script>
+		<script src="../../_js/doc.js" type="text/javascript"></script>
+		<script src="../../../_js/doc.js" type="text/javascript"></script>
+	</head>
+	<body>
+		<div id="content">
+    
+    <h1 id="pdl_getosversion">
+      PDL_GetOSVersion
+    </h1>
+    <h2 id="description">
+      Description
+    </h2>
+    <p>
+      Sets the passed version struct to the webOS version currently running on the device. The major, minor and revision numbers are set in the <code>PDL_OSVersion</code> struct and returned. For example, if the current version is &quot;1.4.5&quot;, then 1 is returned as the majorVersion, 4 is returned as the minorVersion, and 5 is returned as the revision number.
+    </p>
+    <p>
+      In case there are more than three numbers, the full webOS version is also returned as a string, i.e., &quot;Palm WebOS 1.4.5.1&quot;.
+    </p>
+    <p>
+      To get the PDK version, which is different, see <a href="pdl-get-pdk-version.html">PDL_GetPDKVersion</a>.
+    </p>
+    <h2 id="syntax">
+      Syntax
+    </h2>
+    <blockquote>
+      <pre>
+<code>PDL_Err PDL_GetOSVersion(PDL_OSVersion *version);              
+</code>
+</pre>
+    </blockquote>
+    <table border="1">
+      <tbody>
+        <tr>
+          <th>
+            Argument
+          </th>
+          <th>
+            Description
+          </th>
+        </tr>
+        <tr>
+          <td>
+            version
+          </td>
+          <td>
+            Pointer to a <code>PDL_OSVersion</code> struct.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h2 id="returns">
+      Returns
+    </h2>
+    <blockquote>
+      <pre>
+<code>PDL_INVALIDINPUT - Passed version struct is null or zero length.                  
+PDL_EOTHER - Unable to access webOS version information. 
+PDL_NOERROR - Success. 
+</code>
+</pre>
+    </blockquote>
+    <p>
+      <strong>See also:</strong>
+    </p>
+    <ul>
+      <li>
+        <a href="pdl-get-pdk-version.html">PDL_GetPDKVersion</a>
+      </li>
+    </ul>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>$if(pagetitle)$$pagetitle$$endif$</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="stylesheet" href="_css/chrome.css" />
+		<link rel="stylesheet" href="../_css/chrome.css" />
+		<link rel="stylesheet" href="../../_css/chrome.css" />
+		<link rel="stylesheet" href="../../../_css/chrome.css" />
+		<script src="_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="_js/doc.js" type="text/javascript"></script>
+		<script src="../_js/doc.js" type="text/javascript"></script>
+		<script src="../../_js/doc.js" type="text/javascript"></script>
+		<script src="../../../_js/doc.js" type="text/javascript"></script>
+	</head>
+	<body>
+		<div id="content">
+    
+    <h1 id="memory-management">
+      Memory Management
+    </h1>
+    <h2 id="avoiding-thread-memory-leaks">
+      Avoiding Thread Memory Leaks
+    </h2>
+    <p>
+      To avoid thread memory leaks on the device, your application needs to call <code>SDL_WaitThread</code> for each of its spawned threads. One way of handling this is to have a thread put itself on a queue before it exits and then have the main thread periodically call <code>SDL_WaitThread</code> on queue items.
+    </p>
+    <h2 id="handling-unaligned-memory-accesses">
+      Handling Unaligned Memory Accesses
+    </h2>
+    <p>
+      The device's kernel traps any unaligned memory accesses. When this happens, it writes an entry to the system log, an operation which takes a fair amount of CPU time. Consequently, even though your application continues running, it may be very slow. To avoid this, you should ensure that all read and write accesses are word (32 bits) aligned. If you suspect unaligned memory accesses are happening, check the system log.
+    </p>
+    <p>
+      To check the system log for unaligned memory access messages:
+    </p>
+    <ol style="list-style-type: decimal">
+      <li>Log into the device.
+      </li>
+      <li>Run the <code>dmesg</code> (display system message buffer) command.
+      </li>
+    </ol>
+    <p>
+      You could see a number of Alignment... messages similar to this:
+    </p>
+    <blockquote>
+      <pre>
+<code>[67585.050000] Alignment trap: appname (13587) PC=0x000bdafc Instr=0xe1d2c0b1
+Address=0x01670b2f FSR 0x001 
+</code>
+</pre>
+    </blockquote>
+    <p>
+      If there are too many messages and you are having trouble finding the ones about alignment, pipe the output from dmesg to the grep program:
+    </p>
+    <blockquote>
+      <pre>
+<code>[root@palm-webos-device:/# dmesg | grep &quot;Alignment&quot; 
+</code>
+</pre>
+    </blockquote>
+    <p>
+      To track down unaligned memory accesses in your application:
+    </p>
+    <ol style="list-style-type: decimal">
+      <li>
+        <p>
+          Log into the device.
+        </p>
+      </li>
+      <li>
+        <p>
+          Run the following from the command line:
+        </p>
+        <blockquote>
+          <pre>
+<code>[root@palm-webos-device:/# echo 5 &gt; /proc/cpu/alignment     
+</code>
+</pre>
+        </blockquote>
+        <p>
+          This causes your application to crash whenever an unaligned access occurs.
+        </p>
+      </li>
+      <li>
+        <p>
+          Build your application with the -g option (produces debugging information in the webOS native format) and start it on the device using GDB.
+        </p>
+      </li>
+      <li>
+        <p>
+          When access occurs, get a stack crawl of the offending location by running <code>where</code> at the command line:
+        </p>
+        <blockquote>
+          <pre>
+<code>root@palm-webos-device:/# gdb appname
+(gdb) run
+...
+Program received signal SIGBUS, Bus error.
+Switching to Thread 0x36001e70 (LWP 13719)
+0x0010d0f8 in operator func
+(gdb) where
+...      
+</code>
+</pre>
+        </blockquote>
+      </li>
+    </ol>
+		</div>
+	</body>
+</html>

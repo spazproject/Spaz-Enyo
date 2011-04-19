@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>$if(pagetitle)$$pagetitle$$endif$</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="stylesheet" href="_css/chrome.css" />
+		<link rel="stylesheet" href="../_css/chrome.css" />
+		<link rel="stylesheet" href="../../_css/chrome.css" />
+		<link rel="stylesheet" href="../../../_css/chrome.css" />
+		<script src="_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="_js/doc.js" type="text/javascript"></script>
+		<script src="../_js/doc.js" type="text/javascript"></script>
+		<script src="../../_js/doc.js" type="text/javascript"></script>
+		<script src="../../../_js/doc.js" type="text/javascript"></script>
+	</head>
+	<body>
+		<div id="content">
+    
+    <h1 id="mojo.widget.radiobutton">
+      Mojo.Widget.RadioButton
+    </h1>
+    <h2 id="namespace-detail">
+      Namespace Detail
+    </h2>
+    <h3 id="overview">
+      Overview
+    </h3>
+    <p>
+      If you need a single widget to switch between multiple states while revealing all the state options on the screen, then a RadioButton may fit your needs. Mojo provides a classic RadioButton that presents each button as a labeled selection option in a horizontal array, where only one option can be selected at at time. The number of options is variable, constrained only by the width of the display and the minimum button size that can be pleasingly presented or selected. You can expect to handle between two and five states given the typical screen size for a webOS device, but the framework won't limit you.
+    </p>
+    <h3 id="declaration">
+      Declaration
+    </h3>
+    <blockquote>
+      <pre>
+<code>&lt;div x-mojo-element=&quot;RadioButton&quot; id=&quot;radiobuttonId&quot;
+  class=&quot;radiobuttonClass&quot; name=&quot;radiobuttonName&quot;&gt;&lt;/div&gt;
+</code>
+</pre>
+    </blockquote>
+    <table border="1">
+      <tbody>
+        <tr>
+          <th>
+            Properties
+          </th>
+          <th>
+            Required
+          </th>
+          <th>
+            Value
+          </th>
+          <th>
+            Description
+          </th>
+        </tr>
+        <tr>
+          <td>
+            x-mojo-element
+          </td>
+          <td>
+            Required
+          </td>
+          <td>
+            RadioButton
+          </td>
+          <td>
+            Declares the widget as type 'RadioButton'.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            id
+          </td>
+          <td>
+            Required
+          </td>
+          <td>
+            Any String
+          </td>
+          <td>
+            Identifies the widget element for use when instantiating or rendering.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            class
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            Any String
+          </td>
+          <td>
+            RadioButton uses .palm-radiobutton-container by default, but you can override this setting.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            name
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            Any String
+          </td>
+          <td>
+            Adds a unique name to the RadioButton widget; generally used in templates.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="events">
+      Events
+    </h3>
+    <blockquote>
+      <pre>
+<code>Mojo.Event.listen(this.controller.get(&quot;radiobuttonId&quot;),
+  Mojo.Event.propertyChange, this.handleUpdate);
+</code>
+</pre>
+    </blockquote>
+    <table border="1">
+      <tbody>
+        <tr>
+          <th>
+            Event Type
+          </th>
+          <th>
+            Value
+          </th>
+          <th>
+            Event Handling
+          </th>
+        </tr>
+        <tr>
+          <td>
+            Mojo.Event.propertyChange
+          </td>
+          <td>
+            { property: this.valueName, value: this.choices[clicked._mojoListIndex].value, model: this.controller.model }
+          </td>
+          <td></td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="instantiation">
+      Instantiation
+    </h3>
+    <blockquote>
+      <pre>
+<code>this.controller.setupWidget(&quot;myRadioBtn&quot;,
+  this.attributes = {
+      choices: [
+          {label: &quot;One&quot;, value: 1},
+          {label: &quot;Two&quot;, value: 2}
+      ]
+  },
+  this.model = {
+      value: 1,
+      disabled: false
+  }
+); 
+</code>
+</pre>
+    </blockquote>
+    <h3 id="attribute-properties">
+      Attribute Properties
+    </h3>
+    <table border="1">
+      <tbody>
+        <tr>
+          <th>
+            Attribute Property
+          </th>
+          <th>
+            Type
+          </th>
+          <th>
+            Required
+          </th>
+          <th>
+            Default
+          </th>
+          <th>
+            Description
+          </th>
+        </tr>
+        <tr>
+          <td>
+            modelProperty
+          </td>
+          <td>
+            String
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            value
+          </td>
+          <td>
+            Model property name for RadioButton state
+          </td>
+        </tr>
+        <tr>
+          <td>
+            disabledProperty
+          </td>
+          <td>
+            String
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            disabled
+          </td>
+          <td>
+            Model property name for disabled boolean
+          </td>
+        </tr>
+        <tr>
+          <td>
+            choices
+          </td>
+          <td>
+            Array
+          </td>
+          <td>
+            Required
+          </td>
+          <td>
+            null
+          </td>
+          <td>
+            Array of button descriptions, each of which is a {label: 'string', value: value} entry; number of entries defines scope of widget.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="model-properties">
+      Model Properties
+    </h3>
+    <table border="1">
+      <tbody>
+        <tr>
+          <th>
+            Model Property
+          </th>
+          <th>
+            Type
+          </th>
+          <th>
+            Required
+          </th>
+          <th>
+            Default
+          </th>
+          <th>
+            Description
+          </th>
+        </tr>
+        <tr>
+          <td>
+            value
+          </td>
+          <td>
+            User-defined
+          </td>
+          <td>
+            Required
+          </td>
+          <td>
+            none
+          </td>
+          <td>
+            value of widget
+          </td>
+        </tr>
+        <tr>
+          <td>
+            disabled
+          </td>
+          <td>
+            Boolean
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            false
+          </td>
+          <td>
+            If true, RadioButton is inactive.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="methods">
+      Methods
+    </h3>
+    <p>
+      The RadioButton widget does not have any methods.
+    </p>
+		</div>
+	</body>
+</html>

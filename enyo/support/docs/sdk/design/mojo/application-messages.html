@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>$if(pagetitle)$$pagetitle$$endif$</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="stylesheet" href="_css/chrome.css" />
+		<link rel="stylesheet" href="../_css/chrome.css" />
+		<link rel="stylesheet" href="../../_css/chrome.css" />
+		<link rel="stylesheet" href="../../../_css/chrome.css" />
+		<script src="_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="_js/doc.js" type="text/javascript"></script>
+		<script src="../_js/doc.js" type="text/javascript"></script>
+		<script src="../../_js/doc.js" type="text/javascript"></script>
+		<script src="../../../_js/doc.js" type="text/javascript"></script>
+	</head>
+	<body>
+		<div id="content">
+    
+    <h1 id="application-messages">
+      Application Messages
+    </h1>
+    <p>
+      Some applications send the user message alerts after the occurrence of specified events, such as when there is new email. There are two types of application messages: banner notifications and the dashboard summary.
+    </p>
+    <p>
+      The following table provides additional information with image examples.
+    </p>
+    <table border="0">
+      <tbody>
+        <tr>
+          <th>
+            Message
+          </th>
+          <th>
+            Description
+          </th>
+          <th>
+            Example
+          </th>
+        </tr>
+        <tr>
+          <td>
+            Banner notification
+          </td>
+          <td>
+            Located under the current application and usually consists of a dashboard summary icon followed by a message. The Messaging application does this when running in the background and someone sends the user a text message. It displays a dashboard summary icon on the left, followed by the sender's ID and a portion of the text message.<br>
+            <br>
+            Banner notifications are optional. Some applications (such as Email) have a preference that the user can set to display banner notifications; the default is off. The Email app displays the dashboard summary icon on the right immediately instead.
+          </td>
+          <td>
+            <img src="/images/palm/ui_summary/messaging_bannerNotification.jpg" border="0" align="absmiddle">
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Dashboard summary
+          </td>
+          <td>
+            This type of message disappears after a few seconds, and then slides to the right as a dashboard summary icon. Tap a dashboard summary icon and the Dashboard View appears, displaying detailed information about each dashboard item. When displayed, flick each dashboard item to the right to dismiss it or tap the row to open it. Your app is responsible for the icons and text displayed for the dashboard summary items.<br>
+            <br>
+            The first example shows two dashboard summary icons: one from Email and another from Messaging. In the second example, the Dashboard View shows two dashboard summary items: one that represents many items (30 email messages) and another for a single item (incoming text message).<br>
+            <br>
+            <strong>Note</strong> : If your application processed a single event that should be reported, display it as a single tapable item in the dashboard. If your application has accumulated multiple items while running in the background, display them by using two tap targets, similar to the way the Email app displays its dashboard summary item. Tap the part on the right to open the most current item or tap the part on the left to see the list of emails.
+          </td>
+          <td>
+            <img src="/images/palm/ui_summary/dashboardSummaryIcons.jpg" border="0" align="absmiddle"><br>
+            <img src="/images/palm/ui_summary/dashboardItems_multiElement.jpg" border="0" align="absmiddle">
+          </td>
+        </tr>
+      </tbody>
+    </table>
+		</div>
+	</body>
+</html>

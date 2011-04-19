@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>$if(pagetitle)$$pagetitle$$endif$</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="stylesheet" href="_css/chrome.css" />
+		<link rel="stylesheet" href="../_css/chrome.css" />
+		<link rel="stylesheet" href="../../_css/chrome.css" />
+		<link rel="stylesheet" href="../../../_css/chrome.css" />
+		<script src="_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="_js/doc.js" type="text/javascript"></script>
+		<script src="../_js/doc.js" type="text/javascript"></script>
+		<script src="../../_js/doc.js" type="text/javascript"></script>
+		<script src="../../../_js/doc.js" type="text/javascript"></script>
+	</head>
+	<body>
+		<div id="content">
+    
+    <h1 id="mojo.model">
+      Mojo.Model
+    </h1>
+    <h2 id="namespace-detail">
+      Namespace Detail
+    </h2>
+    <h2 id="method-summary">
+      Method Summary
+    </h2>
+    <ul>
+      <li>Mojo.Model.<strong>decorate</strong>(proto, clone)
+      </li>
+      <li>Mojo.Model.<strong>decrypt</strong>(key, data)
+      </li>
+      <li>Mojo.Model.<strong>encrypt</strong>(key, data)
+      </li>
+      <li>Mojo.Model.<strong>format</strong>(model, formatters, clone)
+      </li>
+    </ul>
+    <hr>
+    <h2 id="method-detail">
+      Method Detail
+    </h2>
+    <h3 id="object-mojo.model.decorateproto-clone">
+      {Object} Mojo.Model.<strong>decorate</strong>(proto, clone)
+    </h3>
+    <p>
+      The idea of a decorator is that the prototype references the original object, so properties can be transparently added to (or modified in) the decorator without affecting the original.
+    </p>
+    <p>
+      This is really handy for widgets that need to add properties to their model in preparation for rendering.
+    </p>
+    <h4 id="parameters">
+      Parameters
+    </h4>
+    <ul>
+      <li>{Object} <strong>proto</strong> - the object to decorate. The new decorator object's prototype field will refer to this object.
+      </li>
+      <li>{Object} <strong>clone</strong> - if specified, will have its properties copied into the new decorator.
+      </li>
+    </ul>
+    <h4 id="returns">
+      Returns
+    </h4>
+    <p>
+      {Object} a new decorator object for the given 'original' object.
+    </p>
+    <hr>
+    <h3 id="string-mojo.model.decryptkey-data">
+      {string} Mojo.Model.<strong>decrypt</strong>(key, data)
+    </h3>
+    <p>
+      The string returned is a Base 64 decoded version of the Blowfish decrypted version of the source string. See <a href="http://www.schneier.com/blowfish.html">this article</a> for a description of Blowfish encryption. The strength of the encryption depends on the length of the key provided. For example, a 16-byte-long string is equivalent to a 128-bit key.
+    </p>
+    <p>
+      Example
+    </p>
+    <blockquote>
+      <pre>
+<code>var key = &quot;sfhjasf7827387af9s7d8f&quot;;
+var in_string = &quot;This is a test string.&quot;;
+var encrypted_string = Mojo.Model.encrypt( key, in_string );
+var decrypted_string = Mojo.Model.decrypt( key, encrypted_string );
+</code>
+</pre>
+    </blockquote>
+    <h4 id="parameters-1">
+      Parameters
+    </h4>
+    <ul>
+      <li>{string} <strong>key</strong> - The key used to encrypt the data. A discussion of proper key generation is beyond the scope of this document.
+      </li>
+      <li>{string} <strong>data</strong> - Base 64 encoded data to be decrypted.
+      </li>
+    </ul>
+    <h4 id="returns-1">
+      Returns
+    </h4>
+    <p>
+      {string} Base 64 decoded version of the Blowfish-decrypted version of the source string.
+    </p>
+    <hr>
+    <h3 id="string-mojo.model.encryptkey-data">
+      {string} Mojo.Model.<strong>encrypt</strong>(key, data)
+    </h3>
+    <p>
+      The string returned is a Base 64 encoded version of the Blowfish-encrypted version of the source string.
+    </p>
+    <p>
+      Example
+    </p>
+    <blockquote>
+      <pre>
+<code>var key = &quot;sfhjasf7827387af9s7d8f&quot;;
+var in_string = &quot;This is a test string.&quot;;
+var encrypted_string = Mojo.Model.encrypt( key, in_string );
+var decrypted_string = Mojo.Model.decrypt( key, encrypted_string );
+</code>
+</pre>
+    </blockquote>
+    <h4 id="parameters-2">
+      Parameters
+    </h4>
+    <ul>
+      <li>{string} <strong>key</strong> - Encryption key to be used.
+      </li>
+      <li>{string} <strong>data</strong> - Data to be encrypted.
+      </li>
+    </ul>
+    <h4 id="returns-2">
+      Returns
+    </h4>
+    <p>
+      {string} Base 64 encoded version of the Blowfish-encrypted version of the source string.
+    </p>
+    <hr>
+    <h3 id="mojo.model.formatmodel-formatters-clone">
+      Mojo.Model.<strong>format</strong>(model, formatters, clone)
+    </h3>
+    <p>
+      Applies the relevant formatter functions in formatters, to the given model object. The formatter results are placed in a newly created decorator, so the original model is unmodified.
+    </p>
+    <p>
+      Formatter functions receive their property value as the first argument, and the whole model object as a second argument. They may return a string, which is used for the formatted version of the model property, or alternatively a hash of <code>formattedPropertyName -&gt; formattedValue</code>, so one formatter function can create multiple formatted values from a single model property.
+    </p>
+    <h4 id="parameters-3">
+      Parameters
+    </h4>
+    <ul>
+      <li>
+        <p>
+          {Object} <strong>model</strong> - the object containing the properties to be formatted. It is left unmodified.
+        </p>
+      </li>
+      <li>
+        <p>
+          {Object} <strong>formatters</strong> - a hash of property names to formatter functions. The keys in the 'formatters' hash are names of properties in the model object to which the formatter functions should be applied. Formatted values have the text &quot;formatted&quot; appended to their names, so the unformatted value is also available.
+        </p>
+      </li>
+      <li>
+        <p>
+          {Object} <strong>clone</strong> - if specified, the clone object passed to 'decorate'. Its properties are copied to the model decorator object before applying the formatter functions.
+        </p>
+      </li>
+    </ul>
+		</div>
+	</body>
+</html>

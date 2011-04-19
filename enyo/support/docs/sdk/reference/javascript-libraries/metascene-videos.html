@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>$if(pagetitle)$$pagetitle$$endif$</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="stylesheet" href="_css/chrome.css" />
+		<link rel="stylesheet" href="../_css/chrome.css" />
+		<link rel="stylesheet" href="../../_css/chrome.css" />
+		<link rel="stylesheet" href="../../../_css/chrome.css" />
+		<script src="_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="_js/doc.js" type="text/javascript"></script>
+		<script src="../_js/doc.js" type="text/javascript"></script>
+		<script src="../../_js/doc.js" type="text/javascript"></script>
+		<script src="../../../_js/doc.js" type="text/javascript"></script>
+	</head>
+	<body>
+		<div id="content">
+    
+    <h1 id="metascene.videos">
+      Metascene.Videos
+    </h1>
+    <p>
+      This library enables you to push the webOS video player or editor onto your application's scene stack.
+    </p>
+    <h2 id="using-metascene.videos">
+      Using Metascene.Videos
+    </h2>
+    <ul>
+      <li>
+        <p>
+          include mojoloader.js in your sources
+        </p>
+      </li>
+      <li>
+        <p>
+          load the library
+        </p>
+        <blockquote>
+          <pre>
+<code>var Videos = MojoLoader.require({name: &quot;metascene.videos&quot;, version: &quot;1.0&quot;})[&quot;metascene.videos&quot;];
+</code>
+</pre>
+        </blockquote>
+      </li>
+      <li>
+        <p>
+          push the scene, either nowplaying or video editor
+        </p>
+        <blockquote>
+          <pre>
+<code>Videos.Push(this.controller.stageController, Videos.Nowplaying, params);
+</code>
+</pre>
+        </blockquote>
+      </li>
+    </ul>
+    <h2 id="scenes">
+      Scenes
+    </h2>
+    <h3 id="videos.nowplaying">
+      Videos.Nowplaying
+    </h3>
+    <blockquote>
+      <pre>
+<code>Videos.Push(this.controller.stageController, VideoLibrary.Nowplaying, params);
+</code>
+</pre>
+    </blockquote>
+    <p>
+      where params is an object with any number of the following properties:
+    </p>
+    <table border="1">
+      <tr>
+        <th>
+          param
+        </th>
+        <th>
+          type
+        </th>
+        <th>
+          req'd or opt
+        </th>
+        <th>
+          default
+        </th>
+        <th>
+          description
+        </th>
+      </tr>
+      <tr>
+        <td>
+          _id
+        </td>
+        <td>
+          string
+        </td>
+        <td>
+          <em>required</em>
+        </td>
+        <td>
+          null
+        </td>
+        <td>
+          the mojodb id of the video to play. If an _id is not supplied, a video obj or target <em>must</em> be supplied instead
+        </td>
+      </tr>
+      <tr>
+        <td>
+          video
+        </td>
+        <td>
+          object
+        </td>
+        <td>
+          optional
+        </td>
+        <td>
+          null
+        </td>
+        <td>
+          a video object from mojodb
+        </td>
+      </tr>
+      <tr>
+        <td>
+          target
+        </td>
+        <td>
+          string
+        </td>
+        <td>
+          optional
+        </td>
+        <td>
+          null
+        </td>
+        <td>
+          the uri of the video to play
+        </td>
+      </tr>
+      <tr>
+        <td>
+          initalPos
+        </td>
+        <td>
+          int
+        </td>
+        <td>
+          optional
+        </td>
+        <td>
+          0
+        </td>
+        <td>
+          position (in seconds) from which the video will start playing
+        </td>
+      </tr>
+      <tr>
+        <td>
+          videoID
+        </td>
+        <td>
+          int
+        </td>
+        <td>
+          optional
+        </td>
+        <td>
+          null
+        </td>
+        <td>
+          used internally by the app to store the latest initial position
+        </td>
+      </tr>
+      <tr>
+        <td>
+          thumbUrl
+        </td>
+        <td>
+          string
+        </td>
+        <td>
+          optional
+        </td>
+        <td>
+          app's generic thumb
+        </td>
+        <td>
+          required by the share flow, but not used otherwise
+        </td>
+      </tr>
+      <tr>
+        <td>
+          title
+        </td>
+        <td>
+          string
+        </td>
+        <td>
+          optional
+        </td>
+        <td>
+          uses target as title
+        </td>
+        <td>
+          title of the video to be displayed
+        </td>
+      </tr>
+      <tr>
+        <td>
+          autoplay
+        </td>
+        <td>
+          boolean
+        </td>
+        <td>
+          optional
+        </td>
+        <td>
+          true
+        </td>
+        <td>
+          if false, stops the video from autoplaying
+        </td>
+      </tr>
+      <tr>
+        <td>
+          size
+        </td>
+        <td>
+          int
+        </td>
+        <td>
+          optional
+        </td>
+        <td>
+          null
+        </td>
+        <td>
+          required by the share flow, but not used otherwise. Size of the video in bytes
+        </td>
+      </tr>
+      <tr>
+        <td>
+          duration
+        </td>
+        <td>
+          int
+        </td>
+        <td>
+          optional
+        </td>
+        <td>
+          null
+        </td>
+        <td>
+          required by the share flow, but not used otherwise. Duration of the video in seconds
+        </td>
+      </tr>
+      <tr>
+        <td>
+          isNewCard
+        </td>
+        <td>
+          boolean
+        </td>
+        <td>
+          optional
+        </td>
+        <td>
+          false
+        </td>
+        <td>
+          if true, the videoplayer closes the whole stage on error
+        </td>
+      </tr>
+      <tr>
+        <td>
+          enableControls
+        </td>
+        <td>
+          boolean
+        </td>
+        <td>
+          optional
+        </td>
+        <td>
+          true
+        </td>
+        <td>
+          if false, video cannot be manipulated by transport controls
+        </td>
+      </tr>
+    </table>
+    <p>
+      Using _id or video are the preferred methods, the other params are deprecated.
+    </p>
+    <h3 id="videos.videoeditor">
+      Videos.Videoeditor
+    </h3>
+    <p>
+      If you want push the video editor instead:
+    </p>
+    <blockquote>
+      <pre>
+<code>VideoLibrary.Push(this.controller.stageController, VideoLibrary.Videoeditor, params);
+</code>
+</pre>
+    </blockquote>
+    <p>
+      In addition to the <code>nowplaying</code> params, video editor can also take the following:
+    </p>
+    <table border="1">
+      <tr>
+        <th>
+          param
+        </th>
+        <th>
+          type
+        </th>
+        <th>
+          req'd or opt
+        </th>
+        <th>
+          default
+        </th>
+        <th>
+          description
+        </th>
+      </tr>
+      <tr>
+        <td>
+          popAfterEdit
+        </td>
+        <td>
+          boolean
+        </td>
+        <td>
+          optional
+        </td>
+        <td>
+          false
+        </td>
+        <td>
+          if true, the scene will pop after a video edit is successfu
+        </td>
+      </tr>
+      <tr>
+        <td>
+          openInEditMode
+        </td>
+        <td>
+          boolean
+        </td>
+        <td>
+          optional
+        </td>
+        <td>
+          false
+        </td>
+        <td>
+          if true, the nowplaying scene will immediately open the editor
+        </td>
+      </tr>
+      <tr>
+        <td>
+          callback
+        </td>
+        <td>
+          function
+        </td>
+        <td>
+          optional
+        </td>
+        <td>
+          null
+        </td>
+        <td>
+          this callback will be called after a video edit is successful with an object full of various params
+        </td>
+      </tr>
+      <tr>
+        <td>
+          timeLimit
+        </td>
+        <td>
+          int
+        </td>
+        <td>
+          optional
+        </td>
+        <td>
+          null
+        </td>
+        <td>
+          number of seconds that limits how far the edit handles can be dragged apart
+        </td>
+      </tr>
+      <tr>
+        <td>
+          sizeLimit
+        </td>
+        <td>
+          int
+        </td>
+        <td>
+          optional
+        </td>
+        <td>
+          null
+        </td>
+        <td>
+          number of bytes that limits how far the edit handles can be dragged apart. Converted to a timeLimit based on the video's bitrate
+        </td>
+      </tr>
+      <tr>
+        <td>
+          destination
+        </td>
+        <td>
+          string
+        </td>
+        <td>
+          optional
+        </td>
+        <td>
+          DCIM standard filename
+        </td>
+        <td>
+          where the edited video should go once trimmed
+        </td>
+      </tr>
+      <tr>
+        <td>
+          transcode
+        </td>
+        <td>
+          boolean
+        </td>
+        <td>
+          optional
+        </td>
+        <td>
+          false
+        </td>
+        <td>
+          if true, the editor simulates the trim without actually doing the trim
+        </td>
+      </tr>
+    </table>
+		</div>
+	</body>
+</html>

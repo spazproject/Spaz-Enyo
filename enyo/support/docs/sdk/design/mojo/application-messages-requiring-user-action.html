@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>$if(pagetitle)$$pagetitle$$endif$</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="stylesheet" href="_css/chrome.css" />
+		<link rel="stylesheet" href="../_css/chrome.css" />
+		<link rel="stylesheet" href="../../_css/chrome.css" />
+		<link rel="stylesheet" href="../../../_css/chrome.css" />
+		<script src="_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="_js/doc.js" type="text/javascript"></script>
+		<script src="../_js/doc.js" type="text/javascript"></script>
+		<script src="../../_js/doc.js" type="text/javascript"></script>
+		<script src="../../../_js/doc.js" type="text/javascript"></script>
+	</head>
+	<body>
+		<div id="content">
+    
+    <h1 id="application-messages-requiring-user-action">
+      Application Messages Requiring User Action
+    </h1>
+    <p>
+      Some application messages require the user's attention. There are two types of these message alerts: dialog boxes and pop-up notifications.
+    </p>
+    <p>
+      The following table provides additional information with image examples.
+    </p>
+    <table border="0">
+      <thead>
+        <tr>
+          <th>
+            Type
+          </th>
+          <th>
+            Description
+          </th>
+          <th>
+            Example
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            Dialog box
+          </td>
+          <td>
+            When an application needs the user to make a decision so it can continue, display a message in a dialog box when the application is in the foreground or minimized to a card. The dialog panel rises from the bottom of the current scene, and is attached to it. It can have multiple buttons, the Data Picker menu set, and even a text entry field.
+          </td>
+          <td>
+            <img src="/images/palm/ui_summary/dialogBox_DeleteEvent2.jpg" border="0" width="200" height="127">
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Pop-up notification
+          </td>
+          <td>
+            If an application needs to get the user's attention while it is in the background, use a pop-up notification message. It rises from the bottom of the screen and displays the available user options. You are responsible for designing and implementing the UI that appears in pop-up notifications. When you design them, make them as small as possible and limit the height to less than half the screen's height.<br>
+            <br>
+            Examples: While using one application (like Web), the Calendar Alarm goes off. The Calendar app displays a reminder, which the user must respond to before it can close. The HP webOS platform displays pop-up notification, too. You can see one when plugging a USB cable into your webOS device and computer. The pop-up notification asks what you want to do: mount the webOS device as a USB drive or simply charge it.
+          </td>
+          <td>
+            <img src="/images/palm/ui_summary/NotificationAnim_safe.gif" border="0" width="200" height="300">
+          </td>
+        </tr>
+      </tbody>
+    </table>
+		</div>
+	</body>
+</html>

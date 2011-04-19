@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>$if(pagetitle)$$pagetitle$$endif$</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="stylesheet" href="_css/chrome.css" />
+		<link rel="stylesheet" href="../_css/chrome.css" />
+		<link rel="stylesheet" href="../../_css/chrome.css" />
+		<link rel="stylesheet" href="../../../_css/chrome.css" />
+		<script src="_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="_js/doc.js" type="text/javascript"></script>
+		<script src="../_js/doc.js" type="text/javascript"></script>
+		<script src="../../_js/doc.js" type="text/javascript"></script>
+		<script src="../../../_js/doc.js" type="text/javascript"></script>
+	</head>
+	<body>
+		<div id="content">
+    
+    <h1 id="db8-luna-send-examples">
+      db8 Luna Send Examples
+    </h1>
+    <p>
+      luna-send is a command line tool you can use in a shell on the device to make calls to service components such as db8 (com.palm.db).
+    </p>
+    <p>
+      The following are provided to give you additional examples of making db8 service API calls.
+    </p>
+    <p>
+      <strong>Before You Begin</strong>
+    </p>
+    <p>
+      To test out these calls yourself, you need two things:
+    </p>
+    <ol style="list-style-type: decimal">
+      <li>
+        <p>
+          A USB cord for connecting the device to your development PC.
+        </p>
+      </li>
+      <li>
+        <p>
+          A mechanism for logging into your device. The Tools section describes various mechanisms for doing this. Other options include using novaterm on the Mac.
+        </p>
+      </li>
+    </ol>
+    <p>
+      <strong>App Impersonation</strong>
+    </p>
+    <p>
+      Using many of these calls at the command line may require you to impersonate the db8 kind owner. Normally, only the owner has permission to perform most database operations. This involves using the <code>-a</code> luna-send option.
+    </p>
+    <p>
+      For example:
+    </p>
+    <blockquote>
+      <pre>
+<code>luna-send -n 1 -a com.palm.contacts luna://com.palm.db/put '{&quot;objects&quot;:[{&quot;_kind&quot;:&quot;com.palm.defaults:1&quot;}]}'
+</code>
+</pre>
+    </blockquote>
+    <p>
+      If you get a <code>&quot;db:permission denied&quot;</code> error, then try using this option. See <a href="/dev-guide/mojo/db8.html#Permissions">Allowing Other Apps or Services to Access Your db8 Data</a> for more information on permissions.
+    </p>
+    <h2 id="api-calls">
+      API calls
+    </h2>
+    <ul>
+      <li>batch
+      </li>
+      <li>del
+      </li>
+      <li>delKind
+      </li>
+      <li>find
+      </li>
+      <li>get
+      </li>
+      <li>merge
+      </li>
+      <li>put
+      </li>
+      <li>putKind
+      </li>
+      <li>search
+      </li>
+      <li>watch
+      </li>
+    </ul>
+    <p>
+      <strong>Other operations:</strong>
+    </p>
+    <ul>
+      <li>collate
+      </li>
+      <li>revision sets
+      </li>
+    </ul>
+    <p>
+      <strong>See also:</strong>
+    </p>
+    <ul>
+      <li>
+        <a href="/reference/javascript-libraries/foundations/foundations-data-db.html">Javascript Wrapper API</a> - API calls provided with the JavaScript Foundation libraries to interface with the db8 service.
+      </li>
+      <li>
+        <a href="/reference/services/db8.html">Using serviceRequest</a> - Call the db8 service using the &quot;serviceRequest&quot; API.
+      </li>
+    </ul>
+    <p>
+      <a name="batch" id="batch">&#160;</a>
+    </p>
+    <hr>
+    <h2 id="batch">
+      batch
+    </h2>
+    <p>
+      <strong>In one batch, put an object, delete by id and do a query - responses will be in the same order as the requested operations</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>luna-send -n 1 luna://com.palm.db/batch '{&quot;operations&quot;:[{&quot;method&quot;:&quot;put&quot;,&quot;params&quot;:{&quot;objects&quot;:[{&quot;_kind&quot;:&quot;com.palm.test:1&quot;,&quot;foo&quot;:12}]}},{&quot;method&quot;:&quot;del&quot;,&quot;params&quot;:{&quot;ids&quot;:[3]}},{&quot;method&quot;:&quot;find&quot;,&quot;params&quot;:{&quot;query&quot;:{&quot;from&quot;:&quot;com.palm.test:1&quot;}}}]}'
+{&quot;returnValue&quot;:true,&quot;responses&quot;:[{&quot;returnValue&quot;:true,&quot;results&quot;:[{&quot;id&quot;:8,&quot;rev&quot;:8}]},{&quot;returnValue&quot;:true,&quot;count&quot;:1},{&quot;returnValue&quot;:true,&quot;results&quot;:[{&quot;_id&quot;:8,&quot;_kind&quot;:&quot;com.palm.test:1&quot;,&quot;_rev&quot;:8,&quot;foo&quot;:12}]}]}
+</code>
+</pre>
+    </blockquote>
+    <p>
+      <a name="del" id="del">&#160;</a>
+    </p>
+    <hr>
+    <h2 id="del">
+      del
+    </h2>
+    <p>
+      <strong>Delete an object</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>luna-send -n 1 -a com.palm.contacts luna://com.palm.db/del '{&quot;ids&quot;:[&quot;2+7c&quot;]}'
+{&quot;returnValue&quot;:true,&quot;results&quot;:[{&quot;id&quot;:&quot;2+7c&quot;,&quot;rev&quot;:554}]}
+</code>
+</pre>
+    </blockquote>
+    <p>
+      <strong>Query again, and the deleted object is not present</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>luna-send -n 1 -a com.palm.contacts luna://com.palm.db/find '{&quot;query&quot;:{&quot;from&quot;:&quot;com.palm.test:1&quot;,&quot;where&quot;:[{&quot;prop&quot;:&quot;foo&quot;,&quot;op&quot;:&quot;=&quot;,&quot;val&quot;:1}]}}'
+{&quot;returnValue&quot;:true,&quot;results&quot;:[{&quot;_id&quot;:3,&quot;_rev&quot;:3,&quot;_kind&quot;:&quot;com.palm.test:1&quot;,&quot;bar&quot;:1000,&quot;foo&quot;:1}]}
+</code>
+</pre>
+    </blockquote>
+    <p>
+      <strong>Delete with query</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>luna-send -n 1 -a com.palm.contacts luna://com.palm.db/del '{&quot;query&quot;:{&quot;from&quot;:&quot;com.palm.test:1&quot;,&quot;where&quot;:[{&quot;prop&quot;:&quot;foo&quot;,&quot;op&quot;:&quot;=&quot;,&quot;val&quot;:1}]}}'
+{&quot;returnValue&quot;:true,&quot;count&quot;:2}
+</code>
+</pre>
+    </blockquote>
+    <p>
+      <strong>Verify that objects were deleted</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>luna-send -n 1 -a com.palm.contacts luna://com.palm.db/find '{&quot;query&quot;:{&quot;from&quot;:&quot;com.palm.test:1&quot;,&quot;where&quot;:[{&quot;prop&quot;:&quot;foo&quot;,&quot;op&quot;:&quot;=&quot;,&quot;val&quot;:1}]}}'
+{&quot;returnValue&quot;:true,&quot;results&quot;:[]}
+</code>
+</pre>
+    </blockquote>
+    <p>
+      <a name="delkind" id="delkind">&#160;</a>
+    </p>
+    <hr>
+    <h2 id="delkind">
+      delKind
+    </h2>
+    <p>
+      <strong>Delete a kind object</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>luna-send -n 1 -a com.palm.contacts luna://com.palm.db/delKind '{&quot;id&quot;:&quot;com.palm.test:1&quot;}'
+{&quot;returnValue&quot;:true}
+</code>
+</pre>
+    </blockquote>
+    <p>
+      <strong>Verify that the kind is no longer registered</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>luna-send -n 1 luna://com.palm.db/find '{&quot;query&quot;:{&quot;from&quot;:&quot;com.palm.test:1&quot;,&quot;where&quot;:[{&quot;prop&quot;:&quot;foo&quot;,&quot;op&quot;:&quot;=&quot;,&quot;val&quot;:1}]}}'
+{&quot;errorCode&quot;:-3976,&quot;errorText&quot;:&quot;kind not registered: 'com.palm.test:1'&quot;,&quot;returnValue&quot;:false}
+</code>
+</pre>
+    </blockquote>
+    <p>
+      <a name="find" id="find">&#160;</a>
+    </p>
+    <hr>
+    <h2 id="find">
+      find
+    </h2>
+    <p>
+      <strong>Simple query</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>luna-send -n 1 -a com.palm.contacts luna://com.palm.db/find '{&quot;query&quot;:{&quot;from&quot;:&quot;com.palm.test:1&quot;,&quot;where&quot;:[{&quot;prop&quot;:&quot;foo&quot;,&quot;op&quot;:&quot;=&quot;,&quot;val&quot;:1}]}}'
+{&quot;returnValue&quot;:true,&quot;results&quot;:[{&quot;_id&quot;:&quot;++HGVOxufaCYXCLj&quot;,&quot;_kind&quot;:&quot;com.palm.test:1&quot;,&quot;_rev&quot;:8506,&quot;bar&quot;:1000,&quot;foo&quot;:1},{&quot;_id&quot;:&quot;++HGVPGVsSC5i6qw&quot;,&quot;_kind&quot;:&quot;com.palm.test:1&quot;,&quot;_rev&quot;:8507,&quot;bar&quot;:1000,&quot;foo&quot;:1}]}
+</code>
+</pre>
+    </blockquote>
+    <p>
+      <strong>Query on multiple properties</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>luna-send -n 1 -a com.palm.contacts luna://com.palm.db/find '{&quot;query&quot;:{&quot;from&quot;:&quot;com.palm.test:1&quot;,&quot;where&quot;:[{&quot;prop&quot;:&quot;bar&quot;,&quot;op&quot;:&quot;=&quot;,&quot;val&quot;:1000},{&quot;prop&quot;:&quot;foo&quot;,&quot;op&quot;:&quot;&gt;&quot;,&quot;val&quot;:1}]}}'
+{&quot;returnValue&quot;:true,&quot;results&quot;:[{&quot;_id&quot;:4,&quot;_rev&quot;:4,&quot;_kind&quot;:&quot;com.palm.test:1&quot;,&quot;bar&quot;:1000,&quot;foo&quot;:2},{&quot;_id&quot;:5,&quot;_rev&quot;:5,&quot;_kind&quot;:&quot;com.palm.test:1&quot;,&quot;bar&quot;:1000,&quot;foo&quot;:3},{&quot;_id&quot;:6,&quot;_rev&quot;:6,&quot;_kind&quot;:&quot;com.palm.test:1&quot;,&quot;bar&quot;:1000,&quot;foo&quot;:4}]}
+</code>
+</pre>
+    </blockquote>
+    <p>
+      <strong>Put two objects with shared prefix (and one without)</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>luna-send -n 1 -a com.palm.contacts luna://com.palm.db/put '{&quot;objects&quot;:[{&quot;_kind&quot;:&quot;com.palm.test:1&quot;,&quot;foo&quot;:1,&quot;bar&quot;:1000},{&quot;_kind&quot;:&quot;com.palm.test:1&quot;,&quot;foo&quot;:&quot;hello&quot;},{&quot;_kind&quot;:&quot;com.palm.test:1&quot;,&quot;foo&quot;:&quot;hello world!&quot;},{&quot;_kind&quot;:&quot;com.palm.test:1&quot;,&quot;foo&quot;:&quot;goodbye&quot;}]}'
+{&quot;returnValue&quot;:true,&quot;results&quot;:[{&quot;id&quot;:8,&quot;rev&quot;:8},{&quot;id&quot;:9,&quot;rev&quot;:9},{&quot;id&quot;:10,&quot;rev&quot;:10},{&quot;id&quot;:11,&quot;rev&quot;:11}]}
+</code>
+</pre>
+    </blockquote>
+    <p>
+      <strong>Prefix query</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>luna-send -n 1 luna://com.palm.db/find '{&quot;query&quot;:{&quot;from&quot;:&quot;com.palm.test:1&quot;,&quot;where&quot;:[{&quot;prop&quot;:&quot;foo&quot;,&quot;op&quot;:&quot;%&quot;,&quot;val&quot;:&quot;hello&quot;}]}}'
+{&quot;returnValue&quot;:true,&quot;results&quot;:[{&quot;id&quot;:&quot;++HGVUotjT08QQac&quot;,&quot;rev&quot;:8511},{&quot;id&quot;:&quot;++HGVUotkvSmDLn0&quot;,&quot;rev&quot;:8512},{&quot;id&quot;:&quot;++HGVUotm2wzr3la&quot;,&quot;rev&quot;:8513},{&quot;id&quot;:&quot;++HGVUotn00Bxwib&quot;,&quot;rev&quot;:8514}]}
+</code>
+</pre>
+    </blockquote>
+    <p>
+      <strong>Query with a watch</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>luna-send -n 2 -a luna://com.palm.db/find '{&quot;query&quot;:{&quot;from&quot;:&quot;com.palm.test:1&quot;,&quot;where&quot;:[{&quot;prop&quot;:&quot;foo&quot;,&quot;op&quot;:&quot;%&quot;,&quot;val&quot;:&quot;hello&quot;}]},&quot;watch&quot;:true}'
+{&quot;returnValue&quot;:true,&quot;results&quot;:[{&quot;_id&quot;:55,&quot;_rev&quot;:55,&quot;_kind&quot;:&quot;com.palm.test:1&quot;,&quot;foo&quot;:&quot;hello&quot;},{&quot;_id&quot;:56,&quot;_rev&quot;:56,&quot;_kind&quot;:&quot;com.palm.test:1&quot;,&quot;foo&quot;:&quot;hello world!&quot;}]}
+</code>
+</pre>
+    </blockquote>
+    <p>
+      After an update which would change the results of the query, you get another response:
+    </p>
+    <blockquote>
+      <pre>
+<code>{&quot;returnValue&quot;:true,&quot;fired&quot;:true}
+</code>
+</pre>
+    </blockquote>
+    <p>
+      <strong>Query with a limit</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>luna-send -n 1 luna://com.palm.db/find '{&quot;query&quot;:{&quot;from&quot;:&quot;com.palm.test:1&quot;,&quot;where&quot;:[{&quot;prop&quot;:&quot;foo&quot;,&quot;op&quot;:&quot;%&quot;,&quot;val&quot;:&quot;hello&quot;}],&quot;limit&quot;:1}}'
+{&quot;returnValue&quot;:true,&quot;results&quot;:[{&quot;_id&quot;:&quot;++HGVUotkvSmDLn0&quot;,&quot;_kind&quot;:&quot;com.palm.test:1&quot;,&quot;_rev&quot;:8512,&quot;foo&quot;:&quot;hello&quot;}],&quot;next&quot;:&quot;2+CN05W_Q5lj++Ff9oW6K_KjS5hqJqp3I5sk+F&quot;}
+</code>
+</pre>
+    </blockquote>
+    <p>
+      <strong>Get the next page of results</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>luna-send -n 1 -a com.palm.contacts luna://com.palm.db/find '{&quot;query&quot;:{&quot;from&quot;:&quot;com.palm.test:1&quot;,&quot;where&quot;:[{&quot;prop&quot;:&quot;foo&quot;,&quot;op&quot;:&quot;%&quot;,&quot;val&quot;:&quot;hello&quot;}],&quot;limit&quot;:1,&quot;page&quot;:&quot;2+CN05W_Q5lj++Ff9oW6K_KjS5hqJqp3I5sk+F&quot;}}'
+{&quot;returnValue&quot;:true,&quot;results&quot;:[{&quot;_id&quot;:&quot;++HGVUotm2wzr3la&quot;,&quot;_kind&quot;:&quot;com.palm.test:1&quot;,&quot;_rev&quot;:8513,&quot;foo&quot;:&quot;hello world!&quot;}],&quot;next&quot;:&quot;2+CN05W_Q5lj76SjRalZ7F+39mh7GpOKQrGhBbSuRYCgNF3&quot;}
+</code>
+</pre>
+    </blockquote>
+    <p>
+      <strong>Count the results that would have been return without the limit</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>luna-send -n 1 -a com.palm.contacts luna://com.palm.db/find '{&quot;query&quot;:{&quot;from&quot;:&quot;com.palm.test:1&quot;,&quot;where&quot;:[{&quot;prop&quot;:&quot;foo&quot;,&quot;op&quot;:&quot;%&quot;,&quot;val&quot;:&quot;hello&quot;}],&quot;limit&quot;:1},&quot;count&quot;:true}'
+{&quot;returnValue&quot;:true,&quot;results&quot;:[{&quot;_id&quot;:&quot;++HGVUotkvSmDLn0&quot;,&quot;_kind&quot;:&quot;com.palm.test:1&quot;,&quot;_rev&quot;:8512,&quot;foo&quot;:&quot;hello&quot;}],&quot;next&quot;:&quot;2+CN05W_Q5lj++Ff9oW6K_KjS5hqJqp3I5sk+F&quot;,&quot;count&quot;:2}
+</code>
+</pre>
+    </blockquote>
+    <p>
+      <a name="get" id="get">&#160;</a>
+    </p>
+    <hr>
+    <h2 id="get">
+      get
+    </h2>
+    <p>
+      <strong>Get a single object</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>luna-send -n 1 -a com.palm.contacts luna://com.palm.db/get '{&quot;ids&quot;:[&quot;++HGVPGVv44P7g1P&quot;]}'
+{&quot;returnValue&quot;:true,&quot;results&quot;:[{&quot;_id&quot;:&quot;++HGVPGVv44P7g1P&quot;,&quot;_kind&quot;:&quot;com.palm.test:1&quot;,&quot;_rev&quot;:8509,&quot;bar&quot;:1000,&quot;foo&quot;:3}]}
+</code>
+</pre>
+    </blockquote>
+    <p>
+      <strong>Get an array of objects</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>luna-send -n 1 -a com.palm.contacts luna://com.palm.db/get '{&quot;ids&quot;:[&quot;++HGVPGVsSC5i6qw&quot;,&quot;++HGVPGVv44P7g1P&quot;,&quot;++HGVPGVw8g7_lrA&quot;]}'
+{&quot;returnValue&quot;:true,&quot;results&quot;:[{&quot;_id&quot;:&quot;++HGVPGVsSC5i6qw&quot;,&quot;_kind&quot;:&quot;com.palm.test:1&quot;,&quot;_rev&quot;:8507,&quot;bar&quot;:1000,&quot;foo&quot;:1},{&quot;_id&quot;:&quot;++HGVPGVv44P7g1P&quot;,&quot;_kind&quot;:&quot;com.palm.test:1&quot;,&quot;_rev&quot;:8509,&quot;bar&quot;:1000,&quot;foo&quot;:3},{&quot;_id&quot;:&quot;++HGVPGVw8g7_lrA&quot;,&quot;_kind&quot;:&quot;com.palm.test:1&quot;,&quot;_rev&quot;:8510,&quot;bar&quot;:1000,&quot;foo&quot;:4}]}
+</code>
+</pre>
+    </blockquote>
+    <p>
+      <a name="merge" id="merge">&#160;</a>
+    </p>
+    <hr>
+    <h2 id="merge">
+      merge
+    </h2>
+    <p>
+      <strong>Merge array of objects</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>luna-send -n 1 -a com.palm.contacts luna://com.palm.db/merge '{&quot;objects&quot;:[{&quot;_id&quot;:&quot;++HGVPGVsSC5i6qw&quot;,&quot;bar&quot;:5000},{&quot;_id&quot;:&quot;++HGVPGVv44P7g1P&quot;,&quot;bar&quot;:6000}]}'
+{&quot;returnValue&quot;:true,&quot;results&quot;:[{&quot;id&quot;:&quot;++HGVPGVsSC5i6qw&quot;,&quot;rev&quot;:8516},{&quot;id&quot;:&quot;++HGVPGVv44P7g1P&quot;,&quot;rev&quot;:8517}]}
+</code>
+</pre>
+    </blockquote>
+    <p>
+      <strong>Verify that props were merged</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>luna-send -n 1 -a com.palm.contacts luna://com.palm.db/get '{&quot;ids&quot;:[&quot;++HGVPGVsSC5i6qw&quot;,&quot;++HGVPGVv44P7g1P&quot;]}'
+{&quot;returnValue&quot;:true,&quot;results&quot;:[{&quot;_id&quot;:&quot;++HGVPGVsSC5i6qw&quot;,&quot;_kind&quot;:&quot;com.palm.test:1&quot;,&quot;_rev&quot;:8516,&quot;bar&quot;:5000,&quot;foo&quot;:1},{&quot;_id&quot;:&quot;++HGVPGVv44P7g1P&quot;,&quot;_kind&quot;:&quot;com.palm.test:1&quot;,&quot;_rev&quot;:8517,&quot;bar&quot;:6000,&quot;foo&quot;:3}]}
+</code>
+</pre>
+    </blockquote>
+    <p>
+      <strong>Merge with query</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>luna-send -n 1 -a com.palm.contacts luna://com.palm.db/merge '{&quot;props&quot;:{&quot;bar&quot;:null},&quot;query&quot;:{&quot;from&quot;:&quot;com.palm.test:1&quot;,&quot;where&quot;:[{&quot;prop&quot;:&quot;foo&quot;,&quot;op&quot;:&quot;%&quot;,&quot;val&quot;:&quot;hello&quot;}]}}'
+{&quot;returnValue&quot;:true,&quot;count&quot;:2}
+</code>
+</pre>
+    </blockquote>
+    <p>
+      <strong>Verify that props were merged</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>luna-send -n 1 -a com.palm.contacts luna://com.palm.db/get '{&quot;ids&quot;:[&quot;++HGVUotm2wzr3la&quot;,&quot;++HGVUotkvSmDLn0&quot;]}'
+{&quot;returnValue&quot;:true,&quot;results&quot;: [{&quot;_id&quot;:&quot;++HGVUotm2wzr3la&quot;, &quot;_kind&quot;:&quot;com.palm.test:1&quot;, &quot;_rev&quot;:8519,&quot;bar&quot;:null,&quot;foo&quot;:&quot;hello world!&quot;}, {&quot;_id&quot;:&quot;++HGVUotkvSmDLn0&quot;, &quot;_kind&quot;:&quot;com.palm.test:1&quot;,  &quot;_rev&quot;:8518,&quot;bar&quot;:null, &quot;foo&quot;:&quot;hello&quot;}]}
+</code>
+</pre>
+    </blockquote>
+    <p>
+      <strong>Merging arrays</strong>
+    </p>
+    <p>
+      <strong>Merging an existing object: {&quot;a&quot;:[1,2,3]} with object: {&quot;a&quot;:[4,5,6]} results in {&quot;a&quot;:[4,5,6]}</strong>
+    </p>
+    <p>
+      <strong>Put an object with an array</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>luna-send -n 1 -a com.palm.contacts luna://com.palm.db/put '{&quot;objects&quot;:[{&quot;_kind&quot;:&quot;com.palm.test:1&quot;,&quot;a&quot;:[1,2,3]}]}'
+{&quot;returnValue&quot;:true,&quot;results&quot;:[{&quot;id&quot;:&quot;++HGVhDI0DNjiBWJ&quot;,&quot;rev&quot;:8520}]}
+</code>
+</pre>
+    </blockquote>
+    <p>
+      <strong>Merge with another object containing an array - note the response now contains id and rev</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>luna-send -n 1 -a com.palm.contacts luna://com.palm.db/merge '{&quot;objects&quot;:[{&quot;_id&quot;:&quot;++HGVhDI0DNjiBWJ&quot;,&quot;a&quot;:[4,5,6]}]}'
+{&quot;returnValue&quot;:true,&quot;results&quot;:[{&quot;id&quot;:&quot;++HGVhDI0DNjiBWJ&quot;,&quot;rev&quot;:8522}]}
+</code>
+</pre>
+    </blockquote>
+    <p>
+      <strong>Retrieve the merged object - note the array was overwritten</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>luna-send -n 1 -a com.palm.contacts luna://com.palm.db/get '{&quot;ids&quot;:[&quot;++HGVhDI0DNjiBWJ&quot;]}'
+{&quot;returnValue&quot;:true,&quot;results&quot;:[{&quot;_id&quot;:&quot;++HGVhDI0DNjiBWJ&quot;,&quot;_kind&quot;:&quot;com.palm.test:1&quot;,&quot;_rev&quot;:8522,&quot;a&quot;:[4,5,6]}]}
+</code>
+</pre>
+    </blockquote>
+    <p>
+      <a name="put" id="put">&#160;</a>
+    </p>
+    <hr>
+    <h2 id="put">
+      put
+    </h2>
+    <p>
+      <strong>Put a single object</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>luna-send -n 1 -a com.palm.contacts luna://com.palm.db/put '{&quot;objects&quot;:[{&quot;_kind&quot;:&quot;com.palm.test:1&quot;,&quot;foo&quot;:1,&quot;bar&quot;:1000}]}'
+{&quot;returnValue&quot;:true,&quot;results&quot;:[{&quot;id&quot;:&quot;++HGVOxufaCYXCLj&quot;,&quot;rev&quot;:8506}]}
+</code>
+</pre>
+    </blockquote>
+    <p>
+      <strong>Put an array of objects</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>luna-send -n 1 luna://com.palm.db/put '{&quot;objects&quot;:[{&quot;_kind&quot;:&quot;com.palm.test:1&quot;,&quot;foo&quot;:1,&quot;bar&quot;:1000},{&quot;_kind&quot;:&quot;com.palm.test:1&quot;,&quot;foo&quot;:2,&quot;bar&quot;:1000},{&quot;_kind&quot;:&quot;com.palm.test:1&quot;,&quot;foo&quot;:3,&quot;bar&quot;:1000},{&quot;_kind&quot;:&quot;com.palm.test:1&quot;,&quot;foo&quot;:4,&quot;bar&quot;:1000}]}'
+{&quot;returnValue&quot;:true,&quot;results&quot;:[{&quot;id&quot;:&quot;++HGVPGVsSC5i6qw&quot;,&quot;rev&quot;:8507},{&quot;id&quot;:&quot;++HGVPGVtw_DGF44&quot;,&quot;rev&quot;:8508},{&quot;id&quot;:&quot;++HGVPGVv44P7g1P&quot;,&quot;rev&quot;:8509},{&quot;id&quot;:&quot;++HGVPGVw8g7_lrA&quot;,&quot;rev&quot;:8510}]}
+</code>
+</pre>
+    </blockquote>
+    <p>
+      <a name="putkind" id="putkind">&#160;</a>
+    </p>
+    <hr>
+    <h2 id="putkind">
+      putKind
+    </h2>
+    <p>
+      <strong>Basic kind</strong>
+    </p>
+    <p>
+      <strong>Register the type &quot;com.palm.test:1&quot;</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>luna-send -n 1 -a com.palm.contacts luna://com.palm.db/putKind '{&quot;id&quot;:&quot;com.palm.test:1&quot;,&quot;owner&quot;:&quot;com.palm.contacts&quot;,&quot;indexes&quot;:[{&quot;name&quot;:&quot;foo&quot;, &quot;props&quot;:[{&quot;name&quot;:&quot;foo&quot;}]},{&quot;name&quot;:&quot;barfoo&quot;,&quot;props&quot;:[{&quot;name&quot;:&quot;bar&quot;},{&quot;name&quot;:&quot;foo&quot;}]}]}]}'
+{&quot;returnValue&quot;:true}
+</code>
+</pre>
+    </blockquote>
+    <p>
+      <strong>Kind with default values</strong>
+    </p>
+    <p>
+      <strong>Register the type &quot;com.palm.defaults:1&quot; with a default value</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>luna-send -n 1 -a com.palm.contacts luna://com.palm.db/putKind '{&quot;id&quot;:&quot;com.palm.defaults:1&quot;,&quot;owner&quot;:&quot;com.palm.contacts&quot;,&quot;indexes&quot;:[{&quot;name&quot;:&quot;foo&quot;,&quot;props&quot;:[{&quot;name&quot;:&quot;foo&quot;, &quot;default&quot;:1}]}]}'
+{&quot;returnValue&quot;:true}
+</code>
+</pre>
+    </blockquote>
+    <p>
+      <strong>Put an object of type &quot;com.palm.defaults:1&quot; without the foo property</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>luna-send -n 1 luna://com.palm.db/put '{&quot;objects&quot;:[{&quot;_kind&quot;:&quot;com.palm.defaults:1&quot;}]}'
+{&quot;returnValue&quot;:true,&quot;results&quot;:[{&quot;id&quot;:3,&quot;rev&quot;:3}]}
+</code>
+</pre>
+    </blockquote>
+    <p>
+      <strong>Query for &quot;com.palm.defaults:1&quot; using the foo index - the object we just put should be found since we provided a default value for foo.</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>luna-send -n 1 luna://com.palm.db/find '{&quot;query&quot;:{&quot;from&quot;:&quot;com.palm.defaults:1&quot;, &quot;where&quot;:{&quot;prop&quot;:&quot;foo&quot;,&quot;op&quot;:&quot;&gt;=&quot;,&quot;val&quot;:0}}}'
+{&quot;returnValue&quot;:true,&quot;results&quot;:[{&quot;_id&quot;:3,&quot;_kind&quot;:&quot;com.palm.defaults:1&quot;,&quot;_rev&quot;:3}]}
+</code>
+</pre>
+    </blockquote>
+    <p>
+      <strong>Kind that extends another kind</strong>
+    </p>
+    <p>
+      <strong>Register the parent kind &quot;com.palm.parent:1&quot;</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>luna-send -n 1 -a com.palm.contacts luna://com.palm.db/putKind '{&quot;id&quot;:&quot;com.palm.parent:1&quot;,&quot;owner&quot;:&quot;com.palm.contacts&quot;,&quot;indexes&quot;:[{&quot;name&quot;:&quot;foo&quot;,&quot;props&quot;:[{&quot;name&quot;:&quot;foo&quot;}]}]}'
+{&quot;returnValue&quot;:true}
+</code>
+</pre>
+    </blockquote>
+    <p>
+      <strong>Register the child kind &quot;com.palm.child:1&quot;</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>luna-send -n 1 -a com.palm.contacts luna://com.palm.db/putKind '{&quot;id&quot;:&quot;com.palm.child:1&quot;,&quot;owner&quot;:&quot;com.palm.contacts&quot;,&quot;extends&quot;:[&quot;com.palm.parent:1&quot;]}'
+{&quot;returnValue&quot;:true}
+</code>
+</pre>
+    </blockquote>
+    <p>
+      <strong>Add an object of the child kind</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>luna-send -n 1 -a com.palm.contacts luna://com.palm.db/put '{&quot;objects&quot;:[{&quot;_kind&quot;:&quot;com.palm.child:1&quot;, &quot;foo&quot;:1}]}'
+{&quot;returnValue&quot;:true,&quot;results&quot;:[{&quot;id&quot;:&quot;1kZ&quot;,&quot;rev&quot;:9}]}
+</code>
+</pre>
+    </blockquote>
+    <p>
+      <strong>Query on the parent kind - you will get child objects</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>luna-send -n 1 -a com.palm.contacts luna://com.palm.db/find '{&quot;query&quot;:{&quot;from&quot;:&quot;com.palm.parent:1&quot;,&quot;where&quot;:[{&quot;prop&quot;:&quot;foo&quot;,&quot;op&quot;:&quot;=&quot;,&quot;val&quot;:1}]}}'
+{&quot;returnValue&quot;:true,&quot;results&quot;:[{&quot;_id&quot;:&quot;1kZ&quot;,&quot;_kind&quot;:&quot;com.palm.child:1&quot;,&quot;_rev&quot;:9,&quot;foo&quot;:1}]}
+</code>
+</pre>
+    </blockquote>
+    <p>
+      <a name="search" id="search">&#160;</a>
+    </p>
+    <hr>
+    <h2 id="search">
+      search
+    </h2>
+    <p>
+      <strong>Register kind with tokenized, primary collated index on foo</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>luna-send -n 1 -a com.palm.contacts luna://com.palm.db/putKind '{&quot;id&quot;:&quot;com.palm.searchtest:1&quot;,&quot;owner&quot;:&quot;com.palm.contacts&quot;,&quot;indexes&quot;:[{&quot;name&quot;:&quot;bar&quot;,&quot;props&quot;:[{&quot;name&quot;:&quot;bar&quot;,&quot;collate&quot;:&quot;primary&quot;,&quot;tokenize&quot;:&quot;default&quot;}]}]}'
+{&quot;returnValue&quot;:true}
+</code>
+</pre>
+    </blockquote>
+    <p>
+      <strong>Put a few objects</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>luna-send -n 1 -a com.palm.contacts luna://com.palm.db/put '{&quot;objects&quot;:[{&quot;_kind&quot;:&quot;com.palm.searchtest:1&quot;,&quot;foo&quot;:&quot;four score and seven years ago&quot;, &quot;bar&quot;:&quot;barbar&quot;},{&quot;_kind&quot;:&quot;com.palm.searchtest:1&quot;,&quot;foo&quot;:&quot;FOUR BOTTLES OF BEER!!!!&quot;, &quot;bar&quot;:&quot;jarjar&quot;},{&quot;_kind&quot;:&quot;com.palm.searchtest:1&quot;,&quot;foo&quot;:&quot;seven dwarves&quot;, &quot;bar&quot;:&quot;woohoo&quot;},{&quot;_kind&quot;:&quot;com.palm.searchtest:1&quot;,&quot;foo&quot;:&quot;fast and furious&quot;, &quot;bar&quot;:&quot;myBar&quot;}]}'
+{&quot;returnValue&quot;:true,&quot;results&quot;:[{&quot;id&quot;:&quot;1nF&quot;,&quot;rev&quot;:52},{&quot;id&quot;:&quot;1nJ&quot;,&quot;rev&quot;:53},{&quot;id&quot;:&quot;1nN&quot;,&quot;rev&quot;:54},{&quot;id&quot;:&quot;1nR&quot;,&quot;rev&quot;:55}]}
+</code>
+</pre>
+    </blockquote>
+    <p>
+      <strong>Search on 'fo'</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>luna-send -n 1 -a com.palm.contacts luna://com.palm.db/search '{&quot;query&quot;:{&quot;from&quot;:&quot;com.palm.searchtest:1&quot;,&quot;orderBy&quot;:&quot;foo&quot;,&quot;where&quot;:[{&quot;prop&quot;:&quot;foo&quot;,&quot;op&quot;:&quot;?&quot;,&quot;val&quot;:&quot;fo&quot;,&quot;collate&quot;:&quot;primary&quot;}]}}'
+{&quot;returnValue&quot;:true,&quot;results&quot;:[{&quot;_id&quot;:&quot;1nZ&quot;,&quot;_kind&quot;:&quot;com.palm.searchtest:1&quot;,&quot;_rev&quot;:57,&quot;foo&quot;:&quot;FOUR BOTTLES OF BEER!!!!&quot;},{&quot;_id&quot;:&quot;1nF&quot;,&quot;_kind&quot;:&quot;com.palm.searchtest:1&quot;,&quot;_rev&quot;:52,&quot;foo&quot;:&quot;four score and seven years ago&quot;}],&quot;count&quot;:3}
+</code>
+</pre>
+    </blockquote>
+    <p>
+      <strong>Search on 'fa an fu'</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>luna-send -n 1 -a com.palm.contacts luna://com.palm.db/search '{&quot;query&quot;:{&quot;from&quot;:&quot;com.palm.searchtest:1&quot;,&quot;orderBy&quot;:&quot;foo&quot;,&quot;where&quot;:[{&quot;prop&quot;:&quot;foo&quot;,&quot;op&quot;:&quot;?&quot;,&quot;val&quot;:&quot;fa an fu&quot;,&quot;collate&quot;:&quot;primary&quot;}]}}'
+{&quot;returnValue&quot;:true,&quot;results&quot;:[{&quot;_id&quot;:&quot;1ng&quot;,&quot;_kind&quot;:&quot;com.palm.searchtest:1&quot;,&quot;_rev&quot;:59,&quot;foo&quot;:&quot;fast and furious&quot;}],&quot;count&quot;:1}
+</code>
+</pre>
+    </blockquote>
+    <p>
+      <a name="watch" id="watch">&#160;</a>
+    </p>
+    <hr>
+    <h2 id="watch">
+      watch
+    </h2>
+    <blockquote>
+      <pre>
+<code>luna-send -n 2 -a com.palm.contacts luna://com.palm.db/watch '{&quot;query&quot;:{&quot;from&quot;:&quot;com.palm.test:1&quot;,&quot;where&quot;:[{&quot;prop&quot;:&quot;foo&quot;,&quot;op&quot;:&quot;%&quot;,&quot;val&quot;:&quot;hello&quot;}]}}'
+</code>
+</pre>
+    </blockquote>
+    <p>
+      The following is returned if there are no results that match the query
+    </p>
+    <blockquote>
+      <pre>
+<code>{&quot;returnValue&quot;:true}
+</code>
+</pre>
+    </blockquote>
+    <p>
+      The following is returned if there are results that match the query
+    </p>
+    <blockquote>
+      <pre>
+<code>{&quot;returnValue&quot;:true,&quot;fired&quot;:true} 
+</code>
+</pre>
+    </blockquote>
+    <p>
+      After an update happens which would change the response, you get another response:
+    </p>
+    <blockquote>
+      <pre>
+<code>{&quot;returnValue&quot;:true,&quot;fired&quot;:true}
+</code>
+</pre>
+    </blockquote>
+    <p>
+      <a name="collate" id="collate">&#160;</a>
+    </p>
+    <hr>
+    <h2 id="collate">
+      collate
+    </h2>
+    <p>
+      <strong>Register kind with collation type of primary on the property foo</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>luna-send -n 1 -a com.palm.contacts luna://com.palm.db/putKind '{&quot;id&quot;:&quot;com.palm.colltest:1&quot;,&quot;owner&quot;:&quot;com.palm.contacts&quot;,&quot;indexes&quot;:[{&quot;name&quot;:&quot;foo&quot;,&quot;props&quot;:[{&quot;name&quot;:&quot;foo&quot;,&quot;collate&quot;:&quot;primary&quot;}]}]}'
+{&quot;returnValue&quot;:true}
+</code>
+</pre>
+    </blockquote>
+    <p>
+      <strong>Put objects with mixed case foo values</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>luna-send -n 1 -a com.palm.contacts luna://com.palm.db/put '{&quot;objects&quot;:[{&quot;_kind&quot;:&quot;com.palm.colltest:1&quot;,&quot;foo&quot;:&quot;aardvark&quot;},{&quot;_kind&quot;:&quot;com.palm.colltest:1&quot;,&quot;foo&quot;:&quot;APPLE&quot;},{&quot;_kind&quot;:&quot;com.palm.colltest:1&quot;,&quot;foo&quot;:&quot;ball&quot;},{&quot;_kind&quot;:&quot;com.palm.colltest:1&quot;,&quot;foo&quot;:&quot;Boy&quot;},]}'
+{&quot;returnValue&quot;:true,&quot;results&quot;:[{&quot;id&quot;:&quot;++HGVp3etqlwJBYm&quot;,&quot;rev&quot;:8525},{&quot;id&quot;:&quot;++HGVp3evwKcmrh2&quot;,&quot;rev&quot;:8526},{&quot;id&quot;:&quot;++HGVp3ex+xr00M+&quot;,&quot;rev&quot;:8527},{&quot;id&quot;:&quot;++HGVp3exztxrUAt&quot;,&quot;rev&quot;:8528}]}
+</code>
+</pre>
+    </blockquote>
+    <p>
+      <strong>Order by foo</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>luna-send -n 1 -a com.palm.contacts luna://com.palm.db/find '{&quot;query&quot;:{&quot;from&quot;:&quot;com.palm.colltest:1&quot;,&quot;orderBy&quot;:&quot;foo&quot;}}'
+{&quot;returnValue&quot;:true,&quot;results&quot;:[ {&quot;_id&quot;:&quot;++HGVp3etqlwJBYm&quot;, &quot;_kind&quot;:&quot;com.palm.colltest:1&quot;, &quot;_rev&quot;:8525,&quot;foo&quot;:&quot;aardvark&quot;}, {&quot;_id&quot;:&quot;++HGVp3evwKcmrh2&quot;, &quot;_kind&quot;:&quot;com.palm.colltest:1&quot;, &quot;_rev&quot;:8526,&quot;foo&quot;:&quot;APPLE&quot;},{&quot;_id&quot;:&quot;++HGVp3ex+xr00M+&quot;, &quot;_kind&quot;:&quot;com.palm.colltest:1&quot;, &quot;_rev&quot;:8527,&quot;foo&quot;:&quot;ball&quot;}, {&quot;_id&quot;:&quot;++HGVp3exztxrUAt&quot;, &quot;_kind&quot;:&quot;com.palm.colltest:1&quot;, &quot;_rev&quot;:8528,&quot;foo&quot;:&quot;Boy&quot;}]}
+</code>
+</pre>
+    </blockquote>
+    <p>
+      <strong>Prefix match with primary collation</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>luna-send -n 1 -a com.palm.contacts luna://com.palm.db/find '{&quot;query&quot;:{&quot;from&quot;:&quot;com.palm.colltest:1&quot;,&quot;where&quot;:[{&quot;prop&quot;:&quot;foo&quot;,&quot;op&quot;:&quot;%&quot;,&quot;val&quot;:&quot;a&quot;,&quot;collate&quot;:&quot;primary&quot;}]}}'
+{&quot;returnValue&quot;:true,&quot;results&quot;:[{&quot;_id&quot;:&quot;++HGVp3etqlwJBYm&quot;,&quot;_kind&quot;:&quot;com.palm.colltest:1&quot;,&quot;_rev&quot;:8525,&quot;foo&quot;:&quot;aardvark&quot;},{&quot;_id&quot;:&quot;++HGVp3evwKcmrh2&quot;,&quot;_kind&quot;:&quot;com.palm.colltest:1&quot;,&quot;_rev&quot;:8526,&quot;foo&quot;:&quot;APPLE&quot;}]}
+</code>
+</pre>
+    </blockquote>
+    <p>
+      <a name="revsets" id="revsets">&#160;</a>
+    </p>
+    <hr>
+    <h2 id="revision-sets">
+      revision sets
+    </h2>
+    <p>
+      <strong>Put kind with a revset on the properties foo and bar</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>luna-send -n 1 luna://com.palm.db/putKind '{&quot;id&quot;:&quot;com.palm.revtest:1&quot;,&quot;owner&quot;:&quot;com.palm.contacts&quot;,&quot;indexes&quot;:[{&quot;name&quot;:&quot;fooBarRev&quot;, &quot;props&quot;:[{&quot;name&quot;:&quot;fooBarRev&quot;}]}],&quot;revSets&quot;:[{&quot;name&quot;:&quot;fooBarRev&quot;, &quot;props&quot;:[{&quot;name&quot;:&quot;foo&quot;},{&quot;name&quot;:&quot;bar&quot;}]}]}'
+{&quot;returnValue&quot;:true}
+</code>
+</pre>
+    </blockquote>
+    <p>
+      <strong>fooBarRev is assigned to current rev whenever foo or bar is updated</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>luna-send -n 1 -a com.palm.contacts luna://com.palm.db/put '{&quot;objects&quot;:[{&quot;_kind&quot;:&quot;com.palm.revtest:1&quot;,&quot;foo&quot;:1,&quot;bar&quot;:2}]}'
+{&quot;returnValue&quot;:true,&quot;results&quot;:[{&quot;id&quot;:&quot;++HGZTDaQgxxoEaG&quot;&quot;,&quot;rev&quot;:8852}]}}
+</code>
+</pre>
+    </blockquote>
+    <p>
+      <strong>Get fooBarRev value after put</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>luna-send -n 1 -a com.palm.contacts luna://com.palm.db/get '{&quot;ids&quot;:[&quot;++HGZTDaQgxxoEaG&quot;]}'
+{&quot;returnValue&quot;:true,&quot;results&quot;:[{&quot;_id&quot;:&quot;++HGZTDaQgxxoEaG&quot;,&quot;_kind&quot;:&quot;com.palm.revtest:1&quot;,&quot;_rev&quot;:8852,&quot;bar&quot;:2,&quot;foo&quot;:1,&quot;fooBarRev&quot;:8852}]}
+</code>
+</pre>
+    </blockquote>
+    <p>
+      <strong>Update foo, fooBarRev updated to current rev</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>luna-send -n 1 -a com.palm.contacts luna://com.palm.db/merge '{&quot;objects&quot;:[{&quot;_id&quot;:&quot;++HGZTDaQgxxoEaG&quot;,&quot;foo&quot;:2}]}'
+{&quot;returnValue&quot;:true,&quot;results&quot;:[{&quot;id&quot;:&quot;++HGZTDaQgxxoEaG&quot;,&quot;rev&quot;:8853}]}
+
+luna-send -n 1 -a com.palm.contacts luna://com.palm.db/get '{&quot;ids&quot;:[&quot;++HGZTDaQgxxoEaG&quot;]}'
+{&quot;returnValue&quot;:true,&quot;results&quot;:[{&quot;_id&quot;:&quot;++HGZTDaQgxxoEaG&quot;, &quot;_kind&quot;:&quot;com.palm.revtest:1&quot;, &quot;_rev&quot;:8853, &quot;bar&quot;:2,&quot;foo&quot;:2, &quot;fooBarRev&quot;:8853}]}
+</code>
+</pre>
+    </blockquote>
+    <p>
+      <strong>Update property (&quot;baz&quot;) not in rev set, fooBarRev not updated to current rev</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>luna-send -n 1 -a com.palm.contacts luna://com.palm.db/merge '{&quot;objects&quot;:[{&quot;_id&quot;:&quot;++HGZTDaQgxxoEaG&quot;,&quot;baz&quot;:2}]}'
+{&quot;returnValue&quot;:true,&quot;results&quot;:[{&quot;id&quot;:&quot;++HGZTDaQgxxoEaG&quot;,&quot;rev&quot;:8854}]}
+
+luna-send -n 1 -a com.palm.contacts luna://com.palm.db/get '{&quot;ids&quot;:[&quot;++HGZTDaQgxxoEaG&quot;]}'
+{&quot;returnValue&quot;:true,&quot;results&quot;:[{&quot;_id&quot;:&quot;++HGZTDaQgxxoEaG&quot;, &quot;_kind&quot;:&quot;com.palm.revtest:1&quot;, &quot;_rev&quot;:8854,&quot;bar&quot;:2, &quot;baz&quot;:2,&quot;foo&quot;:2,&quot;fooBarRev&quot;:8853}]}
+</code>
+</pre>
+    </blockquote>
+		</div>
+	</body>
+</html>

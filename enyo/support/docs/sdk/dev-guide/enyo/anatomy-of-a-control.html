@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>$if(pagetitle)$$pagetitle$$endif$</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="stylesheet" href="_css/chrome.css" />
+		<link rel="stylesheet" href="../_css/chrome.css" />
+		<link rel="stylesheet" href="../../_css/chrome.css" />
+		<link rel="stylesheet" href="../../../_css/chrome.css" />
+		<script src="_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="_js/doc.js" type="text/javascript"></script>
+		<script src="../_js/doc.js" type="text/javascript"></script>
+		<script src="../../_js/doc.js" type="text/javascript"></script>
+		<script src="../../../_js/doc.js" type="text/javascript"></script>
+	</head>
+	<body>
+		<div id="content">
+    
+    <h1 id="anatomy-of-a-control">
+      Anatomy of a Control
+    </h1>
+    <p>
+      For the software developer under a deadline, sometimes a thoughtful comment in source code can make all the difference. With that in mind, here's a look at the kind definition for a control called <code>PrevNextBanner</code>:
+    </p>
+    <blockquote>
+      <pre>
+<code>// enyo.kind is our constructor factory.
+//
+//    - a constructor is a function-intended-as-an-argument-to-new
+//        (we often abbreviate as 'ctor').
+//        e.g. foo = new ctor(); // &quot;ctor&quot; is the constructor
+//    - enyo.kind generates constructors.
+//
+// The factory builds a constructor with a number of value-adds which
+// come from built in features, global pluggable features, and prototype-
+// specific pluggable features.
+//
+// The argument to the factory is a single object we call a
+// 'configuration'. Configurations are also used in 'components' and
+// 'chrome' blocks, and in calls to opus.create.
+//
+// In this way, a data object can interchangeably describe an instance or
+// a constructor (exception: the 'create' method, which is only supported
+// for constructor configurations).
+//
+enyo.kind({
+  // - automatically prepares namespace and stores a reference to the
+  //  constructor
+  //  i.e. enyo.PrevNextBanner will reference the built constructor.
+  name: &quot;enyo.PrevNextBanner&quot;,
+
+  // - prototype-chaining (aka inheritance): the prototype of the
+  //  prototype for this constructor is enyo.HFlexBox.
+  //  We can say this constructor is a 'kind' of enyo.HFlexBox.
+  kind: enyo.HFlexBox,
+
+  // - this is a basic property assignment. 'align' property is supported
+  //  by HFlexBox
+  align: &quot;center&quot;,
+
+  // - enyo.Object constructor plug-in support for 'published' properties.
+  //  Published properties have automatic getter/setter/changed support.
+  //  I.e. publishing a property called 'foo' means the constructor will
+  //  have getFoo(), setFoo(&lt;value&gt;), and fooChanged(&lt;newValue&gt;, &lt;oldValue&gt;)
+  //  methods.  Note that Object also exposes generic getProperty(&lt;name&gt;)
+  //  and setProperty(&lt;name&gt;, &lt;value&gt;) methods.
+  published: {
+      previousDisabled: false,
+      nextDisabled: false
+  },
+
+  // - enyo.Component constructor plug-in support for 'event' properties.
+  //  Event properties allow delegation of methods to client objects.
+  //  I.e. publishing an event called 'onFoo' establishes a doFoo(...)
+  //  method that essentially calls this.owner[this.onFoo](this, ...).
+  events: {
+      onPrevious: &quot;bannerPrevious&quot;,
+      onNext: &quot;bannerNext&quot;
+  },
+
+  // - components is an array of configurations that describe Components
+  //  owned by this object.
+  components: [
+      {name: &quot;previous&quot;, kind: enyo.Button, className: &quot;enyo-banner-prev&quot;,
+          onclick: &quot;doPrevious&quot;},
+      {name: &quot;client&quot;, kind: enyo.HFlexBox, flex: 1, align: &quot;center&quot;,
+          className: &quot;enyo-banner-content&quot;},
+      {name: &quot;next&quot;, kind: enyo.Button, className: &quot;enyo-banner-next&quot;,
+          onclick: &quot;doNext&quot;}
+  ],
+
+  create: function()
+      // - part of the DomNode interface, add this CSS class to our
+      //  rendered DOM
+      this.addClass('enyo-prev-next-banner');
+
+      // - this.inherited(arguments[, newArgsArray]) calls the inherited
+      //  version of this method (the nearest implementation of this
+      //  method in the prototype chain).
+      //  'arguments' required parameter is literally the JavaScript
+      //  special value 'arguments'.
+      //  'newArgsArray' can be used to send a new argument list for the
+      //  inherited method.
+      //  Note that you can call any inherited method manually with
+      //  this syntax:
+      //      &lt;name of constructor&gt;.prototype.&lt;method name&gt;.apply(&lt;this&gt;,
+      //          &lt;arguments array&gt;)
+      //      e.g. enyo.HFlexBox.prototype.create.apply(this,
+      //          [{align: &quot;center&quot;}]);
+      this.inherited(arguments);
+
+      // - Constructors that inherit from Component can take a
+      //  configuration block as an argument. Component copies those
+      //  configuration values into instance properties, but does not
+      //  call *changed methods automatically. It's up to each
+      //  constructor to call *changed for any properties that might
+      //  need side-effects.
+      this.contentChanged();
+      this.nextDisabledChanged();
+      this.previousDisabledChanged();
+  },
+
+  // - 'content' property is inherited from Control. Here this property
+  //  is simply propagated to this.$.client.
+  //  the inherited method is not called, so normal contentChanged
+  //  processing is aborted.
+  contentChanged: function() {
+      this.$.client.setContent(this.content);
+  },
+
+  // - next/previousDisabled properties are propagated directly to the
+  //  underlying buttons.
+  nextDisabledChanged: function() {
+      this.$.next.setDisabled(this.nextDisabled);
+  },
+  previousDisabledChanged: function() {
+      this.$.previous.setDisabled(this.previousDisabled);
+  }
+});
+</code>
+</pre>
+    </blockquote>
+		</div>
+	</body>
+</html>

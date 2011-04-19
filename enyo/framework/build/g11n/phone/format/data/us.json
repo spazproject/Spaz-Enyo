@@ -1,0 +1,131 @@
+{
+	"international": {
+		"vsc":              "XXX ",
+		"iddPrefix":        ["X", "XX ", "XXX "],
+		"countryCode":      ["X ", "XX ", "XXX "],
+		"cic":              ["X", "XX", "XX X", "XX XX", "XX XX X", "XX XX XX", "XX XX XXX "],
+		"emergency":        "XXX ",
+		"trunkAccess":      "",
+		"areaCode":         ["X", "XX", "XXX "],
+		"serviceCode":      ["X", "XX", "XXX "],
+		"subscriberNumber": ["X", "XX", "XXX", "XXX X", "XXX XX", "XXX XXX", "XXX XXXX"],
+		"extension":        [" X", " XX", " XXX", " XXXX", " XXXXX", " XXXXXX", " XXXXXXX"]
+	},
+	"mobile": {
+		"vsc":              "XXX ",
+		"iddPrefix":        ["X", "XX ", "XXX "],
+		"countryCode":      ["X ", "XX ", "XXX "],
+		"cic":              ["X", "XX", "XX-X", "XX-XX", "XX-XX-X", "XX-XX-XX", "XX-XX-XXX-"],
+		"emergency":        "XXX ",
+		"trunkAccess":      "X ",
+		"areaCode":         ["(X)", "(XX)", "(XXX) "],
+		"serviceCode":      ["(X)", "(XX)", "(XXX) "],
+		"subscriberNumber": ["X", "XX", "XXX", "XXX-X", "XXX-XX", "XXX-XXX", "XXX-XXXX"],
+		"extension":        [" X", " XX", " XXX", " XXXX", " XXXXX", " XXXXXX", " XXXXXXX"]
+	},
+	"internationalmobile": {
+		"vsc":              "XXX ",
+		"iddPrefix":        ["X", "XX ", "XXX "],
+		"countryCode":      ["X ", "XX ", "XXX "],
+		"cic":              ["X", "XX", "XX X", "XX XX", "XX XX X", "XX XX XX", "XX XX XXX "],
+		"emergency":        "XXX ",
+		"trunkAccess":      "X ",
+		"areaCode":         ["X", "XX", "XXX "],
+		"serviceCode":      ["X", "XX", "XXX "],
+		"subscriberNumber": ["X", "XX", "XXX", "XXX X", "XXX XX", "XXX XXX", "XXX XXXX"],
+		"extension":        [" X", " XX", " XXX", " XXXX", " XXXXX", " XXXXXX", " XXXXXXX"]
+	},
+	"service": {
+		"vsc":              "XXX ",
+		"iddPrefix":        ["X", "XX ", "XXX "],
+		"countryCode":      ["X ", "XX ", "XXX "],
+		"cic":              ["X", "XX", "XX X", "XX XX", "XX XX X", "XX XX XX", "XX XX XXX "],
+		"emergency":        "XXX ",
+		"trunkAccess":      "X ",
+		"areaCode":         ["X", "XX", "XXX "],
+		"serviceCode":      ["X", "XX", "XXX "],
+		"subscriberNumber": ["X", "XX", "XXX", "XXX-X", "XXX-XX", "XXX-XXX", "XXX-XXXX"],
+		"extension":        [" X", " XX", " XXX", " XXXX", " XXXXX", " XXXXXX", " XXXXXXX"]
+	},
+	"default": {
+		"example": "1 (650) 555-1234", 
+		"whole": {
+			"vsc":              "XXX ",
+			"emergency":        "XXX ",
+			"iddPrefix":        ["X", "XX ", "XXX "],
+			"countryCode":      ["X ", "XX ", "XXX "],
+			"cic":              ["X", "XX", "XX-X", "XX-XX", "XX-XX-X", "XX-XX-XX", "XX-XX-XXX "],
+			"trunkAccess":      "X ",
+			"areaCode":         ["(X)", "(XX)", "(XXX) "],
+			"serviceCode":      ["(X)", "(XX)", "(XXX) "],
+			"subscriberNumber": ["X", "XX", "XXX", "XXXX", "XXXXX", "XXXXXX", "XXX-XXXX"],
+			"extension":        [" X", " XX", " XXX", " XXXX", " XXXXX", " XXXXXX", " XXXXXXX"]
+		},
+		"partial": {
+			"vsc":              "XXX ",
+			"emergency":        "XXX ",
+			"iddPrefix":        ["X", "XX ", "XXX "],
+			"countryCode":      ["X ", "XX ", "XXX "],
+			"cic":              ["X", "XX", "XX-X", "XX-XX", "XX-XX-X", "XX-XX-XX", "XX-XX-XXX "],
+			"trunkAccess":      "X ",
+			"areaCode":         ["(X)", "(XX)", "(XXX) "],
+			"serviceCode":      ["(X)", "(XX)", "(XXX) "],
+			"subscriberNumber": ["X", "XX", "XXX", "XXX-X", "XXX-XX", "XXX-XXX", "XXX-XXXX"],
+			"extension":        [" X", " XX", " XXX", " XXXX", " XXXXX", " XXXXXX", " XXXXXXX"]
+		}
+	},
+	"dashes": {
+		"example": "1-650-555-1234", 
+		"whole": {
+			"vsc":              "XXX ",
+			"emergency":        "XXX ",
+			"iddPrefix":        ["X", "XX", "XXX-" ],
+			"countryCode":      ["X-", "XX-", "XXX-"],
+			"cic":              ["X", "XX", "XX-X", "XX-XX", "XX-XX-X", "XX-XX-XX", "XX-XX-XXX-"],
+			"trunkAccess":      "X-",
+			"areaCode":         ["X", "XX", "XXX-"],
+			"serviceCode":      ["X", "XX", "XXX-"],
+			"subscriberNumber": ["X", "XX", "XXX", "XXXX", "XXXXX", "XXXXXX", "XXX-XXXX"],
+			"extension":        [" X", " XX", " XXX", " XXXX", " XXXXX", " XXXXXX", " XXXXXXX"]
+		},      
+		"partial": {
+			"vsc":              "XXX ",
+			"emergency":        "XXX ",
+			"iddPrefix":        ["X", "XX", "XXX-" ],
+			"countryCode":      ["X-", "XX-", "XXX-"],
+			"cic":              ["X", "XX", "XX-X", "XX-XX", "XX-XX-X", "XX-XX-XX", "XX-XX-XXX-"],
+			"trunkAccess":      "X-",
+			"areaCode":         ["X", "XX", "XXX-"],
+			"serviceCode":      ["X", "XX", "XXX-"],
+			"subscriberNumber": ["X", "XX", "XXX", "XXX-X", "XXX-XX", "XXX-XXX", "XXX-XXXX"],
+			"extension":        [" X", " XX", " XXX", " XXXX", " XXXXX", " XXXXXX", " XXXXXXX"]
+		}      
+	},
+	"dots": {
+		"example": "1.650.555.1234", 
+		"whole": {
+			"vsc":              "XXX ",
+			"emergency":        "XXX ",
+			"iddPrefix":        ["X", "XX", "XXX." ],
+			"countryCode":      ["X.", "XX.", "XXX."],
+			"cic":              ["X", "XX", "XX.X", "XX.XX", "XX.XX.X", "XX.XX.XX", "XX.XX.XXX."],
+			"trunkAccess":      "X.",
+			"areaCode":         ["X", "XX", "XXX."],
+			"serviceCode":      ["X", "XX", "XXX."],
+			"subscriberNumber": ["X", "XX", "XXX", "XXXX", "XXXXX", "XXXXXX", "XXX.XXXX"],
+			"extension":        [" X", " XX", " XXX", " XXXX", " XXXXX", " XXXXXX", " XXXXXXX"]
+		},      
+		"partial": {
+			"vsc":              "XXX ",
+			"emergency":        "XXX ",
+			"iddPrefix":        ["X", "XX", "XXX." ],
+			"countryCode":      ["X.", "XX.", "XXX."],
+			"cic":              ["X", "XX", "XX.X", "XX.XX", "XX.XX.X", "XX.XX.XX", "XX.XX.XXX."],
+			"trunkAccess":      "X.",
+			"areaCode":         ["X", "XX", "XXX."],
+			"serviceCode":      ["X", "XX", "XXX."],
+			"subscriberNumber": ["X", "XX", "XXX", "XXX.X", "XXX.XX", "XXX.XXX", "XXX.XXXX"],
+			"extension":        [" X", " XX", " XXX", " XXXX", " XXXXX", " XXXXXX", " XXXXXXX"]
+		}      
+	}
+}

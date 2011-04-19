@@ -1,0 +1,1004 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>$if(pagetitle)$$pagetitle$$endif$</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="stylesheet" href="_css/chrome.css" />
+		<link rel="stylesheet" href="../_css/chrome.css" />
+		<link rel="stylesheet" href="../../_css/chrome.css" />
+		<link rel="stylesheet" href="../../../_css/chrome.css" />
+		<script src="_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="_js/doc.js" type="text/javascript"></script>
+		<script src="../_js/doc.js" type="text/javascript"></script>
+		<script src="../../_js/doc.js" type="text/javascript"></script>
+		<script src="../../../_js/doc.js" type="text/javascript"></script>
+	</head>
+	<body>
+		<div id="content">
+    
+    <h1 id="foundations.stringutils">
+      Foundations.StringUtils
+    </h1>
+    <p>
+      This namespace contains functions that operate on strings.
+    </p>
+    <table border="1">
+      <thead>
+        <tr>
+          <th>
+            Function
+          </th>
+          <th>
+            Description
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            StringUtils.camelize
+          </td>
+          <td>
+            Takes a string with words separated by '-' and turns it into a camelCased string.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            StringUtils.endsWith
+          </td>
+          <td>
+            Checks whether a string ends with a given substring.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            StringUtils.escapeHTML
+          </td>
+          <td>
+            Takes a string with HTML entity forms &quot;&lt;&quot;, &quot;&gt;&quot; and &quot;&amp;&quot; and replaces them with &quot;&amp;#38lt;&quot;, &quot;&amp;#38gt;&quot; and &quot;&amp;#38amp;&quot;.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            StringUtils.includes
+          </td>
+          <td>
+            Checks whether a substring appears anywhere within a string.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            StringUtils.isBlank
+          </td>
+          <td>
+            Checks whether a string is blank. A string is considered blank when it consists entirely of zero or more whitespace characters.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            StringUtils.parseQueryString
+          </td>
+          <td>
+            Turns a string containing name/value pairs into an object containing name/value pairs.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            StringUtils.startsWith
+          </td>
+          <td>
+            Checks whether a string starts with a given substring.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            StringUtils.stripScripts
+          </td>
+          <td>
+            From a string, removes script tags and anything inside them.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            StringUtils.stripTags
+          </td>
+          <td>
+            Removes all HTML tags from a string and returns the result.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            StringUtils.unescapeHTML
+          </td>
+          <td>
+            Unescapes a string with HTML entity forms &quot;&amp;#38lt;&quot;, &quot;&amp;#38gt;&quot; and &quot;&amp;#38amp;&quot; and replaces them with &quot;&lt;&quot;, &quot;&gt;&quot; and &quot;&amp;&quot;.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h2 id="stringutils.camelize">
+      StringUtils.camelize()
+    </h2>
+    <p>
+      Takes a string with words separated by '-' and turns it into a <a target="_blank">camelCased</a> string. For example:
+    </p>
+    <blockquote>
+      <pre>
+<code>&quot;some-string&quot;  becomes &quot;someString&quot;
+&quot;some-other-string&quot; becomes &quot;someOtherString&quot;
+</code>
+</pre>
+    </blockquote>
+    <h3 id="syntax">
+      Syntax
+    </h3>
+    <pre>
+    string StringUtils.camelize(<em>str</em>)
+</pre>
+    <h3 id="parameters">
+      Parameters
+    </h3>
+    <table border="1">
+      <thead>
+        <tr>
+          <th>
+            Argument
+          </th>
+          <th>
+            Required
+          </th>
+          <th>
+            Type
+          </th>
+          <th>
+            Description
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <em>str</em>
+          </td>
+          <td>
+            Yes
+          </td>
+          <td>
+            string
+          </td>
+          <td>
+            String to camelize.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="returns">
+      Returns
+    </h3>
+    <blockquote>
+      <pre>
+<code>{
+  str : string
+}
+</code>
+</pre>
+    </blockquote>
+    <p>
+      <strong>Example</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>var libraries = MojoLoader.require({ name: &quot;foundations&quot;, version: &quot;1.0&quot; });
+var StringUtils = libraries[&quot;foundations&quot;].StringUtils;
+var notCamelStr = &quot;string-to-camelize&quot;;
+Mojo.Log.info(&quot;camelStr = &quot;+ JSON.stringify(StringUtils.camelize(notCamelStr)));
+</code>
+</pre>
+    </blockquote>
+    <p>
+      <strong>Example Output</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>camelStr = &quot;stringToCamelize&quot;
+</code>
+</pre>
+    </blockquote>
+    <hr>
+    <h2 id="stringutils.endswith">
+      StringUtils.endsWith()
+    </h2>
+    <p>
+      Checks whether a string ends with a given substring.
+    </p>
+    <h3 id="syntax-1">
+      Syntax
+    </h3>
+    <pre>
+    boolean StringUtils.endsWith(<em>str</em>, <em>subStr</em>)
+</pre>
+    <h3 id="parameters-1">
+      Parameters
+    </h3>
+    <table border="1">
+      <thead>
+        <tr>
+          <th>
+            Argument
+          </th>
+          <th>
+            Required
+          </th>
+          <th>
+            Type
+          </th>
+          <th>
+            Description
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <em>str</em>
+          </td>
+          <td>
+            Yes
+          </td>
+          <td>
+            string
+          </td>
+          <td>
+            String to check.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <em>subStr</em>
+          </td>
+          <td>
+            Yes
+          </td>
+          <td>
+            string
+          </td>
+          <td>
+            Substring to search for at end.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="returns-1">
+      Returns
+    </h3>
+    <blockquote>
+      <pre>
+<code>true or false
+</code>
+</pre>
+    </blockquote>
+    <p>
+      <strong>Example</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>var libraries = MojoLoader.require({ name: &quot;foundations&quot;, version: &quot;1.0&quot; });
+var StringUtils = libraries[&quot;foundations&quot;].StringUtils;
+var str = &quot;stringToCheck&quot;;
+var subStr = &quot;Check&quot;;
+Mojo.Log.info(&quot;endsWith = &quot;+ StringUtils.endsWith(str, subStr));
+</code>
+</pre>
+    </blockquote>
+    <p>
+      <strong>Example Output</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>endsWith = true
+</code>
+</pre>
+    </blockquote>
+    <hr>
+    <h2 id="stringutils.escapehtml">
+      StringUtils.escapeHTML()
+    </h2>
+    <p>
+      Takes a string with HTML entity forms <code>&quot;&lt;&quot;</code>, <code>&quot;&gt;&quot;</code> and <code>&quot;&amp;&quot;</code> and replaces them with <code>&quot;&amp;lt;&quot;</code>, <code>&quot;&amp;gt;&quot;</code> and <code>&quot;&amp;amp;&quot;</code>.
+    </p>
+    <h3 id="syntax-2">
+      Syntax
+    </h3>
+    <pre>
+    string StringUtils.escapeHTML(<em>escStr</em>)
+</pre>
+    <h3 id="parameters-2">
+      Parameters
+    </h3>
+    <table border="1">
+      <thead>
+        <tr>
+          <th>
+            Argument
+          </th>
+          <th>
+            Required
+          </th>
+          <th>
+            Type
+          </th>
+          <th>
+            Description
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <em>escStr</em>
+          </td>
+          <td>
+            Yes
+          </td>
+          <td>
+            string
+          </td>
+          <td>
+            String to escape.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="returns-2">
+      Returns
+    </h3>
+    <blockquote>
+      <pre>
+<code>escaped string
+</code>
+</pre>
+    </blockquote>
+    <p>
+      <strong>Example</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>var libraries = MojoLoader.require({ name: &quot;foundations&quot;, version: &quot;1.0&quot; });
+var StringUtils = libraries[&quot;foundations&quot;].StringUtils;
+var escStr = &quot;string&gt;To&lt;Escape&amp;&quot;;
+Mojo.Log.info(&quot;escapeHTML = &quot;+ StringUtils.escapeHTML(escStr));
+</code>
+</pre>
+    </blockquote>
+    <p>
+      <strong>Example Output</strong>
+    </p>
+    <pre>
+    escapeHTML = string&#38;gt;To&#38;lt;Escape&#38;amp;
+</pre>
+    <hr>
+    <h2 id="stringutils.includes">
+      StringUtils.includes()
+    </h2>
+    <p>
+      Checks whether a substring appears anywhere within a string.
+    </p>
+    <h3 id="syntax-3">
+      Syntax
+    </h3>
+    <blockquote>
+      <pre>
+<code>boolean StringUtils.includes(str, subStr)
+</code>
+</pre>
+    </blockquote>
+    <h3 id="parameters-3">
+      Parameters
+    </h3>
+    <table border="1">
+      <thead>
+        <tr>
+          <th>
+            Argument
+          </th>
+          <th>
+            Required
+          </th>
+          <th>
+            Type
+          </th>
+          <th>
+            Description
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <em>str</em>
+          </td>
+          <td>
+            Yes
+          </td>
+          <td>
+            string
+          </td>
+          <td>
+            String to check.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <em>subStr</em>
+          </td>
+          <td>
+            Yes
+          </td>
+          <td>
+            string
+          </td>
+          <td>
+            Substring to check for.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="returns-3">
+      Returns
+    </h3>
+    <blockquote>
+      <pre>
+<code>true or false
+</code>
+</pre>
+    </blockquote>
+    <p>
+      <strong>Example</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>var libraries = MojoLoader.require({ name: &quot;foundations&quot;, version: &quot;1.0&quot; });
+var StringUtils = libraries[&quot;foundations&quot;].StringUtils;
+var strInc = &quot;StringToCheckForSubstring&quot;;
+var subStrInc = &quot;For&quot;;
+Mojo.Log.info(&quot;inlcudes = &quot;+ StringUtils.includes(strInc, subStrInc));
+</code>
+</pre>
+    </blockquote>
+    <p>
+      <strong>Example Output</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>includes = true
+</code>
+</pre>
+    </blockquote>
+    <hr>
+    <h2 id="stringutils.isblank">
+      StringUtils.isBlank()
+    </h2>
+    <p>
+      Checks whether a string is blank. A string is considered blank when it consists entirely of zero or more whitespace characters.
+    </p>
+    <h3 id="syntax-4">
+      Syntax
+    </h3>
+    <pre>
+    boolean StringUtils.isBlank(<em>str</em>)
+</pre>
+    <h3 id="parameters-4">
+      Parameters
+    </h3>
+    <table border="1">
+      <thead>
+        <tr>
+          <th>
+            Argument
+          </th>
+          <th>
+            Required
+          </th>
+          <th>
+            Type
+          </th>
+          <th>
+            Description
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <em>str</em>
+          </td>
+          <td>
+            Yes
+          </td>
+          <td>
+            string
+          </td>
+          <td>
+            String to check for blankness.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="returns-4">
+      Returns
+    </h3>
+    <blockquote>
+      <pre>
+<code>true or false
+</code>
+</pre>
+    </blockquote>
+    <p>
+      <strong>Example</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>var libraries = MojoLoader.require({ name: &quot;foundations&quot;, version: &quot;1.0&quot; });
+var StringUtils = libraries[&quot;foundations&quot;].StringUtils;
+var blankStr = &quot;    &quot;;
+Mojo.Log.info(&quot;isBlank = &quot;+ StringUtils.isBlank(blankStr));
+</code>
+</pre>
+    </blockquote>
+    <p>
+      <strong>Example Output</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>isBlank = true
+</code>
+</pre>
+    </blockquote>
+    <hr>
+    <h2 id="stringutils.parsequerystring">
+      StringUtils.parseQueryString()
+    </h2>
+    <p>
+      Takes a string of the form:
+    </p>
+    <blockquote>
+      <pre>
+<code>key1=value%20one&amp;key2=val2
+</code>
+</pre>
+    </blockquote>
+    <p>
+      And turns it into an object:
+    </p>
+    <blockquote>
+      <pre>
+<code>{&quot;key1&quot;:&quot;value one&quot;,&quot;key2&quot;:&quot;val2&quot;}
+</code>
+</pre>
+    </blockquote>
+    <p>
+      It replaces the Prototye function String#toQueryParams and its alias String#parseQuery.
+    </p>
+    <h3 id="syntax-5">
+      Syntax
+    </h3>
+    <blockquote>
+      <pre>
+<code>object StringUtils.parseQueryString(string)
+</code>
+</pre>
+    </blockquote>
+    <h3 id="parameters-5">
+      Parameters
+    </h3>
+    <table border="1">
+      <thead>
+        <tr>
+          <th>
+            Argument
+          </th>
+          <th>
+            Required
+          </th>
+          <th>
+            Type
+          </th>
+          <th>
+            Description
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <em>string</em>
+          </td>
+          <td>
+            Yes
+          </td>
+          <td>
+            string
+          </td>
+          <td>
+            String to convert to object.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="returns-5">
+      Returns
+    </h3>
+    <blockquote>
+      <pre>
+<code>{
+  object : any
+}
+</code>
+</pre>
+    </blockquote>
+    <p>
+      <strong>Example</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>var libraries = MojoLoader.require({ name: &quot;foundations&quot;, version: &quot;1.0&quot; });
+var StringUtils = libraries[&quot;foundations&quot;].StringUtils;
+var itemPriceStr = &quot;Item=drink&amp;price=2&quot;;
+Mojo.Log.info(&quot;ItemPrice obj = &quot;+ JSON.stringify(StringUtils.parseQueryString(itemPriceStr)));
+</code>
+</pre>
+    </blockquote>
+    <p>
+      <strong>Example Output</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>ItemPrice obj = {&quot;Item&quot;:&quot;drink&quot;,&quot;price&quot;:&quot;2&quot;}
+</code>
+</pre>
+    </blockquote>
+    <hr>
+    <h2 id="stringutils.startswith">
+      StringUtils.startsWith()
+    </h2>
+    <p>
+      Checks whether a string starts with a given substring. It can be thought of as another way of saying:
+    </p>
+    <blockquote>
+      <pre>
+<code>str.indexOf(substring) === 0
+</code>
+</pre>
+    </blockquote>
+    <h3 id="syntax-6">
+      Syntax
+    </h3>
+    <pre>
+    boolean StringUtils.startsWith(<em>str</em>, <em>subStr</em>)
+</pre>
+    <h3 id="parameters-6">
+      Parameters
+    </h3>
+    <table border="1">
+      <thead>
+        <tr>
+          <th>
+            Argument
+          </th>
+          <th>
+            Required
+          </th>
+          <th>
+            Type
+          </th>
+          <th>
+            Description
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <em>str</em>
+          </td>
+          <td>
+            Yes
+          </td>
+          <td>
+            string
+          </td>
+          <td>
+            String to check.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <em>subStr</em>
+          </td>
+          <td>
+            Yes
+          </td>
+          <td>
+            string
+          </td>
+          <td>
+            Substring to search for at beginning.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="returns-6">
+      Returns
+    </h3>
+    <blockquote>
+      <pre>
+<code>true or false
+</code>
+</pre>
+    </blockquote>
+    <p>
+      <strong>Example</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>var libraries = MojoLoader.require({ name: &quot;foundations&quot;, version: &quot;1.0&quot; });
+var StringUtils = libraries[&quot;foundations&quot;].StringUtils;
+var str = &quot;stringToCheck&quot;;
+var subStr = &quot;str&quot;;
+Mojo.Log.info(&quot;startsWith = &quot;+ StringUtils.startsWith(str, subStr));
+</code>
+</pre>
+    </blockquote>
+    <p>
+      <strong>Example Output</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>startsWith = true
+</code>
+</pre>
+    </blockquote>
+    <hr>
+    <h2 id="stringutils.stripscripts">
+      StringUtils.stripScripts()
+    </h2>
+    <p>
+      From a string, removes <code>&lt;script&gt;</code> tags and anything inside them.
+    </p>
+    <h3 id="syntax-7">
+      Syntax
+    </h3>
+    <pre>
+    string StringUtils.stripScripts(<em>str</em>);
+</pre>
+    <h3 id="parameters-7">
+      Parameters
+    </h3>
+    <table border="1">
+      <thead>
+        <tr>
+          <th>
+            Argument
+          </th>
+          <th>
+            Required
+          </th>
+          <th>
+            Type
+          </th>
+          <th>
+            Description
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <em>str</em>
+          </td>
+          <td>
+            Yes
+          </td>
+          <td>
+            string
+          </td>
+          <td>
+            String to strip.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="returns-7">
+      Returns
+    </h3>
+    <blockquote>
+      <pre>
+<code>{
+    strippedString : string
+}
+</code>
+</pre>
+    </blockquote>
+    <p>
+      <strong>Example</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>var libraries = MojoLoader.require({ name: &quot;foundations&quot;, version: &quot;1.0&quot; });
+var StringUtils = libraries[&quot;foundations&quot;].StringUtils;
+var scriptsStr = &quot;Remove &lt;script&gt;Please remove me&lt;/script&gt;this&quot;;
+Mojo.Log.info(&quot;strippedScriptsStr = &quot;+ StringUtils.stripScripts(scriptsStr));
+</code>
+</pre>
+    </blockquote>
+    <p>
+      <strong>Example Output</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>strippedScriptsStr = Remove this
+</code>
+</pre>
+    </blockquote>
+    <hr>
+    <h2 id="stringutils.striptags">
+      StringUtils.stripTags()
+    </h2>
+    <p>
+      This function removes all HTML tags from a string and returns the result.
+    </p>
+    <h3 id="syntax-8">
+      Syntax
+    </h3>
+    <pre>
+    string StringUtils.stripTags(<em>tagsStr</em>);
+</pre>
+    <h3 id="parameters-8">
+      Parameters
+    </h3>
+    <table border="1">
+      <thead>
+        <tr>
+          <th>
+            Argument
+          </th>
+          <th>
+            Required
+          </th>
+          <th>
+            Type
+          </th>
+          <th>
+            Description
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <em>tagsStr</em>
+          </td>
+          <td>
+            Yes
+          </td>
+          <td>
+            string
+          </td>
+          <td>
+            String to strip.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="returns-8">
+      Returns
+    </h3>
+    <blockquote>
+      <pre>
+<code>{
+  strippedString : string
+}
+</code>
+</pre>
+    </blockquote>
+    <p>
+      <strong>Example</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>var libraries = MojoLoader.require({ name: &quot;foundations&quot;, version: &quot;1.0&quot; });
+var StringUtils = libraries[&quot;foundations&quot;].StringUtils;
+var tagsStr = &quot;&lt;table&gt;&lt;tr&gt;&lt;td&gt;Let the good times roll&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&quot;;
+Mojo.Log.info(&quot;strippedTagsStr = &quot;+ StringUtils.stripTags(tagsStr));
+</code>
+</pre>
+    </blockquote>
+    <p>
+      <strong>Example Output</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>strippedTagsStr = Let the good times roll
+</code>
+</pre>
+    </blockquote>
+    <hr>
+    <h2 id="stringutils.unescapehtml">
+      StringUtils.unescapeHTML()
+    </h2>
+    <p>
+      Unescapes a string with HTML entity forms <code>&quot;&amp;lt;&quot;</code>, <code>&quot;&amp;gt;&quot;</code> and <code>&quot;&amp;amp;</code>&quot; and replaces them with <code>&quot;&lt;&quot;</code>, <code>&quot;&gt;&quot;</code> and <code>&quot;&amp;&quot;</code>.
+    </p>
+    <h3 id="syntax-9">
+      Syntax
+    </h3>
+    <pre>
+    StringUtils.unescapeHTML(<em>unescStr</em>)
+</pre>
+    <h3 id="parameters-9">
+      Parameters
+    </h3>
+    <table border="1">
+      <thead>
+        <tr>
+          <th>
+            Argument
+          </th>
+          <th>
+            Required
+          </th>
+          <th>
+            Type
+          </th>
+          <th>
+            Description
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <em>unescStr</em>
+          </td>
+          <td>
+            Yes
+          </td>
+          <td>
+            string
+          </td>
+          <td>
+            String to unescape.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="returns-9">
+      Returns
+    </h3>
+    <blockquote>
+      <pre>
+<code>true or false
+</code>
+</pre>
+    </blockquote>
+    <p>
+      <strong>Example</strong>
+    </p>
+    <pre>
+    var libraries = MojoLoader.require({ name: "foundations", version: "1.0" });
+    var StringUtils = libraries["foundations"].StringUtils; 
+    var unescStr = "string&#38;gt;To&#38;lt;unescape&#38;amp;";      
+    Mojo.Log.info("unescapeHTML = "+ StringUtils.unescapeHTML(unescStr)); 
+</pre>
+    <p>
+      <strong>Example Output</strong>
+    </p>
+    <pre>
+    unescapeHTML = string&gt;To&lt;unescape&amp;
+</pre>
+		</div>
+	</body>
+</html>

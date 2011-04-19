@@ -1,0 +1,20 @@
+/* Copyright 2009-2011 Hewlett-Packard Development Company, L.P. All rights reserved. */
+.enyo-tool-input {
+	border-width: 6px 6px 7px 6px;
+	border-style: solid;
+	border-color: transparent;
+	-webkit-box-sizing: border-box;
+	-webkit-border-image: url(../images/input-tool.png) 6 6 7 6;
+}
+
+.enyo-tool-input-focus {
+	-webkit-border-image: url(../images/input-tool-focus.png) 6 6 7 6;
+}
+
+.enyo-tool-input-input::-webkit-input-placeholder {
+	color: #ddd;
+}
+
+.enyo-tool-input-spacing {
+	margin: -1px;
+}

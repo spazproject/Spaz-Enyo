@@ -1,0 +1,12 @@
+/* Copyright 2009-2011 Hewlett-Packard Development Company, L.P. All rights reserved. */
+.enyo-confirmprompt {
+	position: relative;
+}
+
+.enyo-confirmprompt-scrim {
+	background-color: rgba(228, 228, 226, .5);
+}
+
+.enyo-confirmprompt-button {
+	margin: 0 10px;
+}

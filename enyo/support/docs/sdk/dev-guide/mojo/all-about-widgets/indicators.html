@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>$if(pagetitle)$$pagetitle$$endif$</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="stylesheet" href="_css/chrome.css" />
+		<link rel="stylesheet" href="../_css/chrome.css" />
+		<link rel="stylesheet" href="../../_css/chrome.css" />
+		<link rel="stylesheet" href="../../../_css/chrome.css" />
+		<script src="_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="_js/doc.js" type="text/javascript"></script>
+		<script src="../_js/doc.js" type="text/javascript"></script>
+		<script src="../../_js/doc.js" type="text/javascript"></script>
+		<script src="../../../_js/doc.js" type="text/javascript"></script>
+	</head>
+	<body>
+		<div id="content">
+    
+    <h1 id="indicators">
+      Indicators
+    </h1>
+    <p>
+      Indicators are used to show that activity is taking place on the system and, in some cases, to indicate a measure of the progress being made. Mojo really has two classes of indicator: a Spinner, which spins without showing defined progress, and a Progress indicator. You should use the Spinner when you are space-constrained or don't really know how long an operation might take. Otherwise you should use one of the Progress indicators, as it is better to give the user a bounded duration.
+    </p>
+    <h2 id="spinner">
+      Spinner
+    </h2>
+    <p>
+      The framework provides two sizes of spinner widgets: the large Spinner at 128 pixels square, which should be used to display full screen progress, and the small Spinner is 32 pixels square. These metrics are for the Pre screen and may vary on other devices but the proportions and overall <em>fit</em> within the UI will be maintained.
+    </p>
+    <p>
+      Like the Scroller widget, the Spinner widget does not need to be explicitly set up, as all the required attributes have defaults and you can control it via exposed methods instead of by using its model. The Spinner widget takes care of showing and hiding the spinner and animating through the different images associated with the style of Spinner you have selected.
+    </p>
+    <p>
+      To setup a basic Spinner:
+    </p>
+    <blockquote>
+      <pre>
+<code>&lt;div id=&quot;spinner&quot; x-mojo-element=&quot;Spinner&quot;&gt;&lt;/div&gt;     
+</code>
+</pre>
+    </blockquote>
+    <p>
+      To control the Spinner:
+    </p>
+    <blockquote>
+      <pre>
+<code>//stop the animation and hide the spinner
+this.controller.get('spinner').mojo.stop();
+
+//show and start the animated spinner
+this.controller.get('spinner').mojo.start();     
+</code>
+</pre>
+    </blockquote>
+    <p>
+      To create your own custom-look Spinner that animates, you will have to set up the Spinner Widget and define attributes. You control your custom Spinner widget as above.
+    </p>
+    <blockquote>
+      <pre>
+<code>//for more on what each attribute means, see the Spinner widget API docs
+var spinnerCAttrs = {
+  superClass: 'bare-sync-activity-animation',
+  mainFrameCount: 11,
+  finalFrameCount: 7,
+  fps: 10
+};
+this.controller.setupWidget('custom-activity-spinner', spinnerCAttrs, {});
+</code>
+</pre>
+    </blockquote>
+    <h2 id="progress-indicators">
+      Progress Indicators
+    </h2>
+    <p>
+      There is one core progress indicator, but it has been applied to three different widgets to give you some flexibility to integrate into your scene. The ProgressPill is used more commonly and is designed to fit with the Mojo Button and Header styles for file downloads or activities that are actionable.
+    </p>
+    <h3 id="progresspill">
+      ProgressPill
+    </h3>
+    <p>
+      When you need to show download progress, loading from a database or just a long operation where you have a sense of the duration, then you can use ProgressPill as the indicator. The indicator is designed to show a Pill image that corresponds to the model's value property, where a value of 0 has only the outline of the Pill, a value of 1 has the Pill completely filled in, and an undefined value puts the Pill into a tappable mode in which it looks and acts like a Button. While the ProgressPill is acting like a button, your application can listen for Mojo.Event.tap events on it.
+    </p>
+    <p>
+      To create a ProgressPill that starts out looking like a button:
+    </p>
+    <blockquote>
+      <pre>
+<code>var attributes = {
+  modelProperty: 'progress',
+  title: 'Progress Being Made...'
+};
+this.model = {
+  progress: 0
+};
+this.controller.setupWidget('progressPill, attributes, this.model);
+</code>
+</pre>
+    </blockquote>
+    <p>
+      To update the percentage of the ProgressPill that is filled in, call the modelChanged function on the widget's model with a new value.
+    </p>
+    <blockquote>
+      <pre>
+<code>updateProgress: function() {
+  this.model.progress = this.model.progress + 0.2;
+  this.controller.modelChanged(this.model);
+}
+</code>
+</pre>
+    </blockquote>
+    <p>
+      The indicator has space for a title and an image, either of which can be static or dynamic. There's also a provision for an icon, which has a specific event (Mojo.Event.progressIconTap) attached to it.
+    </p>
+    <h3 id="progressbar">
+      ProgressBar
+    </h3>
+    <p>
+      The ProgressBar is exactly the same as the ProgressPill except that you use 'x-mojo-element=&quot;ProgressBar&quot;' in your scene file. Otherwise, you would code it and manage just as you do the ProgressPill. In the default style, there isn't room for a title, or any type of images on the bar, but the properties are supported nonetheless, and may be used in future layout versions.
+    </p>
+    <p>
+      Set up a ProgressBar:
+    </p>
+    <blockquote>
+      <pre>
+<code>var attributes = {
+  modelProperty: 'progress'
+};
+this.model = { };
+this.controller.setupWidget('progressBar, attributes, this.model);
+</code>
+</pre>
+    </blockquote>
+    <p>
+      To update the percentage of the ProgressBar that is filled in, call the modelChanged function on the widget's model with a new value.
+    </p>
+    <blockquote>
+      <pre>
+<code>updateProgress: function() {
+  this.model.progress = this.model.progress + 0.2;
+  this.controller.modelChanged(this.model);
+}
+</code>
+</pre>
+    </blockquote>
+    <h3 id="progress">
+      Progress
+    </h3>
+    <p>
+      The Progress widget uses the same model and attribute properties as the ProgressPill, but the appearance is different. The Progress widget should be used in cases where many items are in a list, or the progress of an event is embedded in another complicated layout.
+    </p>
+    <p>
+      Note that the same example code from ProgressPill will work for the inline Progress widget.
+    </p>
+    <p>
+      To create a ProgressPill that starts out looking like a button:
+    </p>
+    <blockquote>
+      <pre>
+<code>var attributes = {
+  modelProperty: 'progress',
+  title: 'Progress Being Made...'
+};
+this.model = {
+  progress: 0
+};
+this.controller.setupWidget('progressPill, attributes, this.model);
+</code>
+</pre>
+    </blockquote>
+    <p>
+      To update the percentage of the ProgressPill that is filled in, call the modelChanged function on the widget's model with a new value.
+    </p>
+    <blockquote>
+      <pre>
+<code>updateProgress: function() {
+  this.model.progress = this.model.progress + 0.2;
+  this.controller.modelChanged(this.model);
+} 
+</code>
+</pre>
+    </blockquote>
+    <h3 id="progressslider">
+      ProgressSlider
+    </h3>
+    <p>
+      For media, or other applications where only part of the content is available at any given time, the ProgressSlider is an ideal choice. The ProgressSlider is a combination of the Slider and ProgressBar widgets. It allows you to represent start and end progress value. The Slider element is draggable outside the available range to allow for seeking to any point within the content, even if it has not yet been loaded. All of the slider properties are represented and you manage it just as you would a Slider widget, so refer to Slider for those details. You control the background progressive element exactly as you would the ProgressBar.
+    </p>
+    <p>
+      The ProgressSlider widget is different from other widgets in that it is affected by and affects two different data elements with one widget: a progress update, controlled by your application, and a slider, controlled by user actions. The example below shows how to control and respond to both of those interactions.
+    </p>
+    <p>
+      This sets up a ProgressSlider that shows progress from 0 to 100, with progress at 50%, and starts the Slider at 20:
+    </p>
+    <blockquote>
+      <pre>
+<code>var attributes = {
+  //property in the model that is changed by user actions
+  sliderProperty: 'slider',
+
+  //property in the model that defines how much
+  //progress is made; controlled by the application
+  progressProperty: 'progress',
+
+  maxValue: 100,
+  minValue: 0
+};
+
+this.model = {
+  slider: 20,
+  progress: .50,
+};
+
+this.controller.setupWidget('progressSlider', attributes, this.model);
+
+//watch for user action on the draggable slider
+this.controller.listen('progressSlider', Mojo.Event.propertyChange, this.sliderChanged.bind(this));
+</code>
+</pre>
+    </blockquote>
+    <p>
+      React to a user drag and release of the slider:
+    </p>
+    <blockquote>
+      <pre>
+<code>//the slider changed position; get the value of the slider
+//with respect to the min and maxValues you defined for the widget
+sliderChanged: function(propertyChangeEvent) {
+  Mojo.Log.info(&quot;The user dragged the slider to a new location with a value of &quot;
+      + this.model.slider + &quot;. The same update is available in event &quot;
+      + propertyChangeEvent.value);
+}    
+</code>
+</pre>
+    </blockquote>
+    <p>
+      Update the progress value to show more content is available:
+    </p>
+    <blockquote>
+      <pre>
+<code>updateProgress: function(newProgress) {
+  this.model.progress = .75;
+  this.controller.modelChanged(this.model);
+}
+</code>
+</pre>
+    </blockquote>
+		</div>
+	</body>
+</html>

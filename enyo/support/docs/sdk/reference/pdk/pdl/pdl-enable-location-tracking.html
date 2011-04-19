@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>$if(pagetitle)$$pagetitle$$endif$</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="stylesheet" href="_css/chrome.css" />
+		<link rel="stylesheet" href="../_css/chrome.css" />
+		<link rel="stylesheet" href="../../_css/chrome.css" />
+		<link rel="stylesheet" href="../../../_css/chrome.css" />
+		<script src="_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="_js/doc.js" type="text/javascript"></script>
+		<script src="../_js/doc.js" type="text/javascript"></script>
+		<script src="../../_js/doc.js" type="text/javascript"></script>
+		<script src="../../../_js/doc.js" type="text/javascript"></script>
+	</head>
+	<body>
+		<div id="content">
+    
+    <h1 id="pdl_enablelocationtracking">
+      PDL_EnableLocationTracking
+    </h1>
+    <h2 id="description">
+      Description
+    </h2>
+    <p>
+      This API activates or deactivates location tracking on the device. You <strong>must</strong> call this function before calling <code>PDL_GetLocation</code>.
+    </p>
+    <p>
+      Call with <code>PDL_TRUE</code> to enable; <code>PDL_FALSE</code> to disable.
+    </p>
+    <h2 id="syntax">
+      Syntax
+    </h2>
+    <blockquote>
+      <pre>
+<code>PDL_Err PDL_EnableLocationTracking(PDL_bool activate);          
+</code>
+</pre>
+    </blockquote>
+    <h2 id="returns">
+      Returns
+    </h2>
+    <blockquote>
+      <pre>
+<code>PDL_ECONNECTION — Unable to communicate with app card.
+PDL_NOERROR — Success.                 
+</code>
+</pre>
+    </blockquote>
+    <p>
+      Note that success does not necessarily mean tracking has been enabled. For instance, it could still be disabled if the user did not have GPS tracking turned on. As this is an asynchronous call, <code>PDL_NOERROR</code> means that location tracking for this app has been successfully requested.
+    </p>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>$if(pagetitle)$$pagetitle$$endif$</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="stylesheet" href="_css/chrome.css" />
+		<link rel="stylesheet" href="../_css/chrome.css" />
+		<link rel="stylesheet" href="../../_css/chrome.css" />
+		<link rel="stylesheet" href="../../../_css/chrome.css" />
+		<script src="_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="_js/doc.js" type="text/javascript"></script>
+		<script src="../_js/doc.js" type="text/javascript"></script>
+		<script src="../../_js/doc.js" type="text/javascript"></script>
+		<script src="../../../_js/doc.js" type="text/javascript"></script>
+	</head>
+	<body>
+		<div id="content">
+    
+    <h1 id="lists">
+      Lists
+    </h1>
+    <p>
+      The List is the most powerful component in the Mojo framework; much of the framework design has been centered on creating a fast, flexible and feature-rich list widget. You should keep in mind that Mojo's design started with the design of a dynamic List widget to support the Contacts application's list view and was heavily optimized around that type of scene. The HP webOS user experience makes extensive use of lists in many applications; given the form factor and the navigation model, most applications will incorporate a list widget in one way or another. To get the most out of Mojo you need to fully understand the capabilities of List.
+    </p>
+    <p>
+      The other widgets: FilterList is derived from the List widget, so you should refer back to the List widget documentation for information on APIs.
+    </p>
+    <h2 id="list">
+      List
+    </h2>
+    <p>
+      Objects are rendered into list items using provided HTML templates, and may be variable height and/or include other widgets. Lists can be static, with the list items being provided to the widget directly as an array, or they can be dynamic, with the application providing a callback function that is invoked as additional items are needed for display. Lists can be manipulated in place, with the framework handling deletion, reordering, and addition functions for the application. The List widget will manage which items to render as the user scrolls through the content. In this way, the List will not need to render all items at one time, therefore saving memory in situations where there is a lot of data to display.
+    </p>
+    <p>
+      The list widget is declared in your scene's view file with a DIV declaration that like all widgets includes a unique <em>id</em> property for the list (x-mojo-element=&quot;List&quot;). Like other widgets, you call this.controller.setupWidget from within your scene assistant with attribute and model objects. There are quite a few attribute properties that you can include but only the itemTemplate is required. The list's model must include an items array that contains a list of objects to display in the list or you must supply an itemsCallback. Each object represents a list entry and the properties in the object are substituted for references in the list's itemTemplate. When a list item is selected, a Mojo.Event.listTap event is generated, which you need to handle if any action is required.
+    </p>
+    <h3 id="templates">
+      Templates
+    </h3>
+    <p>
+      All Lists are all built using HTML templates to lay out and format the list container and the individual rows. You would normally include these templates as separate HTML files in your scene's view folder (where your scene view file is located), but you can specify each template's pathname, which allows you to share templates between scenes or organize them in other ways. Pathnames are specified with relative notation <code>../&lt;dir&gt;/</code> where <code>&lt;dir&gt;</code> is the directory for the current scene's view file. Within the template, you will reference properties from the list's data.
+    </p>
+    <p>
+      The listTemplate is optional; it defines the path to an HTML template for the list's container, which if missing will simply put the list items into the scene without any container. The listTemplate, if present, can have only one top-level element.
+    </p>
+    <p>
+      The itemTemplate is required; its value is the path to an HTML template for rendering individual list items. To reference specific items you would include strings that wrap the property's name from the object defined in the Items array as <code>#{property}</code>. List rows must have only one top-level element.
+    </p>
+    <p>
+      For example, if you had a list where each entry was a Neil Young CD with the year it was issued, you would code the template as follows in your itemTemplate HTML file:
+    </p>
+    <blockquote>
+      <pre>
+<code>&lt;div class=&quot;title left&quot;&gt;#{data}&lt;span class=&quot;year&quot;&gt;#{year}&lt;/span&gt;
+</code>
+</pre>
+    </blockquote>
+    <p>
+      To correspond to the properties in the list model:
+    </p>
+    <blockquote>
+      <pre>
+<code>this.neilYoungModel = { items: [
+  {data:&quot;On The Beach&quot;, year:&quot;1974&quot;},
+  {data:&quot;Tonight's The Night&quot;, year:&quot;1975&quot;},
+  {data:&quot;Harvest&quot;, year:&quot;1972&quot;},
+  {data:&quot;Greendale&quot;, year:&quot;2003&quot;},
+  {data:&quot;Broken Arrow&quot;, year:&quot;1996&quot;},
+  {data:&quot;Everybody Knows...&quot;, year:&quot;1969&quot;},
+  {data:&quot;Zuma&quot;, year:&quot;1975&quot;},
+  {data:&quot;Unplugged&quot;, year:&quot;1993&quot;},
+  {data:&quot;Harvest Moon&quot;, year:&quot;1992&quot;}
+]};
+</code>
+</pre>
+    </blockquote>
+    <p>
+      The data property is added into the HTML to replace the <code>#{data}</code> string and the year property replaces the <code>#{year}</code> string. With the addition of styles that we'll discuss in a bit, you'd get a list that would look something like the diagram below:
+    </p>
+    <p>
+      <img src="/images/palm/Lists-Template.png" alt="image"><br>
+    </p>
+    <h3 id="dynamic-lists">
+      Dynamic Lists
+    </h3>
+    <p>
+      If you set itemsCallback to a callback function for supplying list items, then you don't need to provide the items array objects at setup time. Whenever the framework needs to load items (speculatively or for display), it will call the function <strong>itemsCallback (listWidget, offset, limit)</strong>, where:
+    </p>
+    <table border="0" class="confluenceTable">
+      <tbody>
+        <tr>
+          <th class="confluenceTh">
+            Argument
+          </th>
+          <th class="confluenceTh">
+            Type
+          </th>
+          <th class="confluenceTh">
+            Description
+          </th>
+        </tr>
+        <tr>
+          <td class="confluenceTd">
+            listWidget
+          </td>
+          <td class="confluenceTd">
+            Object
+          </td>
+          <td class="confluenceTd">
+            The DOM node for the list widget requesting the items
+          </td>
+        </tr>
+        <tr>
+          <td class="confluenceTd">
+            offset
+          </td>
+          <td class="confluenceTd">
+            Integer
+          </td>
+          <td class="confluenceTd">
+            Index in the list of the first desired item model object (zero-based)
+          </td>
+        </tr>
+        <tr>
+          <td class="confluenceTd">
+            limit
+          </td>
+          <td class="confluenceTd">
+            Integer
+          </td>
+          <td class="confluenceTd">
+            Count of the number of item model objects requested
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <p>
+      It is understood that the requested data may not be immediately available. Once the data is available, the given widget's noticeUpdatedItems() method should be called to update the list. It's acceptable to call noticeUpdatedItems() immediately if desired, or any amount of time later. Lengthy delays may cause various scrolling artifacts, however. The method should be called as <strong>listWidget.mojo.noticeUpdatedItems(offset, items)</strong>, where:
+    </p>
+    <table border="0" class="confluenceTable">
+      <tbody>
+        <tr>
+          <th class="confluenceTh">
+            Argument
+          </th>
+          <th class="confluenceTh">
+            Type
+          </th>
+          <th class="confluenceTh">
+            Description
+          </th>
+        </tr>
+        <tr>
+          <td class="confluenceTd">
+            offset
+          </td>
+          <td class="confluenceTd">
+            Integer
+          </td>
+          <td class="confluenceTd">
+            Index in the list of the first object in 'items'; usually the same as 'offset' passed to the itemsCallback
+          </td>
+        </tr>
+        <tr>
+          <td class="confluenceTd">
+            items
+          </td>
+          <td class="confluenceTd">
+            Array
+          </td>
+          <td class="confluenceTd">
+            An array of the list item model objects that have been loaded for the list
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="formatters-and-dividers">
+      Formatters and Dividers
+    </h3>
+    <p>
+      The formatters property is simply a hash of property names to formatter functions, like this:
+    </p>
+    <blockquote>
+      <pre>
+<code>{
+  timeValue: this.myTimeFormatter,
+  dayOfWeek: this.dayIndexToString, ...
+}
+</code>
+</pre>
+    </blockquote>
+    <p>
+      Before rendering the relevant HTML templates, the formatters are applied to the objects used for property substitution. The keys within the formatters hash are property names to which the formatter functions should be applied.
+    </p>
+    <p>
+      The original data passed in is not modified, and the formatted properties are given modified new names and added to your list's data model so that the unformatted value is still accessible from inside the HTML template. Formatted values have the text &quot;formatted&quot; appended to their names. In the example above, the HTML template could refer to <code>#{timeValueFormatted}</code> in order to render the output from the myTimeFormatter() function. Formatter functions receive the relevant property value as their first argument, and the appropriate model object or items element as their second.
+    </p>
+    <p>
+      You can add formatted dividers to a list (something particularly useful for long lists) by specifying the function in the dividerFunction property and a template to dividerTemplate. If there is no template specified, then the framework will use the default, a single-letter alpha divider (list-divider.html, styled with the .palm-alpha-divider class).
+    </p>
+    <p>
+      The divider function works similar to a data formatter function. It is called with the item model as the sole argument during list rendering, and it returns a label string for the divider. For example, this function dividerAlpha generates list dividers based on the first letter of each item:
+    </p>
+    <blockquote>
+      <pre>
+<code>dividerAlpha = function(itemModel) {
+  return itemModel.data.toString()[0];
+};
+</code>
+</pre>
+    </blockquote>
+    <p>
+      The list uses the property <code>#{dividerLabel}</code> to determine where to put the divider content.
+    </p>
+    <h3 id="rendering-lists">
+      Rendering Lists
+    </h3>
+    <p>
+      The following properties can be used to fine-tune the list behavior:
+    </p>
+    <ul>
+      <li>
+        <p>
+          <code>fixedHeightItems</code> enables certain optimizations that are possible when all items are the same height.
+        </p>
+      </li>
+      <li>
+        <p>
+          <code>initialAverageRowHeight</code> sets an inital value for <em>average item</em> height estimation.
+        </p>
+      </li>
+      <li>
+        <p>
+          <code>renderLimit</code> is the maximum number of list items to render at any given time. The default is 20, but you may need to raise it if your list scrolling overruns the display. You'll notice this if fast scrolling exposes blank areas (sometimes green-colored). If this is too large, then you may see performance issues when scrolling.
+        </p>
+      </li>
+      <li>
+        <p>
+          <code>lookahead</code> specifies the number of items to fetch ahead when loading new items; the default is 15. The total size of the window of loaded item objects is <code>pageSize + 2*lookahead</code>.
+        </p>
+      </li>
+      <li>
+        <p>
+          <code>onItemRendered</code> is a function called each time an item is rendered into the DOM, with these arguments: listWidget, itemModel, itemNode.
+        </p>
+      </li>
+      <li>
+        <p>
+          <code>nullItemTemplate</code> is a path to an HTML template used when needed to render items that have not been loaded yet. The List widget provides a default.
+        </p>
+      </li>
+      <li>
+        <p>
+          <code>emptyTemplate</code> is a path to an HTML template rendered in place of the list container when there are no items in the list. The empty template will be displayed only after the size is set on the list or the initial set of items comes back and either of which is 0. Note that this doesn't apply for the case where an items array is specified (instead of a callback), since the size of the array is always known.
+        </p>
+      </li>
+    </ul>
+    <h3 id="list-manipulation">
+      List Manipulation
+    </h3>
+    <p>
+      If the <code>addItemLabel</code> property is specified, then an additional item is appended to the list. Tapping it will cause a Mojo.Event.listAdd event to be fired on the widget DIV.
+    </p>
+    <p>
+      If the <code>reorderable</code> property is specified, then a tap-and-hold on a list item will allow it to be moved to a new position in the list. A Mojo.Event.listReorder event is fired on the widget DIV, which includes the item being moved, as well as the old and new indexes. The indexes are passed as properties of the event object, event.toIndex and event.fromIndex.
+    </p>
+    <p>
+      If the <code>swipeToDelete</code> property is specified, then dragging items horizontally will invoke special delete UI, allowing the operation to be confirmed or canceled. If confirmed, a Mojo.Event.listDelete event is fired on the widget DIV, which includes the item being removed, event.item, and its index, event.index.
+    </p>
+    <p>
+      Deleted items that are unconfirmed have a deleted property set in the model. The name of this property can be specified using the deletedProperty property, and Mojo.Event.propertyChange events will be sent when it is updated. If unspecified, the property <code>deleted</code> will be used. For dynamic lists, it can be important for the app implementation to persist this value in a database. Otherwise, swiped items will be 'automatically undone' when they are removed from the cache of loaded items.
+    </p>
+    <p>
+      If the <code>dragDatatype</code> property is specified, then items will be allowed to be dragged to other lists with the same dragDatatype value. When this happens, the item's <em>old</em> list will receive a Mojo.Event.listDelete event, and the <em>new</em> list will get a Mojo.Event.listAdd event. In this case, the listAdd event will have the item and index properties specified, indicating that a specific item should be added at a specific location.
+    </p>
+    <p>
+      List entries can be editable by using an INPUT tag instead of a DIV in the itemTemplate. Whenever an entry is edited, a Mojo.Event.listChange event will be fired.
+    </p>
+    <h3 id="styling-and-highlighting">
+      Styling and Highlighting
+    </h3>
+    <p>
+      The example list used above in Templates wrapped the List widget with some specific styles to get the visual appearance shown in the figure. You should review Style Matters for a complete discussion of Mojo styling, but we can do a brief review of List styles here.
+    </p>
+    <p>
+      There are three levels of styles at work in that example:
+    </p>
+    <ul>
+      <li>
+        <p>
+          <code>.palm-group</code> forms the outer frame to enclose all the list elements, and has an optional .palm-group-title to define the title of the group.
+        </p>
+      </li>
+      <li>
+        <p>
+          <code>.palm-list</code> is used in the listTemplate to drive spacing and the light separator rule that divides the list entries.
+        </p>
+      </li>
+      <li>
+        <p>
+          <code>.palm-row</code> wraps the DIV tag containing the list entry template.
+        </p>
+      </li>
+    </ul>
+    <p>
+      The HTML would be divided between the scene's view file and the two templates as follows:
+    </p>
+    <p>
+      <strong>scene-assistant.html</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>&lt;div class=&quot;palm-group&quot;&gt;
+  &lt;div class=&quot;palm-group-title&quot; id=&quot;shakey-toggle&quot;&gt;Neil Young Albums&lt;/div&gt;
+  &lt;div class=&quot;palm-list&quot;&gt;
+      &lt;div id=&quot;neilYoungAlbums&quot; x-mojo-element='List'&gt;&lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+</code>
+</pre>
+    </blockquote>
+    <p>
+      <strong>listTemplate.html</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>&lt;div class=&quot;palm-list&quot;&gt;#{listElements}&lt;/div&gt; 
+</code>
+</pre>
+    </blockquote>
+    <p>
+      <strong>itemTemplate.html</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>&lt;div class=&quot;palm-row&quot; x-mojo-tap-highlight=&quot;momentary&quot;&gt;
+  &lt;div class=&quot;title left&quot;&gt;#{data}&lt;span class=&quot;year&quot;&gt;#{year}&lt;/span&gt;&lt;/div&gt;
+&lt;/div&gt;
+</code>
+</pre>
+    </blockquote>
+    <p>
+      You may have noticed the addition of the x-mojo-tap-highlight='momentary' in the top level div of the item template. This will cause the list item to highlight when tapped. The gesture subsystem will apply the 'selected' class to the div when it should be highlighted. You will get the default highlight appearance or you can override that appearance using your style sheet.
+    </p>
+    <h2 id="filter-list">
+      Filter List
+    </h2>
+    <p>
+      When your list is best navigated with a search field, particularly one where you would instantly filter the list as each character is typed into the field, you should use the FilterList widget. It is intended to display a variable-length list of objects, which can be filtered through a callback function, and can handle either a dynamic or static list (for more on this, see List above).
+    </p>
+    <p>
+      The widget has a text field displayed at the top of the scene, overlaying the list. The list displayed should be the result of applying the contents of the text field against some off-screen data source. When first opened, the user will see the entire contents of the list. As they type, the list should shrink to match what they have typed.
+    </p>
+    <p>
+      The Filter List is a combination of the Filter Field and List widgets, so see the documentation for those widgets for more information. It will automatically instantiate both of its sub-widgets, so you don't need to define them in your scene HTML as well:
+    </p>
+    <blockquote>
+      <pre>
+<code>&lt;div id=&quot;filterList&quot; x-mojo-element=&quot;FilterList&quot;&gt;&lt;/div&gt;    
+</code>
+</pre>
+    </blockquote>
+    <p>
+      To setup a FilterList:
+    </p>
+    <blockquote>
+      <pre>
+<code>var attributes = {
+  itemTemplate: 'filterlist/entry',
+  filterFunction: this.filterFunction.bind(this)
+};
+this.model = {};
+this.controller.setupWidget('filterList', attributes, this.model);
+</code>
+</pre>
+    </blockquote>
+    <p>
+      The filterFunction, like the itemsCallback property in the base List widget (see above) is provided by you to update the List data. The calling interface is virtually the same, with the addition of an argument filterString so that you define your function definition as <strong>filterFunction (filterString, listWidget, offset, limit)</strong>, where:
+    </p>
+    <blockquote>
+      <pre>
+<code>filterFunction: function(filterString, widget, offset, limit) {
+  var matchingSubset = this.getMatches(filterString, offset, limit);
+  listWidget.mojo.noticeUpdatedItems(offset, matchingSubset);
+  listWidget.mojo.setLength(matchingSubset.length);
+};
+</code>
+</pre>
+    </blockquote>
+    <p>
+      The Filter List will display a spinner in the text field while the list is being built and is intended to display an entry count when done. The count to display and actual list length may differ if you are showing multiple items per row, hiding some of the items returned, or want to display a special message instead of the exact length. To set the count to display to the user:
+    </p>
+    <blockquote>
+      <pre>
+<code>this.controller.get('filterList').mojo.setCount(10);
+</code>
+</pre>
+    </blockquote>
+    <h2 id="creating-a-list">
+      Creating a List
+    </h2>
+    <p>
+      The list object renders its items by using a model as a data source and a template to format the data. The model specifies one or more pieces of data to display in each list item, and the template has placeholders for the data.
+    </p>
+    <p>
+      Example:
+    </p>
+    <blockquote>
+      <pre>
+<code>&lt;div x-mojo-element=&quot;List&quot; id=&quot;mylist&quot;&gt;&lt;/div&gt; 
+</code>
+</pre>
+    </blockquote>
+    <p>
+      In the list item's template, specify the layout of the data by using placeholders. For example, here is a template for a list where each item displays an image and some text:
+    </p>
+    <blockquote>
+      <pre>
+<code>&lt;div class=&quot;palm-row&quot;&gt;
+  &lt;img src=&quot;#{myimgprop}&quot; /&gt;
+  &lt;span&gt;#{mytextprop}&lt;/span&gt;
+&lt;/div&gt; 
+</code>
+</pre>
+    </blockquote>
+    <p>
+      The scene's setup() method creates the list model. For example, the following model contains JSON objects for each list item, and each object contains data for each field in the template:
+    </p>
+    <blockquote>
+      <pre>
+<code>this.mylistmodel = { items: [
+  { &quot;myimgprop&quot; : &quot;./images/hey.gif&quot;, &quot;mytextprop&quot;: $L(&quot;Localized text string 1&quot;) },
+  { &quot;myimgprop&quot; : &quot;./images/abc.gif&quot;, &quot;mytextprop&quot;: $L(&quot;Localized text string 2&quot;) },
+  { &quot;myimgprop&quot; : &quot;./images/wow.gif&quot;, &quot;mytextprop&quot;: $L(&quot;Localized text string 3&quot;) },
+  ...
+] }; 
+</code>
+</pre>
+    </blockquote>
+    <p>
+      Use setupWidget() to associate the list with the model.
+    </p>
+    <p>
+      Example:
+    </p>
+    <blockquote>
+      <pre>
+<code>this.controller.setupWidget('mylist', \{ ... }, this.mylistmodel); 
+</code>
+</pre>
+    </blockquote>
+    <p>
+      If the list items themselves must be scrollable, use a subscroller. Set up the subscroller widget in the template as follows:
+    </p>
+    <blockquote>
+      <pre>
+<code>&lt;div class=&quot;palm-row&quot;&gt;
+  &lt;div x-mojo-element=&quot;Scroller&quot; name=&quot;subscroller&quot;&gt;
+      &lt;img src=&quot;#{myimgprop}&quot; /&gt;
+      &lt;span&gt;#{mytextprop}&lt;/span&gt;
+  &lt;/div&gt;
+&lt;/div&gt; 
+</code>
+</pre>
+    </blockquote>
+    <p>
+      And then, pass the subscroller in setupWidget as follows:
+    </p>
+    <blockquote>
+      <pre>
+<code>// selector by name, model will be pulled from this.mylistmodel.items\[index\]
+this.controller.setupWidget('subscroller', \{ ... });
+</code>
+</pre>
+    </blockquote>
+    <h2 id="controlling-html-escaping-in-templates">
+      Controlling HTML Escaping in Templates
+    </h2>
+    <p>
+      HTML escaping causes certain characters in the text (&quot;&amp;&quot;, &quot;&lt;&quot;, and &quot;&gt;&quot;) to be converted into HTML-safe character strings.
+    </p>
+    <p>
+      HTML escaping in templates is controlled by the value of escapeHTMLInTemplates in the file <code>framework_config.json</code>. If your application does not already have a <code>framework_config.json</code> file, create one in the application directory.
+    </p>
+    <p>
+      By default, HTML escaping is turned on in the HP webOS SDK.
+    </p>
+    <p>
+      HTML escaping is important unless you are sure that the content is safe, because unescaped HTML that is interpreted by the application can have unintended consequences.
+    </p>
+    <ul>
+      <li>
+        <p>
+          To turn off HTML escaping in templates, place the value <code>&quot;escapeHTMLInTemplates&quot;:false</code> in <code>framework_config.json</code>.
+        </p>
+        <p>
+          Example:
+        </p>
+        <blockquote>
+          <pre>
+<code>{ &quot;escapeHTMLInTemplates&quot;: false }
+</code>
+</pre>
+        </blockquote>
+      </li>
+      <li>
+        <p>
+          To turn on HTML escaping in templates, place the value <code>&quot;escapeHTMLInTemplates&quot;:true</code> in <code>framework_config.json</code>.
+        </p>
+        <p>
+          Example:
+        </p>
+        <blockquote>
+          <pre>
+<code>{ &quot;escapeHTMLInTemplates&quot;: true }
+</code>
+</pre>
+        </blockquote>
+      </li>
+    </ul>
+    <p>
+      With HTML escaping turned on, you can add a leading hyphen ('-') to any property reference in the template to prevent its HTML from being escaped.
+    </p>
+    <p>
+      Example:
+    </p>
+    <blockquote>
+      <pre>
+<code>#{-myPropertyWithHTML}
+</code>
+</pre>
+    </blockquote>
+		</div>
+	</body>
+</html>

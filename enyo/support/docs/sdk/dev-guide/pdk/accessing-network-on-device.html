@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>$if(pagetitle)$$pagetitle$$endif$</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="stylesheet" href="_css/chrome.css" />
+		<link rel="stylesheet" href="../_css/chrome.css" />
+		<link rel="stylesheet" href="../../_css/chrome.css" />
+		<link rel="stylesheet" href="../../../_css/chrome.css" />
+		<script src="_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="_js/doc.js" type="text/javascript"></script>
+		<script src="../_js/doc.js" type="text/javascript"></script>
+		<script src="../../_js/doc.js" type="text/javascript"></script>
+		<script src="../../../_js/doc.js" type="text/javascript"></script>
+	</head>
+	<body>
+		<div id="content">
+    
+    <h1 id="accessing-the-network-on-the-device">
+      Accessing the Network on the Device
+    </h1>
+    <p>
+      The device operating system puts up a firewall that keeps outside applications from opening connections into the device. To get around this, the following PDL call allows applications to open or close a port on the firewall:
+    </p>
+    <blockquote>
+      <pre>
+<code>PDL_Err PDL_SetFirewallPortStatus(int port, PDL_bool Open);
+</code>
+</pre>
+    </blockquote>
+    <p>
+      Ports can be anywhere in the 1025 - 65536 range.
+    </p>
+		</div>
+	</body>
+</html>

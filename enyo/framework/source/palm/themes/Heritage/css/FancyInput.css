@@ -1,0 +1,104 @@
+/* Copyright 2009-2011 Hewlett-Packard Development Company, L.P. All rights reserved. */
+/* FIXME: this is an invisible form of enyo-roundy-shadow and should be defined elsewhere? */
+.enyo-fancy-input {
+	background-color: transparent;
+	border: 14px solid transparent;
+	vertical-align: middle;
+	min-height: 50px;
+}
+
+.enyo-fancy-input-inner {
+	padding: 6px;
+}
+
+.enyo-fancy-input-client {
+	padding: 0 2px 0 16px;
+}
+
+.enyo-fancy-input-input {
+	width: 100%;
+	display: block;
+}
+
+
+/* 
+FIXME: change the following selectors that rely on nesting; instead apply classes directly
+
+FIXME: we almost always want some padding on a enyo-item, except when it's surrounding 
+		a fancy-input.... so we special case that here, non-ideal 
+*/
+.enyo-item > .enyo-fancy-input {
+	margin: -8px;
+}
+
+.rounded.enyo-first > .enyo-flat-shadow {
+	padding-bottom: 11px;
+	border-width: 14px 14px 3px 14px;
+	border-image: url(../images/roundy-shadow-top.png) 14 14 3 14;
+	-webkit-border-image: url(../images/roundy-shadow-top.png) 14 14 3 14;
+	-moz-border-image: url(../images/roundy-shadow-top.png) 14 14 3 14;
+}
+
+.rounded.enyo-last > .enyo-flat-shadow {
+	padding-top: 11px;
+	border-width: 3px 14px 14px 14px;
+	border-image: url(../images/roundy-shadow-bottom.png) 3 14 14 14;
+	-webkit-border-image: url(../images/roundy-shadow-bottom.png) 3 14 14 14;
+	-moz-border-image: url(../images/roundy-shadow-bottom.png) 3 14 14 14;
+}
+
+.rounded.enyo-single > .enyo-flat-shadow {
+	border-width: 14px 14px 14px 14px;
+	border-image: url(../images/roundy-shadow.png) 14 14;
+	-webkit-border-image: url(../images/roundy-shadow.png) 14 14;
+	-moz-border-image: url(../images/roundy-shadow.png) 14 14;
+}
+
+
+/* deprecated */
+.enyo-flat-shadow {
+	background-color: transparent;
+	border-width: 14px;
+	border-image: url(../images/flat-shadow.png) 14 14;
+	-webkit-border-image: url(../images/flat-shadow.png) 14 14;
+	-moz-border-image: url(../images/flat-shadow.png) 14 14;
+}
+
+.enyo-roundy-shadow-top {
+	background-color: transparent;
+	padding-bottom: 11px;
+	border-width: 14px 14px 3px 14px;
+	border-image: url(../images/roundy-shadow-top.png) 14 14 3 14;
+	-webkit-border-image: url(../images/roundy-shadow-top.png) 14 14 3 14;
+	-moz-border-image: url(../images/roundy-shadow-top.png) 14 14 3 14;
+}	
+		
+.enyo-roundy-shadow-top-inner {
+	margin: -14px -14px -3px -14px;
+}
+
+.enyo-roundy-shadow-bottom {
+	background-color: transparent;
+	padding-top: 11px;
+	border-width: 3px 14px 14px 14px;
+	border-image: url(../images/roundy-shadow-bottom.png) 3 14 14 14;
+	-webkit-border-image: url(../images/roundy-shadow-bottom.png) 3 14 14 14;
+	-moz-border-image: url(../images/roundy-shadow-bottom.png) 3 14 14 14;
+}
+
+.enyo-roundy-shadow-bottom-inner {
+	margin: -3px -14px -14px -14px;
+}
+
+/**/
+
+.enyo-fancy-right-input {
+	border: none;
+	outline: none;
+	background-color: transparent;
+	padding: 0;
+	margin: 0;
+	text-transform: uppercase;
+	text-align: right;
+	color: #00ABEF;
+}

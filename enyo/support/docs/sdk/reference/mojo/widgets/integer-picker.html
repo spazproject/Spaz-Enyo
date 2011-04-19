@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>$if(pagetitle)$$pagetitle$$endif$</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="stylesheet" href="_css/chrome.css" />
+		<link rel="stylesheet" href="../_css/chrome.css" />
+		<link rel="stylesheet" href="../../_css/chrome.css" />
+		<link rel="stylesheet" href="../../../_css/chrome.css" />
+		<script src="_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="_js/doc.js" type="text/javascript"></script>
+		<script src="../_js/doc.js" type="text/javascript"></script>
+		<script src="../../_js/doc.js" type="text/javascript"></script>
+		<script src="../../../_js/doc.js" type="text/javascript"></script>
+	</head>
+	<body>
+		<div id="content">
+    
+    <h1 id="mojo.widget.integerpicker">
+      Mojo.Widget.IntegerPicker
+    </h1>
+    <h2 id="namespace-detail">
+      Namespace Detail
+    </h2>
+    <h3 id="overview">
+      Overview
+    </h3>
+    <p>
+      The IntegerPicker offers selection of a single integer field. It is one of the simple picker widgets which present their choices as a linear sequence of values that wraps around; when you scroll to the end of the sequence, it simply continues back at the beginning.
+    </p>
+    <h3 id="declaration">
+      Declaration
+    </h3>
+    <blockquote>
+      <pre>
+<code>&lt;div x-mojo-element=&quot;IntegerPicker&quot; id=&quot;integerpickerId&quot;
+  class=&quot;integerpickerClass&quot; name=&quot;integerpickerName&quot;&gt;&lt;/div&gt; 
+</code>
+</pre>
+    </blockquote>
+    <table border="1">
+      <tbody>
+        <tr>
+          <th width="20%">
+            Properties
+          </th>
+          <th width="10%">
+            Required
+          </th>
+          <th width="20%">
+            Value
+          </th>
+          <th width="50%">
+            Description
+          </th>
+        </tr>
+        <tr>
+          <td>
+            x-mojo-element
+          </td>
+          <td>
+            Required
+          </td>
+          <td>
+            IntegerPicker
+          </td>
+          <td>
+            Declares the widget as type 'IntegerPicker'.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            id
+          </td>
+          <td>
+            Required
+          </td>
+          <td>
+            Any String
+          </td>
+          <td>
+            Identifies the widget element for use when instantiating or rendering.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            class
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            Any String
+          </td>
+          <td>
+            There is no default class for IntegerPicker, but you can assign one if you want to apply custom styling.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            name
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            Any String
+          </td>
+          <td>
+            Adds a unique name to the IntegerPicker widget; generally used in templates.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="events">
+      Events
+    </h3>
+    <blockquote>
+      <pre>
+<code>this.controller.listen(this.controller.get(&quot;integerpickerId&quot;),
+  Mojo.Event.propertyChange, this.handleUpdate); 
+</code>
+</pre>
+    </blockquote>
+    <table border="1">
+      <tbody>
+        <tr>
+          <th width="30%">
+            Event Type
+          </th>
+          <th width="20%">
+            Value
+          </th>
+          <th width="50%">
+            Event Handling
+          </th>
+        </tr>
+        <tr>
+          <td>
+            Mojo.Event.propertyChange
+          </td>
+          <td>
+            event.value or model.time
+          </td>
+          <td>
+            Respond to IntegerPicker value change or model.time
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="instantiation">
+      Instantiation
+    </h3>
+    <blockquote>
+      <pre>
+<code>this.controller.setupWidget(&quot;integerpickerId&quot;,
+  this.attributes = {
+      label: 'Number',
+      modelProperty: 'value',
+      min: 0,
+      max: 20
+  },
+  this.model = {
+      value: 5
+  }
+); 
+</code>
+</pre>
+    </blockquote>
+    <h3 id="attribute-properties">
+      Attribute Properties
+    </h3>
+    <table border="1">
+      <tbody>
+        <tr>
+          <th width="15%">
+            Attribute Property
+          </th>
+          <th width="15%">
+            Type
+          </th>
+          <th width="15%">
+            Required
+          </th>
+          <th width="15%">
+            Default
+          </th>
+          <th width="40%">
+            Description
+          </th>
+        </tr>
+        <tr>
+          <td>
+            label
+          </td>
+          <td>
+            String
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            'Value'
+          </td>
+          <td>
+            Label displayed for the widget controls.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            labelPlacement
+          </td>
+          <td>
+            String
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            Mojo.Widget.labelPlacementLeft
+          </td>
+          <td>
+            Mojo.Widget.labelPlacementRight: places label on right, value on left.<br>
+            Mojo.Widget.labelPlacementLeft: places label on left, value on right
+          </td>
+        </tr>
+        <tr>
+          <td>
+            modelProperty
+          </td>
+          <td>
+            String
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            value
+          </td>
+          <td>
+            Model property name for integer.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            min
+          </td>
+          <td>
+            Integer
+          </td>
+          <td>
+            Required
+          </td>
+          <td>
+            none
+          </td>
+          <td>
+            Minimum selection option.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            max
+          </td>
+          <td>
+            Integer
+          </td>
+          <td>
+            Required
+          </td>
+          <td>
+            none
+          </td>
+          <td>
+            Maximum selection option.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            padNumbers
+          </td>
+          <td>
+            Boolean
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            false
+          </td>
+          <td>
+            Specify whether or not to add padding to single-digit numbers.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="model-properties">
+      Model Properties
+    </h3>
+    <table border="1">
+      <tbody>
+        <tr>
+          <th width="15%">
+            Model Property
+          </th>
+          <th width="15%">
+            Type
+          </th>
+          <th width="15%">
+            Required
+          </th>
+          <th width="15%">
+            Default
+          </th>
+          <th width="40%">
+            Description
+          </th>
+        </tr>
+        <tr>
+          <td>
+            value
+          </td>
+          <td>
+            Integer
+          </td>
+          <td>
+            Required
+          </td>
+          <td>
+            null
+          </td>
+          <td>
+            Initial widget value and updated value after user selection.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="methods">
+      Methods
+    </h3>
+    <p>
+      The IntegerPicker widget has no methods.
+    </p>
+		</div>
+	</body>
+</html>

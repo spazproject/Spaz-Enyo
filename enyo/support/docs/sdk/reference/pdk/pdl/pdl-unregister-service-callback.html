@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>$if(pagetitle)$$pagetitle$$endif$</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="stylesheet" href="_css/chrome.css" />
+		<link rel="stylesheet" href="../_css/chrome.css" />
+		<link rel="stylesheet" href="../../_css/chrome.css" />
+		<link rel="stylesheet" href="../../../_css/chrome.css" />
+		<script src="_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="_js/doc.js" type="text/javascript"></script>
+		<script src="../_js/doc.js" type="text/javascript"></script>
+		<script src="../../_js/doc.js" type="text/javascript"></script>
+		<script src="../../../_js/doc.js" type="text/javascript"></script>
+	</head>
+	<body>
+		<div id="content">
+    
+    <h1 id="pdl_unregisterservicecallback">
+      PDL_UnregisterServiceCallback
+    </h1>
+    <h2 id="description">
+      Description
+    </h2>
+    <p>
+      Stops a service from sending any more responses using a callback function. You can register a callback function with a service using the <a href="pdl-service-call-with-callback.html">PDL_ServiceCallWithCallback</a> API. At that time, you indicate whether the response is one-time or indefinite. If indefinite, you can use this API to stop any more responses.
+    </p>
+    <p>
+      See <a href="/dev-guide/pdk/accessing-services.html">Accessing Services</a> for more information and examples.
+    </p>
+    <h2 id="syntax">
+      Syntax
+    </h2>
+    <blockquote>
+      <pre>
+<code>PDL_Err PDL_UnregisterServiceCallback(PDL_ServiceCallbackFunc callback);
+</code>
+</pre>
+    </blockquote>
+    <table border="1">
+      <tbody>
+        <tr>
+          <th>
+            Argument
+          </th>
+          <th>
+            Description
+          </th>
+        </tr>
+        <tr>
+          <td>
+            callback
+          </td>
+          <td>
+            Function for which messages are no longer to be received.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <p>
+      <strong>See also:</strong>
+    </p>
+    <ul>
+      <li>
+        <a href="pdl-service-call.html">PDL_ServiceCall</a>
+      </li>
+      <li>
+        <a href="pdl-service-call-with-callback.html">PDL_ServiceCallWithCallback</a>
+      </li>
+      <li>
+        <a href="pdl-get-param-double.html">PDL_GetParamDouble</a>
+      </li>
+      <li>
+        <a href="pdl-get-param-int.html">PDL_GetParamInt</a>
+      </li>
+      <li>
+        <a href="pdl-get-param-string.html">PDL_GetParamString</a>
+      </li>
+      <li>
+        <a href="pdl-param-exists.html">PDL_ParamExists</a>
+      </li>
+    </ul>
+		</div>
+	</body>
+</html>

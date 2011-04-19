@@ -1,0 +1,16 @@
+/* Copyright 2009-2011 Hewlett-Packard Development Company, L.P. All rights reserved. */
+.enyo-progress-bar {
+	height: 11px;
+	border-width: 0 6px;
+	-webkit-border-image: url(../images/progress-bar.png) 0 6 0 6 repeat repeat;
+	-webkit-box-sizing: border-box;
+	position:relative;
+}
+
+.enyo-progress-bar-inner {
+	margin: 0 -6px;
+	height: 11px;
+	border-width: 0 6px;
+	position: absolute;
+	-webkit-border-image: url(../images/progress-bar-inner.png) 0 6 0 6 repeat repeat;
+}

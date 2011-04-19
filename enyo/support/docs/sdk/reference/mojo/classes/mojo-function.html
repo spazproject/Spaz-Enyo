@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>$if(pagetitle)$$pagetitle$$endif$</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="stylesheet" href="_css/chrome.css" />
+		<link rel="stylesheet" href="../_css/chrome.css" />
+		<link rel="stylesheet" href="../../_css/chrome.css" />
+		<link rel="stylesheet" href="../../../_css/chrome.css" />
+		<script src="_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="_js/doc.js" type="text/javascript"></script>
+		<script src="../_js/doc.js" type="text/javascript"></script>
+		<script src="../../_js/doc.js" type="text/javascript"></script>
+		<script src="../../../_js/doc.js" type="text/javascript"></script>
+	</head>
+	<body>
+		<div id="content">
+    
+    <h1 id="mojo.function">
+      Mojo.Function
+    </h1>
+    <h2 id="namespace-detail">
+      Namespace Detail
+    </h2>
+    <h2 id="method-summary">
+      Method Summary
+    </h2>
+    <ul>
+      <li>Mojo.Function.<strong>debounce</strong>(onCall, onTimeout, delay, optionalWindow)
+      </li>
+    </ul>
+    <hr>
+    <h2 id="method-detail">
+      Method Detail
+    </h2>
+    <h3 id="mojo.function.debounceoncall-ontimeout-delay-optionalwindow">
+      Mojo.Function.<strong>debounce</strong>(onCall, onTimeout, delay, optionalWindow)
+    </h3>
+    <p>
+      This utility can be used to &quot;debounce&quot; multiple calls to a function, so that it will only be called once, or to perform some related function after a delay during which the primary function has not been called.
+    </p>
+    <p>
+      For example, window resize events often come in a series as the window is resized. It's helpful to have UI only update after the last one. Alternatively, when typing a filter for a filtered list, the widget should only re-query when the user has stopped typing.
+    </p>
+    <p>
+      debounce() returns a wrapped onCall function which can be called just like the original. The given onCall function will be called immediately, and the onTimeout function will be scheduled to be called after the specified delay. Any additional invocations of the wrapper during this delay period will reset the delay timer in addition to calling onCall. When things &quot;settle down&quot;, then the timer will expire, and the onTimeout function will be called. Arguments passed to the onTimeout function are a copy of the ones from the most recent invocation of the wrapper.
+    </p>
+    <h4 id="example-use">
+      Example Use
+    </h4>
+    <p>
+      We use debounce() to implement a user-driven delay for clearing a search string when the user is typing. The idea is that if they type 'abc' quickly, then the search string is not cleared, and we'll search for abc... But then if there is a delay before they press 'd', then the search string is cleared and we'll only search for 'd'.
+    </p>
+    <blockquote>
+      <pre>
+<code>// this.clearSearchString() will be called 1 second after
+// the most recent call to this.delayedClear().
+this.delayedClear = Mojo.Function.debounce(undefined,
+  this.clearSearchString.bind(this), 1, this.controller.window);
+</code>
+</pre>
+    </blockquote>
+    <h4 id="parameters">
+      Parameters
+    </h4>
+    <ul>
+      <li>{function} <strong>onCall</strong> - Function to call each time the wrapper is invoked. May be undefined.
+      </li>
+      <li>{function} <strong>onTimeout</strong> - Function to call when the wrapper is invoked, after the delay expires.
+      </li>
+      <li>{integer} <strong>delay</strong> - Time in seconds to wait for function invocations to &quot;settle down&quot;.
+      </li>
+      <li>{string} <strong>optionalWindow</strong> - Controls which window the delay timer runs in. Defaults to 'window'.
+      </li>
+    </ul>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,33 @@
+/* Copyright 2009-2011 Hewlett-Packard Development Company, L.P. All rights reserved. */
+.enyo-progress-button {
+	height: 50px;
+	border-width: 0px 25px;
+	-webkit-border-image: url(../images/palm-menu-button.png) 0 25 200 25;
+	-webkit-box-sizing: border-box;
+	color: white;
+	position:relative;
+}
+
+.enyo-progress-button-inner {
+	height: 50px;
+	margin: 0 -25px;
+	border-width: 0 25px;
+	position: absolute;
+	-webkit-border-image: url(../images/progress-button-inner.png) 0 25 0 25 repeat repeat;
+}
+
+.enyo-progress-button-client {
+	margin: 0 5px;
+	position:relative;
+}
+
+.enyo-progress-button-cancel {
+	position:relative;
+	width:13px;
+	height:13px;
+	margin-top:19px;
+	background-image: url(../images/progress-button-cancel.png);
+}
+
+
+

@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>$if(pagetitle)$$pagetitle$$endif$</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="stylesheet" href="_css/chrome.css" />
+		<link rel="stylesheet" href="../_css/chrome.css" />
+		<link rel="stylesheet" href="../../_css/chrome.css" />
+		<link rel="stylesheet" href="../../../_css/chrome.css" />
+		<script src="_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="_js/doc.js" type="text/javascript"></script>
+		<script src="../_js/doc.js" type="text/javascript"></script>
+		<script src="../../_js/doc.js" type="text/javascript"></script>
+		<script src="../../../_js/doc.js" type="text/javascript"></script>
+	</head>
+	<body>
+		<div id="content">
+    
+    <h1 id="viewers">
+      Viewers
+    </h1>
+    <p>
+      With Mojo, you can embed rich media objects within your scenes. As of this release of the SDK, there are embeddable widgets for a web view and a full screen image scroller.
+    </p>
+    <h2 id="webview">
+      WebView
+    </h2>
+    <p>
+      To embed a contained web page, declare and instantiate a WebView widget. You can use it to render local markup or to load an external URL; as long as you can define the source as a URL it can be loaded. The WebView widget is set up just like any other widget in the Mojo framework.
+    </p>
+    <blockquote>
+      <pre>
+<code>this.controller.setupWidget('webView', {}); 
+</code>
+</pre>
+    </blockquote>
+    <p>
+      Where 'webView' is the widget ID in your scene's view:
+    </p>
+    <blockquote>
+      <pre>
+<code>&lt;div id=&quot;webView&quot; x-mojo-element=&quot;WebView&quot;&gt;&lt;/div&gt; 
+</code>
+</pre>
+    </blockquote>
+    <p>
+      You can pass attributes to setupWidget to control some aspects of the WebView widget and how it behaves. To have it navigate to an initial URL (like palm.com), set up the widget like so:
+    </p>
+    <blockquote>
+      <pre>
+<code>var attributes = {
+  url: 'http://www.palm.com'
+};
+this.controller.setupWidget('webView', attributes); 
+</code>
+</pre>
+    </blockquote>
+    <p>
+      In addition to calling setupWidget, you must also load the command/resource handler table into the WebView widget. This table is used by the WebView widget to know what resource types it should display, and which ones should be handed off the the host application. This call must be made in your scene's &quot;ready&quot; method.
+    </p>
+    <blockquote>
+      <pre>
+<code>this.controller.get('webView').mojo.addSystemRedirects('your.app.id');
+</code>
+</pre>
+    </blockquote>
+    <p>
+      A commonly used attribute is interrogateClicks. Use this attribute if your application wants to handle all attempts to navigate to another URL. If this attribute is not defined, any hyperlink will be followed within the WebView widget itself. When interrogateClicks is set to true, your application can subscribe to a Mojo.Event.webViewLinkClicked event to be informed of the URL that was clicked on and decide what to do with it (e.g., open a new window, ignore the click, update the current scene, etc).
+    </p>
+    <blockquote>
+      <pre>
+<code>this.controller.listen('webView', Mojo.Event.webViewLinkClicked,
+  this.linkClicked.bind(this));
+
+linkClicked: function(clickEvent) {
+  Mojo.Log.info(&quot;Got a click on a link to : &quot; + clickEvent.url);
+  this.controller.get('webView').mojo.openURL(clickEvent.url);
+} 
+</code>
+</pre>
+    </blockquote>
+    <p>
+      To receive status while a page is loading, create event listeners for:
+    </p>
+    <ul>
+      <li>Mojo.Event.webViewLoadStarted: indicates that the WebView widget has started loading the content.
+      </li>
+      <li>Mojo.Event.webViewLoadProgress: indicates that some progress has been made in loading content and returns the amount of progress. Note: this will show 100% even in the case of a failed page load.
+      </li>
+      <li>Mojo.Event.webViewLoadStopped: indicates that the page has finished loading; note: &quot;finished loading&quot; is a tricky concept in AJAX web pages, so be careful how you use this event.
+      </li>
+      <li>Mojo.Event.webViewLoadFailed: indicates that the content failed to load and supplies an error code (errorCode) and localized message (message).
+      </li>
+    </ul>
+    <p>
+      Building on the example above, the following code will write to the console as the homepage loads. If you want to add a load indicator, look at the Tips page on Web View Indicator.
+    </p>
+    <blockquote>
+      <pre>
+<code>this.controller.listen('webView', Mojo.Event.webViewLoadStarted,
+  this.pageStarted.bind(this));
+this.controller.listen('webView', Mojo.Event.webViewLoadProgress,
+  this.pageProgress.bind(this));
+this.controller.listen('webView', Mojo.Event.webViewLoadStopped,
+  this.pageStopped.bind(this));
+this.controller.listen('webView', Mojo.Event.webViewLoadFailed,
+  this.pageError.bind(this));
+
+pageStarted: function() {
+  Mojo.Log.info(&quot;Page load started&quot;);
+},
+
+pageProgress: function(pageProgressEvent) {
+  Mojo.Log.info(&quot;Page load progress: &quot; + pageProgressEvent.progress + &quot;%&quot;);
+},
+
+pageStopped: function() {
+  Mojo.Log.info(&quot;Page finished loading.&quot;);
+},
+
+pageError: function(pageErrorEvent) {
+  Mojo.Log.info(&quot;Error Loading Page. Error Code: &quot; + pageErrorEvent.errorCode +
+      &quot;, message: &quot; + pageErrorEvent.message);
+} 
+</code>
+</pre>
+    </blockquote>
+    <h2 id="imageview">
+      ImageView
+    </h2>
+    <p>
+      This widget is designed to view an image full-screen with support for performant zooming and panning. You can use this for single images, or flick left and right through a series of images. You can assign callback handlers through the onLeftFunction and onRightFunction model properties to adjust the currently displayed images, and listen to Mojo.Event.imageViewChanged to get the currently-loaded center image. Use the public methods leftUrlProvided(url), rightUrlProvided(url), and centerUrlProvided(url) to provide the widget images to work with.
+    </p>
+    <p>
+      To create a simple ImageView with zooming and panning functionality:
+    </p>
+    <blockquote>
+      <pre>
+<code>setup: function() {
+  var attributes = {};
+  this.imageViewModel = {};
+  this.controller.setupWidget('imageView', attributes, this.imageViewModel);
+  this.controller.get('imageView').observe(Mojo.Event.imageViewChanged,
+  this.changedImage.bind(this));
+}
+
+//after the ImageView widget is set up, provide the url of the image to show
+activate: function() {
+  this.controller.get('imageView').mojo.centerUrlProvided('images/testimage1.jpg');
+}
+
+//Called after a successful flick or initial image loaded
+changedImage: function(event) {
+  if (event.error) {
+      Mojo.Log.error(&quot;Failed to load image!&quot;);
+      return;
+  }
+  Mojo.Log.info(&quot;Loaded the image okay!&quot;, event.url);
+}
+</code>
+</pre>
+    </blockquote>
+    <p>
+      Mojo.Event.imageViewChanged is sent when the center image has completed loading (or failed to load) with two properties: url, the specified url, and error, a boolean indicating load failure (thus an option to load a fall back image).
+    </p>
+    <p>
+      onLeftFunction and onRightFunction are called when the user has triggered a transition to the left or right image, respectively. (The image must exist and have been loaded completely from a previous call to the public function leftUrlProvided or rightUrlProvided). In these callbacks, the developer should call leftUrlProvided/rightUrlProvided again with a new url to supply a new image in the direction of the flick.
+    </p>
+		</div>
+	</body>
+</html>

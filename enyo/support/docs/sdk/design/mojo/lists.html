@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>$if(pagetitle)$$pagetitle$$endif$</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="stylesheet" href="_css/chrome.css" />
+		<link rel="stylesheet" href="../_css/chrome.css" />
+		<link rel="stylesheet" href="../../_css/chrome.css" />
+		<link rel="stylesheet" href="../../../_css/chrome.css" />
+		<script src="_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="_js/doc.js" type="text/javascript"></script>
+		<script src="../_js/doc.js" type="text/javascript"></script>
+		<script src="../../_js/doc.js" type="text/javascript"></script>
+		<script src="../../../_js/doc.js" type="text/javascript"></script>
+	</head>
+	<body>
+		<div id="content">
+    
+    <h1 id="lists">
+      Lists
+    </h1>
+    <p>
+      Some applications need to organize various types of information into lists. The HP webOS platform contains many design options from which to build lists, including the use of many UI widgets. Some lists allow the user to select only one item, and others allow multiple selections. Also available are filter controls that sort the entries in the list according to what the user types in the text field.
+    </p>
+    <p>
+      The following table provides additional information with image examples.
+    </p>
+    <table border="0">
+      <tbody>
+        <tr>
+          <th>
+            Type
+          </th>
+          <th>
+            Description
+          </th>
+          <th>
+            Example
+          </th>
+        </tr>
+        <tr>
+          <td>
+            Filter
+          </td>
+          <td>
+            <p>
+              This control includes a text entry field with a list. The user does not need to tap the text field – the text field opens with the first typed character. Start typing to filter the list to show only the items that match. The match is against any text in the list, not just the first word in each line. The number of found matches is noted to the right of the field. Use attributes in the FilterList widget to specify how to display the results. Implemented by using the Mojo.Widget.FilterList API..<br>
+              <br>
+              Example: In Contacts, with a full list of contacts displayed, begin typing on the keyboard. The list is filtered based on the typed entry.
+            </p>
+          </td>
+          <td>
+            <img src="/images/palm/ui_summary/filterList.gif" border="0" align="absmiddle">
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Filter field
+          </td>
+          <td>
+            This control accepts text input and passes it to any specified list. Implemented by using the Mojo.Widget.FilterField API with the palm-group attribute. Use the filter field to process the text the user enters, and display the results however you want.
+          </td>
+          <td>
+            <img src="/images/palm/ui_summary/filterField_smaller.gif" border="0" align="absmiddle">
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Group box list
+          </td>
+          <td>
+            Surrounds the list with a border. Most group boxes have titles, but they are optional. Commonly implemented by using the Mojo.Widget.List API with the palm-group attribute.
+          </td>
+          <td>
+            <img src="/images/palm/ui_summary/groupList.jpg" border="0" align="absmiddle">
+          </td>
+        </tr>
+        <tr>
+          <td>
+            List
+          </td>
+          <td>
+            Displays a set of available choices where the user can select only one item by tapping it. In a simple list, tapping anywhere in the row leads to a scene displaying details (e.g., the first scene in the Tasks 1.0 app). In more complex lists, each row can contain several different elements, each of which processes a tap differently.<br>
+            <br>
+            Example: At a movie website, each row might contain a thumbnail of the movie (tap it to watch the trailer), followed by two lines of information to the right (i.e., the movie name on line one, rating on line two, which are not tapable for easy scrolling) and a button to the right, which the user taps to read more details.<br>
+            <br>
+            Implemented by using the Mojo.Widget.List API, with contents in palm-rows, and by using various options including:
+            <ul>
+              <li>Add another item to the list
+              </li>
+              <li>Alphabetical dividers
+              </li>
+              <li>Drag to reorder items
+              </li>
+              <li>Static or expandable/collapsible dividers
+              </li>
+              <li>Swipe to delete items
+              </li>
+            </ul>
+          </td>
+          <td>
+            <img src="/images/palm/ui_summary/lists.gif" border="0" align="absmiddle">
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Multiple selection list
+          </td>
+          <td>
+            This list displays a set of available choices. The user can select muliptle items by tapping them. Implemented by using the Mojo.Widget.List API with the palm-list attribute, with a check box in each palm-row.
+          </td>
+          <td>
+            <img src="/images/palm/ui_summary/multiSelectionList.jpg" border="0" align="absmiddle">
+          </td>
+        </tr>
+      </tbody>
+    </table>
+		</div>
+	</body>
+</html>

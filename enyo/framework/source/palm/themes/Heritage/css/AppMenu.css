@@ -1,0 +1,46 @@
+/* Copyright 2009-2011 Hewlett-Packard Development Company, L.P. All rights reserved. */
+.enyo-appmenu {
+	z-index: 120;
+	position: fixed;
+	font-size: 18px;
+	border-width: 30px 28px 35px 28px;
+	-webkit-border-image: url(../images/system-menu-background.png) 30 28 35 28 stretch stretch;
+	color: white;
+	top: -2px;
+	left: 4px;
+	min-width: 210px;
+}
+
+.enyo-appmenu-inner {
+	margin: -9px -20px;
+}
+
+
+/*
+	App menu item styling strategy; apply a border image with top and bottom border.
+	Apply row styling to all menu controls, e.g. top, middle, bottom, single
+	* Top border is 1px except for top / single items
+	* Bottom border is 1px if a control with items is collapsed and 2px if it's expanded
+	* Bottom border is 0 if it's the absolute bottom control in the menu (menu-bottom)
+	NOTE: this menu-bottom is dynamically calculated by the Menu
+*/
+.enyo-appmenu .enyo-item {
+	-webkit-border-image: url(../images/system-menu-item-divider.png) 1 0 1 0 stretch;
+	border-bottom: 0px;
+}
+
+.enyo-appmenu .enyo-item.enyo-first, .enyo-appmenu .enyo-item.enyo-single {
+	border-top: 0;
+}
+
+.enyo-appmenu .enyo-item.enyo-has-items.collapsed {
+	border-bottom: 1px;
+}
+
+.enyo-appmenu .enyo-item.enyo-has-items {
+	border-bottom: 2px;
+}
+
+.enyo-appmenu .enyo-item.enyo-has-items.enyo-menu-last, .enyo-appmenu .enyo-item.has-items.collapsed.enyo-menu-last {
+	border-bottom: 0px;
+}

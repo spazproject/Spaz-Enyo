@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>$if(pagetitle)$$pagetitle$$endif$</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="stylesheet" href="_css/chrome.css" />
+		<link rel="stylesheet" href="../_css/chrome.css" />
+		<link rel="stylesheet" href="../../_css/chrome.css" />
+		<link rel="stylesheet" href="../../../_css/chrome.css" />
+		<script src="_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="_js/doc.js" type="text/javascript"></script>
+		<script src="../_js/doc.js" type="text/javascript"></script>
+		<script src="../../_js/doc.js" type="text/javascript"></script>
+		<script src="../../../_js/doc.js" type="text/javascript"></script>
+	</head>
+	<body>
+		<div id="content">
+    
+    <h1 id="pdl_getdevicename">
+      PDL_GetDeviceName
+    </h1>
+    <h2 id="description">
+      Description
+    </h2>
+    <p>
+      Sets the passed buffer variable with the device's name. This is the value of the Name field that appears when you open the <em>Device Info</em> app on the device. Note that, since this is a user-entered field, it is not necessarily a unique device identifier. Use <code>PDL_GetUniqueID</code> to get a unique device identifier.
+    </p>
+    <h2 id="syntax">
+      Syntax
+    </h2>
+    <blockquote>
+      <pre>
+<code>PDL_Err PDL_GetDeviceName(char *buffer, int bufferLen);     
+</code>
+</pre>
+    </blockquote>
+    <table border="0">
+      <tbody>
+        <tr>
+          <th>
+            Argument
+          </th>
+          <th>
+            Description
+          </th>
+        </tr>
+        <tr>
+          <td>
+            buffer
+          </td>
+          <td>
+            Pointer to the buffer. The buffer should be at least 64 bytes long, though not all of it is necessarily used.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            bufferLen
+          </td>
+          <td>
+            Length of the buffer.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h2 id="returns">
+      Returns
+    </h2>
+    <blockquote>
+      <pre>
+<code>PDL_EOTHER — Unable to get the device name.
+PDL_INVALIDINPUT — Buffer is empty or null.
+PDL_SYSTEMERROR_FILE — Unable to access preferences database.
+PDL_STRINGTOOSMALL — Buffer is too small to hold device name.
+PDL_NOERROR — Success.
+</code>
+</pre>
+    </blockquote>
+		</div>
+	</body>
+</html>

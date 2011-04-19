@@ -1,0 +1,4152 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>$if(pagetitle)$$pagetitle$$endif$</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="stylesheet" href="_css/chrome.css" />
+		<link rel="stylesheet" href="../_css/chrome.css" />
+		<link rel="stylesheet" href="../../_css/chrome.css" />
+		<link rel="stylesheet" href="../../../_css/chrome.css" />
+		<script src="_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="_js/doc.js" type="text/javascript"></script>
+		<script src="../_js/doc.js" type="text/javascript"></script>
+		<script src="../../_js/doc.js" type="text/javascript"></script>
+		<script src="../../../_js/doc.js" type="text/javascript"></script>
+	</head>
+	<body>
+		<div id="content">
+    
+    <h1 id="foundations.assert">
+      Foundations.Assert
+    </h1>
+    <p>
+      Provides a set of <a href="http://en.wikipedia.org/wiki/Assertion_%28computing%29" target="_blank">Assert</a> functions, for checking code pre-conditions and post-conditions.
+    </p>
+    <h2 id="using-foundations.assert">
+      Using Foundations.Assert
+    </h2>
+    <h3 id="assert-and-require-versions">
+      Assert and Require Versions
+    </h3>
+    <p>
+      For each function, there are two versions. For example:
+    </p>
+    <ol style="list-style-type: decimal">
+      <li>Assert.assertEqual(obj1, obj2, msg, params)
+      </li>
+      <li>Assert.requireEqual(obj1, obj2, msg, params)
+      </li>
+    </ol>
+    <p>
+      If the assertion evaluates to false, the &quot;assert&quot; function logs an error message and returns false while the &quot;require&quot; one throws an exception.
+    </p>
+    <p>
+      Messages are logged to &quot;/var/log/messages.&quot; You can use the &quot;tail&quot; utility to view messages in real-time.
+    </p>
+    <p>
+      <strong>To monitor logged messages in real-time:</strong>
+    </p>
+    <ul>
+      <li>Open a shell on the device and run:
+      </li>
+    </ul>
+    <blockquote>
+      <pre>
+<code>tail -f /var/log/messages
+</code>
+</pre>
+    </blockquote>
+    <pre>
+<code>The &quot;-f&quot; option causes tail to display the last 10 lines of messages
+and append new lines to the display as they are added.
+</code>
+</pre>
+    <p>
+      <strong>To show output for just your app:</strong>
+    </p>
+    <ul>
+      <li>Open a shell on the device and run:
+      </li>
+    </ul>
+    <blockquote>
+      <pre>
+<code>tail -f /var/log/messages | grep packageid
+</code>
+</pre>
+    </blockquote>
+    <p>
+      Note that using &quot;tail&quot; like this works until the log file is rotated; then you will need to reissue the command.
+    </p>
+    <h3 id="using-the-msg-and-params-arguments">
+      Using the &quot;msg&quot; and &quot;params&quot; arguments
+    </h3>
+    <p>
+      Each function can take optional &quot;msg&quot; and &quot;params&quot; arguments. The msg parameter is used when logging an error message or throwing an error. It can also contain &quot;#{...}&quot; placeholders for values from the params object. For example:
+    </p>
+    <blockquote>
+      <pre>
+<code>msg = &quot;Expected a sum greater than #{count}, but it was #{amount}&quot;;
+</code>
+</pre>
+    </blockquote>
+    <p>
+      The params argument can then be used to situationally fill the placeholders. For example:
+    </p>
+    <blockquote>
+      <pre>
+<code>params = {count: 3, amount: 0};
+</code>
+</pre>
+    </blockquote>
+    <hr>
+    <h2 id="assert-functions">
+      Assert Functions
+    </h2>
+    <table border="1">
+      <thead>
+        <tr>
+          <th>
+            Function
+          </th>
+          <th>
+            Description
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            Assert.assert
+          </td>
+          <td>
+            Logs an error if the expression is not true.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Assert.assertArray
+          </td>
+          <td>
+            Logs an error if the expression is not an array.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Assert.assertClass
+          </td>
+          <td>
+            Logs an error if an object does not have a given constructor.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Assert.assertDefined
+          </td>
+          <td>
+            Logs an error if the argument is not defined.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Assert.assertEqual
+          </td>
+          <td>
+            Logs an error if the expressions are not equal (==).
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Assert.assertError
+          </td>
+          <td>
+            Logs an error if a function does not throw the expected error.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Assert.assertFalse
+          </td>
+          <td>
+            Logs an error if the expression is not false.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Assert.assertFunction
+          </td>
+          <td>
+            Logs an error if the argument is not a function.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Assert.assertIdentical
+          </td>
+          <td>
+            Logs an error if the expressions are not identical (===), that is, if they do not have the same type and value.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Assert.assertJSONObject
+          </td>
+          <td>
+            Logs an error if the argument does not evaluate (when run through Object.prototype.toString()) to '[object Object]' or '[object Array]' (an object of an array).
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Assert.assertMatch
+          </td>
+          <td>
+            Logs an error if a regular expression pattern has no matches in a given string.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Assert.assertNumber
+          </td>
+          <td>
+            Logs an error if the argument is not a number.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Assert.assertObject
+          </td>
+          <td>
+            Logs an error if the argument is not an object.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Assert.assertProperty
+          </td>
+          <td>
+            Logs an error if the object does not have a particular property or properties.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Assert.assertString
+          </td>
+          <td>
+            Logs an error if the argument is not a string.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Assert.require
+          </td>
+          <td>
+            Throws an error if the expression is not true
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Assert.requireArray
+          </td>
+          <td>
+            Throws an error if the expression is not an array.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Assert.requireClass
+          </td>
+          <td>
+            Throws an error if an object does not have a given constructor.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Assert.requireDefined
+          </td>
+          <td>
+            Throws an error if the argument is not defined.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Assert.requireEqual
+          </td>
+          <td>
+            Throws an error if the expressions are not equal (==).
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Assert.requireError
+          </td>
+          <td>
+            Throws an error if a function does not throw the expected error.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Assert.requireFalse
+          </td>
+          <td>
+            Throws an error if the expression is not false.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Assert.requireFunction
+          </td>
+          <td>
+            Throws an error if the argument is not a function.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Assert.requireIdentical
+          </td>
+          <td>
+            Throws an error if the expressions are not identical (===), that is, if they do not have the same type and value.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Assert.requireJSONObject
+          </td>
+          <td>
+            Throws an error if the argument does not evaluate (when run through Object.prototype.toString()) to '[object Object]' or '[object Array]' (an object of an array).
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Assert.requireMatch
+          </td>
+          <td>
+            Throws an error if the pattern does not match.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Assert.requireNumber
+          </td>
+          <td>
+            Throws an error if the argument is not a number.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Assert.requireObject
+          </td>
+          <td>
+            Throws an error if the argument is not an object.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Assert.requireProperty
+          </td>
+          <td>
+            Throws an error if the object does not have a particular property or properties.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Assert.requireString
+          </td>
+          <td>
+            Throws an error if the argument is not a string.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h2 id="assert.assert">
+      Assert.assert
+    </h2>
+    <p>
+      Logs an error if the expression is not true.
+    </p>
+    <h3 id="syntax">
+      Syntax
+    </h3>
+    <pre>
+    Assert.assert(<em>exp</em>, <em>msg</em>, <em>params</em>);
+</pre>
+    <h3 id="parameters">
+      Parameters
+    </h3>
+    <table border="1">
+      <thead>
+        <tr>
+          <th>
+            Argument
+          </th>
+          <th>
+            Required
+          </th>
+          <th>
+            Type
+          </th>
+          <th>
+            Description
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <em>exp</em>
+          </td>
+          <td>
+            Yes
+          </td>
+          <td>
+            any
+          </td>
+          <td>
+            Expression to test
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <em>msg</em>
+          </td>
+          <td>
+            No
+          </td>
+          <td>
+            string
+          </td>
+          <td>
+            Message to log. This can contain &quot;#{...}&quot; placeholders for values from the <code>params</code> object, i.e., &quot;Expected a sum greater than #{count}, but it was #{amount}&quot;.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <em>params</em>
+          </td>
+          <td>
+            No
+          </td>
+          <td>
+            any object
+          </td>
+          <td>
+            Parameters to fill in &quot;msg&quot; placeholders, i.e., {count: 3, amount: 0}.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="returns">
+      Returns
+    </h3>
+    <blockquote>
+      <pre>
+<code>Returns the expression passed.
+</code>
+</pre>
+    </blockquote>
+    <p>
+      Logs an error if the expression does not evaluate to true.
+    </p>
+    <p>
+      <strong>Example</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>var libraries   = MojoLoader.require({ name: &quot;foundations&quot;, version: &quot;1.0&quot; });
+var AssertUtils = libraries[&quot;foundations&quot;].Assert;
+var exp=&quot;&quot;;
+var msg = &quot;Does not evaluate to true&quot;;
+Mojo.Log.info(&quot;assert = &quot;+ AssertUtils.assert(exp, msg));
+</code>
+</pre>
+    </blockquote>
+    <p>
+      <strong>Example Output</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>Error: Does not evaluate to true
+assert = &quot;&quot;
+</code>
+</pre>
+    </blockquote>
+    <hr>
+    <h2 id="assert.assertarray">
+      Assert.assertArray
+    </h2>
+    <p>
+      Logs an error if the expression is not an array.
+    </p>
+    <h3 id="syntax-1">
+      Syntax
+    </h3>
+    <pre>
+    boolean Assert.assertArray(<em>exp</em>, <em>msg</em>, <em>params</em>);
+</pre>
+    <h3 id="parameters-1">
+      Parameters
+    </h3>
+    <table border="1">
+      <thead>
+        <tr>
+          <th>
+            Argument
+          </th>
+          <th>
+            Required
+          </th>
+          <th>
+            Type
+          </th>
+          <th>
+            Description
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <em>exp</em>
+          </td>
+          <td>
+            Yes
+          </td>
+          <td>
+            any
+          </td>
+          <td>
+            Expression to test.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <em>msg</em>
+          </td>
+          <td>
+            No
+          </td>
+          <td>
+            string
+          </td>
+          <td>
+            Message to log. This can contain &quot;#{...}&quot; placeholders for values from the <code>params</code> object, i.e., &quot;Expected a sum greater than #{count}, but it was #{amount}&quot;.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <em>params</em>
+          </td>
+          <td>
+            No
+          </td>
+          <td>
+            any object
+          </td>
+          <td>
+            Parameters to fill in &quot;msg&quot; placeholders, i.e., {count: 3, amount: 0}.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="returns-1">
+      Returns
+    </h3>
+    <blockquote>
+      <pre>
+<code>true or false
+</code>
+</pre>
+    </blockquote>
+    <p>
+      Logs an error if the expression is not an array.
+    </p>
+    <p>
+      <strong>Example</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>var libraries   = MojoLoader.require({ name: &quot;foundations&quot;, version: &quot;1.0&quot; });
+var AssertUtils = libraries[&quot;foundations&quot;].Assert;
+var ary = [{&quot;a&quot;:&quot;b&quot;}];
+var notAry = &quot;this is a string&quot;;
+var msg = &quot;Not an array&quot;;
+Mojo.Log.info(&quot;assert = &quot;+ AssertUtils.assertArray(ary, msg));
+Mojo.Log.info(&quot;assert = &quot;+ AssertUtils.assertArray(notAry, msg));
+</code>
+</pre>
+    </blockquote>
+    <p>
+      <strong>Example Output</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>assert = true
+Error: Not an array
+assert = false
+</code>
+</pre>
+    </blockquote>
+    <hr>
+    <h2 id="assert.assertclass">
+      Assert.assertClass
+    </h2>
+    <p>
+      Logs an error if an object does not have a given constructor.
+    </p>
+    <h3 id="syntax-2">
+      Syntax
+    </h3>
+    <pre>
+    boolean Assert.assertClass(<em>obj</em>, <em>constructor</em>, <em>msg</em>, <em>params</em>)
+</pre>
+    <h3 id="parameters-2">
+      Parameters
+    </h3>
+    <table border="1">
+      <thead>
+        <tr>
+          <th>
+            Argument
+          </th>
+          <th>
+            Required
+          </th>
+          <th>
+            Type
+          </th>
+          <th>
+            Description
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <em>obj</em>
+          </td>
+          <td>
+            Yes
+          </td>
+          <td>
+            any
+          </td>
+          <td>
+            Object to test for constructor.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <em>constructor</em>
+          </td>
+          <td>
+            Yes
+          </td>
+          <td>
+            any
+          </td>
+          <td>
+            Asserted constructor.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <em>msg</em>
+          </td>
+          <td>
+            No
+          </td>
+          <td>
+            string
+          </td>
+          <td>
+            Message to log. This can contain &quot;#{...}&quot; placeholders for values from the <code>params</code> object, i.e., &quot;Expected a sum greater than #{count}, but it was #{amount}&quot;.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <em>params</em>
+          </td>
+          <td>
+            No
+          </td>
+          <td>
+            any object
+          </td>
+          <td>
+            Parameters to fill in &quot;msg&quot; placeholders, i.e., {count: 3, amount: 0}.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="returns-2">
+      Returns
+    </h3>
+    <blockquote>
+      <pre>
+<code>true or false
+</code>
+</pre>
+    </blockquote>
+    <p>
+      Logs an error if the constructor is not the passed object's constructor.
+    </p>
+    <p>
+      <strong>Example</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>var libraries   = MojoLoader.require({ name: &quot;foundations&quot;, version: &quot;1.0&quot; });
+var AssertUtils = libraries[&quot;foundations&quot;].Assert;
+function cat(name) {
+  this.name = name;
+  this.talk = function() {
+      alert( this.name + &quot; say meeow!&quot; );
+  }
+}
+
+cat1 = new cat(&quot;felix&quot;);
+Mojo.Log.info(&quot;assert = &quot;+ AssertUtils.assertClass(cat1, cat));
+</code>
+</pre>
+    </blockquote>
+    <p>
+      <strong>Example Output</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>assert = true
+</code>
+</pre>
+    </blockquote>
+    <hr>
+    <h2 id="assert.assertdefined">
+      Assert.assertDefined
+    </h2>
+    <p>
+      Logs an error if the argument is not defined.
+    </p>
+    <h3 id="syntax-3">
+      Syntax
+    </h3>
+    <pre>
+    boolean Assert.assertDefined(<em>exp</em>, <em>msg</em>, <em>params</em>);
+</pre>
+    <h3 id="parameters-3">
+      Parameters
+    </h3>
+    <table border="1">
+      <thead>
+        <tr>
+          <th>
+            Argument
+          </th>
+          <th>
+            Required
+          </th>
+          <th>
+            Type
+          </th>
+          <th>
+            Description
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <em>exp</em>
+          </td>
+          <td>
+            Yes
+          </td>
+          <td>
+            any
+          </td>
+          <td>
+            Expression to test.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <em>msg</em>
+          </td>
+          <td>
+            No
+          </td>
+          <td>
+            string
+          </td>
+          <td>
+            Message to log. This can contain &quot;#{...}&quot; placeholders for values from the <code>params</code> object, i.e., &quot;Expected a sum greater than #{count}, but it was #{amount}&quot;.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <em>params</em>
+          </td>
+          <td>
+            No
+          </td>
+          <td>
+            any object
+          </td>
+          <td>
+            Parameters to fill in &quot;msg&quot; placeholders, i.e., {count: 3, amount: 0}.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="returns-3">
+      Returns
+    </h3>
+    <blockquote>
+      <pre>
+<code>true or false
+</code>
+</pre>
+    </blockquote>
+    <p>
+      Logs an error if the argument is not defined.
+    </p>
+    <p>
+      <strong>Example</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>var libraries   = MojoLoader.require({ name: &quot;foundations&quot;, version: &quot;1.0&quot; });
+var AssertUtils = libraries[&quot;foundations&quot;].Assert;
+var undefObj;
+Mojo.Log.info(&quot;assert = &quot;+ AssertUtils.assertDefined(undefObj, &quot;Not defined&quot;));
+</code>
+</pre>
+    </blockquote>
+    <p>
+      <strong>Example Output</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>Error: Not defined
+assert = false
+</code>
+</pre>
+    </blockquote>
+    <hr>
+    <h2 id="assert.assertequal">
+      Assert.assertEqual
+    </h2>
+    <p>
+      Logs an error if the expressions are not equal (==).
+    </p>
+    <h3 id="syntax-4">
+      Syntax
+    </h3>
+    <pre>
+    boolean Assert.assertEqual(<em>exp1</em>, <em>exp2</em>, <em>msg</em>, <em>params</em>);
+</pre>
+    <h3 id="parameters-4">
+      Parameters
+    </h3>
+    <table border="1">
+      <thead>
+        <tr>
+          <th>
+            Argument
+          </th>
+          <th>
+            Required
+          </th>
+          <th>
+            Type
+          </th>
+          <th>
+            Description
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <em>exp1</em>
+          </td>
+          <td>
+            Yes
+          </td>
+          <td>
+            any
+          </td>
+          <td>
+            Expression to test.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <em>exp2</em>
+          </td>
+          <td>
+            Yes
+          </td>
+          <td>
+            any
+          </td>
+          <td>
+            Expression to test.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <em>msg</em>
+          </td>
+          <td>
+            No
+          </td>
+          <td>
+            string
+          </td>
+          <td>
+            Message to log. This can contain &quot;#{...}&quot; placeholders for values from the <code>params</code> object, i.e., &quot;Expected a sum greater than #{count}, but it was #{amount}&quot;.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <em>params</em>
+          </td>
+          <td>
+            No
+          </td>
+          <td>
+            any object
+          </td>
+          <td>
+            Parameters to fill in &quot;msg&quot; placeholders, i.e., {count: 3, amount: 0}.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="returns-4">
+      Returns
+    </h3>
+    <blockquote>
+      <pre>
+<code>true or false
+</code>
+</pre>
+    </blockquote>
+    <p>
+      Logs an error if the expressions are not equal (==).
+    </p>
+    <p>
+      <strong>Example</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>var libraries = MojoLoader.require({ name: &quot;foundations&quot;, version: &quot;1.0&quot; });
+var AssertUtils = libraries[&quot;foundations&quot;].Assert;
+var str1 = &quot;Separate but equal&quot;;
+var str2 = &quot;Separate but equal not&quot;;
+Mojo.Log.info(&quot;assert = &quot;+ AssertUtils.assertEqual(str1, str2));
+</code>
+</pre>
+    </blockquote>
+    <p>
+      <strong>Example Output</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>Error: Assert.assertEqual: Separate but equal != Separate but equal not
+assert = false
+</code>
+</pre>
+    </blockquote>
+    <hr>
+    <h2 id="assert.asserterror">
+      Assert.assertError
+    </h2>
+    <p>
+      Logs an error if the function does not throw the expected error.
+    </p>
+    <h3 id="syntax-5">
+      Syntax
+    </h3>
+    <pre>
+    boolean Assert.assertError(<em>context</em>, <em>func</em>, <em>args</em>, <em>error</em>, <em>msg</em>, <em>params</em>);
+</pre>
+    <h3 id="parameters-5">
+      Parameters
+    </h3>
+    <table border="1">
+      <thead>
+        <tr>
+          <th>
+            Argument
+          </th>
+          <th>
+            Required
+          </th>
+          <th>
+            Type
+          </th>
+          <th>
+            Description
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <em>context</em>
+          </td>
+          <td>
+            Yes
+          </td>
+          <td>
+            any
+          </td>
+          <td>
+            The &quot;this&quot; value for function. This is the first argument to an <code>apply</code> method. The <code>apply()</code> method invokes the passed function and passes <code>context</code> as the first parameter. The runtime uses this parameter for the <code>this</code> reference.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <em>func</em>
+          </td>
+          <td>
+            Yes
+          </td>
+          <td>
+            any
+          </td>
+          <td>
+            Function to run.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <em>args</em>
+          </td>
+          <td>
+            Yes
+          </td>
+          <td>
+            any object
+          </td>
+          <td>
+            Array of arguments. Second argument to <code>apply()</code> method.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <em>error</em>
+          </td>
+          <td>
+            Yes
+          </td>
+          <td>
+            any object
+          </td>
+          <td>
+            Expected error.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <em>msg</em>
+          </td>
+          <td>
+            No
+          </td>
+          <td>
+            string
+          </td>
+          <td>
+            Message to log. This can contain &quot;#{...}&quot; placeholders for values from the <code>params</code> object, i.e., &quot;Expected a sum greater than #{count}, but it was #{amount}&quot;.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <em>params</em>
+          </td>
+          <td>
+            No
+          </td>
+          <td>
+            any object
+          </td>
+          <td>
+            Parameters to fill in &quot;msg&quot; placeholders, i.e., {count: 3, amount: 0}.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="returns-5">
+      Returns
+    </h3>
+    <blockquote>
+      <pre>
+<code>true or false
+</code>
+</pre>
+    </blockquote>
+    <p>
+      Logs an error if the function does not throw the expected error.
+    </p>
+    <p>
+      <strong>Example</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>var libraries   = MojoLoader.require({ name: &quot;foundations&quot;, version: &quot;1.0&quot; });
+var AssertUtils = libraries[&quot;foundations&quot;].Assert;
+var context = { errmsg1: &quot;Err1&quot;, errmsg2: &quot;Err2&quot; };
+var args = [&quot;User message 1&quot;, &quot;User message 2&quot; ];
+function f(message)
+{
+  throw this.errmsg1;
+}
+
+Mojo.Log.info(&quot;assert = &quot;+ AssertUtils.assertError(context, f, args, &quot;Err1&quot; ));
+Mojo.Log.info(&quot;assert = &quot;+ AssertUtils.assertError(context, f, args, &quot;UnknownErr&quot; ));    
+</code>
+</pre>
+    </blockquote>
+    <p>
+      <strong>Example Output</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>assert = true
+Error: Assert.assertError: error thrown was 'Err1', instead of 'UnknownErr'
+assert = false
+</code>
+</pre>
+    </blockquote>
+    <hr>
+    <h2 id="assert.assertfalse">
+      Assert.assertFalse
+    </h2>
+    <p>
+      Logs an error if the expression is not false.
+    </p>
+    <h3 id="syntax-6">
+      Syntax
+    </h3>
+    <pre>
+    boolean Assert.assertFalse(<em>exp</em>, <em>msg</em>, <em>params</em>);
+</pre>
+    <h3 id="parameters-6">
+      Parameters
+    </h3>
+    <table border="1">
+      <thead>
+        <tr>
+          <th>
+            Argument
+          </th>
+          <th>
+            Required
+          </th>
+          <th>
+            Type
+          </th>
+          <th>
+            Description
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <em>exp</em>
+          </td>
+          <td>
+            Yes
+          </td>
+          <td>
+            string
+          </td>
+          <td>
+            Expression to test.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <em>msg</em>
+          </td>
+          <td>
+            No
+          </td>
+          <td>
+            string
+          </td>
+          <td>
+            Message to log. This can contain &quot;#{...}&quot; placeholders for values from the <code>params</code> object, i.e., &quot;Expected a sum greater than #{count}, but it was #{amount}&quot;.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <em>params</em>
+          </td>
+          <td>
+            No
+          </td>
+          <td>
+            any object
+          </td>
+          <td>
+            Parameters to fill in &quot;msg&quot; placeholders, i.e., {count: 3, amount: 0}.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="returns-6">
+      Returns
+    </h3>
+    <blockquote>
+      <pre>
+<code>true or false
+</code>
+</pre>
+    </blockquote>
+    <p>
+      Logs an error if the expression is not false.
+    </p>
+    <p>
+      <strong>Example</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>var libraries   = MojoLoader.require({ name: &quot;foundations&quot;, version: &quot;1.0&quot; });
+var AssertUtils = libraries[&quot;foundations&quot;].Assert;
+var expFalse = &quot;&quot;;
+var expTrue = &quot;something&quot;;
+var msg = &quot;Does not evaluate to false&quot;;
+Mojo.Log.info(&quot;assert = &quot;+ AssertUtils.assertFalse(expFalse, msg));
+Mojo.Log.info(&quot;assert = &quot;+ AssertUtils.assertFalse(expTrue, msg));
+</code>
+</pre>
+    </blockquote>
+    <p>
+      <strong>Example Output</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>assert = true
+Error: Does not evaluate to false
+assert = false
+</code>
+</pre>
+    </blockquote>
+    <hr>
+    <h2 id="assert.assertfunction">
+      Assert.assertFunction
+    </h2>
+    <p>
+      Logs an error if the argument is not a function.
+    </p>
+    <h3 id="syntax-7">
+      Syntax
+    </h3>
+    <pre>
+    boolean Assert.assertFunction(<em>obj</em>, <em>msg</em>, <em>params</em>);
+</pre>
+    <h3 id="parameters-7">
+      Parameters
+    </h3>
+    <table border="1">
+      <thead>
+        <tr>
+          <th>
+            Argument
+          </th>
+          <th>
+            Required
+          </th>
+          <th>
+            Type
+          </th>
+          <th>
+            Description
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <em>obj</em>
+          </td>
+          <td>
+            Yes
+          </td>
+          <td>
+            Function
+          </td>
+          <td>
+            Object to test.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <em>msg</em>
+          </td>
+          <td>
+            No
+          </td>
+          <td>
+            string
+          </td>
+          <td>
+            Message to log. This can contain &quot;#{...}&quot; placeholders for values from the <code>params</code> object, i.e., &quot;Expected a sum greater than #{count}, but it was #{amount}&quot;.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <em>params</em>
+          </td>
+          <td>
+            No
+          </td>
+          <td>
+            any object
+          </td>
+          <td>
+            Parameters to fill in &quot;msg&quot; placeholders, i.e., {count: 3, amount: 0}.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="returns-7">
+      Returns
+    </h3>
+    <blockquote>
+      <pre>
+<code>true or false
+</code>
+</pre>
+    </blockquote>
+    <p>
+      Logs an error if the argument is not a function.
+    </p>
+    <p>
+      <strong>Example</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>var libraries   = MojoLoader.require({ name: &quot;foundations&quot;, version: &quot;1.0&quot; });
+var AssertUtils = libraries[&quot;foundations&quot;].Assert;
+var myFunc = new Function(&quot;5+2&quot;);
+var myStr = &quot;not a function&quot;;
+var msg = &quot;Is not a function&quot;;
+Mojo.Log.info(&quot;assert = &quot;+ AssertUtils.assertFunction(myFunc, msg));
+Mojo.Log.info(&quot;assert = &quot;+ AssertUtils.assertFunction(myStr, msg));
+</code>
+</pre>
+    </blockquote>
+    <p>
+      <strong>Example Output</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>assert = true
+Error: Is not a function
+asset = false
+</code>
+</pre>
+    </blockquote>
+    <hr>
+    <h2 id="assert.assertidentical">
+      Assert.assertIdentical
+    </h2>
+    <p>
+      Logs an error if the expressions are not identical (===). Both type and value have to be the same.
+    </p>
+    <h3 id="syntax-8">
+      Syntax
+    </h3>
+    <pre>
+    boolean Assert.assertIdentical(<em>exp1</em>, <em>exp2</em>, <em>msg</em>, <em>params</em>); 
+</pre>
+    <h3 id="parameters-8">
+      Parameters
+    </h3>
+    <table border="1">
+      <thead>
+        <tr>
+          <th>
+            Argument
+          </th>
+          <th>
+            Required
+          </th>
+          <th>
+            Type
+          </th>
+          <th>
+            Description
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <em>exp1</em>
+          </td>
+          <td>
+            Yes
+          </td>
+          <td>
+            any
+          </td>
+          <td>
+            Expression to test.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <em>exp2</em>
+          </td>
+          <td>
+            Yes
+          </td>
+          <td>
+            any
+          </td>
+          <td>
+            Expression to test.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <em>msg</em>
+          </td>
+          <td>
+            No
+          </td>
+          <td>
+            string
+          </td>
+          <td>
+            Message to log. This can contain &quot;#{...}&quot; placeholders for values from the <code>params</code> object, i.e., &quot;Expected a sum greater than #{count}, but it was #{amount}&quot;.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <em>params</em>
+          </td>
+          <td>
+            No
+          </td>
+          <td>
+            any object
+          </td>
+          <td>
+            Parameters to fill in &quot;msg&quot; placeholders, i.e., {count: 3, amount: 0}.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="returns-8">
+      Returns
+    </h3>
+    <blockquote>
+      <pre>
+<code>true or false
+</code>
+</pre>
+    </blockquote>
+    <p>
+      Logs an error if the expressions are not identical (===).
+    </p>
+    <p>
+      <strong>Example</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>var libraries   = MojoLoader.require({ name: &quot;foundations&quot;, version: &quot;1.0&quot; });
+var AssertUtils = libraries[&quot;foundations&quot;].Assert;
+var a = &quot;3&quot;;
+var b =  3;
+var c = &quot;3&quot;;
+var d = new String(&quot;3&quot;);
+
+Mojo.Log.info(&quot;assert = &quot;+ AssertUtils.assertIdentical(a,c,&quot;Not identical&quot;));
+Mojo.Log.info(&quot;assert = &quot;+ AssertUtils.assertIdentical(a,b,&quot;Not identical&quot;));
+Mojo.Log.info(&quot;assert = &quot;+ AssertUtils.assertIdentical(a,d,&quot;Not identical&quot;));
+</code>
+</pre>
+    </blockquote>
+    <p>
+      <strong>Example Output</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>assert = true
+Error: Not identical
+assert = false
+Error: Not identical
+assert = false
+</code>
+</pre>
+    </blockquote>
+    <hr>
+    <h2 id="assert.assertjsonobject">
+      Assert.assertJSONObject
+    </h2>
+    <p>
+      Logs an error if the argument does not evaluate (when run through Object.prototype.toString()) to '[object Object]' or '[object Array]' (an object of an array).
+    </p>
+    <h3 id="syntax-9">
+      Syntax
+    </h3>
+    <pre>
+    boolean Assert.assertJSONObject(<em>obj</em>, <em>msg</em>, <em>params</em>);
+</pre>
+    <h3 id="parameters-9">
+      Parameters
+    </h3>
+    <table border="1">
+      <thead>
+        <tr>
+          <th>
+            Argument
+          </th>
+          <th>
+            Required
+          </th>
+          <th>
+            Type
+          </th>
+          <th>
+            Description
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <em>obj</em>
+          </td>
+          <td>
+            Yes
+          </td>
+          <td>
+            string
+          </td>
+          <td>
+            Object to test.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <em>msg</em>
+          </td>
+          <td>
+            No
+          </td>
+          <td>
+            string
+          </td>
+          <td>
+            Message to log. This can contain &quot;#{...}&quot; placeholders for values from the <code>params</code> object, i.e., &quot;Expected a sum greater than #{count}, but it was #{amount}&quot;.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <em>params</em>
+          </td>
+          <td>
+            No
+          </td>
+          <td>
+            any object
+          </td>
+          <td>
+            Parameters to fill in &quot;msg&quot; placeholders, i.e., {count: 3, amount: 0}.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="returns-9">
+      Returns
+    </h3>
+    <blockquote>
+      <pre>
+<code>true or false
+</code>
+</pre>
+    </blockquote>
+    <p>
+      Logs an error if the argument does not evaluate to '[object Object]' or '[object Array]' (an object of an array).
+    </p>
+    <p>
+      <strong>Example</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>var libraries   = MojoLoader.require({ name: &quot;foundations&quot;, version: &quot;1.0&quot; });
+var AssertUtils = libraries[&quot;foundations&quot;].Assert;
+var jobj = [{ &quot;fname&quot;: &quot;Mabel&quot;, &quot;lname&quot;:&quot;Syrup&quot;, &quot;isMember&quot;:true}];
+Mojo.Log.info(&quot;assert = &quot;+ AssertUtils.assertJSONObject(jobj, &quot;Not an object or object in an array&quot;));
+var notObj = &quot;Not a valid object&quot;;
+Mojo.Log.info(&quot;assert = &quot;+ AssertUtils.assertJSONObject(notObj, &quot;Not an object or object in an array&quot;));
+</code>
+</pre>
+    </blockquote>
+    <p>
+      <strong>Example Output</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>assert = true
+Error: Not an object or object in an array
+assert = false
+</code>
+</pre>
+    </blockquote>
+    <hr>
+    <h2 id="assert.assertmatch">
+      Assert.assertMatch
+    </h2>
+    <p>
+      Logs an error if a regular expression pattern has no matches in a given string.
+    </p>
+    <h3 id="syntax-10">
+      Syntax
+    </h3>
+    <pre>
+    string Assert.assertMatch(<em>str</em>, <em>pattern</em>, <em>msg</em>, <em>params</em>);
+</pre>
+    <h3 id="parameters-10">
+      Parameters
+    </h3>
+    <table border="1">
+      <thead>
+        <tr>
+          <th>
+            Argument
+          </th>
+          <th>
+            Required
+          </th>
+          <th>
+            Type
+          </th>
+          <th>
+            Description
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <em>str</em>
+          </td>
+          <td>
+            Yes
+          </td>
+          <td>
+            string
+          </td>
+          <td>
+            String to match against.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <em>pattern</em>
+          </td>
+          <td>
+            Yes
+          </td>
+          <td>
+            string
+          </td>
+          <td>
+            Pattern to match (regular expression).
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <em>msg</em>
+          </td>
+          <td>
+            No
+          </td>
+          <td>
+            string
+          </td>
+          <td>
+            Message to log. This can contain &quot;#{...}&quot; placeholders for values from the <code>params</code> object, i.e., &quot;Expected a sum greater than #{count}, but it was #{amount}&quot;.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <em>params</em>
+          </td>
+          <td>
+            No
+          </td>
+          <td>
+            any object
+          </td>
+          <td>
+            Parameters to fill in &quot;msg&quot; placeholders, i.e., {count: 3, amount: 0}.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="returns-10">
+      Returns
+    </h3>
+    <p>
+      String with comma-separated matches or null.
+    </p>
+    <p>
+      Logs an error if the pattern does not match.
+    </p>
+    <p>
+      <strong>Example</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>var libraries   = MojoLoader.require({ name: &quot;foundations&quot;, version: &quot;1.0&quot; });
+var AssertUtils = libraries[&quot;foundations&quot;].Assert;
+var str=&quot;The rain in SPAIN stays mainly in the plain&quot;;
+var patt1=/ain/gi; // Search entire string for &quot;ain&quot;,  ignore case
+Mojo.Log.info(&quot;assert = &quot;+ AssertUtils.assertMatch(str, patt1, &quot;Not a match&quot;));
+</code>
+</pre>
+    </blockquote>
+    <p>
+      <strong>Example Output</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>assert = ain,AIN,ain,ain
+</code>
+</pre>
+    </blockquote>
+    <hr>
+    <h2 id="assert.assertnumber">
+      Assert.assertNumber
+    </h2>
+    <p>
+      Logs an error if the argument is not a number.
+    </p>
+    <h3 id="syntax-11">
+      Syntax
+    </h3>
+    <pre>
+    boolean Assert.assertNumber(<em>obj</em>, <em>msg</em>, <em>params</em>);
+</pre>
+    <h3 id="parameters-11">
+      Parameters
+    </h3>
+    <table border="1">
+      <thead>
+        <tr>
+          <th>
+            Argument
+          </th>
+          <th>
+            Required
+          </th>
+          <th>
+            Type
+          </th>
+          <th>
+            Description
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <em>obj</em>
+          </td>
+          <td>
+            Yes
+          </td>
+          <td>
+            any
+          </td>
+          <td>
+            Object to test.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <em>msg</em>
+          </td>
+          <td>
+            No
+          </td>
+          <td>
+            string
+          </td>
+          <td>
+            Message to log. This can contain &quot;#{...}&quot; placeholders for values from the <code>params</code> object, i.e., &quot;Expected a sum greater than #{count}, but it was #{amount}&quot;.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <em>params</em>
+          </td>
+          <td>
+            No
+          </td>
+          <td>
+            any object
+          </td>
+          <td>
+            Parameters to fill in &quot;msg&quot; placeholders, i.e., {count: 3, amount: 0}.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="returns-11">
+      Returns
+    </h3>
+    <blockquote>
+      <pre>
+<code>true or false
+</code>
+</pre>
+    </blockquote>
+    <p>
+      Logs an error if the argument is not a number.
+    </p>
+    <p>
+      <strong>Example</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>var libraries   = MojoLoader.require({ name: &quot;foundations&quot;, version: &quot;1.0&quot; });
+var AssertUtils = libraries[&quot;foundations&quot;].Assert;
+var num=32;
+Mojo.Log.info(&quot;assert = &quot;+ AssertUtils.assertNumber(num, &quot;Not a number&quot;));
+var str=&quot;this is a string&quot;;
+Mojo.Log.info(&quot;assert = &quot;+ AssertUtils.assertNumber(str, &quot;Not a number&quot;));
+</code>
+</pre>
+    </blockquote>
+    <p>
+      <strong>Example Output</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>assert = true
+Error: Not a number
+assert = false
+</code>
+</pre>
+    </blockquote>
+    <hr>
+    <h2 id="assert.assertobject">
+      Assert.assertObject
+    </h2>
+    <p>
+      Logs an error if the argument is not an object.
+    </p>
+    <h3 id="syntax-12">
+      Syntax
+    </h3>
+    <pre>
+    boolean Assert.assertObject(<em>obj</em>, <em>msg</em>, <em>params</em>);
+</pre>
+    <h3 id="parameters-12">
+      Parameters
+    </h3>
+    <table border="1">
+      <thead>
+        <tr>
+          <th>
+            Argument
+          </th>
+          <th>
+            Required
+          </th>
+          <th>
+            Type
+          </th>
+          <th>
+            Description
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <em>obj</em>
+          </td>
+          <td>
+            Yes
+          </td>
+          <td>
+            any
+          </td>
+          <td>
+            Object to test.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <em>msg</em>
+          </td>
+          <td>
+            No
+          </td>
+          <td>
+            string
+          </td>
+          <td>
+            Message to log. This can contain &quot;#{...}&quot; placeholders for values from the <code>params</code> object, i.e., &quot;Expected a sum greater than #{count}, but it was #{amount}&quot;.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <em>params</em>
+          </td>
+          <td>
+            No
+          </td>
+          <td>
+            any object
+          </td>
+          <td>
+            Parameters to fill in &quot;msg&quot; placeholders, i.e., {count: 3, amount: 0}.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="returns-12">
+      Returns
+    </h3>
+    <blockquote>
+      <pre>
+<code>true or false
+</code>
+</pre>
+    </blockquote>
+    <p>
+      Logs an error if the argument is not an object.
+    </p>
+    <p>
+      <strong>Example</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>var libraries   = MojoLoader.require({ name: &quot;foundations&quot;, version: &quot;1.0&quot; });
+var AssertUtils = libraries[&quot;foundations&quot;].Assert;
+var txt = new String(&quot;this is an object&quot;);
+Mojo.Log.info(&quot;assert = &quot;+ AssertUtils.assertObject(txt, &quot;Not an object&quot;));
+var str=&quot;this is not an object&quot;;
+Mojo.Log.info(&quot;assert = &quot;+ AssertUtils.assertObject(str, &quot;Not an object&quot;));
+</code>
+</pre>
+    </blockquote>
+    <p>
+      <strong>Example Output</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>assert = true
+Error: Not an object
+assert = false
+</code>
+</pre>
+    </blockquote>
+    <hr>
+    <h2 id="assert.assertproperty">
+      Assert.assertProperty
+    </h2>
+    <p>
+      Logs an error if the object does not have a particular property or properties.
+    </p>
+    <h3 id="syntax-13">
+      Syntax
+    </h3>
+    <pre>
+    boolean Assert.assertProperty(<em>obj</em>, <em>props</em>, <em>msg</em>, <em>params</em>);
+</pre>
+    <h3 id="parameters-13">
+      Parameters
+    </h3>
+    <table border="1">
+      <thead>
+        <tr>
+          <th>
+            Argument
+          </th>
+          <th>
+            Required
+          </th>
+          <th>
+            Type
+          </th>
+          <th>
+            Description
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <em>obj</em>
+          </td>
+          <td>
+            Yes
+          </td>
+          <td>
+            any object
+          </td>
+          <td>
+            Object to test.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <em>props</em>
+          </td>
+          <td>
+            Yes
+          </td>
+          <td>
+            any object
+          </td>
+          <td>
+            Object containing properties to validate: {property1:value1, property2:value2}.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <em>msg</em>
+          </td>
+          <td>
+            No
+          </td>
+          <td>
+            string
+          </td>
+          <td>
+            Message to log. This can contain &quot;#{...}&quot; placeholders for values from the <code>params</code> object, i.e., &quot;Expected a sum greater than #{count}, but it was #{amount}&quot;.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <em>params</em>
+          </td>
+          <td>
+            No
+          </td>
+          <td>
+            any object
+          </td>
+          <td>
+            Parameters to fill in &quot;msg&quot; placeholders, i.e., {count: 3, amount: 0}.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="returns-13">
+      Returns
+    </h3>
+    <blockquote>
+      <pre>
+<code>true or false
+</code>
+</pre>
+    </blockquote>
+    <p>
+      Logs an error if the object does not have a particular property or properties.
+    </p>
+    <p>
+      <strong>Example</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>var libraries   = MojoLoader.require({ name: &quot;foundations&quot;, version: &quot;1.0&quot; });
+var AssertUtils = libraries[&quot;foundations&quot;].Assert;
+var home = new Object;
+home.type= &quot;colonial&quot;;
+home.status = &quot;foreclosed&quot;;
+var props = {&quot;status&quot;:&quot;foreclosed&quot;};
+Mojo.Log.info(&quot;assert = &quot;+ AssertUtils.assertProperty(home, props, &quot;Not a property&quot;));
+props = &quot;foreclosed&quot;;
+Mojo.Log.info(&quot;assert = &quot;+ AssertUtils.assertProperty(home, props, &quot;Not a property&quot;));
+</code>
+</pre>
+    </blockquote>
+    <p>
+      <strong>Example Output</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>assert = true
+Error: Not a property
+assert = false
+</code>
+</pre>
+    </blockquote>
+    <hr>
+    <h2 id="assert.assertstring">
+      Assert.assertString
+    </h2>
+    <p>
+      Logs an error if the argument is not a string.
+    </p>
+    <h3 id="syntax-14">
+      Syntax
+    </h3>
+    <pre>
+    boolean Assert.assertString(<em>obj</em>, <em>msg</em>, <em>params</em>);
+</pre>
+    <h3 id="parameters-14">
+      Parameters
+    </h3>
+    <table border="1">
+      <thead>
+        <tr>
+          <th>
+            Argument
+          </th>
+          <th>
+            Required
+          </th>
+          <th>
+            Type
+          </th>
+          <th>
+            Description
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <em>obj</em>
+          </td>
+          <td>
+            Yes
+          </td>
+          <td>
+            string
+          </td>
+          <td>
+            Object to test.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <em>msg</em>
+          </td>
+          <td>
+            No
+          </td>
+          <td>
+            string
+          </td>
+          <td>
+            Message to log. This can contain &quot;#{...}&quot; placeholders for values from the <code>params</code> object, i.e., &quot;Expected a sum greater than #{count}, but it was #{amount}&quot;.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <em>params</em>
+          </td>
+          <td>
+            No
+          </td>
+          <td>
+            any object
+          </td>
+          <td>
+            Parameters to fill in &quot;msg&quot; placeholders, i.e., {count: 3, amount: 0}.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="returns-14">
+      Returns
+    </h3>
+    <blockquote>
+      <pre>
+<code>true or false
+</code>
+</pre>
+    </blockquote>
+    <p>
+      Logs an error if the argument is not a string.
+    </p>
+    <p>
+      <strong>Example</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>var libraries   = MojoLoader.require({ name: &quot;foundations&quot;, version: &quot;1.0&quot; });
+var AssertUtils = libraries[&quot;foundations&quot;].Assert;
+var num=32;
+Mojo.Log.info(&quot;assert = &quot;+ AssertUtils.assertString(num, &quot;Not a string&quot;));
+var str=&quot;this is a string&quot;;
+Mojo.Log.info(&quot;assert = &quot;+ AssertUtils.assertString(str, &quot;Not a string&quot;));
+</code>
+</pre>
+    </blockquote>
+    <p>
+      <strong>Example Output</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>Error: Not a string
+assert = false
+assert = true
+</code>
+</pre>
+    </blockquote>
+    <hr>
+    <h2 id="assert.require">
+      Assert.require
+    </h2>
+    <h3 id="syntax-15">
+      Syntax
+    </h3>
+    <pre>
+    Assert.require(<em>exp</em>, <em>msg</em>, <em>params</em>);
+</pre>
+    <h3 id="parameters-15">
+      Parameters
+    </h3>
+    <table border="1">
+      <thead>
+        <tr>
+          <th>
+            Argument
+          </th>
+          <th>
+            Required
+          </th>
+          <th>
+            Type
+          </th>
+          <th>
+            Description
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <em>exp</em>
+          </td>
+          <td>
+            Yes
+          </td>
+          <td>
+            any
+          </td>
+          <td>
+            Expression to test.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <em>msg</em>
+          </td>
+          <td>
+            No
+          </td>
+          <td>
+            string
+          </td>
+          <td>
+            Message to throw. This can contain &quot;#{...}&quot; placeholders for values from the <code>params</code> object, i.e., &quot;Expected a sum greater than #{count}, but it was #{amount}&quot;.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <em>params</em>
+          </td>
+          <td>
+            No
+          </td>
+          <td>
+            any object
+          </td>
+          <td>
+            Parameters to fill in &quot;msg&quot; placeholders, i.e., {count: 3, amount: 0}.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="returns-15">
+      Returns
+    </h3>
+    <p>
+      Throws an error if the expression is not true.
+    </p>
+    <p>
+      <strong>Example</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>var exp = &quot;&quot;;
+try
+{
+  AssertUtils.require(exp, &quot;Does not evaluate to true&quot;);
+}
+catch (err)
+{
+  Mojo.Log.info(&quot;Err = &quot; + err);
+}
+</code>
+</pre>
+    </blockquote>
+    <p>
+      <strong>Example Output</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>Err = Error: Does not evaluate to true
+</code>
+</pre>
+    </blockquote>
+    <hr>
+    <h2 id="assert.requirearray">
+      Assert.requireArray
+    </h2>
+    <p>
+      Throws an error if the expression is not an array.
+    </p>
+    <h3 id="syntax-16">
+      Syntax
+    </h3>
+    <pre>
+    Assert.requireArray(<em>exp</em>, <em>msg</em>, <em>params</em>);
+</pre>
+    <h3 id="parameters-16">
+      Parameters
+    </h3>
+    <table border="1">
+      <thead>
+        <tr>
+          <th>
+            Argument
+          </th>
+          <th>
+            Required
+          </th>
+          <th>
+            Type
+          </th>
+          <th>
+            Description
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <em>exp</em>
+          </td>
+          <td>
+            Yes
+          </td>
+          <td>
+            any
+          </td>
+          <td>
+            Expression to test.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <em>msg</em>
+          </td>
+          <td>
+            No
+          </td>
+          <td>
+            string
+          </td>
+          <td>
+            Message to throw. This can contain &quot;#{...}&quot; placeholders for values from the <code>params</code> object, i.e., &quot;Expected a sum greater than #{count}, but it was #{amount}&quot;.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <em>params</em>
+          </td>
+          <td>
+            No
+          </td>
+          <td>
+            any object
+          </td>
+          <td>
+            Parameters to fill in &quot;msg&quot; placeholders, i.e., {count: 3, amount: 0}.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="returns-16">
+      Returns
+    </h3>
+    <p>
+      Throws an error if the argument is not an array.
+    </p>
+    <p>
+      <strong>Example</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>var libraries = MojoLoader.require({ name: &quot;foundations&quot;, version: &quot;1.0&quot; });
+var AssertUtils = libraries[&quot;foundations&quot;].Assert;
+var ary = [{&quot;a&quot;:&quot;b&quot;}];
+var notAry = &quot;this is a string&quot;;
+var msg = &quot;Not an array&quot;;
+try
+{
+  AssertUtils.requireArray(ary, msg);
+  Mojo.Log.info(&quot;ary is Array&quot;);
+}
+catch (err)
+{
+  Mojo.Log.info(&quot;Err = &quot; + err); 
+}
+try
+{
+  AssertUtils.requireArray(notAry, msg);
+  Mojo.Log.info(&quot;notAry is Array&quot;);
+}
+catch (err)
+{
+  Mojo.Log.info(&quot;Err = &quot; + err);
+}
+</code>
+</pre>
+    </blockquote>
+    <p>
+      <strong>Example Output</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>ary is Array
+Err = Error: Not an array
+</code>
+</pre>
+    </blockquote>
+    <hr>
+    <h2 id="assert.requireclass">
+      Assert.requireClass
+    </h2>
+    <h3 id="syntax-17">
+      Syntax
+    </h3>
+    <pre>
+    Assert.requireClass(<em>obj</em>, <em>msg</em>, <em>params</em>);
+</pre>
+    <h3 id="parameters-17">
+      Parameters
+    </h3>
+    <table border="1">
+      <thead>
+        <tr>
+          <th>
+            Argument
+          </th>
+          <th>
+            Required
+          </th>
+          <th>
+            Type
+          </th>
+          <th>
+            Description
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <em>obj</em>
+          </td>
+          <td>
+            Yes
+          </td>
+          <td>
+            any
+          </td>
+          <td>
+            Object to test.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <em>constructor</em>
+          </td>
+          <td>
+            Yes
+          </td>
+          <td>
+            any
+          </td>
+          <td>
+            Required constructor.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <em>msg</em>
+          </td>
+          <td>
+            No
+          </td>
+          <td>
+            string
+          </td>
+          <td>
+            Message to throw. This can contain &quot;#{...}&quot; placeholders for values from the <code>params</code> object, i.e., &quot;Expected a sum greater than #{count}, but it was #{amount}&quot;.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <em>params</em>
+          </td>
+          <td>
+            No
+          </td>
+          <td>
+            any object
+          </td>
+          <td>
+            Parameters to fill in &quot;msg&quot; placeholders, i.e., {count: 3, amount: 0}.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="returns-17">
+      Returns
+    </h3>
+    <p>
+      Throws an error if the constructor is not the passed object's constructor.
+    </p>
+    <p>
+      <strong>Example</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>var libraries = MojoLoader.require({ name: &quot;foundations&quot;, version: &quot;1.0&quot; });
+var AssertUtils = libraries[&quot;foundations&quot;].Assert;
+function cat(name) {
+  this.name = name;
+  this.talk = function() {
+      alert( this.name + &quot; say meeow!&quot; );
+  }
+}
+
+cat1 = new cat(&quot;felix&quot;);
+try
+{
+  AssertUtils.requireClass(cat1, cat);
+  Mojo.Log.info(&quot;cat1 has cat constructor&quot;);
+}
+catch (err)
+{
+  Mojo.Log.info(&quot;requireClass throws &quot; + err);
+}
+</code>
+</pre>
+    </blockquote>
+    <p>
+      <strong>Example Output</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>cat1 has cat constructor
+</code>
+</pre>
+    </blockquote>
+    <hr>
+    <h2 id="assert.requiredefined">
+      Assert.requireDefined
+    </h2>
+    <p>
+      Throws an error if the passed argument is not defined.
+    </p>
+    <h3 id="syntax-18">
+      Syntax
+    </h3>
+    <pre>
+    Assert.requireDefined(<em>exp</em>, <em>msg</em>, <em>params</em>);   
+</pre>
+    <h3 id="parameters-18">
+      Parameters
+    </h3>
+    <table border="1">
+      <thead>
+        <tr>
+          <th>
+            Argument
+          </th>
+          <th>
+            Required
+          </th>
+          <th>
+            Type
+          </th>
+          <th>
+            Description
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <em>exp</em>
+          </td>
+          <td>
+            Yes
+          </td>
+          <td>
+            any
+          </td>
+          <td>
+            Expression to test.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <em>msg</em>
+          </td>
+          <td>
+            No
+          </td>
+          <td>
+            string
+          </td>
+          <td>
+            Message to throw. This can contain &quot;#{...}&quot; placeholders for values from the <code>params</code> object, i.e., &quot;Expected a sum greater than #{count}, but it was #{amount}&quot;.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <em>params</em>
+          </td>
+          <td>
+            No
+          </td>
+          <td>
+            any object
+          </td>
+          <td>
+            Parameters to fill in &quot;msg&quot; placeholders, i.e., {count: 3, amount: 0}.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="returns-18">
+      Returns
+    </h3>
+    <p>
+      Throws an error if the argument is not defined.
+    </p>
+    <p>
+      <strong>Example</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>var libraries   = MojoLoader.require({ name: &quot;foundations&quot;, version: &quot;1.0&quot; });
+var AssertUtils = libraries[&quot;foundations&quot;].Assert;
+var undefObj;
+try
+{
+  AssertUtils.requireDefined(indefObj, &quot;Not defined&quot;);
+  Mojo.Log.info(&quot;Object is defined&quot;);
+}
+catch (err)
+{
+  Mojo.Log.info(&quot;requireDefined throws &quot; + err);
+}
+</code>
+</pre>
+    </blockquote>
+    <p>
+      <strong>Example Output</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>requireDefined throws ReferenceError: indefObj is not defined
+</code>
+</pre>
+    </blockquote>
+    <hr>
+    <h2 id="assert.requireequal">
+      Assert.requireEqual
+    </h2>
+    <p>
+      Throws an error if two arguments are not equal (==).
+    </p>
+    <h3 id="syntax-19">
+      Syntax
+    </h3>
+    <pre>
+    Assert.requireEqual(<em>exp1</em>, <em>exp2</em>, <em>msg</em>, <em>params</em>);
+</pre>
+    <h3 id="parameters-19">
+      Parameters
+    </h3>
+    <table border="1">
+      <thead>
+        <tr>
+          <th>
+            Argument
+          </th>
+          <th>
+            Required
+          </th>
+          <th>
+            Type
+          </th>
+          <th>
+            Description
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <em>exp1</em>
+          </td>
+          <td>
+            Yes
+          </td>
+          <td>
+            any
+          </td>
+          <td>
+            Expression to test.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <em>exp2</em>
+          </td>
+          <td>
+            Yes
+          </td>
+          <td>
+            any
+          </td>
+          <td>
+            Expression to test.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <em>msg</em>
+          </td>
+          <td>
+            No
+          </td>
+          <td>
+            string
+          </td>
+          <td>
+            message to throw. This can contain &quot;#{...}&quot; placeholders for values from the <code>params</code> object, i.e., &quot;Expected a sum greater than #{count}, but it was #{amount}&quot;.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <em>params</em>
+          </td>
+          <td>
+            No
+          </td>
+          <td>
+            any object
+          </td>
+          <td>
+            Parameters to fill in &quot;msg&quot; placeholders, i.e., {count: 3, amount: 0}.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="returns-19">
+      Returns
+    </h3>
+    <p>
+      Throws an error if the expressions are not equal (==).
+    </p>
+    <p>
+      <strong>Example</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>var libraries   = MojoLoader.require({ name: &quot;foundations&quot;, version: &quot;1.0&quot; });
+var AssertUtils = libraries[&quot;foundations&quot;].Assert;
+var str1 = &quot;Separate but equal&quot;;
+var str2 = &quot;Separate but equal not&quot;;
+try
+{
+  AssertUtils.requireEqual(str1, str2, &quot;Not equal&quot;);
+  Mojo.Log.info(&quot;Objects are equal&quot;);
+}
+catch (err)
+{
+  Mojo.Log.info(&quot;requireEqual throws &quot; + err); 
+}
+</code>
+</pre>
+    </blockquote>
+    <p>
+      <strong>Example Output</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>requireEqual throws Error: Not equal
+</code>
+</pre>
+    </blockquote>
+    <hr>
+    <h2 id="assert.requireerror">
+      Assert.requireError
+    </h2>
+    <p>
+      Throws an error if a function does not throw an expected error.
+    </p>
+    <h3 id="syntax-20">
+      Syntax
+    </h3>
+    <pre>
+    Assert.requireError(<em>context</em>, <em>func</em>, <em>args</em>, <em>error</em>, <em>msg</em>, <em>params</em>);
+</pre>
+    <h3 id="parameters-20">
+      Parameters
+    </h3>
+    <table border="1">
+      <thead>
+        <tr>
+          <th>
+            Argument
+          </th>
+          <th>
+            Required
+          </th>
+          <th>
+            Type
+          </th>
+          <th>
+            Description
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <em>context</em>
+          </td>
+          <td>
+            Yes
+          </td>
+          <td>
+            string
+          </td>
+          <td>
+            The &quot;this&quot; value for function. This is the first argument to an <code>apply</code> method. The <code>apply()</code> method invokes the passed function and passes <code>context</code> as the first parameter. The runtime uses this parameter for the <code>this</code> reference.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <em>func</em>
+          </td>
+          <td>
+            Yes
+          </td>
+          <td>
+            string
+          </td>
+          <td>
+            Function to run.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <em>args</em>
+          </td>
+          <td>
+            Yes
+          </td>
+          <td>
+            any
+          </td>
+          <td>
+            Array of arguments
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <em>error</em>
+          </td>
+          <td>
+            Yes
+          </td>
+          <td>
+            string
+          </td>
+          <td>
+            Expected error
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <em>msg</em>
+          </td>
+          <td>
+            No
+          </td>
+          <td>
+            string
+          </td>
+          <td>
+            message to throw. This can contain &quot;#{...}&quot; placeholders for values from the <code>params</code> object, i.e., &quot;Expected a sum greater than #{count}, but it was #{amount}&quot;.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <em>params</em>
+          </td>
+          <td>
+            No
+          </td>
+          <td>
+            any object
+          </td>
+          <td>
+            Parameters to fill in &quot;msg&quot; placeholders, i.e., {count: 3, amount: 0}.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="returns-20">
+      Returns
+    </h3>
+    <p>
+      Throws an error if the function does not throw an expected error.
+    </p>
+    <p>
+      <strong>Example</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>var libraries   = MojoLoader.require({ name: &quot;foundations&quot;, version: &quot;1.0&quot; });
+var AssertUtils = libraries[&quot;foundations&quot;].Assert;
+var context = { errmsg1: &quot;Err1&quot;, errmsg2: &quot;Err2&quot; };
+var args = [&quot;User message 1&quot;, &quot;User message 2&quot; ];
+function f(message)
+{
+  throw this.errmsg1;
+}
+
+try
+{   
+  AssertUtils.requireError(context, f, args, &quot;Err1&quot;, &quot;Does not throw expected error&quot;);
+  Mojo.Log.info(&quot;Function throws expected error&quot;);
+}
+catch (err)
+{
+  Mojo.Log.info(&quot;requireError throws &quot; + err);
+}
+</code>
+</pre>
+    </blockquote>
+    <p>
+      <strong>Example Output</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>Function throws expected error
+</code>
+</pre>
+    </blockquote>
+    <hr>
+    <h2 id="assert.requirefalse">
+      Assert.requireFalse
+    </h2>
+    <p>
+      Throws an error if the expression does not evaluate to false.
+    </p>
+    <h3 id="syntax-21">
+      Syntax
+    </h3>
+    <pre>
+    Assert.requireFalse(<em>exp</em>, <em>msg</em>, <em>params</em>);
+</pre>
+    <h3 id="parameters-21">
+      Parameters
+    </h3>
+    <table border="1">
+      <thead>
+        <tr>
+          <th>
+            Argument
+          </th>
+          <th>
+            Required
+          </th>
+          <th>
+            Type
+          </th>
+          <th>
+            Description
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <em>exp</em>
+          </td>
+          <td>
+            Yes
+          </td>
+          <td>
+            any
+          </td>
+          <td>
+            Expression to test
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <em>msg</em>
+          </td>
+          <td>
+            No
+          </td>
+          <td>
+            string
+          </td>
+          <td>
+            Message to throw. This can contain &quot;#{...}&quot; placeholders for values from the <code>params</code> object, i.e., &quot;Expected a sum greater than #{count}, but it was #{amount}&quot;.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <em>params</em>
+          </td>
+          <td>
+            No
+          </td>
+          <td>
+            any object
+          </td>
+          <td>
+            Parameters to fill in &quot;msg&quot; placeholders, i.e., {count: 3, amount: 0}.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="returns-21">
+      Returns
+    </h3>
+    <p>
+      Throws an error if the expression is not false.
+    </p>
+    <p>
+      <strong>Example</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>var libraries   = MojoLoader.require({ name: &quot;foundations&quot;, version: &quot;1.0&quot; });
+var AssertUtils = libraries[&quot;foundations&quot;].Assert;
+var expFalse = &quot;&quot;;
+var expTrue = &quot;something&quot;;
+var msg = &quot;Does not evaluate to false&quot;;
+try
+{
+  AssertUtils.requireFalse(expFalse, msg);
+  Mojo.Log.info(&quot;Evaluates to false&quot;);
+}
+catch (err)
+{
+  Mojo.Log.info(&quot;requireFalse throws &quot; + err);
+}
+try
+{
+  AssertUtils.requireFalse(expTrue, msg);
+  Mojo.Log.info(&quot;Evaluates to false&quot;);
+}
+catch (err)
+{
+  Mojo.Log.info(&quot;requireFalse throws &quot; + err);
+}    
+</code>
+</pre>
+    </blockquote>
+    <p>
+      <strong>Example Output</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>Evaluates to false
+requireFalse throws Error: Does not evaluate to false   
+</code>
+</pre>
+    </blockquote>
+    <hr>
+    <h2 id="assert.requirefunction">
+      Assert.requireFunction
+    </h2>
+    <h3 id="syntax-22">
+      Syntax
+    </h3>
+    <pre>
+    Assert.requireFunction(<em>obj</em>, <em>msg</em>, <em>params</em>);
+</pre>
+    <h3 id="parameters-22">
+      Parameters
+    </h3>
+    <table border="1">
+      <thead>
+        <tr>
+          <th>
+            Argument
+          </th>
+          <th>
+            Required
+          </th>
+          <th>
+            Type
+          </th>
+          <th>
+            Description
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <em>obj</em>
+          </td>
+          <td>
+            Yes
+          </td>
+          <td>
+            any
+          </td>
+          <td>
+            Object to test.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <em>msg</em>
+          </td>
+          <td>
+            Yes
+          </td>
+          <td>
+            string
+          </td>
+          <td>
+            Message to throw. This can contain &quot;#{...}&quot; placeholders for values from the <code>params</code> object, i.e., &quot;Expected a sum greater than #{count}, but it was #{amount}&quot;.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <em>params</em>
+          </td>
+          <td>
+            Yes
+          </td>
+          <td>
+            any object
+          </td>
+          <td>
+            Parameters to fill in &quot;msg&quot; placeholders, i.e., {count: 3, amount: 0}.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="returns-22">
+      Returns
+    </h3>
+    <p>
+      Throws an error if the argument is not a function.
+    </p>
+    <p>
+      <strong>Example</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>var libraries = MojoLoader.require({ name: &quot;foundations&quot;, version: &quot;1.0&quot; });
+var AssertUtils = libraries[&quot;foundations&quot;].Assert;
+var myFunc = new Function(&quot;5+2&quot;);
+var myStr = &quot;not a function&quot;;
+var msg = &quot;Is not a function&quot;;
+try
+{
+  AssertUtils.requireFunction(myFunc, msg);
+  Mojo.Log.info(&quot;Is a function.&quot;);
+}
+catch (err)
+{
+  Mojo.Log.info(&quot;requireFunction throws &quot; + err);
+}
+try
+{
+  AssertUtils.requireFalse(myStr, msg);
+  Mojo.Log.info(&quot;Is a function.&quot;);
+}
+catch (err)
+{
+  Mojo.Log.info(&quot;requireFunction throws &quot; + err);
+}
+</code>
+</pre>
+    </blockquote>
+    <p>
+      <strong>Example Output</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>Is a function.
+requireFunction throws Error: Is not a function
+</code>
+</pre>
+    </blockquote>
+    <hr>
+    <h2 id="assert.requireidentical">
+      Assert.requireIdentical
+    </h2>
+    <p>
+      Throws an error if two expressions do not have the same value and type (===).
+    </p>
+    <h3 id="syntax-23">
+      Syntax
+    </h3>
+    <pre>
+    Assert.requireIdentical(<em>exp1</em>, <em>exp2</em>, <em>msg</em>, <em>params</em>);
+</pre>
+    <h3 id="parameters-23">
+      Parameters
+    </h3>
+    <table border="1">
+      <thead>
+        <tr>
+          <th>
+            Argument
+          </th>
+          <th>
+            Required
+          </th>
+          <th>
+            Type
+          </th>
+          <th>
+            Description
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <em>exp1</em>
+          </td>
+          <td>
+            Yes
+          </td>
+          <td>
+            string
+          </td>
+          <td>
+            Expression to test.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <em>exp2</em>
+          </td>
+          <td>
+            Yes
+          </td>
+          <td>
+            string
+          </td>
+          <td>
+            Expression to test.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <em>msg</em>
+          </td>
+          <td>
+            Yes
+          </td>
+          <td>
+            string
+          </td>
+          <td>
+            Message to throw. This can contain &quot;#{...}&quot; placeholders for values from the <code>params</code> object, i.e., &quot;Expected a sum greater than #{count}, but it was #{amount}&quot;.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <em>params</em>
+          </td>
+          <td>
+            Yes
+          </td>
+          <td>
+            any object
+          </td>
+          <td>
+            Parameters to fill in &quot;msg&quot; placeholders, i.e., {count: 3, amount: 0}.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="returns-23">
+      Returns
+    </h3>
+    <p>
+      Throws an error if the expressions are not identical (===).
+    </p>
+    <p>
+      <strong>Example</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>var libraries = MojoLoader.require({ name: &quot;foundations&quot;, version: &quot;1.0&quot; });
+var AssertUtils = libraries[&quot;foundations&quot;].Assert;
+var a = &quot;3&quot;;
+var b =  3;
+var c = &quot;3&quot;;
+var d = new String(&quot;3&quot;);
+
+try
+{
+  AssertUtils.requireIdentical(a,c,&quot;Not identical&quot;);
+  Mojo.Log.info(&quot;Identical&quot;);
+}
+catch (err)
+{
+  Mojo.Log.info(&quot;requireIdentical throws &quot; + err);
+}
+
+try
+{
+  AssertUtils.requireIdentical(a,b,&quot;Not identical&quot;);
+  Mojo.Log.info(&quot;Identical&quot;);
+}
+catch (err)
+{
+  Mojo.Log.info(&quot;requireIdentical throws &quot; + err);
+}
+
+try
+{
+  AssertUtils.requireIdentical(a,d,&quot;Not identical&quot;);
+  Mojo.Log.info(&quot;Identical&quot;);
+}
+catch (err)
+{
+  Mojo.Log.info(&quot;requireIdentical throws &quot; + err);
+}
+</code>
+</pre>
+    </blockquote>
+    <p>
+      <strong>Example Output</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>Identical
+requireIdentical throws Error: Not identical
+requireIdentical throws Error: Not identical
+</code>
+</pre>
+    </blockquote>
+    <hr>
+    <h2 id="assert.requirejsonobject">
+      Assert.requireJSONObject
+    </h2>
+    <p>
+      Throws an error if the passed object, when run through Object.prototype.toString(), does not evaluate to '[object Object]' or '[object Array]'.
+    </p>
+    <h3 id="syntax-24">
+      Syntax
+    </h3>
+    <pre>
+    Assert.requireJSONObject(<em>obj</em>, <em>msg</em>, <em>params</em>);
+</pre>
+    <h3 id="parameters-24">
+      Parameters
+    </h3>
+    <table border="1">
+      <thead>
+        <tr>
+          <th>
+            Argument
+          </th>
+          <th>
+            Required
+          </th>
+          <th>
+            Type
+          </th>
+          <th>
+            Description
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <em>obj</em>
+          </td>
+          <td>
+            Yes
+          </td>
+          <td>
+            string
+          </td>
+          <td>
+            Object to test.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <em>msg</em>
+          </td>
+          <td>
+            No
+          </td>
+          <td>
+            string
+          </td>
+          <td>
+            Message to log. This can contain &quot;#{...}&quot; placeholders for values from the <code>params</code> object, i.e., &quot;Expected a sum greater than #{count}, but it was #{amount}&quot;.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <em>params</em>
+          </td>
+          <td>
+            No
+          </td>
+          <td>
+            any object
+          </td>
+          <td>
+            Parameters to fill in &quot;msg&quot; placeholders, i.e., {count: 3, amount: 0}.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="returns-24">
+      Returns
+    </h3>
+    <p>
+      Throws an error if the argument does not evaluate to '[object Object]' or '[object Array]' (an object of an array).
+    </p>
+    <p>
+      <strong>Example</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>var libraries   = MojoLoader.require({ name: &quot;foundations&quot;, version: &quot;1.0&quot; });
+var AssertUtils = libraries[&quot;foundations&quot;].Assert;
+Mojo.Log.info(&quot;assert = &quot;+ JSON.stringify(AssertUtils.assertJSONObject(jobj, &quot;Not an object or object in an array&quot;)));
+try
+{
+  AssertUtils.requireJSONObject(jobj, &quot;Not an object or object in an array&quot;);
+  Mojo.Log.info(&quot;Is an object or object in an array&quot;);
+}
+catch (err)
+{
+  Mojo.Log.info(&quot;requireJSONObject throws &quot; + err);
+}
+
+var notObj = &quot;Not a valid object&quot;;
+try
+{
+  AssertUtils.requireJSONObject(notObj, &quot;Not an object or object in an array&quot;);
+  Mojo.Log.info(&quot;Is an object or object in an array&quot;);
+}
+catch (err)
+{
+  Mojo.Log.info(&quot;requireJSONObject throws &quot; + err);
+}
+</code>
+</pre>
+    </blockquote>
+    <p>
+      <strong>Example Output</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>Is an object or object in an array
+requireJSONObject throws Error: Not an object or object in an array
+</code>
+</pre>
+    </blockquote>
+    <hr>
+    <h2 id="assert.requirematch">
+      Assert.requireMatch
+    </h2>
+    <p>
+      Throws an error if there not a match between a regular expression and a string.
+    </p>
+    <h3 id="syntax-25">
+      Syntax
+    </h3>
+    <pre>
+    Assert.requireMatch(<em>obj</em>, <em>msg</em>, <em>params</em>);
+</pre>
+    <h3 id="parameters-25">
+      Parameters
+    </h3>
+    <table border="1">
+      <thead>
+        <tr>
+          <th>
+            Argument
+          </th>
+          <th>
+            Required
+          </th>
+          <th>
+            Type
+          </th>
+          <th>
+            Description
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <em>obj</em>
+          </td>
+          <td>
+            Yes
+          </td>
+          <td>
+            string
+          </td>
+          <td>
+            Object to test.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <em>obj</em>
+          </td>
+          <td>
+            Yes
+          </td>
+          <td>
+            string
+          </td>
+          <td>
+            Object to test.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <em>pattern</em>
+          </td>
+          <td>
+            Yes
+          </td>
+          <td>
+            string
+          </td>
+          <td>
+            Pattern to match (regular expression).
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <em>msg</em>
+          </td>
+          <td>
+            No
+          </td>
+          <td>
+            string
+          </td>
+          <td>
+            Message to throw. This can contain &quot;#{...}&quot; placeholders for values from the <code>params</code> object, i.e., &quot;Expected a sum greater than #{count}, but it was #{amount}&quot;.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <em>params</em>
+          </td>
+          <td>
+            No
+          </td>
+          <td>
+            object
+          </td>
+          <td>
+            Parameters to fill in &quot;msg&quot; placeholders, i.e., {count: 3, amount: 0}.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="returns-25">
+      Returns
+    </h3>
+    <p>
+      Throws an error if the pattern does not match.
+    </p>
+    <p>
+      <strong>Example</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>var AssertUtils = libraries[&quot;foundations&quot;].Assert;
+var str = &quot;The rain in SPAIN stays mainly in the plain&quot;;
+var patt1 = /ain/gi;
+
+//... Search entire string for &quot;ain&quot;, ignore case
+try {
+  AssertUtils.requireMatch(str, patt1, &quot;Not match&quot;);
+  Mojo.Log.info(&quot;Match&quot;);
+}
+catch (err) {
+  Mojo.Log.info(&quot;requireMatch throws &quot; + err);
+}
+</code>
+</pre>
+    </blockquote>
+    <p>
+      <strong>Example Output</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>Match    
+</code>
+</pre>
+    </blockquote>
+    <hr>
+    <h2 id="assert.requirenumber">
+      Assert.requireNumber
+    </h2>
+    <p>
+      Throws an error if the argument is not a number.
+    </p>
+    <h3 id="syntax-26">
+      Syntax
+    </h3>
+    <pre>
+    Assert.requireNumber(<em>obj</em>, <em>msg</em>, <em>params</em>);
+</pre>
+    <h3 id="parameters-26">
+      Parameters
+    </h3>
+    <table border="1">
+      <thead>
+        <tr>
+          <th>
+            Argument
+          </th>
+          <th>
+            Required
+          </th>
+          <th>
+            Type
+          </th>
+          <th>
+            Description
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <em>obj</em>
+          </td>
+          <td>
+            Yes
+          </td>
+          <td>
+            any
+          </td>
+          <td>
+            Object to test.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <em>msg</em>
+          </td>
+          <td>
+            No
+          </td>
+          <td>
+            string
+          </td>
+          <td>
+            Message to throw. This can contain &quot;#{...}&quot; placeholders for values from the <code>params</code> object, i.e., &quot;Expected a sum greater than #{count}, but it was #{amount}&quot;.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <em>params</em>
+          </td>
+          <td>
+            No
+          </td>
+          <td>
+            any object
+          </td>
+          <td>
+            Parameters to fill in &quot;msg&quot; placeholders, i.e., {count: 3, amount: 0}.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="returns-26">
+      Returns
+    </h3>
+    <p>
+      Throws an error if the argument is not a number.
+    </p>
+    <p>
+      <strong>Example</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>var libraries = MojoLoader.require({ name: &quot;foundations&quot;, version: &quot;1.0&quot; });
+var AssertUtils = libraries[&quot;foundations&quot;].Assert;
+var num=32;
+try
+{
+  AssertUtils.requireNumber(num, &quot;Not a number&quot;);
+  Mojo.Log.info(&quot;It is a number.&quot;);
+}
+catch (err)
+{
+  Mojo.Log.info(&quot;requireNumber throws &quot; + err);
+}
+var str=&quot;this is a string&quot;;
+try
+{
+  AssertUtils.requireNumber(str, &quot;Not a number&quot;);
+  Mojo.Log.info(&quot;It is a number.&quot;)
+}
+catch (err)
+{
+  Mojo.Log.info(&quot;requireNumber throws &quot; + err);
+}
+</code>
+</pre>
+    </blockquote>
+    <p>
+      <strong>Example Output</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>It is a number.
+requireNumber throws Error: Not a number
+</code>
+</pre>
+    </blockquote>
+    <hr>
+    <h2 id="assert.requireobject">
+      Assert.requireObject
+    </h2>
+    <p>
+      Throws an error if a passed argument is not an object.
+    </p>
+    <h3 id="syntax-27">
+      Syntax
+    </h3>
+    <pre>
+    Assert.requireObject(<em>obj</em>, <em>msg</em>, <em>params</em>);
+</pre>
+    <h3 id="parameters-27">
+      Parameters
+    </h3>
+    <table border="1">
+      <thead>
+        <tr>
+          <th>
+            Argument
+          </th>
+          <th>
+            Required
+          </th>
+          <th>
+            Type
+          </th>
+          <th>
+            Description
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <em>obj</em>
+          </td>
+          <td>
+            Yes
+          </td>
+          <td>
+            string
+          </td>
+          <td>
+            Object to test.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <em>msg</em>
+          </td>
+          <td>
+            No
+          </td>
+          <td>
+            string
+          </td>
+          <td>
+            Message to throw. This can contain &quot;#{...}&quot; placeholders for values from the <code>params</code> object, i.e., &quot;Expected a sum greater than #{count}, but it was #{amount}&quot;.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <em>params</em>
+          </td>
+          <td>
+            No
+          </td>
+          <td>
+            any object
+          </td>
+          <td>
+            Parameters to fill in &quot;msg&quot; placeholders, i.e., {count: 3, amount: 0}.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="returns-27">
+      Returns
+    </h3>
+    <p>
+      Throws an error if the argument is not an object.
+    </p>
+    <p>
+      <strong>Example</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>var libraries   = MojoLoader.require({ name: &quot;foundations&quot;, version: &quot;1.0&quot; });
+var AssertUtils = libraries[&quot;foundations&quot;].Assert;
+var txt = new String(&quot;this is an object&quot;);
+var str=&quot;this is not an object&quot;;
+
+try
+{
+  AssertUtils.requireObject(txt, &quot;Not an object&quot;);
+  Mojo.Log.info(&quot;It is an object.&quot;);
+}
+catch (err)
+{
+  Mojo.Log.info(&quot;requireObject throws &quot; + err);
+}
+
+try
+{
+  AssertUtils.requireObject(str, &quot;Not an object&quot;);
+  Mojo.Log.info(&quot;It is an object.&quot;);
+}
+catch (err)
+{
+  Mojo.Log.info(&quot;requireObject throws &quot; + err);
+}
+</code>
+</pre>
+    </blockquote>
+    <p>
+      <strong>Example Output</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>It is an object.
+requireObject throws Error: Not an object
+</code>
+</pre>
+    </blockquote>
+    <hr>
+    <h2 id="assert.requireproperty">
+      Assert.requireProperty
+    </h2>
+    <h3 id="syntax-28">
+      Syntax
+    </h3>
+    <pre>
+    Assert.requireProperty(<em>obj</em>, <em>props</em>, <em>msg</em>, <em>params</em>);
+</pre>
+    <h3 id="parameters-28">
+      Parameters
+    </h3>
+    <table border="1">
+      <thead>
+        <tr>
+          <th>
+            Argument
+          </th>
+          <th>
+            Required
+          </th>
+          <th>
+            Type
+          </th>
+          <th>
+            Description
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <em>obj</em>
+          </td>
+          <td>
+            Yes
+          </td>
+          <td>
+            string
+          </td>
+          <td>
+            Object to test.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <em>props</em>
+          </td>
+          <td>
+            Yes
+          </td>
+          <td>
+            string
+          </td>
+          <td>
+            An object containing properties to validate: <code>{property1:value1, property2:value2}</code>.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <em>msg</em>
+          </td>
+          <td>
+            No
+          </td>
+          <td>
+            string
+          </td>
+          <td>
+            Message to throw. This can contain &quot;#{...}&quot; placeholders for values from the <code>params</code> object, i.e., &quot;Expected a sum greater than #{count}, but it was #{amount}&quot;.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <em>params</em>
+          </td>
+          <td>
+            No
+          </td>
+          <td>
+            any object
+          </td>
+          <td>
+            Parameters to fill in &quot;msg&quot; placeholders, i.e., {count: 3, amount: 0}.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="returns-28">
+      Returns
+    </h3>
+    <p>
+      Throws an error if the object does not have a particular property set as expected.
+    </p>
+    <p>
+      <strong>Example</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>var libraries = MojoLoader.require({ name: &quot;foundations&quot;, version: &quot;1.0&quot; });
+var AssertUtils = libraries[&quot;foundations&quot;].Assert;
+var home = new Object();
+home.type= &quot;colonial&quot;;
+home.status = &quot;foreclosed&quot;;
+var props = {&quot;status&quot;:&quot;foreclosed&quot;};
+
+try
+{
+  AssertUtils.requireProperty(home, props, &quot;Not a property&quot;);
+  Mojo.Log.info(&quot;Property is there&quot;);
+}
+catch (err)
+{
+  Mojo.Log.info(&quot;requireProperty throws &quot; + err);
+}
+props = &quot;foreclosed&quot;;
+try
+{
+  AssertUtils.requireProperty(home, props, &quot;Not a property&quot;);
+  Mojo.Log.info(&quot;Property is there&quot;);
+}
+catch (err)
+{
+  Mojo.Log.info(&quot;requireProperty throws &quot; + err);
+}
+</code>
+</pre>
+    </blockquote>
+    <p>
+      <strong>Example Output</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>Property is there
+requireProperty throws ReferenceError: props is not defined
+requireProperty throws Error: Not a property
+</code>
+</pre>
+    </blockquote>
+    <hr>
+    <h2 id="assert.requirestring">
+      Assert.requireString
+    </h2>
+    <p>
+      Throws an error if the argument is not a string.
+    </p>
+    <h3 id="syntax-29">
+      Syntax
+    </h3>
+    <pre>
+    Assert.requireString(<em>obj</em>, <em>msg</em>, <em>params</em>);
+</pre>
+    <h3 id="parameters-29">
+      Parameters
+    </h3>
+    <table border="1">
+      <thead>
+        <tr>
+          <th>
+            Argument
+          </th>
+          <th>
+            Required
+          </th>
+          <th>
+            Type
+          </th>
+          <th>
+            Description
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <em>obj</em>
+          </td>
+          <td>
+            Yes
+          </td>
+          <td>
+            string
+          </td>
+          <td>
+            Object to test.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <em>msg</em>
+          </td>
+          <td>
+            No
+          </td>
+          <td>
+            string
+          </td>
+          <td>
+            Message to throw. This can contain &quot;#{...}&quot; placeholders for values from the <code>params</code> object, i.e., &quot;Expected a sum greater than #{count}, but it was #{amount}&quot;.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <em>params</em>
+          </td>
+          <td>
+            No
+          </td>
+          <td>
+            any object
+          </td>
+          <td>
+            Parameters to fill in &quot;msg&quot; placeholders, i.e., {count: 3, amount: 0}.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="returns-29">
+      Returns
+    </h3>
+    <p>
+      Throws an error if the argument is not a string.
+    </p>
+    <p>
+      <strong>Example</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>var libraries   = MojoLoader.require({ name: &quot;foundations&quot;, version: &quot;1.0&quot; });
+var AssertUtils = libraries[&quot;foundations&quot;].Assert;
+var num=32;
+try
+{
+  AssertUtils.requireString(num, &quot;Not a string&quot;);
+  Mojo.Log.info(&quot;Is a string&quot;);
+}
+catch (err)
+{
+  Mojo.Log.info(&quot;requireString throws &quot; + err);
+}
+var str=&quot;this is a string&quot;;
+try
+{
+  AssertUtils.requireString(str, &quot;Not a string&quot;);
+  Mojo.Log.info(&quot;Is a string&quot;);
+}
+catch (err)
+{
+  Mojo.Log.info(&quot;requireString throws &quot; + err);
+}
+</code>
+</pre>
+    </blockquote>
+    <p>
+      <strong>Example Output</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>requireString throws Error: Not a string
+Is a string
+</code>
+</pre>
+    </blockquote>
+		</div>
+	</body>
+</html>

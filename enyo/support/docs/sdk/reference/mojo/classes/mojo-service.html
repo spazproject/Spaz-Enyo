@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>$if(pagetitle)$$pagetitle$$endif$</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="stylesheet" href="_css/chrome.css" />
+		<link rel="stylesheet" href="../_css/chrome.css" />
+		<link rel="stylesheet" href="../../_css/chrome.css" />
+		<link rel="stylesheet" href="../../../_css/chrome.css" />
+		<script src="_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="_js/doc.js" type="text/javascript"></script>
+		<script src="../_js/doc.js" type="text/javascript"></script>
+		<script src="../../_js/doc.js" type="text/javascript"></script>
+		<script src="../../../_js/doc.js" type="text/javascript"></script>
+	</head>
+	<body>
+		<div id="content">
+    
+    <h1 id="mojo.service">
+      Mojo.Service
+    </h1>
+    <h2 id="namespace-detail">
+      Namespace Detail
+    </h2>
+    <p>
+      A service is an on-device &quot;server&quot; for any resource, data, or configuration that can be exposed for developers to use with their applications. They are called &quot;services&quot; instead of &quot;servers&quot; to make it clear that they are on the device rather than &quot;in the cloud&quot;.
+    </p>
+    <p>
+      The Web is built on Uniform Resource Identifiers (URIs), so Palm uses this scheme for identifying resources. Here is an example:
+    </p>
+    <blockquote>
+      <pre>
+<code>palm://com.palm.contacts/ 
+</code>
+</pre>
+    </blockquote>
+    <p>
+      This is the name of the Contacts service in the system. Each service is then able to provide methods, with an optional category, for clients to invoke.
+    </p>
+    <p>
+      It becomes the responsibility of the service to provide both service names to the service and maintain backwards compatibility. Helpers in the APIs aid this process.
+    </p>
+    <h2 id="method-summary">
+      Method Summary
+    </h2>
+    <ul>
+      <li>Mojo.Service.<strong>Request</strong>(url, options, requestOptions)
+      </li>
+    </ul>
+    <hr>
+    <h2 id="method-detail">
+      Method Detail
+    </h2>
+    <h3 id="mojo.service.requesturl-options-requestoptions">
+      Mojo.Service.<strong>Request</strong>(url, options, requestOptions)
+    </h3>
+    <p>
+      Mojo.Service.Request is a constructor, so you will need to use &quot;new&quot; to instantiate the request object.
+    </p>
+    <p>
+      All data passed in a request to a service, and all data returned from a service is encoded as a JSON object. The exact names and values passed in and out are service-dependent, but some conventions must be followed for a service to be considered correct and conforming.
+    </p>
+    <p>
+      If a client wants to get the system time of the device, they would make a request to
+    </p>
+    <blockquote>
+      <pre>
+<code>palm://com.palm.systemservice/getSystemTime 
+</code>
+</pre>
+    </blockquote>
+    <p>
+      with the optional JSON argument {subscribe:true} if they wish to subscribe for updates. &quot;Subscribing&quot; means that the request will return to the onSuccess, onFailure, and onComplete calls specified in the initial request each time. Subscribed requests will return with a subscriberId.
+    </p>
+    <p>
+      If the request is successful, the returned result of this request would be:
+    </p>
+    <blockquote>
+      <pre>
+<code>{&quot;localtime&quot;: localTimeInSecs, &quot;offset&quot;, offsetFromUTCInMins,
+  &quot;timezone&quot;: timeZone}. 
+</code>
+</pre>
+    </blockquote>
+    <p>
+      The onSuccess callback is called back during a successful request, onFailure is called for a failed request (either a failure at the dbus or the service side will cause this), and onComplete, if specified, is always called last after a request returns.
+    </p>
+    <p>
+      Or for the request in code (this would be placed in an application scene assistant):
+    </p>
+    <blockquote>
+      <pre>
+<code>var request = new Mojo.Service.Request('palm://com.palm.systemservice', {
+  method: 'getSystemTime',
+  parameters: {subscribe:true},
+  onSuccess: this.handleResponse //this is a callback function you would declare
+                                 // in the scene assistant
+}); 
+</code>
+</pre>
+    </blockquote>
+    <p>
+      When creating a serviceRequest in the manner above, request references are managed by the scene and are removed on completion of the request, unless the request has <code>subscribe: true</code>, in which case the requests are cleaned up when the scene is popped. If the request needs to be retained beyond the lifetime of the scene, create a new Mojo.Service.Request and manage the request variable yourself.
+    </p>
+    <h4 id="parameters">
+      Parameters
+    </h4>
+    <ul>
+      <li>
+        <strong>url</strong> - URL of the service request as defined in the developer guide
+      </li>
+      <li>
+        <strong>options</strong> - hash value containing the options for the specific service request call
+      </li>
+      <li>
+        <strong>requestOptions</strong> - either true, meaning to resubscribe automatically on error, or an object with a resubscribe property of true or false
+      </li>
+    </ul>
+    <h4 id="unsubscribing-from-a-service">
+      Unsubscribing from a Service
+    </h4>
+    <p>
+      When you are ready to unsubscribe from a Service, use the cancel() method on the service request object.
+    </p>
+    <blockquote>
+      <pre>
+<code>var myRequest = new Mojo.Service.Request({ subscribe: true });
+...
+myRequest.cancel(); // Kills the subscription 
+</code>
+</pre>
+    </blockquote>
+		</div>
+	</body>
+</html>

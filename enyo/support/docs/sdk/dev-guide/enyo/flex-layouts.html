@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>$if(pagetitle)$$pagetitle$$endif$</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="stylesheet" href="_css/chrome.css" />
+		<link rel="stylesheet" href="../_css/chrome.css" />
+		<link rel="stylesheet" href="../../_css/chrome.css" />
+		<link rel="stylesheet" href="../../../_css/chrome.css" />
+		<script src="_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="_js/doc.js" type="text/javascript"></script>
+		<script src="../_js/doc.js" type="text/javascript"></script>
+		<script src="../../_js/doc.js" type="text/javascript"></script>
+		<script src="../../../_js/doc.js" type="text/javascript"></script>
+	</head>
+	<body>
+		<div id="content">
+    
+    <h1 id="flex-layouts">
+      Flex Layouts
+    </h1>
+    <p>
+      In Enyo, any <code>Control</code> object may contain other controls. Generally the contained controls are emitted directly as HTML based on their properties, but controls may also use <code>Layout</code> objects to enhance the rendering of their child controls. You can enable layout by specifying a value for the <code>layoutKind</code> property, e.g.:
+    </p>
+    <blockquote>
+      <pre>
+<code>{name: &quot;someContainer&quot;, layoutKind: &quot;VFlexLayout&quot;}
+</code>
+</pre>
+    </blockquote>
+    <p>
+      This layout system is very general, but flex layouts are so common and so important that they're worth discussing in detail.
+    </p>
+    <h2 id="basics">
+      Basics
+    </h2>
+    <p>
+      Flex layouts are based on the CSS3 Flexible Box Model. There are some slight differences, but most of the terminology matches the standard.
+    </p>
+    <p>
+      <code>HFlexLayout</code> and <code>VFlexLayout</code> both extend the <code>FlexLayout</code> kind. An <code>HFlexLayout</code> displays controls in horizontally-stacked boxes, from left to right, while a <code>VFlexLayout</code> displays controls in vertically-stacked boxes, from top to bottom.
+    </p>
+    <p>
+      You will see many examples that use the <code>VFlexBox</code> and <code>HFlexBox</code> kinds. Both are simply controls that have <code>layoutKind</code> set by default (<code>layoutKind: enyo.VFlexLayout</code> and <code>layoutKind: enyo.HFlexLayout</code>, respectively).
+    </p>
+    <p>
+      <img src="/images/EnyoConceptual-FlexLayout1.png" alt="Control with HFlexLayout"><br>
+      <br>
+      Confusion often arises as to where (i.e., to which objects) layout should be applied. Remember that layouts are assigned to containers, or outer objects, not to the objects that are subject to layout.
+    </p>
+    <p>
+      Flex layouts are particularly useful for designs that need to fit objects to spaces. For example, if you have a header, middle section, and footer, and you want the header and footer to be always visible, with the middle section taking up the remaining space.
+    </p>
+    <p>
+      Note: Traditional HTML is not good at dealing with this kind of structure. In HTML, the sizing of objects generally proceeds from the inside out--i.e., the size of a container is determined by the size of the objects it contains. So the HTML paradigm is, in a way, the opposite of fitting objects to a fixed space. (This dichotomy in the approach to layout is something that comes up regularly in discussions of Web-centric vs. desktop-centric applications.)
+    </p>
+    <p>
+      <img src="/images/EnyoConceptual-FlexLayout2.png" alt="Control with VFlexLayout"><br>
+      <br>
+      In the above diagram, note that the container itself has <code>VFlexLayout</code>, but the content section has a <code>flex</code> property value. The <code>flex</code> value tells the layout how to size that particular object in the layout.
+    </p>
+    <h2 id="properties">
+      Properties
+    </h2>
+    <h3 id="flex">
+      flex
+    </h3>
+    <p>
+      Flex is similar to percent sizing, except that the calculations are based on <em>available</em> space (not total space), and that <code>flex</code> is relative. For example, in an <code>HFlexLayout</code>, a child with a <code>flex</code> of 2 is generally twice as wide as a child with a <code>flex</code> of 1.
+    </p>
+    <p>
+      <img src="/images/EnyoConceptual-FlexLayout3.png" alt="Flex example in HFlexLayout"><br>
+      <br>
+      Conversely, in a <code>VFlexLayout</code>, a child with a <code>flex</code> of 2 is generally twice as tall as a child with a <code>flex</code> of 1.
+    </p>
+    <p>
+      <img src="/images/EnyoConceptual-FlexLayout4.png" alt="Flex example in VFlexLayout"><br>
+      <br>
+      At first, flex may seem less intuitive than percent, but it turns out to be much easier to work with in actual practice. Consider a situation in which you need to divide a space into three equal sections. With flex, you can do this simply by giving each section <code>flex: 1</code>. Using percent, you would have to use 33%, 33%, and 34%, or else deal with leftover pixels.
+    </p>
+    <p>
+      Flex also makes it easier to add children without having to recalculate spacing. Continuing with our hypothetical example, you could turn three equal sections into four equal sections by just adding another child with <code>flex: 1</code>.
+    </p>
+    <h3 id="pack">
+      pack
+    </h3>
+    <p>
+      Containers with flex layouts support some other useful properties. For example, the <code>pack</code> property specifies how objects are positioned along the main axis.
+    </p>
+    <p>
+      In particular, notice that <code>pack: &quot;center&quot;</code> can be used for vertical aligning, which otherwise can be very difficult to achieve.
+    </p>
+    <p>
+      For example, this code creates a a set of vertically-centered buttons positioned at the right edge of the container:
+    </p>
+    <blockquote>
+      <pre>
+<code>{kind: &quot;Control&quot;, layoutKind: &quot;VFlexLayout&quot;,
+  style: &quot;width: 500px; height: 200px;&quot;,
+  pack: &quot;center&quot;, align: &quot;end&quot;, components: [
+      {kind: &quot;Button&quot;, caption: &quot;Top&quot;},
+      {kind: &quot;Button&quot;, caption: &quot;Bottom&quot;}
+  ]
+}
+</code>
+</pre>
+    </blockquote>
+    <p>
+      <img src="/images/EnyoConceptual-FlexLayout-pack.png" alt="VFlexLayout pack example"><br>
+    </p>
+    <h3 id="align">
+      align
+    </h3>
+    <p>
+      The <code>align</code> property is similar to <code>pack</code>, but controls positioning along the orthogonal axis (i.e., along the horizontal axis in a <code>VFlexLayout</code>, or along the vertical axis in an <code>HFlexLayout</code>).
+    </p>
+    <p>
+      For example, this code creates a a set of horizontally-centered buttons positioned at the top of the container:
+    </p>
+    <blockquote>
+      <pre>
+<code>{kind: &quot;Control&quot;, layoutKind: &quot;HFlexLayout&quot;,
+  style: &quot;width: 500px; height: 100px;&quot;,
+  pack: &quot;center&quot;, align: &quot;start&quot;, components: [
+      {kind: &quot;Button&quot;, caption: &quot;Left&quot;},
+      {kind: &quot;Button&quot;, caption: &quot;Right&quot;}
+  ]
+}
+</code>
+</pre>
+    </blockquote>
+    <p>
+      <img src="/images/EnyoConceptual-FlexLayout-align.png" alt="HFlexLayout align example"><br>
+      <br>
+      Note: It can be hard to remember which axis is which, but this is the standard naming.
+    </p>
+		</div>
+	</body>
+</html>

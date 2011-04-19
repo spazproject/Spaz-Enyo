@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>$if(pagetitle)$$pagetitle$$endif$</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="stylesheet" href="_css/chrome.css" />
+		<link rel="stylesheet" href="../_css/chrome.css" />
+		<link rel="stylesheet" href="../../_css/chrome.css" />
+		<link rel="stylesheet" href="../../../_css/chrome.css" />
+		<script src="_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="_js/doc.js" type="text/javascript"></script>
+		<script src="../_js/doc.js" type="text/javascript"></script>
+		<script src="../../_js/doc.js" type="text/javascript"></script>
+		<script src="../../../_js/doc.js" type="text/javascript"></script>
+	</head>
+	<body>
+		<div id="content">
+    
+    <h1 id="exhibition">
+      Exhibition
+    </h1>
+    <p>
+      A new capability in webOS 2 is Exhibition, which allows the device to display information in a special format when it is attached to the Touchstone charging dock. When a device is turned on and charging on the Touchstone, Exhibition mode can be activated by touching the Exhibition icon in the notification area. This mode is similar to a &quot;screen saver&quot; on your desktop.
+    </p>
+    <p>
+      Placing the device on the Touchstone activates the system's Exhibition application, which in turn launches the default Exhibition app. Two examples included in webOS 2 are the Photos app and the Clock app.
+    </p>
+    <p>
+      If the Photos app is set as the default Exhibition app, it runs a slide show of the device's photos. If the Clock app is displayed, the current time time will be displayed in the user's choice of styles.
+    </p>
+    <h2 id="using-exhibition">
+      Using Exhibition
+    </h2>
+    <p>
+      When placing the device on the Touchstone for the first time, the Exhibition icon will be displayed in the notification area. Touching the icon will bring up an explanatory notification. Exhibition will be activated automatically after a few seconds, or by touching the notification. The first time Exhibition is used, the Clock app will be the default.
+    </p>
+    <p>
+      Note that removing the device from the charger does not automatically return to the home screen unless it is to answer a call. This is to allow the user to interact with Exhibition applications should they choose to remove the device from the charger. For example, if an interesting picture comes up in the slide show, and the user picks up the device to get a closer look, the user wants the picture to remain on the screen.
+    </p>
+    <p>
+      To access Exhibition settings, tap on the settings icon in the bottom left corner.
+    </p>
+    <p>
+      This will display all the apps currently available for dockmode. If your app is not listed, tap on the plus icon to add it (See the section on JSON on how to active dockmode in your app). Then drag and drop your app to the first position to make it the default app.
+    </p>
+    <h2 id="json">
+      JSON
+    </h2>
+    <p>
+      To make your app available to be launched in dockmode you simply add the following to your app's <code>appinfo.json</code> file:
+    </p>
+    <blockquote>
+      <pre>
+<code>&quot;dockMode&quot;: true
+</code>
+</pre>
+    </blockquote>
+    <p>
+      That’s it! Your app is now available for selection in the dockmode app. If your app is set as the default, it will now run as if it were launched when the device goes into dockmode.
+    </p>
+    <h2 id="javascript">
+      JavaScript
+    </h2>
+    <p>
+      Running in Exhibition mode allows your app to look or do something different from when it is run normally. This could be as simple as changing the CSS class used to give your app a different look. Your app can detect Exhibition mode from the launch params in the <code>handleLaunch</code> method in your app's <code>AppAssistant</code>--<code>params.dockMode</code> will be true.
+    </p>
+    <blockquote>
+      <pre>
+<code>AppAssistant.prototype.handleLaunch = function(params) {
+  if (params) {
+      if(params.dockMode){ //launch the touchstone theme}
+  }
+} 
+</code>
+</pre>
+    </blockquote>
+    <h2 id="app-lifetime-considerations">
+      App Lifetime Considerations
+    </h2>
+    <p>
+      When the device goes out of Exhibition mode, your app will continue to run in the background, just like a standard app that is &quot;carded.&quot; It will continue to run indefinitely until requested to shutdown to free up memory. Your app will need to take this into account by going into a &quot;background mode&quot;--stop any running animations and either cease or decrease the frequency of periodic updates.
+    </p>
+    <p>
+      It is also good practice to provide <code>stageDeactivate</code> code to provide for an orderly shutdown.
+    </p>
+    <h2 id="sample-app">
+      Sample App
+    </h2>
+    <p>
+      The exhibitionSample App contains a complete application demonstrating this mode. This simple app has a red background when running in standard mode, and a green background when in Exhibition mode.
+    </p>
+		</div>
+	</body>
+</html>

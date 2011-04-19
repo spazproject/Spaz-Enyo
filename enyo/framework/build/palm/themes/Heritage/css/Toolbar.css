@@ -1,0 +1,17 @@
+/* Copyright 2009-2011 Hewlett-Packard Development Company, L.P. All rights reserved. */
+.enyo-toolbar {
+	z-index: 1;
+	position: absolute;
+	bottom: 0px;
+	left: 0px;
+	right: 0px;
+	height: 50px;
+	background: url(../images/bottom-fade.png) 0 27px repeat-x;
+	pointer-events: none;
+	/* button margin/border can overflow this container */
+	overflow: hidden;
+}
+
+.enyo-toolbar *  {
+	pointer-events: auto;
+}

@@ -1,0 +1,17 @@
+{
+	"region": "fr",
+	"skipTrunk": true,
+	"trunkCode": "0",
+	"iddCode": "00",
+	"dialingPlan": "closed",
+	"commonFormatChars": " ().-",
+	"fieldLengths": {
+		"areaCode": 1,
+		"cic": 0,
+		"mobilePrefix": 1,
+		"serviceCode": 1,
+		"minLocalLength": 8,
+		"special": 0,
+		"service2": 0
+	}
+}

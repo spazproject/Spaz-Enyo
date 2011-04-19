@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>$if(pagetitle)$$pagetitle$$endif$</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="stylesheet" href="_css/chrome.css" />
+		<link rel="stylesheet" href="../_css/chrome.css" />
+		<link rel="stylesheet" href="../../_css/chrome.css" />
+		<link rel="stylesheet" href="../../../_css/chrome.css" />
+		<script src="_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="_js/doc.js" type="text/javascript"></script>
+		<script src="../_js/doc.js" type="text/javascript"></script>
+		<script src="../../_js/doc.js" type="text/javascript"></script>
+		<script src="../../../_js/doc.js" type="text/javascript"></script>
+	</head>
+	<body>
+		<div id="content">
+    
+    <h1 id="pickers">
+      Pickers
+    </h1>
+    <p>
+      Some applications interact with users by allowing them to select (pick) from lists of information. There are two types of picker elements: one to select from a list of files and another to select from a list of user-entered contact names.
+    </p>
+    <p>
+      The following table provides additional information with image examples.
+    </p>
+    <table border="0">
+      <tbody>
+        <tr>
+          <th>
+            Type
+          </th>
+          <th>
+            Description
+          </th>
+          <th>
+            Example
+          </th>
+        </tr>
+        <tr>
+          <td>
+            File
+          </td>
+          <td>
+            This is a full-screen compound element that allows the user to attach files or choose one or more files for use in an application. Specify criteria if you want to only include specific file types for use in your application. Implemented by using the Pickers API.<br>
+            <br>
+            Example: The Email application uses the file picker to allow users to browse files for attaching to an email message. By default, it shows every file type (e.g., pictures, movies, songs, and files) and provides controls for selecting them.
+          </td>
+          <td>
+            <img src="/images/palm/ui_summary/FilePicker_Anim.gif" border="0" align="absmiddle">
+          </td>
+        </tr>
+        <tr>
+          <td>
+            People
+          </td>
+          <td>
+            This allows your application to display a list of records from the Contacts application. It allows the user to add, associate, and use their data in your application. It auto-filters a typed list, or the user can scroll through the list to select a name. Implemented by using the Mojo.Widget.PeoplePicker API.<br>
+            <br>
+            Example: In the Contacts application, tap a name for whom you have information coming in from two different accounts (e.g., Corporate Server and Facebook®), and then tap &quot;Link more profiles&quot; (the list you see is a people picker). Type letters to filter the list. Choose another profile to attach to the current contact (Shar Bannet).
+          </td>
+          <td>
+            <img src="/images/palm/ui_summary/PeoplePicker_Anim.gif" border="0" align="absmiddle">
+          </td>
+        </tr>
+      </tbody>
+    </table>
+		</div>
+	</body>
+</html>

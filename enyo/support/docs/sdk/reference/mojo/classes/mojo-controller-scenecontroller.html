@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>$if(pagetitle)$$pagetitle$$endif$</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="stylesheet" href="_css/chrome.css" />
+		<link rel="stylesheet" href="../_css/chrome.css" />
+		<link rel="stylesheet" href="../../_css/chrome.css" />
+		<link rel="stylesheet" href="../../../_css/chrome.css" />
+		<script src="_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="_js/doc.js" type="text/javascript"></script>
+		<script src="../_js/doc.js" type="text/javascript"></script>
+		<script src="../../_js/doc.js" type="text/javascript"></script>
+		<script src="../../../_js/doc.js" type="text/javascript"></script>
+	</head>
+	<body>
+		<div id="content">
+    
+    <h1 id="mojo.controller.scenecontroller">
+      Mojo.Controller.SceneController
+    </h1>
+    <h2 id="class-detail">
+      Class Detail
+    </h2>
+    <p>
+      This section describes the Mojo.Controller.SceneController class. This is a constructor that is instantiated for you, and typically accessed using this.controller.
+    </p>
+    <h2 id="summary">
+      Summary
+    </h2>
+    <p>
+      Mojo.Controller.SceneController.<strong>sceneContainerLayer</strong>
+    </p>
+    <h2 id="method-summary">
+      Method Summary
+    </h2>
+    <ul>
+      <li>Mojo.Controller.SceneController.<strong>commitChanges</strong>()
+      </li>
+      <li>Mojo.Controller.SceneController.<strong>enableFullScreenMode</strong>(yesNo)
+      </li>
+      <li>Mojo.Controller.SceneController.<strong>get</strong>(elementId)
+      </li>
+      <li>Mojo.Controller.SceneController.<strong>getSceneScroller</strong>()
+      </li>
+      <li>Mojo.Controller.SceneController.<strong>hideWidgetContainer</strong>(elementOrId)
+      </li>
+      <li>Mojo.Controller.SceneController.<strong>listen</strong>(element, eventType, callback, onCapture)
+      </li>
+      <li>Mojo.Controller.SceneController.<strong>modelChanged</strong>(model, who)
+      </li>
+      <li>Mojo.Controller.SceneController.<strong>popupSubmenu</strong>()
+      </li>
+      <li>Mojo.Controller.SceneController.<strong>prepareTransition</strong>(transitionType, isPop, transitionType, isPop)
+      </li>
+      <li>Mojo.Controller.SceneController.<strong>pushCommander</strong>(cmdr)
+      </li>
+      <li>Mojo.Controller.SceneController.<strong>pushContainer</strong>(container, layer, options)
+      </li>
+      <li>Mojo.Controller.SceneController.<strong>removeCommander</strong>(cmdr)
+      </li>
+      <li>Mojo.Controller.SceneController.<strong>removeContainer</strong>(container)
+      </li>
+      <li>Mojo.Controller.SceneController.<strong>removeRequest</strong>(request)
+      </li>
+      <li>Mojo.Controller.SceneController.<strong>removeWatcher</strong>(watcher, model)
+      </li>
+      <li>Mojo.Controller.SceneController.<strong>serviceRequest</strong>(url, options, resubscribe)
+      </li>
+      <li>Mojo.Controller.SceneController.<strong>setDefaultTransition</strong>(transitionType)
+      </li>
+      <li>Mojo.Controller.SceneController.<strong>setInitialFocusedElement</strong>(focusedElement)
+      </li>
+      <li>Mojo.Controller.SceneController.<strong>setupWidget</strong>(name, attributes, model)
+      </li>
+      <li>Mojo.Controller.SceneController.<strong>setUserIdleTimeout</strong>(element, func, delay, watchMouse, watchKeys)
+      </li>
+      <li>Mojo.Controller.SceneController.<strong>setWidgetModel</strong>(widget, model)
+      </li>
+      <li>Mojo.Controller.SceneController.<strong>showWidgetContainer</strong>(elementOrId)
+      </li>
+      <li>Mojo.Controller.SceneController.<strong>stopListening</strong>(element, eventType, callback, onCapture)
+      </li>
+      <li>Mojo.Controller.SceneController.<strong>topContainer</strong>()
+      </li>
+      <li>Mojo.Controller.SceneController.<strong>useLandscapePageUpDown</strong>(yesNo)
+      </li>
+      <li>Mojo.Controller.SceneController.<strong>watchModel</strong>(model, who, changeFunc)
+      </li>
+    </ul>
+    <hr>
+    <h2 id="detail">
+      Detail
+    </h2>
+    <h3 id="mojo.controller.scenecontroller.scenecontainerlayer">
+      Mojo.Controller.SceneController.<strong>sceneContainerLayer</strong>
+    </h3>
+    <p>
+      Constants for standard pushContainer layers.
+    </p>
+    <hr>
+    <h2 id="method-detail">
+      Method Detail
+    </h2>
+    <h3 id="mojo.controller.scenecontroller.commitchanges">
+      Mojo.Controller.SceneController.<strong>commitChanges</strong>()
+    </h3>
+    <p>
+      Utility function to tell listening widgets to commit themselves
+    </p>
+    <hr>
+    <h3 id="mojo.controller.scenecontroller.enablefullscreenmodeyesno">
+      Mojo.Controller.SceneController.<strong>enableFullScreenMode</strong>(yesNo)
+    </h3>
+    <p>
+      Enables and disables full screen mode for the scene. This property is persistent for each scene, so it is not necessary for client code to manage it.
+    </p>
+    <h4 id="parameters">
+      Parameters
+    </h4>
+    <ul>
+      <li>{bool} <strong>yesNo</strong> - is 'true' to enable and 'false' to disable full screen mode for just this scene.
+      </li>
+    </ul>
+    <hr>
+    <h3 id="mojo.controller.scenecontroller.getelementid">
+      Mojo.Controller.SceneController.<strong>get</strong>(elementId)
+    </h3>
+    <p>
+      If the elementId is a string, calls document.getElementById() with that string and returns the result. Otherwise, just returns elementId.
+    </p>
+    <h4 id="parameters-1">
+      Parameters
+    </h4>
+    <ul>
+      <li>{String|Element} <strong>elementId</strong> - DOM Element reference or string
+      </li>
+    </ul>
+    <hr>
+    <h3 id="mojo.controller.scenecontroller.getscenescroller">
+      Mojo.Controller.SceneController.<strong>getSceneScroller</strong>()
+    </h3>
+    <p>
+      Returns the automatically created scene scroller.
+    </p>
+    <hr>
+    <h3 id="mojo.controller.scenecontroller.hidewidgetcontainerelementorid">
+      Mojo.Controller.SceneController.<strong>hideWidgetContainer</strong>(elementOrId)
+    </h3>
+    <p>
+      Used to notify widgets that a div containing widgets has changed visibility to 'display:none'. This is important for getting correct measurements where widgets are dependent upon them for drawing.
+    </p>
+    <h4 id="parameters-2">
+      Parameters
+    </h4>
+    <ul>
+      <li>
+        <strong>elementOrId</strong>
+      </li>
+    </ul>
+    <hr>
+    <h3 id="mojo.controller.scenecontroller.listenelement-eventtype-callback-oncapture">
+      Mojo.Controller.SceneController.<strong>listen</strong>(element, eventType, callback, onCapture)
+    </h3>
+    <p>
+      Wrapper around Mojo.Event.listen that additionally will call get() on the element parameter if it is a string, converting it to a DOM node.
+    </p>
+    <h4 id="parameters-3">
+      Parameters
+    </h4>
+    <ul>
+      <li>{String|Element} <strong>element</strong> - An elemement reference or DOM ID string identifying the target element.
+      </li>
+      <li>{String} <strong>eventType</strong> - String identifier for the event type.
+      </li>
+      <li>{Function} <strong>callback</strong> - Function object to be called when the event occurs.
+      </li>
+      <li>{Boolean} <strong>onCapture</strong> - (optional) Pass true to listen during the capture phase, false to listen during bubbling.
+      </li>
+    </ul>
+    <hr>
+    <h3 id="mojo.controller.scenecontroller.modelchangedmodel-who">
+      Mojo.Controller.SceneController.<strong>modelChanged</strong>(model, who)
+    </h3>
+    <p>
+      Scene assistants can call this method when their data changes and a widget displaying that data needs to be updated.
+    </p>
+    <p>
+      'who' is used to avoid notifying objects of their own changes to a model, in the case where both the scene assistant and widget change and watch the same model.
+    </p>
+    <h4 id="parameters-4">
+      Parameters
+    </h4>
+    <ul>
+      <li>{Object} <strong>model</strong> - Model object that changed
+      </li>
+      <li>{Object} <strong>who</strong> - Object responsible for changing it (usually the widget object or scene assistant).
+      </li>
+    </ul>
+    <hr>
+    <h3 id="mojo.controller.scenecontroller.popupsubmenu">
+      Mojo.Controller.SceneController.<strong>popupSubmenu</strong>()
+    </h3>
+    <p>
+      Popup submenus can be used to offer a transient textual list of choices to the user. It accepts standard menu models, but a few additional properties are supported.
+    </p>
+    <p>
+      You can create them dynamically as shown in the example below.
+    </p>
+    <p>
+      Example:
+    </p>
+    <blockquote>
+      <pre>
+<code>sceneController.popupSubmenu(this.controller, {
+  onChoose:this.popupChoose,
+  placeNear:clickEvent.target,
+  items: [{label: $L('Apply'), command: 'apply-cmd'},
+      {label: $L('Applique'), command: 'applique-cmd'},
+      {label: $L('Applaud'), command: 'applaud-cmd'},
+      {label: $L('Approximate'), command: 'approx-cmd'}]
+}); 
+</code>
+</pre>
+    </blockquote>
+    <p>
+      A modal list will appear with the label choices presented. When the user taps one, the onChoose function will be called (in the scope of the scene assistant) with the command property of the chosen item. If the user taps outside the popup menu, it's still dismissed, and the onChoose function is called with undefined instead.
+    </p>
+    <p>
+      Additional model properties, beyond standard menus:
+    </p>
+    <table border="1">
+      <tr>
+        <th>
+          Property
+        </th>
+        <th>
+          Description
+        </th>
+      </tr>
+      <tr>
+        <td>
+          onChoose
+        </td>
+        <td>
+          Function, required.<br>
+          Called when user makes a choice and the popup is dismissed.
+        </td>
+      </tr>
+      <tr>
+        <td>
+          placeNear
+        </td>
+        <td>
+          Element, optional.<br>
+          Used to position the popup menu near the triggering element.
+        </td>
+      </tr>
+      <tr>
+        <td>
+          toggleCmd
+        </td>
+        <td>
+          Command from items array, optional.<br>
+          Causes the appropriate item to appear with a check mark. Supported in top-level model for popups.
+        </td>
+      </tr>
+      <tr>
+        <td>
+          popupClass
+        </td>
+        <td>
+          String, optional.<br>
+          CSS class for the popup menu, referenced from the HTML templates.
+        </td>
+      </tr>
+      <tr>
+        <td>
+          scrimClass
+        </td>
+        <td>
+          String, optional.<br>
+          CSS class for the popup scrim. Defaults to 'submenu-popup'.
+        </td>
+      </tr>
+      <tr>
+        <td>
+          manualPlacement
+        </td>
+        <td>
+          Boolean, optional.<br>
+          If true, popup menu will not be placed automatically (centered, or near 'placeNear' element).
+        </td>
+      </tr>
+    </table>
+    <p>
+      Additional menu item properties, beyond standard menus:
+    </p>
+    <table border="1">
+      <tr>
+        <th>
+          Property
+        </th>
+        <th>
+          Description
+        </th>
+      </tr>
+      <tr>
+        <td>
+          secondaryIcon
+        </td>
+        <td>
+          String, optional.<br>
+          CSS class for a seconadry icon to display, generally used for some kind of status, and appearing to the left of the menu item.
+        </td>
+      </tr>
+      <tr>
+        <td>
+          secondaryIconPath
+        </td>
+        <td>
+          String, optional.<br>
+          Just like iconPath, but for secondaryIcon.
+        </td>
+      </tr>
+      <tr>
+        <td>
+          chosen
+        </td>
+        <td>
+          Boolean, optional.<br>
+          Causes item to be styled as the selected item in a toggle group (displays a check mark, currently).
+        </td>
+      </tr>
+    </table>
+    <p>
+      Note that while keyboard shortcuts are rendered, they are for display purposes only. Since the popupmenu widget is created dynamically, it cannot actually implement the shortcut functionality itself, so for true submenus this is handled by the menu system.
+    </p>
+    <hr>
+    <h3 id="mojo.controller.scenecontroller.preparetransitiontransitiontype-ispop">
+      Mojo.Controller.SceneController.<strong>prepareTransition</strong>(transitionType, isPop)
+    </h3>
+    <p>
+      Creates a Transition object that the caller can use to run a transition within the scene. Events to the scene are frozen and a snapshot of the scene's window is taken. Any processing to change the scene's state should be done prior to calling run() on the returned Mojo.Transition object. Once run() is called, events will flow to the scene again.
+    </p>
+    <p>
+      This code example must run within a scene, e.g., when a change in toggle state results in the scene changing significantly.
+    </p>
+    <blockquote>
+      <pre>
+<code>var transition = this.controller.prepareTransition(Mojo.Transition.crossFade, false);
+// Code setting up the scene's new state goes here
+transition.run();
+</code>
+</pre>
+    </blockquote>
+    <h4 id="parameters-5">
+      Parameters
+    </h4>
+    <ul>
+      <li>
+        <p>
+          {string} <strong>transitionType</strong> <em>Optional</em> - Specifies the kind of transition to run, and may be one of Mojo.Transition.none, Mojo.Transition.zoomFade, Mojo.Transition.crossFade, or Mojo.Transition.defaultTransition.
+        </p>
+      </li>
+      <li>
+        <p>
+          {bool} <strong>isPop</strong> <em>Optional</em> - Is true if the current scene is being popped, false otherwise.
+        </p>
+      </li>
+    </ul>
+    <hr>
+    <h3 id="mojo.controller.scenecontroller.pushcommandercmdr">
+      Mojo.Controller.SceneController.<strong>pushCommander</strong>(cmdr)
+    </h3>
+    <p>
+      Adds the given commander to the top of this SceneController's stack. The commanders in this stack are only used when this scene is the current scene.
+    </p>
+    <h4 id="parameters-6">
+      Parameters
+    </h4>
+    <ul>
+      <li>{Object} <strong>cmdr</strong> - commander to add.
+      </li>
+    </ul>
+    <hr>
+    <h3 id="mojo.controller.scenecontroller.pushcontainercontainer-layer-options">
+      Mojo.Controller.SceneController.<strong>pushContainer</strong>(container, layer, options)
+    </h3>
+    <p>
+      Pushes a new container on the container stack for this scene. Mojo.Event.key* events are sent to the top container. When a new container is pushed, all containers with lower or same layer will be cancelled if they specify a cancelFunc in their options.
+    </p>
+    <h4 id="parameters-7">
+      Parameters
+    </h4>
+    <ul>
+      <li>{Element} <strong>container</strong> - The new container.
+      </li>
+      <li>{string} <strong>layer</strong> - Constant for the layer of this container. Usually one of dialogContainerLayer or submenuContainerLayer.
+      </li>
+      <li>{object} <strong>options</strong> <em>Optional</em> - Object specifying optional arguments. May be omitted, or may contain a 'cancelFunc' property mapped to a function to be called when the container is cancelled.
+      </li>
+    </ul>
+    <hr>
+    <h3 id="mojo.controller.scenecontroller.removecommandercmdr">
+      Mojo.Controller.SceneController.<strong>removeCommander</strong>(cmdr)
+    </h3>
+    <p>
+      Removes a commander from the commander stack.
+    </p>
+    <h4 id="parameters-8">
+      Parameters
+    </h4>
+    <ul>
+      <li>{Object} <strong>cmdr</strong> - commander to remove.
+      </li>
+    </ul>
+    <hr>
+    <h3 id="mojo.controller.scenecontroller.removecontainercontainer">
+      Mojo.Controller.SceneController.<strong>removeContainer</strong>(container)
+    </h3>
+    <p>
+      Removes the given container element from the stack. Returns true if it was successfully removed.
+    </p>
+    <h4 id="parameters-9">
+      Parameters
+    </h4>
+    <ul>
+      <li>{Element} <strong>container</strong> - The container to remove.
+      </li>
+    </ul>
+    <hr>
+    <h3 id="mojo.controller.scenecontroller.removerequestrequest">
+      Mojo.Controller.SceneController.<strong>removeRequest</strong>(request)
+    </h3>
+    <p>
+      Removes a request from the scene's list of requests to manage. A removed request will not be cancelled when the scene is popped, and unless another reference is kept to the request, it can be garbage collected (and thus cancelled) at any time.
+    </p>
+    <h4 id="parameters-10">
+      Parameters
+    </h4>
+    <ul>
+      <li>{Object} <strong>request</strong> - Request to remove
+      </li>
+    </ul>
+    <hr>
+    <h3 id="mojo.controller.scenecontroller.removewatcherwatcher-model">
+      Mojo.Controller.SceneController.<strong>removeWatcher</strong>(watcher, model)
+    </h3>
+    <p>
+      Removes a &quot;model watch&quot; for the given watcher. If 'model' is undefined, then all registered &quot;model watches&quot; for the given watcher are removed.
+    </p>
+    <p>
+      Used by the framework when re-rendering HTML that includes Mojo widgets, so that the old/removed widgets are not notified of changes to models.
+    </p>
+    <h4 id="parameters-11">
+      Parameters
+    </h4>
+    <ul>
+      <li>{Object} <strong>watcher</strong> - The object owning the changeFunc, when watchModel was called.
+      </li>
+      <li>{Object} <strong>model</strong> - Model name, or left undefined all registered &quot;model watches&quot; for the given watcher are removed.
+      </li>
+    </ul>
+    <hr>
+    <h3 id="object-mojo.controller.scenecontroller.servicerequesturl-options-resubscribe">
+      {Object} Mojo.Controller.SceneController.<strong>serviceRequest</strong>(url, options, resubscribe)
+    </h3>
+    <p>
+      Creates a Palm service request which will be automatically cancelled when the scene is popped. The parameters are passed directly to new Mojo.Service.Request().
+    </p>
+    <h4 id="parameters-12">
+      Parameters
+    </h4>
+    <ul>
+      <li>{String} <strong>url</strong> - url string of the service request
+      </li>
+      <li>{Object} <strong>options</strong> - options for the request
+      </li>
+      <li>{Boolean} <strong>resubscribe</strong> - pass true to automatically resubscribe when receiving an error from the service
+      </li>
+    </ul>
+    <h4 id="returns">
+      Returns
+    </h4>
+    <p>
+      A Mojo.Service.Request object
+    </p>
+    <hr>
+    <h3 id="mojo.controller.scenecontroller.setdefaulttransitiontransitiontype">
+      Mojo.Controller.SceneController.<strong>setDefaultTransition</strong>(transitionType)
+    </h3>
+    <p>
+      Sets the default transition to be used for pushing and popping this scene. This transition will be used when not overridden by an option specified when pushing or popping the scene.
+    </p>
+    <h4 id="parameters-13">
+      Parameters
+    </h4>
+    <ul>
+      <li>
+        <strong>transitionType</strong> - {string} A transition name from Mojo.Transition
+      </li>
+    </ul>
+    <hr>
+    <h3 id="mojo.controller.scenecontroller.setinitialfocusedelementfocusedelement">
+      Mojo.Controller.SceneController.<strong>setInitialFocusedElement</strong>(focusedElement)
+    </h3>
+    <p>
+      Called by the scene assistant during setup to set the element that should be focused.
+    </p>
+    <h4 id="parameters-14">
+      Parameters
+    </h4>
+    <ul>
+      <li>{String|Element|null} <strong>focusedElement</strong> - Pass null to prevent automatic focus, or an elementId or element to focus.
+      </li>
+    </ul>
+    <hr>
+    <h3 id="mojo.controller.scenecontroller.setupwidgetname-attributes-model">
+      Mojo.Controller.SceneController.<strong>setupWidget</strong>(name, attributes, model)
+    </h3>
+    <p>
+      Registers the given attributes and model to be used with the widget of the given name.
+    </p>
+    <p>
+      Called by scene assistants in their setup() methods. If a model is specified here for a widget that is rendered in a list item, the model will be overridden by the one for the list item.
+    </p>
+    <h4 id="parameters-15">
+      Parameters
+    </h4>
+    <ul>
+      <li>{Object} <strong>name</strong>
+      </li>
+      <li>{Object} <strong>attributes</strong>
+      </li>
+      <li>{Object} <strong>model</strong>
+      </li>
+    </ul>
+    <hr>
+    <h3 id="function-mojo.controller.scenecontroller.setuseridletimeoutelement-func-delay-watchmouse-watchkeys">
+      {Function} Mojo.Controller.SceneController.<strong>setUserIdleTimeout</strong>(element, func, delay, watchMouse, watchKeys)
+    </h3>
+    <p>
+      Utility function to call an idle handler when the user has been idle for a given amount of time. Once set, the timeout will remain dormant until the user has been continuously idle for the given delay in milliseconds.
+    </p>
+    <h4 id="parameters-16">
+      Parameters
+    </h4>
+    <ul>
+      <li>{string} <strong>element</strong> - The element to watch for user events on. This can be the SceneController.sceneElement, or some element within the scene. The id or element itself is accepted.
+      </li>
+      <li>{function} <strong>func</strong> - This is the idle handler that will be called after the user has been idle for enough time.
+      </li>
+      <li>{int} <strong>delay</strong> - This is the amount of time in milliseconds to wait after the last user event before calling the idle handler.
+      </li>
+      <li>{boolean} <strong>watchMouse</strong> - If true, mouse events will be monitored and considered signs of user activity. Defaults to true if unspecified.
+      </li>
+      <li>{boolean} <strong>watchKeys</strong> - If true, key events will be monitored and considered signs of user activity. Defaults to true if unspecified.
+      </li>
+    </ul>
+    <h4 id="returns-1">
+      Returns
+    </h4>
+    <p>
+      {Function} Calling the returned function will cancel the idle timeout.
+    </p>
+    <hr>
+    <h3 id="mojo.controller.scenecontroller.setwidgetmodelwidget-model">
+      Mojo.Controller.SceneController.<strong>setWidgetModel</strong>(widget, model)
+    </h3>
+    <p>
+      Sets the model for a widget, and notifies the widget of the new model.
+    </p>
+    <p>
+      The widget can be specified by either the DOM element or the id, since we operate on $(widget). Unlike setupWidget(), this API cannot operate on a widget <em>name</em>, since it is intended to operate on single widget only. The setup associated with the widget is not modified.
+    </p>
+    <h4 id="parameters-17">
+      Parameters
+    </h4>
+    <ul>
+      <li>{Object} <strong>widget</strong>
+      </li>
+      <li>{Object} <strong>model</strong>
+      </li>
+    </ul>
+    <hr>
+    <h3 id="mojo.controller.scenecontroller.showwidgetcontainerelementorid">
+      Mojo.Controller.SceneController.<strong>showWidgetContainer</strong>(elementOrId)
+    </h3>
+    <p>
+      Used to notify widgets that a div containing widgets has changed visibility to be shown. This is important for getting correct measurements where widgets are dependent upon them for drawing.
+    </p>
+    <h4 id="parameters-18">
+      Parameters
+    </h4>
+    <ul>
+      <li>
+        <strong>elementOrId</strong>
+      </li>
+    </ul>
+    <hr>
+    <h3 id="mojo.controller.scenecontroller.stoplisteningelement-eventtype-callback-oncapture">
+      Mojo.Controller.SceneController.<strong>stopListening</strong>(element, eventType, callback, onCapture)
+    </h3>
+    <p>
+      Wrapper around Mojo.Event.stopListening that additionally will call get() on the element parameter if it is a string, converting it to a DOM node.
+    </p>
+    <h4 id="parameters-19">
+      Parameters
+    </h4>
+    <ul>
+      <li>{String|Element} <strong>element</strong> - An element reference or DOM ID string identifying the target element.
+      </li>
+      <li>{String} <strong>eventType</strong> - String identifier for the event type.
+      </li>
+      <li>{Function} <strong>callback</strong> - Function object that was registered to be called when the event occurred.
+      </li>
+      <li>{Boolean} <strong>onCapture</strong> <em>Optional</em> - Pass true to listen during the capture phase, false to listen during bubbling.
+      </li>
+    </ul>
+    <hr>
+    <h3 id="mojo.controller.scenecontroller.topcontainer">
+      Mojo.Controller.SceneController.<strong>topContainer</strong>()
+    </h3>
+    <p>
+      Returns the top container in this scene.
+    </p>
+    <hr>
+    <h3 id="mojo.controller.scenecontroller.uselandscapepageupdownyesno">
+      Mojo.Controller.SceneController.<strong>useLandscapePageUpDown</strong>(yesNo)
+    </h3>
+    <p>
+      Enables and disables receiving 'page up' and 'page down' key events in response to the &quot;swipe&quot; gesture when the scene is in landscape mode, instead of the &quot;back&quot; signal. This property is persistent for each scene, so it is not necessary for client code to manage it.
+    </p>
+    <h4 id="parameters-20">
+      Parameters
+    </h4>
+    <ul>
+      <li>{bool} <strong>yesNo</strong> - is 'true' to enable and 'false' to disable receiving 'page up/down' key events for just this scene.
+      </li>
+    </ul>
+    <hr>
+    <h3 id="mojo.controller.scenecontroller.watchmodelmodel-who-changefunc">
+      Mojo.Controller.SceneController.<strong>watchModel</strong>(model, who, changeFunc)
+    </h3>
+    <p>
+      Signs up for change notifications for the given model.
+    </p>
+    <p>
+      When someone calls modelChanged with the model of interest, the changeFunc will be called. Usually used by the framework to notify widgets when their models change.
+    </p>
+    <p>
+      'who' is the object owning the changeFunc. This is used to ensure that objects are not notified of their own changes to the model, and also changeFunc will be called in the context of 'who'.
+    </p>
+    <h4 id="parameters-21">
+      Parameters
+    </h4>
+    <ul>
+      <li>{Object} <strong>model</strong> - Model name.
+      </li>
+      <li>{Object} <strong>who</strong> - The object owning the changeFunc.
+      </li>
+      <li>{Object} <strong>changeFunc</strong> - Function called when modelChanged with the model of interest.
+      </li>
+    </ul>
+		</div>
+	</body>
+</html>

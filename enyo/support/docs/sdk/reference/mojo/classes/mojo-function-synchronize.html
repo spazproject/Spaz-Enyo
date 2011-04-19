@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>$if(pagetitle)$$pagetitle$$endif$</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="stylesheet" href="_css/chrome.css" />
+		<link rel="stylesheet" href="../_css/chrome.css" />
+		<link rel="stylesheet" href="../../_css/chrome.css" />
+		<link rel="stylesheet" href="../../../_css/chrome.css" />
+		<script src="_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="_js/doc.js" type="text/javascript"></script>
+		<script src="../_js/doc.js" type="text/javascript"></script>
+		<script src="../../_js/doc.js" type="text/javascript"></script>
+		<script src="../../../_js/doc.js" type="text/javascript"></script>
+	</head>
+	<body>
+		<div id="content">
+    
+    <h1 id="mojo.function.synchronize">
+      Mojo.Function.Synchronize
+    </h1>
+    <h2 id="class-detail">
+      Class Detail
+    </h2>
+    <p>
+      Instances of this class are used to ensure a set of callback functions are all called at the same time. After creating, use the wrap() method to wrap any callbacks you wish to synchronize before passing them to an asynchronous service. The synchronize object will defer calling any of them until all of the returned wrappers have been called.
+    </p>
+    <h3 id="example-use">
+      Example Use
+    </h3>
+    <p>
+      Mojo generally uses the syncCallback option to defer some processing until a variety of other tasks have all completed. For example, the completion function passed to a scene assistant's aboutToActivate() method is actually an &quot;empty&quot; wrapper function from a Synchronize object. It's used as a trigger to continue the scene transition.
+    </p>
+    <p>
+      One could implement this use case like so:
+    </p>
+    <blockquote>
+      <pre>
+<code>var synchronizer = new Mojo.Function.Synchronize({
+  syncCallback: this.continueSceneTransition()});
+var doNothing = function() {};
+var otherWrapper = synchronizer.wrap(doNothing);
+
+curScene.aboutToActivate(synchronizer.wrap(doNothing));
+beginOtherOperation(otherWrapper); 
+</code>
+</pre>
+    </blockquote>
+    <p>
+      When both wrappers have been called, this.continueSceneTransition() will be called and the scene transition will continue.
+    </p>
+    <h3 id="alternate-use">
+      Alternate Use
+    </h3>
+    <p>
+      An alternative use of Synchronize is to make sure that a function is called within a certain amount of time, and that it's not called more than once. This works by specifying a timeout for the Synchronize object, and again using the syncCallback.
+    </p>
+    <blockquote>
+      <pre>
+<code>var synchronizer = new Mojo.Function.Synchronize({
+  syncCallback: this.thingComplete(),
+  timeout: 3});
+
+beginThing(synchronizer.wrap(function() {}));
+</code>
+</pre>
+    </blockquote>
+    <p>
+      Here we wrap an empty function, which just acts as a trigger for calling this.thingComplete(). If the wrapper is not called within 3 seconds, then thingComplete() will be called anyway...and any subsequent calls to the wrapper will have no affect.
+    </p>
+    <h3 id="parameters">
+      Parameters
+    </h3>
+    <ul>
+      <li>
+        <p>
+          {object} <strong>inOptions</strong>
+        </p>
+        <p>
+          inOptions may include the following properties:
+        </p>
+        <ul>
+          <li>
+            <p>
+              syncCallback: Function - If provided, it will be called after all the callbacks have been dispatched. It receives a boolean argument which is 'true' if the synchronizer timed out.
+            </p>
+          </li>
+          <li>
+            <p>
+              timeout: number - If provided, the synchronizer will stop waiting after this number of seconds. All &quot;received&quot; wrapped functions and the syncCallback function will be called. Any wrappers created by this synchronizer that have not yet been called will be ignored; however, subsequent calls to them will immediately pass through to the wrapped function.
+            </p>
+          </li>
+        </ul>
+      </li>
+    </ul>
+    <h2 id="method-summary">
+      Method Summary
+    </h2>
+    <ul>
+      <li>
+        <strong>wrap</strong>(callback)
+      </li>
+    </ul>
+    <hr>
+    <h2 id="method-detail">
+      Method Detail
+    </h2>
+    <h3 id="function-wrapcallback">
+      {Function} <strong>wrap</strong>(callback)
+    </h3>
+    <p>
+      Wrap and record a function object such that it will not be called until all similarly wrapped callbacks have been invoked.
+    </p>
+    <h4 id="parameters-1">
+      Parameters
+    </h4>
+    <ul>
+      <li>{Function} <strong>callback</strong> - The callback function that should be synchronized.
+      </li>
+    </ul>
+    <h4 id="returns">
+      Returns
+    </h4>
+    <p>
+      A wrapper function suitable for passing in place of the callback.
+    </p>
+		</div>
+	</body>
+</html>

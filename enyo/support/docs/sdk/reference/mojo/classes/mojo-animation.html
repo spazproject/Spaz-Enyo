@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>$if(pagetitle)$$pagetitle$$endif$</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="stylesheet" href="_css/chrome.css" />
+		<link rel="stylesheet" href="../_css/chrome.css" />
+		<link rel="stylesheet" href="../../_css/chrome.css" />
+		<link rel="stylesheet" href="../../../_css/chrome.css" />
+		<script src="_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="_js/doc.js" type="text/javascript"></script>
+		<script src="../_js/doc.js" type="text/javascript"></script>
+		<script src="../../_js/doc.js" type="text/javascript"></script>
+		<script src="../../../_js/doc.js" type="text/javascript"></script>
+	</head>
+	<body>
+		<div id="content">
+    
+    <h1 id="mojo.animation">
+      Mojo.Animation
+    </h1>
+    <h2 id="namespace-detail">
+      Namespace Detail
+    </h2>
+    <p>
+      Holds the infrastructure for coordinating timers for multiple animations, and animating DOM element styles &amp; numeric values over time. Since the overhead associated with timers can be significant, an animation queue allows multiple periodic tasks to be run at the standard frequency of 40 fps while using only a single timer.
+    </p>
+    <p>
+      The other public methods are for animating style properties of DOM elements (visually animating elements on screen), or generally animating numeric values over time.
+    </p>
+    <h2 id="summary">
+      Summary
+    </h2>
+    <ul>
+      <li>Mojo.Animation.easeIn
+      </li>
+      <li>Mojo.Animation.easeInOut
+      </li>
+      <li>Mojo.Animation.easeOut
+      </li>
+    </ul>
+    <h2 id="method-summary">
+      Method Summary
+    </h2>
+    <ul>
+      <li>Mojo.Animation.animateClip(element, side, animationType, details)
+      </li>
+      <li>Mojo.Animation.animateStyle(element, attr, animationType, details)
+      </li>
+      <li>Mojo.Animation.animateValue(q, animationType, callback, details)
+      </li>
+      <li>Mojo.Animation.queueForElement(element)
+      </li>
+    </ul>
+    <hr>
+    <h2 id="detail">
+      Detail
+    </h2>
+    <h3 id="mojo.animation.easein">
+      Mojo.Animation.easeIn
+    </h3>
+    <p>
+      An animation curve that starts slowly, and speeds up.
+    </p>
+    <h3 id="mojo.animation.easeinout">
+      Mojo.Animation.easeInOut
+    </h3>
+    <p>
+      An animation curve that is quick in the middle, and slow at both ends.
+    </p>
+    <h3 id="mojo.animation.easeout">
+      Mojo.Animation.easeOut
+    </h3>
+    <p>
+      An animation curve that starts quickly, and slows down.
+    </p>
+    <hr>
+    <h2 id="method-detail">
+      Method Detail
+    </h2>
+    <h3 id="mojo.animation.animateclipelement-side-animationtype-details">
+      Mojo.Animation.animateClip(element, side, animationType, details)
+    </h3>
+    <p>
+      This is used to animate the 'clip' style property of DOM elements. Only one side may be animated at a time. Any existing clip animation on the indicated node is canceled when the new one is applied, and this generally behaves like animateStyle().
+    </p>
+    <p>
+      In addition, animateStyle() is used to provide underlying functionality, so its details are generally supported as well.
+    </p>
+    <h4 id="example-use">
+      Example Use
+    </h4>
+    <p>
+      This is used to animate the clipping rectangle for ProgressPill widgets.
+    </p>
+    <blockquote>
+      <pre>
+<code>clipStyleAnimator = Mojo.Animation.animateClip(
+  this.progressDiv,
+  'left',
+  this.oldWidth,
+  width,
+  0.2,
+  {
+      clip: {
+          top: 0,
+          left: this.oldWidth,
+          bottom: 12,
+          right: 0
+      },
+      curve: 'ease-in-out'
+  }
+); 
+</code>
+</pre>
+    </blockquote>
+    <h4 id="details-properties">
+      'details' properties
+    </h4>
+    <table>
+      <tr>
+        <td>
+          clip
+        </td>
+        <td>
+          A required hash of numbers indicating current values for clip rect. The indicated side is modified as the animation progresses.
+        </td>
+      </tr>
+    </table>
+    <h4 id="parameters">
+      Parameters
+    </h4>
+    <ul>
+      <li>{Object} <strong>element</strong> - DOM element whose style should be animated.
+      </li>
+      <li>{String} <strong>side</strong> - Which side to animate. top, left, bottom, or right.
+      </li>
+      <li>{String} <strong>animationType</strong> - Can be linear/bezier/zeno. This determines the speed of the animation at various times.
+      </li>
+      <li>{Object} <strong>details</strong> - Various animation details. May NOT be undefined, since 'clip' is required (see above description).
+      </li>
+    </ul>
+    <hr>
+    <h3 id="mojo.animation.animatestyleelement-attr-animationtype-details">
+      Mojo.Animation.animateStyle(element, attr, animationType, details)
+    </h3>
+    <p>
+      This is used to animate style properties of DOM elements. The implementation will animate a given attribute to the given value over the given duration. Any existing animation on the indicated node for the indicated style attribute is canceled when the new one is applied. The animator will override external changes made to the animated attribute while the animation is in progress. Currently, only integer valued attributes are supported, so colors and opacity cannot be animated (except using the styleSetter detail property).
+    </p>
+    <p>
+      One difference between this animator and CSS transitions is that both a 'fromValue' and a 'toValue' must be specified. This allows us to keep the animation speed &quot;correct&quot; when an attribute is being animated back and forth between two values, and we need to run the 'back' animation while the 'forth' animation is only partially complete.
+    </p>
+    <h4 id="example-use-1">
+      Example Use
+    </h4>
+    <p>
+      This code is used to animate the spacers to 0 height when doing drag'n'drop reordering in lists. Note the use of an onComplete function to remove the 0-height spacer from the DOM.
+    </p>
+    <blockquote>
+      <pre>
+<code>Mojo.Animation.animateStyle(
+  this.curDragSpacer,
+  'height',
+  this.dragHeight,
+  0,
+  .2,
+  {onComplete:function(el){Element.remove(el);}}
+); 
+</code>
+</pre>
+    </blockquote>
+    <p>
+      In addition, animateValue() is used to provide underlying functionality, so its details are generally supported as well.
+    </p>
+    <h4 id="details-properties-1">
+      'details' properties
+    </h4>
+    <table>
+      <tr>
+        <td>
+          currentValue
+        </td>
+        <td>
+          Current value of the style property being animated. Default is to call parseInt() on the style property.
+        </td>
+      </tr>
+      <tr>
+        <td>
+          styleSetter
+        </td>
+        <td>
+          Function to call with the value to actually apply the style change. Allows for setting more complex style properties like 'clip'.
+        </td>
+      </tr>
+      <tr>
+        <td>
+          from
+        </td>
+        <td>
+          Starting value for the number we are animating (Passed to ValueAnimator)
+        </td>
+      </tr>
+      <tr>
+        <td>
+          to
+        </td>
+        <td>
+          Target value for the number we are animating (Passed to ValueAnimator)
+        </td>
+      </tr>
+      <tr>
+        <td>
+          duration
+        </td>
+        <td>
+          How long the animation should take, in seconds
+        </td>
+      </tr>
+    </table>
+    <h4 id="parameters-1">
+      Parameters
+    </h4>
+    <ul>
+      <li>{Object} <strong>element</strong> - the DOM element whose style should be animated.
+      </li>
+      <li>{Object} <strong>attr</strong> - The name of the style attribute to be animated, using HTML DOM naming conventions.
+      </li>
+      <li>{String} <strong>animationType</strong> - Can be linear/bezier/zeno. This determines the speed of the animation at various times.
+      </li>
+      <li>{Object} <strong>details</strong> - Various animation details as described above. Note that most ValueAnimator details are supported as well.
+      </li>
+    </ul>
+    <hr>
+    <h3 id="mojo.animation.animatevalueq-animationtype-callback-details">
+      Mojo.Animation.animateValue(q, animationType, callback, details)
+    </h3>
+    <p>
+      Animates a value between the two given numbers, over the given duration, calling the given callback with the &quot;current value&quot; at each step of the animation. Returns an animation object that can be used to end the animation early.
+    </p>
+    <h4 id="details-properties-2">
+      'details' properties
+    </h4>
+    <table>
+      <tr>
+        <td>
+          onComplete
+        </td>
+        <td>
+          Function to call when animation is complete. Passes back a boolean 'cancelled' value.
+        </td>
+      </tr>
+      <tr>
+        <td>
+          reverse
+        </td>
+        <td>
+          Boolean. If true, the animation will be &quot;run in reverse&quot;.
+        </td>
+      </tr>
+      <tr>
+        <td>
+          curve
+        </td>
+        <td>
+          What sort of curve to use for the animation. Defaults to linear if unspecified. May be the name of one of the standard curves, or an array of coordinates for the control points of a cubic bezier curve. See the curve name constants in Mojo.Animation.
+        </td>
+      </tr>
+      <tr>
+        <td>
+          from
+        </td>
+        <td>
+          Starting value for the number we are animating
+        </td>
+      </tr>
+      <tr>
+        <td>
+          to
+        </td>
+        <td>
+          Target value for the number we are animating
+        </td>
+      </tr>
+      <tr>
+        <td>
+          duration
+        </td>
+        <td>
+          How long the animation should take, in seconds
+        </td>
+      </tr>
+      <tr>
+        <td>
+          currentValue
+        </td>
+        <td>
+          If specified, the animation will be &quot;picked up&quot; at this value between the from and to values. This allows partially complete animations to be canceled and properly animated back to their starting conditions.
+        </td>
+      </tr>
+    </table>
+    <h4 id="methods">
+      Methods
+    </h4>
+    <table>
+      <tr>
+        <td>
+          cancel()
+        </td>
+        <td>
+          Same as complete(), but the callback is never called with the target value.
+        </td>
+      </tr>
+      <tr>
+        <td>
+          complete()
+        </td>
+        <td>
+          calls the value callback one last time with the target value, calls onComplete function if specified, and removes the animator from the queue. Called automatically at completion of animation.
+        </td>
+      </tr>
+    </table>
+    <h4 id="parameters-2">
+      Parameters
+    </h4>
+    <ul>
+      <li>{Object} <strong>q</strong> - The animation queue to use in order to run the animation.
+      </li>
+      <li>{String} <strong>animationType</strong> - Can be linear/bezier/zeno. This determines the speed of the animation at various times.
+      </li>
+      <li>{Function} <strong>callback</strong> - This function is called at each step of the animation, as the value changes. It takes one argument, the current value.
+      </li>
+      <li>{Object} <strong>details</strong> <em>Optional</em> - A hash containing additional information.
+      </li>
+    </ul>
+    <hr>
+    <h3 id="mojo.animation.queueforelementelement">
+      Mojo.Animation.queueForElement(element)
+    </h3>
+    <p>
+      Given a DOM element, returns a reference to the appropriate animation queue to use.
+    </p>
+    <h4 id="parameters-3">
+      Parameters
+    </h4>
+    <ul>
+      <li>
+        <strong>element</strong>
+      </li>
+    </ul>
+		</div>
+	</body>
+</html>

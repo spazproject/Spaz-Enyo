@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>$if(pagetitle)$$pagetitle$$endif$</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="stylesheet" href="_css/chrome.css" />
+		<link rel="stylesheet" href="../_css/chrome.css" />
+		<link rel="stylesheet" href="../../_css/chrome.css" />
+		<link rel="stylesheet" href="../../../_css/chrome.css" />
+		<script src="_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="_js/doc.js" type="text/javascript"></script>
+		<script src="../_js/doc.js" type="text/javascript"></script>
+		<script src="../../_js/doc.js" type="text/javascript"></script>
+		<script src="../../../_js/doc.js" type="text/javascript"></script>
+	</head>
+	<body>
+		<div id="content">
+    
+    <h1 id="menus---ui-guidelines">
+      Menus - UI Guidelines
+    </h1>
+    <p>
+      (This article discusses when to use certain types of menus. For coding examples, see <a href="/dev-guide/mojo/all-about-widgets/menus.html">this article</a>.)
+    </p>
+    <p>
+      When a scene has multiple commands or content choices, organize them into a menu. There are several types of menus. Some menus open to show a list of commands, and others cycle through available choices by tapping or typing in the field area.
+    </p>
+    <p>
+      Text space is limited. Therefore, keep command names short and use title capitalization (like for a book).
+    </p>
+    <p>
+      The following table provides additional information with image examples.
+    </p>
+    <table border="0">
+      <tbody>
+        <tr>
+          <th>
+            Menu
+          </th>
+          <th>
+            Description
+          </th>
+          <th>
+            Example
+          </th>
+        </tr>
+        <tr>
+          <td>
+            Application
+          </td>
+          <td>
+            <p>
+              Located at the top of the scene in the status bar. Tap the label or triangle to open/close the menu. Applications can insert additional commands in each scene, as needed. Implemented by using Mojo.Menu.appMenu.
+            </p>
+            <p>
+              <br>
+              By default, the Application menu includes the following commands:
+            </p>
+            <ul>
+              <li>
+                <strong>Edit</strong>:
+                <ul>
+                  <li>This is always the first menu command.
+                  </li>
+                  <li>This is a submenu, which is indicated by the right-side triangle, containing the Cut, Copy, and Paste commands. Tap the row to open/close the submenu.
+                  </li>
+                  <li>Automatically enabled when the cursor enters a text field.
+                  </li>
+                </ul>
+              </li>
+            </ul>
+            <ul>
+              <li>
+                <strong>Scene-based commands</strong> : Try to limit these to four commands. If adding more than four, the user has to scroll the menu to see the entire list.
+              </li>
+              <li>
+                <strong>Preferences &amp; Accounts</strong>:
+                <ul>
+                  <li>Appears in every scene's Application menu when there are preferences and/or account settings used to connect to one or more services.
+                  </li>
+                  <li>If there are no preferences or account settings, exclude this item from the Application menu for all scenes.
+                  </li>
+                  <li>If your application has either Preferences or Accounts, include the command in all scenes and name it either &quot;Preferences&quot; or &quot;Accounts&quot;. If your application has both Preferences and Accounts, display &quot;Preferences&quot; first, followed &quot;Accounts&quot;.
+                  </li>
+                </ul>
+              </li>
+              <li>
+                <strong>Help</strong>: Opens the application's Help feature.
+              </li>
+            </ul>
+          </td>
+          <td>
+            <img src="/images/palm/ui_summary/applicationMenu.png" border="0" align="absmiddle">
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Submenu
+          </td>
+          <td>
+            <p>
+              Some menu commands have multiple options. In these cases, create a submenu that lists the available options for the given menu command. Examples are the Edit and New submenus in the Calendar application menu.
+            </p>
+          </td>
+          <td>
+            <img src="/images/palm/ui_summary/subMenu.jpg" border="0" width="200" height="171">
+          </td>
+        </tr>
+        <tr>
+          <td>
+            View Menu
+          </td>
+          <td>
+            A View Menu automatically displays a Fixed Header with a pop-up menu. The items in the pop-up menu in the right-side area control the contents in the scroll view below. Implemented by using Mojo.Menu.viewMenu.
+          </td>
+          <td>
+            <img src="/images/palm/ui_summary/viewMenu.jpg" border="0" align="absmiddle">
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Pop-up
+          </td>
+          <td>
+            <p>
+              Pops up when tapped, and displays a set of available choices where only one can be chosen. For example in the Contacts app, edit a contact and enter a phone number, and then tap the inline pop-up menu to the right of the text field to select the type of phone number (e.g., mobile, etc.). Implemented by using the Mojo.Widget.ListSelector API.
+            </p>
+          </td>
+          <td>
+            <img src="/images/palm/ui_guideline/popupMenu.gif" border="0" alt="popup menu" width="200" height="188">
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Date Picker
+          </td>
+          <td>
+            <p>
+              This set of pop-up menus display the month, day, and year. Tap each menu to choose a value, or type while the focus is on a particular menu to select a value (in the example, the focus is on the month menu). Implemented by using the Mojo.Widget.DatePicker API.
+            </p>
+          </td>
+          <td>
+            <img src="/images/palm/ui_summary/datePicker.gif" border="0" align="absmiddle">
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Time Picker
+          </td>
+          <td>
+            This set of pop-up menus display the hours, minutes, and AM or PM. Tap each menu to choose a value, or type while the focus is on a particular menu to select a value. Implemented by using the Mojo.Widget.TimePicker API.
+          </td>
+          <td>
+            <img src="/images/palm/ui_summary/timePicker.jpg" border="0" align="absmiddle">
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Integer Picker
+          </td>
+          <td>
+            This pop-up menu contains numeric values. Set the minimum and maximum values. Tap the menu to choose a value, or type while the focus is on the control to select a value. Implemented by using the Mojo.Widget.IntegerPicker API.
+          </td>
+          <td>
+            See day and year in Date Picker.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+		</div>
+	</body>
+</html>

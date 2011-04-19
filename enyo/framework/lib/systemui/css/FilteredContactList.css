@@ -1,0 +1,10 @@
+/* Copyright 2009-2011 Hewlett-Packard Development Company, L.P. All rights reserved. */
+.enyo-filtered-contact-list-type-label {
+	float: right;
+	color: rgb(31, 117, 191);
+	font-size: 14px;
+}
+
+.enyo-filtered-contact-list-item {
+	border: 0px;
+}

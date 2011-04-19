@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>$if(pagetitle)$$pagetitle$$endif$</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="stylesheet" href="_css/chrome.css" />
+		<link rel="stylesheet" href="../_css/chrome.css" />
+		<link rel="stylesheet" href="../../_css/chrome.css" />
+		<link rel="stylesheet" href="../../../_css/chrome.css" />
+		<script src="_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="_js/doc.js" type="text/javascript"></script>
+		<script src="../_js/doc.js" type="text/javascript"></script>
+		<script src="../../_js/doc.js" type="text/javascript"></script>
+		<script src="../../../_js/doc.js" type="text/javascript"></script>
+	</head>
+	<body>
+		<div id="content">
+    
+    <h1 id="pdl_getdatafilepath">
+      PDL_GetDataFilePath
+    </h1>
+    <p>
+      <strong>NOTE:</strong>
+    </p>
+    <p>
+      We would like to thank our users for bringing to our attention a bug in the initial release of webOS 1.4.5: this API returns a location that is not writable. This also applies to apps that are trying to save data to a location in /media/internal/. We apologize if this issue affects your app.
+    </p>
+    <p>
+      As a workaround, you can save preference and configuration data in your app's directory. Your app can do this by writing to a file with no relative path. Any files and folders created there are not visible to the user and are preserved when your app is upgraded. However, if the user deletes your app from the device, they are removed, unlike those in the location returned from this API.
+    </p>
+    <p>
+      This issue will be resolved in the next OS release.
+    </p>
+    <h2 id="description">
+      Description
+    </h2>
+    <p>
+      Use this function to get a location for saving application data. Given a file name, this function sets buffer to an absolute path (including the file name) where the file can be safely stored. This location is segregated from the application's installed files, allowing you to replace or remove the application without destroying the data files it generates.
+    </p>
+    <p>
+      The path is set in the buffer parameter, which you should allocate with enough memory (256 bytes recommended) to contain a long path. Set bufferLen to the length of the buffer.
+    </p>
+    <p>
+      Once you have your location, you can use standard C/C++ input/output functions for saving and retrieving data.
+    </p>
+    <h2 id="syntax">
+      Syntax
+    </h2>
+    <blockquote>
+      <pre>
+<code>PDL_Err PDL_GetDataFilePath(const char *dataFileName, char *buffer, int bufferLen);     
+</code>
+</pre>
+    </blockquote>
+    <table border="0">
+      <tbody>
+        <tr>
+          <th>
+            Argument
+          </th>
+          <th>
+            Description
+          </th>
+        </tr>
+        <tr>
+          <td>
+            dataFileName
+          </td>
+          <td>
+            Name of the data file which needs a save location.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            buffer
+          </td>
+          <td>
+            Pointer to the buffer.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            bufferLen
+          </td>
+          <td>
+            Length of the buffer.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h2 id="returns">
+      Returns
+    </h2>
+    <blockquote>
+      <pre>
+<code>PDL_INVALIDINPUT — buffer is NULL or its length is less than or equal to zero or dataFileName is NULL.
+PDL_STRINGTOOSMALL — Passed buffer is too small to hold value.
+PDL_NOERROR — Success.
+</code>
+</pre>
+    </blockquote>
+		</div>
+	</body>
+</html>

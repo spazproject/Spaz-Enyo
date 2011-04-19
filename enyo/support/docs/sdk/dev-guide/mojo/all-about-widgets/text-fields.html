@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>$if(pagetitle)$$pagetitle$$endif$</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="stylesheet" href="_css/chrome.css" />
+		<link rel="stylesheet" href="../_css/chrome.css" />
+		<link rel="stylesheet" href="../../_css/chrome.css" />
+		<link rel="stylesheet" href="../../../_css/chrome.css" />
+		<script src="_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="_js/doc.js" type="text/javascript"></script>
+		<script src="../_js/doc.js" type="text/javascript"></script>
+		<script src="../../_js/doc.js" type="text/javascript"></script>
+		<script src="../../../_js/doc.js" type="text/javascript"></script>
+	</head>
+	<body>
+		<div id="content">
+    
+    <h1 id="text-fields">
+      Text Fields
+    </h1>
+    <p>
+      There is a history of great text-centric applications on Palm smartphones. Palm OS Classic included a whole new writing system, Graffiti, to provide simple, effective tools for entering and editing text, and among the Treo's hallmarks were a terrific thumbable keyboard and a system optimized for messaging and email applications. So naturally, HP webOS has a simple, yet powerful text widget to embed text in your applications.
+    </p>
+    <p>
+      This section will start with the TextField, the base text widget that supports all general text requirements: single or multiline text entry, with common styles for labels, titles, headings, body text, line items and item details. The editing tools include basic entry and deletion, symbol and alternate character sets, cursor movement, selection, cut/copy/paste and auto text correction. Chances are the TextField will address your text needs, but if not, there are three additional specialized widgets:
+    </p>
+    <ul>
+      <li>PasswordField - handles passwords or other confidential text input
+      </li>
+      <li>FilterField - supports type-down filters of a long list or other set of data
+      </li>
+      <li>RichTextEdit - a multiline text field that supports simple text styles (bold, italic and underline)
+      </li>
+    </ul>
+    <p>
+      In all of the text widgets, the framework will handle all user interactions with the text field, returning the entered string when the field loses focus. Mojo text fields are smart text fields by default. Auto-capitalization and correction for common typing mistakes is performed on all field unless you disable this feature; see Using Smart Text Features for more details.
+    </p>
+    <p>
+      Every text field is declared and instantiated following the convention for Mojo widgets. The widget is declared in your scene's view file in a DIV with the x-mojo-element attribute set to the widget's name and a unique id, which is used in your scene controller's setupWidget method.
+    </p>
+    <h2 id="textfield">
+      TextField
+    </h2>
+    <p>
+      The TextField widget provides both single and multiline incarnations, based on an attribute setting. The widget's main goal is to extend the default behavior of the input type=&quot;text&quot; HTML element with hint text, focus behavior, truncation, and a host of other additions (see the API guide for more information).
+    </p>
+    <p>
+      In both incarnations, the widget will generate a Mojo.Event.propertyChange event when it loses focus. The contents of the field will be passed to your event handler in the event.value and as an update to the widget's model.value. The framework will automatically blur a TextField widget when the user taps anywhere else on the scene, even if the location tapped is not focusable. If you want to keep your TextField focused in those instances:
+    </p>
+    <blockquote>
+      <pre>
+<code>//remember to clean up a document listener in your scene assistant's cleanup function!!!!
+this.sceneTapped = this.sceneTapped.bind(this); 
+this.controller.listen(this.controller.document, Mojo.Event.tap, this.sceneTapped); 
+this.textFieldWidget = this.controller.get('textfield');  
+
+sceneTapped: function(tapEvent) {
+  //if something that is not the textfield widget or a child of
+  //the textfield widget got the tap, call prevent default to
+  //stop the textfield widget from blurring
+  if (tapEvent.target !== this.textFieldWidget &amp;&amp;
+      !tapEvent.target.up('div#'+this.textFieldWidget.id)) {
+          tapEvent.preventDefault();
+  }
+}
+</code>
+</pre>
+    </blockquote>
+    <p>
+      The TextField is another in the set of widgets that will allow you to provide a name (in attribute textFieldName) to make the use of form serialization and data uploading simple. To get the most out of the TextField widget, we recommend you use the styles presented in the user interface guidelines.
+    </p>
+    <h3 id="hint-text">
+      Hint Text
+    </h3>
+    <p>
+      The TextField allows you to provide hint text that the user will see until they enter text. The TextField widget will control when to show or hide the hint text, including all cases of cut, copy, and paste and special character entry.
+    </p>
+    <h3 id="single-line-textfield">
+      Single-line TextField
+    </h3>
+    <p>
+      The TextField widget defaults to the single-line implementation. The single-line TextField allows the user to scroll back and forth horizontally. When blurred, the TextField value will automatically display only the number of characters that fit in the allowed width, replacing the extra characters with an ellipsis.
+    </p>
+    <p>
+      To set up a basic TextField for a username that starts out empty:
+    </p>
+    <blockquote>
+      <pre>
+<code>var attributes = {
+  textFieldName: 'username',
+  hintText: 'Enter Your Username',
+  modelProperty: 'value
+};
+this.model = {};
+this.controller.setupWidget('textField', attributes, this.model);
+</code>
+</pre>
+    </blockquote>
+    <p>
+      Watch for a property change event to see user updates. Use the original event to ignore property changes caused by tapping elsewhere on the screen.
+    </p>
+    <blockquote>
+      <pre>
+<code>this.controller.listen('textField', Mojo.Event.propertyChange,
+  this.changed.bind(this));
+changed: function(propertyChangeEvent) {
+  var originalEvent = propertyChangeEvent.originalEvent;
+  if (originalEvent.type === 'blur') {
+      //Ignore this event
+  } else {
+      Mojo.Log.info(&quot;The user made a property change event.
+          This must be the result of the user pressing the enter key&quot;);
+  }
+}
+</code>
+</pre>
+    </blockquote>
+    <h3 id="mutiline-textfield">
+      Mutiline TextField
+    </h3>
+    <p>
+      If you set multiline to true to in the TextField widget attributes, you will get an editable input field that will automatically grow vertically to fit its contents as keys are typed. To limit the amount the TextField will grow vertically, set limitResize to true in the attributes and set a max-height on the div that instantiates the TextField widget.
+    </p>
+    <p>
+      The example below creates a multiline TextField that will never take up more than 240px of vertical space in your scene. Once the user enters enough content in the field to make it grow to more than 240px, the content will start to scroll.
+    </p>
+    <p>
+      HTML:
+    </p>
+    <blockquote>
+      <pre>
+<code>&lt;div id=&quot;multilineTextField&quot; x-mojo-element=&quot;TextField&quot;
+  style=&quot;overflow: hidden; max-height:240px;&quot;&gt;&lt;/div&gt;
+</code>
+</pre>
+    </blockquote>
+    <p>
+      Scene Assistant:
+    </p>
+    <blockquote>
+      <pre>
+<code>var attributes = {
+  textFieldName: 'notes',
+  hintText: 'Enter a Note',
+  modelProperty: 'value,
+  multiline: true,
+  limitResize: true
+};
+
+this.model = {};
+this.controller.setupWidget('multilineTextField', attributes, this.model);
+</code>
+</pre>
+    </blockquote>
+    <h2 id="passwordfield">
+      PasswordField
+    </h2>
+    <p>
+      If you need a text field to use for passwords or some other type of confidential information, the PasswordField provides many of the TextField widget's features, but masks the display. Any entered text is displayed as a <em>bullet</em>, or &quot;?&quot; character. As with the TextField, the framework handles all of the editing logic within the field and generates a Mojo.Event.propertyChange event when the field has been updated. Unlike the TextField widget, the PasswordField may only have a single line.
+    </p>
+    <p>
+      Similar to TextField, you specify the location in your scene's view file in a DIV with x-mojo-element=&quot;PasswordField&quot; and a unique id, then call your scene controller's setupWidget method with that id. The widget takes a set of attribute properties, all of which are optional, and a model property to hold the text. Other optional attribute properties enable you to specify a name or class for the password field element or change the model property name.
+    </p>
+    <p>
+      To make a password field:
+    </p>
+    <blockquote>
+      <pre>
+<code>var attributes = {
+  hintText: 'Enter Password',
+  modelProperty: 'value'
+};
+
+this.model = {};
+this.controller.setupWidget('password', attributes, this.model);
+</code>
+</pre>
+    </blockquote>
+    <h2 id="filterfield">
+      FilterField
+    </h2>
+    <p>
+      If you need a type-down filter for the contents of a list, you can use the FilterField. It can be applied to any case where you want to process the field contents and update some onscreen elements based on the entered string. After setting up the widget, add a listener on the FilterField element for the Mojo.Event.filter* event that best meets your needs.
+    </p>
+    <p>
+      The FilterField will capture keys typed by the user whenever there is not another element that accepts keyboard input is focused. If you do not always want to filter, for instance when there is no available data to display, you can disable the FilterField widget and it will hide and stop accepting keyboard input.
+    </p>
+    <p>
+      The FilterField wraps the logic of delaying updating your scene assistant of a filter string until some pause after the user has finished typing a key. The algorithm works like this:
+    </p>
+    <ol style="list-style-type: decimal">
+      <li>User types key.
+      </li>
+      <li>Framework sets up a filter function to send an event after DELAY miliseconds.
+      </li>
+      <li>User types another key.
+      </li>
+      <li>Framework cancels first delayed function, and creates a new instance of the delayed function.
+      </li>
+      <li>DELAY miliseconds pass without the user entering any new keys.
+      </li>
+      <li>The filter function fires and sends an event to your scene assistant.
+      </li>
+    </ol>
+    <p>
+      To create a FilterField that notifies you of the current state of user entered text after every 500ms pause:
+    </p>
+    <blockquote>
+      <pre>
+<code>var attributes = {delay: 500};
+this.controller.setupWidget('filterfield', attributes);
+//does not require a model
+this.controller.listen('filterfield', Mojo.Event.filter, this.filter.bind(this));
+
+filter: function(filterEvent) {
+  Mojo.Log.info(&quot;The user has typed the following filter query &quot;
+      + filterEvent.filterString);
+}
+</code>
+</pre>
+    </blockquote>
+    <p>
+      If you are going to be using the FilterField to filter contents displayed in a List widget, consider using the FilterList instead. The FilterList combines the functionality of the List widget and FilterField into one widget and provides all the APIs you need for most basic data filtering.
+    </p>
+    <h2 id="richtextedit">
+      RichTextEdit
+    </h2>
+    <p>
+      There is a simple RichTextEdit widget that behaves exactly like a multiline text field, but in addition supports applying Bold, Italic and Underline styles to arbitrary runs of text within the field. You declare a x-mojo-element=&quot;RichTextEdit&quot; DIV in your scene and set it up in your assistant without attributes or a model.
+    </p>
+    <p>
+      Set up the widget:
+    </p>
+    <blockquote>
+      <pre>
+<code>this.controller.setupWidget('message', {} , {}); 
+</code>
+</pre>
+    </blockquote>
+    <p>
+      To put editable, formatted contents into the RichTextEdit widget:
+    </p>
+    <blockquote>
+      <pre>
+<code>this.controller.get('message').innerHTML =
+  &quot;&lt;b&gt;This is some content that starts in the RichTextEdit widget.&lt;/b&gt;&quot;;
+</code>
+</pre>
+    </blockquote>
+    <p>
+      Read the contents of the RichTextEdit field:
+    </p>
+    <blockquote>
+      <pre>
+<code>var theMessageBody = this.controller.get('message').innerHTML; 
+</code>
+</pre>
+    </blockquote>
+    <p>
+      To enable the styling, enable the RichTextEditMenu property in the AppMenu (see Menus for information on the App Menu). If you aren't otherwise enabling the App Menu, you can use this line of code:
+    </p>
+    <blockquote>
+      <pre>
+<code>this.controller.setupWidget(Mojo.Menu.appMenu, {richTextEditMenu: true}, {}); 
+</code>
+</pre>
+    </blockquote>
+    <p>
+      This enables the Bold, Italic and Underline menu options, which when selected will apply that style to the current text selection if it is in a RichTextEdit widget.
+    </p>
+    <h3 id="known-issues">
+      Known Issues
+    </h3>
+    <ul>
+      <li>For now, you have to use the <em>blur</em> event and pull the text content from the RichTextEdit's DOM element.
+      </li>
+      <li>There is a fairly basic version of this widget in the current SDK and it will likely change substantively before SDK release.
+      </li>
+    </ul>
+		</div>
+	</body>
+</html>

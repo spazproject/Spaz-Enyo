@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>$if(pagetitle)$$pagetitle$$endif$</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="stylesheet" href="_css/chrome.css" />
+		<link rel="stylesheet" href="../_css/chrome.css" />
+		<link rel="stylesheet" href="../../_css/chrome.css" />
+		<link rel="stylesheet" href="../../../_css/chrome.css" />
+		<script src="_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="_js/doc.js" type="text/javascript"></script>
+		<script src="../_js/doc.js" type="text/javascript"></script>
+		<script src="../../_js/doc.js" type="text/javascript"></script>
+		<script src="../../../_js/doc.js" type="text/javascript"></script>
+	</head>
+	<body>
+		<div id="content">
+    
+    <h1 id="pdl_settouchaggression">
+      PDL_SetTouchAggression
+    </h1>
+    <h2 id="description">
+      Description
+    </h2>
+    <p>
+      This API allows Plug-in apps (<strong>not</strong> JS/Plug-in combined apps) to set the device's <em>touch aggression</em>. Touch aggression refers to how the touchpanel driver evaluates touch input.
+    </p>
+    <p>
+      Due to irregularities and variety in finger shape, it is sometimes not clear whether one or two fingers are being used. A high aggression means the driver is more weighted towards interpreting indistinct input as one finger. A low aggression means the opposite -- indistinct input is more often interpreted as two-finger input.
+    </p>
+    <p>
+      When the app cards or terminates, touch aggression is automatically set back to normal.
+    </p>
+    <p>
+      Do <strong>not</strong> call this before calling SDL_Init. Doing so will most likely result in not being able to communicate with the Touch Aggression service.
+    </p>
+    <h2 id="syntax">
+      Syntax
+    </h2>
+    <blockquote>
+      <pre>
+<code>PDL_Err PDL_SetTouchAggression(PDL_TouchAggression aggression);
+</code>
+</pre>
+    </blockquote>
+    <table border="1">
+      <tbody>
+        <tr>
+          <th>
+            Argument
+          </th>
+          <th>
+            Type
+          </th>
+          <th>
+            Description
+          </th>
+        </tr>
+        <tr>
+          <td>
+            aggression
+          </td>
+          <td>
+            enum
+          </td>
+          <td>
+            <code>PDL_TouchAggression</code> enum.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h2 id="returns">
+      Returns
+    </h2>
+    <blockquote>
+      <pre>
+<code>PDL_EOTHER - App is not a Plug-in app.
+PDL_ECONNECTION - Could not communicate with the Touch Aggression service.
+PDL_NOERROR - Success.
+</code>
+</pre>
+    </blockquote>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>$if(pagetitle)$$pagetitle$$endif$</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="stylesheet" href="_css/chrome.css" />
+		<link rel="stylesheet" href="../_css/chrome.css" />
+		<link rel="stylesheet" href="../../_css/chrome.css" />
+		<link rel="stylesheet" href="../../../_css/chrome.css" />
+		<script src="_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="_js/doc.js" type="text/javascript"></script>
+		<script src="../_js/doc.js" type="text/javascript"></script>
+		<script src="../../_js/doc.js" type="text/javascript"></script>
+		<script src="../../../_js/doc.js" type="text/javascript"></script>
+	</head>
+	<body>
+		<div id="content">
+    
+    <h1 id="palm-inspector">
+      Palm Inspector
+    </h1>
+    <p>
+      The Palm Inspector allows examination of the DOM of an application running on the emulator.
+    </p>
+    <h2 id="known-issues">
+      Known Issues
+    </h2>
+    <p>
+      The following are the known issues for the Palm Inspector:
+    </p>
+    <ul>
+      <li>
+        <p>
+          The inspector may not be able to connect to the emulator at times. When this occurs, restarting the emulator then the inspector may solve the problem.
+        </p>
+      </li>
+      <li>
+        <p>
+          Reload in the inspector is not supported in this release.
+        </p>
+      </li>
+      <li>
+        <p>
+          Windows – opening detail panels on the right side of the inspector may cause the inspector to stop responding and require a re-launch.
+        </p>
+      </li>
+      <li>
+        <p>
+          The inspector can only look at one stage at a time.
+        </p>
+      </li>
+    </ul>
+    <h2 id="running-the-palm-inspector">
+      Running the Palm Inspector
+    </h2>
+    <p>
+      Follow these steps:
+    </p>
+    <ul>
+      <li>
+        <p>
+          Use the -i option with Palm Launch.
+        </p>
+        <p>
+          Example:
+        </p>
+        <blockquote>
+          <pre>
+<code>palm-launch -i com.example.app
+</code>
+</pre>
+        </blockquote>
+      </li>
+    </ul>
+    <p>
+      <strong>Note:</strong>
+    </p>
+    <p>
+      When inspecting a different application or relaunching and inspecting the same application, click the refresh button in the Palm Inspector window.
+    </p>
+    <ul>
+      <li>
+        <p>
+          Run the Palm Inspector application, as follows:
+        </p>
+        <ul>
+          <li>
+            <p>
+              Mac: In the Applications folder, double-click <strong>Palm Inspector</strong>.
+            </p>
+          </li>
+          <li>
+            <p>
+              Windows: Select <strong>Start &gt; All Programs &gt; Palm &gt; SDK &gt; Palm Inspector</strong>.
+            </p>
+          </li>
+        </ul>
+      </li>
+    </ul>
+    <p>
+      The Palm Inspector window shows the elements and styles. To expand or collapse each element, click the triangle to the left of the element.
+    </p>
+    <p>
+      <img src="/images/palm/inspector.png" alt="image"><br>
+    </p>
+    <h2 id="palm-inspector-capabilities">
+      Palm Inspector Capabilities
+    </h2>
+    <p>
+      The Palm Inspector has the following capabiities:
+    </p>
+    <ul>
+      <li>Expand a frame or object element to show the DOM tree inside that element.
+      </li>
+      <li>Update the DOM tree when the inspected stage and scene change.
+      </li>
+    </ul>
+    <p>
+      <strong>Note:</strong>
+    </p>
+    <p>
+      Updates can take up to a few seconds.
+    </p>
+    <ul>
+      <li>
+        <p>
+          Edit a DOM element attribute by double clicking it.
+        </p>
+      </li>
+      <li>
+        <p>
+          Edit a DOM property in the Properties pane by double clicking it.
+        </p>
+      </li>
+      <li>
+        <p>
+          Enable the Inspect mode to move around the page to find a node to inspect. Click on a node in the page to focus it in the Elements panel and turn off the inspect mode.
+        </p>
+      </li>
+      <li>
+        <p>
+          Pause on an editable style rule to display the checkboxes that are for disabling individual properties.
+        </p>
+      </li>
+      <li>
+        <p>
+          Edit a style property by double clicking it, and then:
+        </p>
+        <ul>
+          <li>Delete all of the text to delete the property.
+          </li>
+          <li>Type or paste in multiple properties to add the new properties.
+          </li>
+        </ul>
+      </li>
+      <li>
+        <p>
+          Edit style numeric property value by:
+        </p>
+        <ul>
+          <li>Using the UP ARROW or DOWN ARROW to increment or decrement the number.
+          </li>
+          <li>Holding ALT/Option to step by 0.1.
+          </li>
+          <li>Holding SHIFT to step by 10.
+          </li>
+        </ul>
+      </li>
+      <li>
+        <p>
+          Edit any of the CSS box model metrics by double clicking it.
+        </p>
+      </li>
+      <li>
+        <p>
+          The Metrics pane now includes position info for absolute, relative, and fixed positioned elements.
+        </p>
+      </li>
+    </ul>
+    <h2 id="identifying-stages">
+      Identifying Stages
+    </h2>
+    <p>
+      When running multi-stage applications, it is helpful to be able to identify the stage to be inspected. The way to do this is as follows:
+    </p>
+    <ol style="list-style-type: decimal">
+      <li>
+        <p>
+          In Novaterm, issue the command <code>luna-send -i -n 1 luna://com.palm.applicationManager/running {}</code>.
+        </p>
+      </li>
+      <li>
+        <p>
+          Find the entries for your appid. The first process listed for your app is the JavaScript Process. This will only have the script and link elements. Subsequent processes are related to to active stages, usually in the order they were activated, but they are not positively identified.
+        </p>
+      </li>
+      <li>Issue the command
+        <pre>
+luna-send luna://com.palm.applicationManager/inspect '{"*processId*":"$*processId*"}'
+</pre>
+        <p>
+          to activate inspection for the desired process.
+        </p>
+      </li>
+      <li>
+        <p>
+          Open the Inspector application.
+        </p>
+      </li>
+    </ol>
+    <p>
+      Note that you should not run &quot;inspect&quot; mode from &quot;palm-launch&quot;.
+    </p>
+		</div>
+	</body>
+</html>

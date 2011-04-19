@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>$if(pagetitle)$$pagetitle$$endif$</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="stylesheet" href="_css/chrome.css" />
+		<link rel="stylesheet" href="../_css/chrome.css" />
+		<link rel="stylesheet" href="../../_css/chrome.css" />
+		<link rel="stylesheet" href="../../../_css/chrome.css" />
+		<script src="_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="_js/doc.js" type="text/javascript"></script>
+		<script src="../_js/doc.js" type="text/javascript"></script>
+		<script src="../../_js/doc.js" type="text/javascript"></script>
+		<script src="../../../_js/doc.js" type="text/javascript"></script>
+	</head>
+	<body>
+		<div id="content">
+    
+    <h1 id="the-basics-stages">
+      The Basics: Stages
+    </h1>
+    <p>
+      This document contains the following sections:
+    </p>
+    <ul>
+      <li>Recommended Reading
+      </li>
+      <li>Overview
+      </li>
+      <li>Stages
+      </li>
+      <li>Single-Stage Applications
+      </li>
+      <li>Multistage Applications
+      </li>
+      <li>Dashboard Applications
+      </li>
+      <li>Related Topics
+      </li>
+    </ul>
+    <h2 id="recommended-reading">
+      Recommended Reading
+    </h2>
+    <p>
+      For those of you who may need some background info about HP webOS and its application structure, we recommend that you read the following documents before going forward:
+    </p>
+    <ul>
+      <li>
+        <a href="/dev-guide/mojo.html">Developing Mojo Applications</a>
+      </li>
+      <li>
+        <a href="/dev-guide/mojo/application-structure.html">Application Structure</a>
+      </li>
+      <li>
+        <a href="/reference/config/appinfo.json.html">appinfo.json</a>
+      </li>
+      <li>
+        <a href="/reference/config/sources.json.html">sources.json</a>
+      </li>
+    </ul>
+    <p>
+      And of course the O'Reilly® book <em>Palm webOS</em>, by Mitch Allen, is an excellent resource too! Take a peek at the first chapter, which introduces you to the webOS operating system and the HP webOS Software Developer Kit (SDK), which the SDK documentation commonly refers to as Mojo or the framework.
+    </p>
+    <h2 id="overview">
+      Overview
+    </h2>
+    <p>
+      This document is geared toward the beginning webOS developer. Here we discuss the basic concept of stages--what they are, where they are on the screen, what you can do with them, and how to create them.
+    </p>
+    <p>
+      Let's expand on some of the definitions found in the &quot;Recommended Reading&quot; documents:
+    </p>
+    <p>
+      <strong>Stages</strong>--Stages are one of the building blocks for webOS applications. A stage is the window, container, or <em>card</em> that holds the application <em>scene</em>. An application can have multiple scenes that reuse the same stage, or perhaps there is a different stage for each scene.
+    </p>
+    <p>
+      <strong>Scenes</strong>--It is the scene that the user sees and interacts with to perform a single task or a group of related tasks. Each scene has a scene assistant file and a main HTML view file, and may have optional template HTML view files.
+    </p>
+    <p>
+      <strong>Cards</strong>--Most application stages display their scene content in a card. You can zoom in and out among the following views:
+    </p>
+    <ul>
+      <li>
+        <p>
+          Application view--The card fills the entire screen. This is not the same as Full-screen mode, which covers the status bar and notification bar.
+        </p>
+      </li>
+      <li>
+        <p>
+          Card view--The cards are visible and can be maximized to Application view or scrolled horizontally, but cannot be rearranged.
+        </p>
+      </li>
+      <li>
+        <p>
+          Card Organizer view--The cards are visible and smaller than the Card view, and they can be rearranged.
+        </p>
+      </li>
+    </ul>
+    <p>
+      <strong>Assistants</strong>--An assistant is a set of JavaScript functions that uses <em>controllers</em> provided by Mojo to customize behavior. An application can have three possible types of assistants:
+    </p>
+    <ul>
+      <li>
+        <p>
+          Application assistant--It is the main application entry point that handles application initialization and coordination, and sets up stages if the application has multiple stages. Simple, one-stage applications usually do not have an application assistant. This assistant is optional, and there can be only one per application.
+        </p>
+      </li>
+      <li>
+        <p>
+          Stage assistant--If you do not provide a stage assistant or do not directly push the first scene, the first <em>scene</em> assistant must be named main. The application assistant's directory must include <code>main-assistant.js</code>. The stage assistant contains code that can be applied to all scenes in a stage, and it pushes the first scene onto the stage. It has a controller property to reference the applicable controller. This assistant is optional, and there can be only one per stage.
+        </p>
+      </li>
+      <li>
+        <p>
+          Scene assistant--The scene assistants customize an application's behavior. Each scene has a scene assistant, with each having one main HTML view file. Generally, the scene assistant's name should match the view name. Also, the function defined for the assistant should have the same name and start with a capital letter. For example: <code>celebration-assistant.js</code> (scene assistant), <code>celebration-scene.html</code> (view name), and <code>CelebrationAssistant()</code> (function name).
+        </p>
+      </li>
+    </ul>
+    <p>
+      <strong>Controllers</strong>--Each type of assistant has its own controller. An application controller is required; it creates the stages and optional application assistant. Each stage must have a stage controller; it creates the scenes for the stage. Each stage controller has access to the stack of scene controllers for the stage; it manages the scene's objects and elements.
+    </p>
+    <p>
+      <strong>Note:</strong> The terms stage, window, and card are basically interchangeable for the purpose of this document. You can find these and other terms from this document defined in the <a href="http://developer.palm.com/content/resources/footer/glossary.html">Glossary</a>.
+    </p>
+    <h2 id="stages">
+      Stages
+    </h2>
+    <p>
+      This section describes the stage properties you need to know about, available stage types, and explains the hierarchy when there are multiple stages. All applications require at least one visible window (stage) at all times, either a card or dashboard.
+    </p>
+    <h3 id="stage-properties">
+      Stage Properties
+    </h3>
+    <p>
+      There are two properties whose settings affect stages: <code>noWindow</code> and <code>lightweight</code>. The following table lists the locations and values for these properties.
+    </p>
+    <table border="1">
+      <tbody>
+        <tr>
+          <th>
+            Property
+          </th>
+          <th>
+            Location
+          </th>
+          <th>
+            Required
+          </th>
+          <th>
+            Value
+          </th>
+          <th>
+            Description
+          </th>
+        </tr>
+        <tr>
+          <td rowspan="2" style="vertical-align: top">
+            noWindow
+          </td>
+          <td rowspan="2" style="vertical-align: top">
+            appinfo.json
+          </td>
+          <td rowspan="2" style="vertical-align: top">
+            No
+          </td>
+          <td>
+            false<br>
+            (default)
+          </td>
+          <td>
+            Do not create a stage that runs in the background.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            true
+          </td>
+          <td>
+            Create a stage that runs in the background.<br>
+            Applications with an application assistant and multiple stages need this setting to initially launch as a background application, and then create their own stages.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            lightweight
+          </td>
+          <td>
+            stageArguments
+          </td>
+          <td>
+            Yes
+          </td>
+          <td>
+            true
+          </td>
+          <td>
+            This flag is passed to createStageWithCallback(). You must manually set the property to <code>true</code> in your source code for all applications.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="types-of-stages">
+      Types of Stages
+    </h3>
+    <p>
+      Mojo provides the following four types of stages with which to build an application:
+    </p>
+    <ul>
+      <li>
+        <p>
+          <strong>Card (default)</strong>--This is the most commonly used stage type. The maximized Application view takes advantage of the entire screen area, allowing a bit of room below the card for the notification bar; the status bar at the top is always visible in this view unless you specify Full-screen mode.
+        </p>
+        <p>
+          <strong>Note:</strong> Currently, some of the CSS styles used in a card stage or main application window are not available in non-card stages. The same goes for some of the Mojo framework styles.
+        </p>
+      </li>
+      <li>
+        <p>
+          <strong>Dashboard</strong>--This stage can display ambient information (scene) or provide a dynamic window (stage) for background applications when you do not need a full card stage. The size of a dashboard stage in portrait mode is limited to the screen width and about 10 percent of the screen height, which is called the Dashboard view. (Remember to consider landscape mode and the possibility of different screen sizes of future devices.) Although users view dashboard applications in the dashboard summary area, these applications usually include a simple card-based scene (stage) to set preferences in addition to the dashboard stage.
+        </p>
+      </li>
+      <li>
+        <p>
+          <strong>Banner Alert</strong>--This stage displays banner notifications (scenes) in the notification bar (stage) below the main window (card). Unlike the card stages, these notifications include an icon and a short message, arrive with an audible alert signal, and disappear after a few seconds.
+        </p>
+      </li>
+      <li>
+        <p>
+          <strong>Pop-up Alert</strong>--This stage displays pop-up notifications (scenes) in a dialog box (stage) that has a fixed height and includes one or more buttons from which the user must select to dismiss the dialog box. Use pop-up alerts for messages that are more urgent than banner notifications.
+        </p>
+      </li>
+    </ul>
+    <p>
+      When declaring the stage type in the application code, use all lowercase spelling and write the stage name as one word with quotation marks. The available stage types are as follows:
+    </p>
+    <blockquote>
+      <pre>
+<code>Mojo.Controller.StageType = {
+  popupAlert: &quot;popupalert&quot;,
+  bannerAlert: &quot;banneralert&quot;,
+  dashboard: &quot;dashboard&quot;,
+  card: &quot;card&quot;
+}; 
+</code>
+</pre>
+    </blockquote>
+    <p>
+      The following table summarizes the applicable stages for each type of application. The application types are single-stage, multistage, and dashboard. Later in this document, you can find descriptions and examples of these three application types.
+    </p>
+    <p>
+      <strong>Available Stages for Applications</strong>
+    </p>
+    <table border="1">
+      <tbody>
+        <tr>
+          <th></th>
+          <th style="text-align: center">
+            Card stage
+          </th>
+          <th style="text-align: center">
+            Dashboard stage
+          </th>
+          <th style="text-align: center">
+            Banner alert stage
+          </th>
+          <th style="text-align: center">
+            Pop-up alert stage
+          </th>
+        </tr>
+        <tr>
+          <td>
+            Single-stage (card) application
+          </td>
+          <td style="text-align: center">
+            Yes<sup>a</sup><br>
+            (noWindow:false)
+          </td>
+          <td style="text-align: center">
+            No
+          </td>
+          <td style="text-align: center">
+            No
+          </td>
+          <td style="text-align: center">
+            No
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Multistage (card) application
+          </td>
+          <td style="text-align: center">
+            Yes<sup>a</sup><br>
+            (noWindow:true)
+          </td>
+          <td style="text-align: center">
+            Yes
+          </td>
+          <td style="text-align: center">
+            Yes
+          </td>
+          <td style="text-align: center">
+            Yes
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Dashboard (dashboard summary) application
+          </td>
+          <td style="text-align: center">
+            Yes<sup>b</sup><br>
+            (noWindow:true)
+          </td>
+          <td style="text-align: center">
+            Yes<sup>a</sup>
+          </td>
+          <td style="text-align: center">
+            Yes
+          </td>
+          <td style="text-align: center">
+            No
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <ol style="list-style-type: lower-alpha">
+      <li>Required for this application type.<br>
+      </li>
+      <li>Recommended for this application type.
+      </li>
+    </ol>
+    <h3 id="stage-hierarchy">
+      Stage Hierarchy
+    </h3>
+    <p>
+      Going back to the Overview discussion, an application can have one or more stages, and each stage can have one or more scenes. Each stage and scene have their own controller and assistant. That's a lot of elements to keep track of.
+    </p>
+    <p>
+      The following figure shows an example of an application's stage hierarchy. Notice that all stages are at the same hierarchical level, and that each stage controller has access to only its stack of scene controllers. The scenes are after (below) the stages in the hierarchy, and are grouped together per stage. You will learn more about the scene stacks, controllers, and assistants in another document.
+    </p>
+    <p>
+      For info about moving (transitioning) among scenes within the hierarchy, see <a href="design/mojo/user-interface-summary.html">User Interface Summary</a>.
+    </p>
+    <p>
+      <img src="/images/palm/stage-scene-hierarchy.png" alt="Stage Hierarchy"><br>
+      Example of Application Stage Hierarchy
+    </p>
+    <h3 id="stage-proxy">
+      Stage Proxy
+    </h3>
+    <p>
+      You need to use a proxy at times because creating a stage is actually creating a window and loading its assets in an asynchronous operation. This operation can take up to a second to complete, so it is very likely that you will have cases where the controller is not available when you want to retrieve it for a subsequent operation.
+    </p>
+    <p>
+      Use <code>getStageProxy()</code> when trying to access the stage close to where it is created. Both <code>getStageController()</code> and <code>getStageProxy</code> return <code>undefined</code> if the stage does not exist, or if the stage controller was created but is not available at the time of the call. However, the return from <code>getStageProxy</code> is not always the stageController; it can be just the proxy. You cannot reliably use the returned object except with <code>delegateToSceneAssistant()</code> that takes a scene method name as the first argument with all other arguments passed in the method call.
+    </p>
+    <p>
+      For more info, see the delegateToSceneAssistant API. There is an example using the dashboard stages in Dashboards and Notifications.
+    </p>
+    <h2 id="single-stage-applications">
+      Single-Stage Applications
+    </h2>
+    <p>
+      Most simple applications have only one stage, which means you can see only one scene at a time from that application. An application that can have more than one scene open at the same time is a multistage application.
+    </p>
+    <p>
+      The webOS emulator has several applications that are built on one stage, such as the Calculator, Memos, and Tasks applications. Open the emulator and try out these applications. Move from scene to scene, and then zoom out to the Card view. If you see only one card associated with the application, it has only one stage. For example, after launching the Memos application (stage 1/scene 1 in the figure), you either click the <strong>NEW MEMO</strong> icon or select <strong>Memos &gt; Add A Memo</strong> to open a new memo page. If you zoom out to the Card view, you can see that the previous scene is not shown in a card to the left of the current card (stage 1/scene 2). This means that there is one stage for both scenes.
+    </p>
+    <p>
+      <img src="/images/palm/memos-view-examples.png" alt="Views of Memos application"><br>
+      Example of Single-Stage Application (Emulator)
+    </p>
+    <h3 id="guidelines">
+      Guidelines
+    </h3>
+    <p>
+      Consider the following recommendations for creating a stage:
+    </p>
+    <ul>
+      <li>
+        <p>
+          Name the stage; you use the name later to determine if the stage exists.
+        </p>
+      </li>
+      <li>
+        <p>
+          Specify the callback function.
+        </p>
+      </li>
+      <li>
+        <p>
+          You can specify a stage assistant in <code>stageArguments</code>; otherwise, the stage is created without a stage assistant.
+        </p>
+      </li>
+    </ul>
+    <p>
+      The following are recommended for multistage applications and optional for single-stage applications:
+    </p>
+    <ul>
+      <li>
+        <p>
+          Globals
+        </p>
+        <ul>
+          <li>
+            <p>
+              The <code>Mojo.Controller.stageController</code> global is not supported. Instead, use the <code>stageController</code> property of the scene or widget controller.
+            </p>
+          </li>
+          <li>
+            <p>
+              Do not use the document or window globals. Instead, use the document or window property, respectively, of the stage, scene, or widget controller.
+            </p>
+          </li>
+        </ul>
+      </li>
+      <li>
+        <p>
+          Do not use <code>document.viewport</code>. Instead, use:
+        </p>
+        <blockquote>
+          <pre>
+<code>Mojo.View.getViewportDimensions(targetDocument);
+</code>
+</pre>
+        </blockquote>
+      </li>
+      <li>
+        <p>
+          Prototype JavaScript library
+        </p>
+        <ul>
+          <li>
+            <p>
+              The <code>$()</code> function is not supported. Instead, use an applicable method from the scene or widget controller, such as <code>get()</code>, <code>select()</code>, or <code>listen()</code>. Be careful with nested functions. Use <code>var controller = this.controller</code> to put the appropriate scene controller in a local variable, making it visible to the nested function.
+            </p>
+          </li>
+          <li>
+            <p>
+              Because a secondary (child) stage does not load its own copy of the Prototype library, not all of its elements and events are extended with every method that appears in the parent document, specifically the Form and Event extension methods. Therefore, instead of <code>$('prefsForm').serialize()</code>, use <code>Form.serialize(this.controller.get('prefsForm'))</code>.
+            </p>
+          </li>
+        </ul>
+      </li>
+    </ul>
+    <h3 id="creating-a-stage">
+      Creating a Stage
+    </h3>
+    <p>
+      All stages are created with a call to <code>createStageWithCallback()</code>, an application controller method, and a callback function. As with other assistants, use the constructor function for initialization.
+    </p>
+    <p>
+      For any pre-launch setup, use the <code>setup</code> method. However, any launch handling is usually done in <code>handleLaunch</code>. The following code example uses a <code>handleLaunch</code> method. It either puts the primary card stage into focus, or if there is not a stage already, it creates one and pushes the first scene.
+    </p>
+    <p>
+      <code>stageProxy</code> is retrieved by using <code>getStageProxy()</code>; see the previous section. If it returns <code>undefined</code>, it does not exist and so a stage is created through a call to the <code>appController</code> method <code>createStageWithCallback()</code>, with a callback that pushes the first scene.
+    </p>
+    <p>
+      To use an existing stage, call <code>getStageController()</code>. A return value of <code>undefined</code> means the stage does not exist or is not available, which means a new stage is created.
+    </p>
+    <p>
+      The last argument, the stage type, is optional in this example because it defaults to <code>card</code>; the &quot;Types of Stages&quot; section above lists the other types.
+    </p>
+    <p>
+      Example:
+    </p>
+    <blockquote>
+      <pre>
+<code>var MainStageName = &quot;main&quot;;
+
+function AppAssistant (appController) {
+}
+
+AppAssistant.prototype.handleLaunch = function (launchParams) {
+  // Look for an existing main stage by name.
+  var stageProxy = this.controller.getStageProxy(MainStageName);
+  var stageController = this.controller.getStageController(MainStageName);
+  if (stageProxy) {
+      // If the stage exists, just bring it to the front by focusing its window.
+      // Or, if it is just the proxy, then it is being focused, so exit.
+      if (stageController) {
+          stageController.window.focus();
+      }
+  } else {
+      // Create a callback function to set up the new main stage
+      // after it is done loading. It is passed the new stage controller
+      // as the first parameter.
+      var pushMainScene = function(stageController) {
+          stageController.pushScene(&quot;main&quot;);
+      };
+      var stageArguments = {name: &quot;MainStageName&quot;, lightweight: true};
+      // Specify the stage type with the last property.
+      this.controller.createStageWithCallback(stageArguments, pushMainScene, &quot;card&quot;);
+  }
+}; 
+</code>
+</pre>
+    </blockquote>
+    <h2 id="multistage-applications">
+      Multistage Applications
+    </h2>
+    <p>
+      Multistage applications allow you to have more than one stage showing at the same time. These applications can include any combination of the four types of stages, with a least one being a card stage.
+    </p>
+    <p>
+      The Email application is an example of a multistage application. With this application, you can open the Inbox (stage 1) and have it remain open while composing an email message (stage 2), as shown in the following figure.
+    </p>
+    <p>
+      <img src="/images/palm/two_stages.png" alt="View of Email stages"><br>
+      Example of Multistage Application (Emulator)
+    </p>
+    <h3 id="guidelines-1">
+      Guidelines
+    </h3>
+    <p>
+      All guidelines listed for single-stage applications are required for multistage applications.
+    </p>
+    <h3 id="creating-a-secondary-child-stage">
+      Creating a Secondary (Child) Stage
+    </h3>
+    <p>
+      You create secondary stages through the same framework functions as with the main stage. If you do not specify a stage assistant in <code>stageArguments</code>, the stage is created without one. The secondary stage name should be different unless you plan to reuse the stage for each card. If reusing the stage, use <code>popScenesTo()</code> with the <code>pushScene()</code> and <code>activate()</code> methods. <code>Use getStageProxy()</code> if it is possible for <code>cardStage</code> to be in the process of being brought up when calling this function.
+    </p>
+    <p>
+      Example:
+    </p>
+    <blockquote>
+      <pre>
+<code>NotificationAssistant.prototype.handleCardButton = function(){
+  var appController = Mojo.Controller.getAppController();
+  var cardStage = appController.getStageController(&quot;NewCardStage&quot;);
+
+  if(cardStage) {
+      cardStage.popScenesTo();
+      cardStage.pushScene(&quot;list&quot;);
+      cardStage.activate();
+  } else {
+      var pushCard = function(stageController){
+          stageController.pushScene(&quot;secondary&quot;);
+      };
+      // Specify the stage type with the last property.
+      appController.createStageWithCallback(
+          {name: &quot;NewCardStage&quot;, lightweight: true},
+          pushCard, &quot;card&quot;
+      );
+  }
+};
+</code>
+</pre>
+    </blockquote>
+    <h2 id="dashboard-applications">
+      Dashboard Applications
+    </h2>
+    <p>
+      Dashboard stages appear in the dashboard summary area, expanding to the Dashboard view size as shown below. Because of the limited space, dashboard applications are typically not task-oriented. Examples are a weather application that monitors the weather for a specified location and a traffic alert application that provides notifications of specified traffic events.
+    </p>
+    <p>
+      Although not required, dashboard applications typically include a card-based preferences scene for application configuration purposes. Therefore, most dashboard applications are considered to be multistage applications.
+    </p>
+    <p>
+      To learn more about dashboard stages and applications, see <a href="/dev-guide/mojo/background-applications.html">Background Applications</a> and <a href="/dev-guide/mojo/dashboards-notifications.html">Dashboards and Notifications</a>.
+    </p>
+    <h2 id="related-topics">
+      Related Topics
+    </h2>
+    <p>
+      Other related topics include:
+    </p>
+    <ul>
+      <li>
+        <a href="/dev-guide/mojo/introduction-to-applications.html">Controllers and Assistants</a>
+      </li>
+      <li>
+        <a href="/dev-guide/mojo/launch-cycle.html">Application Launch Cycle</a>
+      </li>
+      <li>
+        <a href="/dev-guide/mojo/scene-hierarchies.html">Scene Hierarchies in webOS Applications</a>
+      </li>
+    </ul>
+    <p>
+      The next document in this series is about <a href="basics-scenes.html">Scenes</a>.
+    </p>
+		</div>
+	</body>
+</html>

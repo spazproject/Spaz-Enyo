@@ -1,0 +1,30 @@
+/* Copyright 2009-2011 Hewlett-Packard Development Company, L.P. All rights reserved. */
+/* webkit */
+
+.enyo-hflexbox, .enyo-vflexbox {
+	display: -webkit-box;
+	-webkit-box-sizing: border-box;
+}
+
+.enyo-hflexbox {
+	-webkit-box-orient: horizontal;
+}
+
+.enyo-vflexbox {
+	-webkit-box-orient: vertical;
+}
+
+/* moz */
+
+.enyo-hflexbox, .enyo-vflexbox {
+	display: -moz-box;
+	-moz-box-sizing: border-box;
+}
+
+.enyo-hflexbox {
+	-moz-box-orient: horizontal;
+}
+
+.enyo-vflexbox {
+	-moz-box-orient: vertical;
+}

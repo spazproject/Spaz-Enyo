@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>$if(pagetitle)$$pagetitle$$endif$</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="stylesheet" href="_css/chrome.css" />
+		<link rel="stylesheet" href="../_css/chrome.css" />
+		<link rel="stylesheet" href="../../_css/chrome.css" />
+		<link rel="stylesheet" href="../../../_css/chrome.css" />
+		<script src="_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="_js/doc.js" type="text/javascript"></script>
+		<script src="../_js/doc.js" type="text/javascript"></script>
+		<script src="../../_js/doc.js" type="text/javascript"></script>
+		<script src="../../../_js/doc.js" type="text/javascript"></script>
+	</head>
+	<body>
+		<div id="content">
+    
+    <h1 id="mojo.animation.queue">
+      Mojo.Animation.Queue
+    </h1>
+    <h2 id="class-detail">
+      Class Detail
+    </h2>
+    <p>
+      Allows for running multiple animations using a shared timer, since the overhead of running multiple timers is pretty high. Mojo instantiates animation queues automatically, and applications are generally expected to work with the animation queue for the appropriate window, obtained via the Mojo.Animation.queueForElement() function.
+    </p>
+    <h2 id="method-summary">
+      Method Summary
+    </h2>
+    <ul>
+      <li>Mojo.Animation.Queue.add(animation)
+      </li>
+      <li>Mojo.Animation.Queue.remove(animation)
+      </li>
+    </ul>
+    <hr>
+    <h2 id="method-detail">
+      Method Detail
+    </h2>
+    <h3 id="mojo.animation.queue.addanimation">
+      Mojo.Animation.Queue.<strong>add</strong>(animation)
+    </h3>
+    <p>
+      Adds an 'animation' object to the queue. These objects must have an 'animate' method, which will be called repeatedly to run the animation.
+    </p>
+    <h4 id="parameters">
+      Parameters
+    </h4>
+    <ul>
+      <li>{Object} <strong>animation</strong>
+      </li>
+    </ul>
+    <hr>
+    <h3 id="mojo.animation.queue.removeanimation">
+      Mojo.Animation.Queue.<strong>remove</strong>(animation)
+    </h3>
+    <p>
+      Removes the given animation object from the list, so its 'animate' method will no longer be called.
+    </p>
+    <h4 id="parameters-1">
+      Parameters
+    </h4>
+    <ul>
+      <li>{Object} <strong>animation</strong>
+      </li>
+    </ul>
+		</div>
+	</body>
+</html>

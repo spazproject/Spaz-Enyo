@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>$if(pagetitle)$$pagetitle$$endif$</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="stylesheet" href="_css/chrome.css" />
+		<link rel="stylesheet" href="../_css/chrome.css" />
+		<link rel="stylesheet" href="../../_css/chrome.css" />
+		<link rel="stylesheet" href="../../../_css/chrome.css" />
+		<script src="_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="_js/doc.js" type="text/javascript"></script>
+		<script src="../_js/doc.js" type="text/javascript"></script>
+		<script src="../../_js/doc.js" type="text/javascript"></script>
+		<script src="../../../_js/doc.js" type="text/javascript"></script>
+	</head>
+	<body>
+		<div id="content">
+    
+    <h1 id="pdl_getnetinfo">
+      PDL_GetNetInfo
+    </h1>
+    <h2 id="description">
+      Description
+    </h2>
+    <p>
+      Gets information about a network interface such as 'eth0' (first ethernet card). On success, returns <code>PDL_NOERROR</code> and a populated <code>NETinfo</code> struct field. The <code>interfaceInfo</code> fields (ipaddress, netmask, and broadcast) are set in network byte order.
+    </p>
+    <p>
+      <strong>Note:</strong>
+    </p>
+    <p>
+      This API was formerly known as <strong>PDLNet_Get_Info,</strong> which has been <strong>deprecated,</strong> but still works.
+    </p>
+    <p>
+      In Windows builds, only <code>interfaceInfo-&gt;ipaddress</code> is populated.
+    </p>
+    <h2 id="syntax">
+      Syntax
+    </h2>
+    <blockquote>
+      <pre>
+<code>PDL_Err PDL_GetNetInfo(const char *interfaceName, PDL_NetInfo * interfaceInfo);     
+</code>
+</pre>
+    </blockquote>
+    <h2 id="returns">
+      Returns
+    </h2>
+    <blockquote>
+      <pre>
+<code>PDL_INVALIDINPUT - `interfaceName` is `NULL` or empty or `interfaceInfo` is `NULL`. 
+PDL_SYSTEMERROR_NET - Could not access network information. 
+PDL_NOERROR - Success.
+</code>
+</pre>
+    </blockquote>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,59 @@
+{
+	"is12HourDefault": false,
+
+	"numberTripleDivider": " ",
+	"numberDecimal": ",",
+	"currencyPrepend": "",
+	"currencyAppend": " €",
+	"percentageSpace": true,
+	"localeName": "Finland",
+	"titleCase": false,
+
+	"defaultDate": "d.M.yyyy",
+	"shortDate": "d.M.yyyy",
+	"mediumDate": "d.M.yyyy",
+	"longDate": "d. MMMM yyyy",
+	"fullDate": "EEEE d. MMMM yyyy",
+	"dateFieldOrder": "dmy",
+	"timeFieldOrder": "hma",
+
+	"dateTimeFormat": "DATE TIME",
+
+	"defaultTime12": "h.mm.ss a",
+	"shortTime12": "h.mm a",
+	"mediumTime12": "h.mm.ss a",
+	"longTime12": "h.mm.ss a zzz",
+	"fullTime12": "h.mm.ss a zzz",
+
+	"defaultTime24": "H.mm.ss",
+	"shortTime24": "H.mm",
+	"mediumTime24": "H.mm.ss",
+	"longTime24": "H.mm.ss zzz",
+	"fullTime24": "H.mm.ss zzz",
+
+	"firstDayOfWeek": 1,
+	
+	"isMetric": true,
+
+	"shortDMDate": "d.M",
+	"mediumDMDate": "d.M",
+	"longDMDate": "d. MMMM",
+	"shortMYDate": "M.yyyy",
+	"mediumMYDate": "M.yyyy",
+	"longMYDate": "MMMM yyyy",
+
+	"shortWeekday": "EE",
+	"mediumWeekday": "EEE",
+	"longWeekday": "EEEE",
+
+	"weekDateFormat": "WEEK DATE",
+	"timeAFormat": "TIME AM",
+	"timeZFormat": "TIME ZONE",
+	"timeAZFormat": "TIME AM ZONE",
+
+	"smallTime12": "h.mm",
+	"bigTime12": "h.mm.ss",
+
+	"smallTime24": "H.mm",
+	"bigTime24": "H.mm.ss"
+}

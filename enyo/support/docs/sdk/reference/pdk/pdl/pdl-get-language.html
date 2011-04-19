@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>$if(pagetitle)$$pagetitle$$endif$</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="stylesheet" href="_css/chrome.css" />
+		<link rel="stylesheet" href="../_css/chrome.css" />
+		<link rel="stylesheet" href="../../_css/chrome.css" />
+		<link rel="stylesheet" href="../../../_css/chrome.css" />
+		<script src="_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="_js/doc.js" type="text/javascript"></script>
+		<script src="../_js/doc.js" type="text/javascript"></script>
+		<script src="../../_js/doc.js" type="text/javascript"></script>
+		<script src="../../../_js/doc.js" type="text/javascript"></script>
+	</head>
+	<body>
+		<div id="content">
+    
+    <h1 id="pdl_getlanguage">
+      PDL_GetLanguage
+    </h1>
+    <h2 id="description">
+      Description
+    </h2>
+    <p>
+      Sets the passed buffer variable to the language and country string stored in the Luna (device's GUI) preferences database. Currently, the language string is 5 characters long and has the format <code>&lt;2 letter language code&gt;&lt;underscore&gt;&lt;2 letter country code&gt;</code>. For example: &quot;EN_UK&quot; — United Kingdom English. The passed buffer is not set to a length longer than bufferLen.
+    </p>
+    <p>
+      <strong>Note:</strong>
+    </p>
+    <p>
+      The 5-character length is not likely to change, though this is not guaranteed. You may want buffer and bufferlen to be larger (i.e., 64 bytes) to encompass future changes.
+    </p>
+    <h2 id="syntax">
+      Syntax
+    </h2>
+    <blockquote>
+      <pre>
+<code>PDL_Err PDL_GetLanguage(char *buffer, int bufferLen);
+</code>
+</pre>
+    </blockquote>
+    <table border="0">
+      <tbody>
+        <tr>
+          <th>
+            Argument
+          </th>
+          <th>
+            Description
+          </th>
+        </tr>
+        <tr>
+          <td>
+            buffer
+          </td>
+          <td>
+            Pointer to the buffer.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            bufferLen
+          </td>
+          <td>
+            Length of the buffer.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h2 id="returns">
+      Returns
+    </h2>
+    <blockquote>
+      <pre>
+<code>PDL_INVALIDINPUT — buffer is NULL or its length is less than or equal to zero.
+PDL_STRINGTOOSMALL — Passed buffer is too small to hold value.
+PDL_NOERROR — Success.
+</code>
+</pre>
+    </blockquote>
+		</div>
+	</body>
+</html>

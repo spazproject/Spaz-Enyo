@@ -1,0 +1,20 @@
+/* Copyright 2009-2011 Hewlett-Packard Development Company, L.P. All rights reserved. */
+.enyo-button-switched.enyo-collapsible-arrow {
+	height: 40px;
+	width: 50px;
+	background: url(../images/divider-arrow.png) center 0px;
+}
+
+.enyo-collapsible-arrow {
+	height: 40px;
+	width: 50px;
+	background: url(../images/divider-arrow.png) center -80px;
+}
+
+.enyo-button-down.enyo-button-switched.enyo-collapsible-arrow {
+	background-position: center -40px;
+}
+
+.enyo-button-down.enyo-collapsible-arrow {
+	background-position: center -120px;
+}

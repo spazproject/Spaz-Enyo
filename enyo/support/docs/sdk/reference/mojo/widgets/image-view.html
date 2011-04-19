@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>$if(pagetitle)$$pagetitle$$endif$</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="stylesheet" href="_css/chrome.css" />
+		<link rel="stylesheet" href="../_css/chrome.css" />
+		<link rel="stylesheet" href="../../_css/chrome.css" />
+		<link rel="stylesheet" href="../../../_css/chrome.css" />
+		<script src="_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="_js/doc.js" type="text/javascript"></script>
+		<script src="../_js/doc.js" type="text/javascript"></script>
+		<script src="../../_js/doc.js" type="text/javascript"></script>
+		<script src="../../../_js/doc.js" type="text/javascript"></script>
+	</head>
+	<body>
+		<div id="content">
+    
+    <h1 id="mojo.widget.imageview">
+      Mojo.Widget.ImageView
+    </h1>
+    <h2 id="namespace-detail">
+      Namespace Detail
+    </h2>
+    <h3 id="overview">
+      Overview
+    </h3>
+    <p>
+      This widget is designed to view an image full screen with support for zooming and panning, while optionally moving between additional images. You can use this for single images, or flick left and right through a series of images. You can assign handlers through the <code>onLeftFunction</code> and <code>onRightFunction</code> model properties and listen for <code>mojo-imageViewChanged</code>; from the handlers, use the methods <code>leftUrlProvided(url)</code>, <code>rightUrlProvided(url)</code>, and <code>centerUrlProvided(url)</code> to build a scrolling list of images.
+    </p>
+    <h3 id="declaration">
+      Declaration
+    </h3>
+    <blockquote>
+      <pre>
+<code>&lt;div x-mojo-element=&quot;ImageView&quot; id=&quot;ImageId&quot; class=&quot;ImageClass&quot; name=&quot;ImageName&quot;&gt;&lt;/div&gt;
+</code>
+</pre>
+    </blockquote>
+    <table border="1">
+      <tbody>
+        <tr>
+          <th width="20%">
+            Properties
+          </th>
+          <th width="10%">
+            Required
+          </th>
+          <th width="20%">
+            Value
+          </th>
+          <th width="50%">
+            Description
+          </th>
+        </tr>
+        <tr>
+          <td>
+            x-mojo-element
+          </td>
+          <td>
+            Required
+          </td>
+          <td>
+            ImageView
+          </td>
+          <td>
+            Declares the widget as type 'ImageView'.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            id
+          </td>
+          <td>
+            Required
+          </td>
+          <td>
+            Any String
+          </td>
+          <td>
+            Identifies the widget element for use when instantiating or rendering.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            class
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            Any String
+          </td>
+          <td>
+            Provide your own unique class and override the framework's styles.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            name
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            Any String
+          </td>
+          <td>
+            Adds a unique name to the ImageView widget; generally used in templates.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="events">
+      Events
+    </h3>
+    <blockquote>
+      <pre>
+<code>Mojo.Event.listen(this.controller.get(&quot;ImageId&quot;), Mojo.Event.imageViewChanged,
+  this.handleUpdate);
+</code>
+</pre>
+    </blockquote>
+    <table border="1">
+      <tbody>
+        <tr>
+          <th width="30%">
+            Event Type
+          </th>
+          <th width="20%">
+            Value
+          </th>
+          <th width="50%">
+            Event Handling
+          </th>
+        </tr>
+        <tr>
+          <td>
+            Mojo.Event.imageViewChanged
+          </td>
+          <td>
+            event.url
+          </td>
+          <td>
+            event fires when image in view changes
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="instantiation">
+      Instantiation
+    </h3>
+    <blockquote>
+      <pre>
+<code>this.controller.setupWidget(&quot;ImageId&quot;,
+  this.attributes = {
+      noExtractFS: true
+  },
+  this.model = {
+      onLeftFunction: this.onLeft.bind(this),
+      onRightFunction: this.onRight.bind(this)
+  }
+); 
+</code>
+</pre>
+    </blockquote>
+    <h3 id="attribute-properties">
+      Attribute Properties
+    </h3>
+    <table border="1">
+      <tbody>
+        <tr>
+          <th width="15%">
+            Attribute Property
+          </th>
+          <th width="15%">
+            Type
+          </th>
+          <th width="15%">
+            Required
+          </th>
+          <th width="15%">
+            Default
+          </th>
+          <th width="40%">
+            Description
+          </th>
+        </tr>
+        <tr>
+          <td>
+            highResolutionLoadTimeout
+          </td>
+          <td>
+            Number
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            1.2
+          </td>
+          <td>
+            Time to wait before switching photo to high res.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            extractfsParams
+          </td>
+          <td>
+            String
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            &quot;800:800:3&quot;
+          </td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>
+            lowResExtractFSParams
+          </td>
+          <td>
+            String
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            &quot;160:160:3&quot;
+          </td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>
+            noExtractFS
+          </td>
+          <td>
+            Boolean
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            false
+          </td>
+          <td>
+            Flag to prevent looking up a high res version.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            limitZoom
+          </td>
+          <td>
+            Boolean
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            false
+          </td>
+          <td>
+            Flag to prevent or limit zooming.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            panInsetX
+          </td>
+          <td>
+            Number
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            0
+          </td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>
+            panInsetY
+          </td>
+          <td>
+            Number
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            0
+          </td>
+          <td></td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="model-properties">
+      Model Properties
+    </h3>
+    <table border="1">
+      <tbody>
+        <tr>
+          <th width="15%">
+            Model Property
+          </th>
+          <th width="15%">
+            Type
+          </th>
+          <th width="15%">
+            Required
+          </th>
+          <th width="15%">
+            Default
+          </th>
+          <th width="40%">
+            Description
+          </th>
+        </tr>
+        <tr>
+          <td>
+            onLeftFunction
+          </td>
+          <td>
+            Function
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            None
+          </td>
+          <td>
+            Called after a left transition.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            onRightFunction
+          </td>
+          <td>
+            Function
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            None
+          </td>
+          <td>
+            Called after a right transition.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="methods">
+      Methods
+    </h3>
+    <p>
+      To invoke a method on a widget, use the scene controller's <code>get</code> method for the desired widget, and append <code>mojo</code> followed by the method.
+    </p>
+    <p>
+      Example:
+    </p>
+    <blockquote>
+      <pre>
+<code>this.controller.get('myWidget').mojo.getValue()
+</code>
+</pre>
+    </blockquote>
+    <table border="1">
+      <tbody>
+        <tr>
+          <th width="30%">
+            Method
+          </th>
+          <th width="20%">
+            Arguments
+          </th>
+          <th width="50%">
+            Description
+          </th>
+        </tr>
+        <tr>
+          <td>
+            getCurrentParams
+          </td>
+          <td>
+            None
+          </td>
+          <td>
+            Returns the current zoom level and focus [0,1].
+          </td>
+        </tr>
+        <tr>
+          <td>
+            manualSize
+          </td>
+          <td>
+            width, height
+          </td>
+          <td>
+            Manually sizes the widget.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            leftUrlProvided
+          </td>
+          <td>
+            filepath or url
+          </td>
+          <td>
+            Tells the widget to use this image as the left.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            rightUrlProvided
+          </td>
+          <td>
+            filepath or url
+          </td>
+          <td>
+            Tells the widget to use this image as the right.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            centerUrlProvided
+          </td>
+          <td>
+            filepath or url
+          </td>
+          <td>
+            Tells the widget to use this image as the center.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+		</div>
+	</body>
+</html>

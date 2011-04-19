@@ -1,0 +1,20 @@
+{
+	"A new security policy has been implemented for your Exchange ActiveSync account.  When you end the call, you will be able to change your password.": "A new security policy has been implemented for your Exchange ActiveSync account.  When you end the call, you will be able to change your password.",
+	"A security policy has been implemented for your Exchange ActiveSync account. You must set a password or PIN to continue using it.": "A security policy has been implemented for your Exchange ActiveSync account. Please set a password or PIN to continue using it.",
+	"Airplane mode is on.": "Aeroplane mode is on.",
+	"Are you sure you want to clear all of the calls in your call history?": "Are you sure you wish to clear all of the calls in your call history?",
+	"Authorization failed.": "Authorisation failed.",
+	"Call failed: Not on fixed dialing list.": "Call failed: Not on fixed dialling list.",
+	"Dialing": "Dialling",
+	"Number not on fixed dialing list.": "Number not on fixed dialling list.",
+	"PIN doesn't match": "PIN does not match",
+	"Programming unsuccessful.  Call #{value}": "Programming unsuccessful.  Call #{value}",
+	"Record New Greeting": "Record new greeting",
+	"SIM has bad file.": "R-UIM has bad file.",
+	"SIM phonebook not ready.": "R-UIM phonebook not ready.",
+	"Unable to change PIN status: SIM locked.": "Unable to change PIN status: R-UIM locked.",
+	"Unable to change PIN: PINs don't match.": "Unable to change PIN: PINs do not match.",
+	"Unable to change PIN: SIM locked.": "Unable to change PIN: R-UIM locked.",
+	"Unable to unlock PUK: PINs don't match.": "Unable to unlock PUK: PINs do not match.",
+	"Unable to unlock PUK: SIM locked.": "Unable to unlock PUK: R-UIM locked."
+}

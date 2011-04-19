@@ -1,0 +1,14 @@
+/* Copyright 2009-2011 Hewlett-Packard Development Company, L.P. All rights reserved. */
+.enyo-spinner {
+	width: 32px;
+	height: 32px;
+	-webkit-box-sizing: border-box;
+	background-image: url(../images/spinner.png);
+}
+
+.enyo-spinner-large {
+	width: 128px;
+	height: 128px;
+	-webkit-box-sizing: border-box;
+	background-image: url(../images/spinner-large.png);
+}

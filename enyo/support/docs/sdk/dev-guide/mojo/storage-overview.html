@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>$if(pagetitle)$$pagetitle$$endif$</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="stylesheet" href="_css/chrome.css" />
+		<link rel="stylesheet" href="../_css/chrome.css" />
+		<link rel="stylesheet" href="../../_css/chrome.css" />
+		<link rel="stylesheet" href="../../../_css/chrome.css" />
+		<script src="_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="_js/doc.js" type="text/javascript"></script>
+		<script src="../_js/doc.js" type="text/javascript"></script>
+		<script src="../../_js/doc.js" type="text/javascript"></script>
+		<script src="../../../_js/doc.js" type="text/javascript"></script>
+	</head>
+	<body>
+		<div id="content">
+    
+    <h1 id="storage-overview">
+      Storage Overview
+    </h1>
+    <p>
+      Mojo supports four methods for storing data:
+    </p>
+    <ul>
+      <li>Mojo.Model.Cookie
+      </li>
+      <li>Mojo.Depot
+      </li>
+      <li>HTML 5 database object
+      </li>
+      <li>db8
+      </li>
+    </ul>
+    <p>
+      You should use Cookie objects for small amounts of persistent storage such as preferences, version numbers and similar data, but use Depot or HTML 5 for caching data for offline use or for performance caches. The Cookie object is limited to about 4K, while the Depot and HTML 5 objects can store up to 1 MB (or more, if you use the media partition).
+    </p>
+    <p>
+      db8, a new addition in webOS 2, is a service available on the device bus that interfaces to an embedded JSON database. It is designed to meet the needs of robust, high-performance applications.
+    </p>
+    <h2 id="cookie">
+      Cookie
+    </h2>
+    <p>
+      Mojo's Cookie object derives its use case from the conventional browser cookie. Commonly used to store small amounts of status and state information, the cookie is widely used by web sites and web applications in the browser. Mojo provides a Cookie object to simplify the interface for HP webOS applications, presenting a simple way to create, read, update, and delete cookie objects. Limited to about 4k in storage, the cookie is passed as a single JSON object to the application and stored within a backing database.
+    </p>
+    <p>
+      Unlike browser cookies, Mojo cookies are used solely for on-device storage and will never be part of any web request. Cookies are associated with the domain created by webOS for each application by its application id and are local to the application and device. Cookies are deleted when the application is deleted.
+    </p>
+    <p>
+      The Cookie object has a single constructor function, Mojo.Model.Cookie(id), and three methods: get(), put(objectToStore, expirationDate) and remove(). The constructor function and methods are all synchronous calls. See Mojo.Cookie for the API description.
+    </p>
+    <h2 id="depot">
+      Depot
+    </h2>
+    <p>
+      The Depot object is a simple object store that doesn't require the developer to deal with the complexity of schemas and SQL queries. You can store up to 1 MB in a depot through a CRUD interface, with the framework converting the provided JSON object to SQL and back. For example:
+    </p>
+    <blockquote>
+      <pre>
+<code>var db = new Mojo.Depot({name:&quot;demo&quot;}, onSuccess, onFailure);
+</code>
+</pre>
+    </blockquote>
+    <p>
+      If you need more than 1 MB, store the database in the media partition by using the prefix &quot;ext&quot; before the database name:
+    </p>
+    <blockquote>
+      <pre>
+<code>var db = new Mojo.Depot({name:&quot;ext:demo&quot;}, onSuccess, onFailure); 
+</code>
+</pre>
+    </blockquote>
+    <p>
+      The constructor function opens the depot (creating the depot if it doesn't already exist) and provides three methods for reading, updating or deleting the Depot object. All Depot operations are asynchronous, requiring that you use callbacks for your data handling. You do need to be careful and limit this to simple objects, as with more complex objects the Depot conversions are less efficient and may introduce inefficiencies in performance and storage.
+    </p>
+    <p>
+      If you need a structured database, you should use the HTML 5 database object.
+    </p>
+    <p>
+      See the Mojo.Depot API for more detailed information.
+    </p>
+    <h2 id="hmtl-5-database-object">
+      HMTL 5 Database object
+    </h2>
+    <p>
+      If you need a formal database, then the HTML 5 database object is a good option. HP webOS supports the database object as defined by the <a href="http://www.whatwg.org/specs/web-apps/current-work/#sql">HTML5 Database Object</a>, but webOS does not support the Storage object that is discussed in the same standards document. Like Depot, the HTML 5 database interfaces are asynchronous.
+    </p>
+    <p>
+      Databases are associated with applications -- one application's database is not visible to other applications. Upgrading an application leaves the database untouched, unless the application itself implements a method for changing the database during upgrade.
+    </p>
+    <p>
+      Use the openDatabase() method to create a new database or open an existing database:
+    </p>
+    <blockquote>
+      <pre>
+<code>myDB = openDatabase(name:&quot;thisDB&quot;, version:&quot;1&quot;, estimatedSize&quot;25000&quot;);
+</code>
+</pre>
+    </blockquote>
+    <table border="0">
+      <tbody>
+        <tr>
+          <th>
+            Property
+          </th>
+          <th>
+            Required
+          </th>
+          <th>
+            Description
+          </th>
+        </tr>
+        <tr>
+          <td>
+            name
+          </td>
+          <td>
+            Required
+          </td>
+          <td>
+            Database name or key
+          </td>
+        </tr>
+        <tr>
+          <td>
+            version
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            Requested version; if not defined then any version is returned
+          </td>
+        </tr>
+        <tr>
+          <td>
+            displayName
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            Not used by webOS
+          </td>
+        </tr>
+        <tr>
+          <td>
+            estimatedSize
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            Advisory only; size in bytes
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <p>
+      Databases opened in this way are limited to a total size of 1 megabyte. If you need to create a larger database, store it in the /media/internal partition. Databases on the media partition are limited only by available memory. To create or access a database on the media partition, add the ext prefix to the database name. For example:
+    </p>
+    <blockquote>
+      <pre>
+<code>openDatabase( &quot;ext:mydbname&quot;, ... );
+</code>
+</pre>
+    </blockquote>
+    <p>
+      Any databases created in the media partition, while not accessible by other applications, are visible on the USB volume when mounted to a PC.
+    </p>
+    <p>
+      Use the version property to facilitate schema changes; if both a name and version are specified, both must match or an error is returned. If the database doesn't exist, then it will be created.
+    </p>
+    <p>
+      After opening the database, you can execute transactions against it. Use transaction() for read/write transactions or readTransaction() for read-only transactions. The transaction methods will specify one to three callbacks: transaction callback, error callback and success callback. The transaction callback is the most important; it includes the transaction steps that you wish to execute using an executeSQL() method, which accepts an SQL query string as an argument along with success and error callbacks.
+    </p>
+    <p>
+      For example, this code sample calls the transaction method with a literal function that includes two executeSQL() methods, the second of which specifies a success callback, this.successHandler(), and an error callback, this.errorHandler().
+    </p>
+    <blockquote>
+      <pre>
+<code>MyAssistant.prototype.activate = function() {
+  -
+  -
+  -
+  myDB.transaction( (function (transaction) {
+      transaction.executeSql('SOME SQL', [], this.successHandler.bind(this),
+          this.failureHandler.bind(this));
+  }).bind(this);
+  -
+  -
+  -
+  MyAssistant.prototype.successHandler = function(transaction, SQLResultSet) {
+      // Handle successful queries including receiving results
+  };
+
+  MyAssistant.prototype.failureHandler = function(transaction, error) {
+      Mojo.Log.Error('An error occurred', error.message);
+      // Handle errors or other failure modes
+  };
+}
+</code>
+</pre>
+    </blockquote>
+    <p>
+      The success handler is passed the transaction object plus an SQLResultSet object as an argument, with details on the attributes below.
+    </p>
+    <table border="0">
+      <tbody>
+        <tr>
+          <th>
+            Attributes
+          </th>
+          <th>
+            Description
+          </th>
+        </tr>
+        <tr>
+          <td>
+            insertID
+          </td>
+          <td>
+            Row ID of the row that was inserted into the database, or the last of multiple rows, if any rows were inserted
+          </td>
+        </tr>
+        <tr>
+          <td>
+            RowsAffected
+          </td>
+          <td>
+            Number of rows affected by the SQL statement
+          </td>
+        </tr>
+        <tr>
+          <td>
+            SQLResultSetRowList
+          </td>
+          <td>
+            Rows returned from query, if any
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <p>
+      This has only touched on the HTML 5 Database capabilities, and as a draft standard, it will continue to evolve. You should review the formal reference at <a href="http://www.whatwg.org/specs/web-apps/current-work/#sql">http://www.whatwg.org/specs/web-apps/current-work/#sql</a> for more information.
+    </p>
+    <h2 id="db8">
+      db8
+    </h2>
+    <p>
+      Detailed information on the db8 service (<code>com.palm.db</code>) is available in a <a href="/dev-guide/mojo/db8.html">separate document</a>.
+    </p>
+		</div>
+	</body>
+</html>

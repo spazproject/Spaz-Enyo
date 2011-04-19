@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>$if(pagetitle)$$pagetitle$$endif$</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="stylesheet" href="_css/chrome.css" />
+		<link rel="stylesheet" href="../_css/chrome.css" />
+		<link rel="stylesheet" href="../../_css/chrome.css" />
+		<link rel="stylesheet" href="../../../_css/chrome.css" />
+		<script src="_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="_js/doc.js" type="text/javascript"></script>
+		<script src="../_js/doc.js" type="text/javascript"></script>
+		<script src="../../_js/doc.js" type="text/javascript"></script>
+		<script src="../../../_js/doc.js" type="text/javascript"></script>
+	</head>
+	<body>
+		<div id="content">
+    
+    <h1 id="menus---code-examples">
+      Menus - Code Examples
+    </h1>
+    <p>
+      Mojo supports four types of menu widgets. You should review the <a href="/design/mojo/menus.html">Menu User Interface Guidelines</a> for how best to apply each menu type and for general information on designing menus in your application. Briefly:
+    </p>
+    <ul>
+      <li>
+        <p>
+          App Menu is a conventional desktop style menu that drops down from the top-left corner of the screen when the user taps in that area.
+        </p>
+      </li>
+      <li>
+        <p>
+          View Menu applies to menus across the top of the screen and can be used as a display header or action buttons.
+        </p>
+      </li>
+      <li>
+        <p>
+          Command Menu is used to set a menu at the bottom of the screen.
+        </p>
+      </li>
+      <li>
+        <p>
+          Submenu can be used in conjunction with the other menu types or be attached to any element in the page.
+        </p>
+      </li>
+    </ul>
+    <p>
+      The App Menu, View Menu, and Command Menu all use a single model definition with a menu items array, are instantiated through setupWidget, and propagate events via the commander stack. The Submenu shares many of the model properties with the others, but is handled differently so it will be addressed in its own subsection below.
+    </p>
+    <p>
+      The System UI includes another menu, called the Device Menu, which is anchored to the top right of the screen. This menu cannot be controlled or changed in any way by an application.
+    </p>
+    <h2 id="menu-widgets">
+      Menu Widgets
+    </h2>
+    <p>
+      Unlike all other widgets, Menu widgets are not declared in your scene view file; they are instantiated completely within the scene assistant. The Menu widget is instantiated with a call to setupWidget. Specify the menu type, attributes, and model. The model is primarily made up of the items array, which includes an object for each menu item. Use the visible property in the Menu model to show or hide the menu.
+    </p>
+    <p>
+      The major options are in the items array. You can have selectable items and groups at the top level of any menu, where groups allow you to specify a second level of selectable items. Items can have a label and an icon, found at iconPath, and through a class assigned icon. The width can be set overriding the automated sizing and the item can be selectively disabled. You can bypass most of the item properties and set the item's contents with a template instead.
+    </p>
+    <p>
+      Each item includes a command value which is propagated through the <em>commander stack</em> when this item is selected. This is a rather significant topic which we'll touch on briefly here, but you should review the <a href="/dev-guide/mojo/commander-chain.html">Commander Chain</a> to get a full description of this part of the framework.
+    </p>
+    <p>
+      Please note, it is crucial that you do not stop any event that your application does not fully handle. The Commander Chain is used to propagate a number of Framework events to the appropriate framework and system handlers. If you stop all events in your handleCommand function, or stop events you do not fully handle, some basic functionality of webOS will break.
+    </p>
+    <blockquote>
+      <pre>
+<code>StageAssistant.prototype.handleCommand = function(event) {
+  this.controller=Mojo.Controller.stageController.activeScene();
+
+  if(event.type == Mojo.Event.command) {
+      switch(event.command) {
+
+          case 'do-myAbout':
+              this.controller.showAlertDialog({
+                  onChoose: function(value) {},
+                  title: $L(&quot;My App ? v1.0&quot;),
+                  message: $L(&quot;Copyright 2008-2009, My Company Inc.&quot;),
+                  choices:[
+                      {label:$L(&quot;OK&quot;), value:&quot;&quot;}
+                  ]
+              });
+              break;
+
+          case 'do-appPrefs':
+              this.controller.pushScene(&quot;myAppPrefs&quot;);
+              break;
+
+          case 'do-appHelp':
+              this.controller.pushScene(&quot;myAppHelp&quot;);
+              break;
+      }
+  }
+}; 
+</code>
+</pre>
+    </blockquote>
+    <p>
+      If you'd like to group several items together, you would include an items array and the toggleCmd which will be set by the framework to the command of the currently selected items in the nested items array.
+    </p>
+    <p>
+      Items which do not specify any visible attributes (label, icon), and are not groups, are treated as <em>dividers</em>. During layout of the menu buttons, all &quot;extra space&quot; is evenly divided amongst the dividers. If there are no dividers, then the buttons are evenly spaced.
+    </p>
+    <p>
+      You can set the checkEnable property to lazily update the enable state of items in the app-menu or submenus. A Mojo.Event.commandEnable event will be sent through the commander chain each time this menuitem is displayed or invoked via keyboard shortcut. If a commander calls preventDefault() on the event, then the menu item's model will be modified to disable the menu item. Otherwise it will be enabled. This is useful when a menu item, particularly in the App Menu, is tied to a feature that may or may not be available at a given time. It's used by the framework with the Edit menu to disable the cut/copy/paste options whenever there isn't a text field in focus.
+    </p>
+    <p>
+      <img src="/images/palm/AppMenu-ScreenShot.png" alt="image"><br>
+    </p>
+    <h3 id="application-menu">
+      Application Menu
+    </h3>
+    <p>
+      The Application Menu appears in the upper left corner of the screen when the user taps the left hand side of the status bar. It includes some system-defined and some application-defined actions, and is intended to have an application-wide scope.
+    </p>
+    <p>
+      The application list contains a few required actions: <em>Edit</em>, which is an item group including <em>Cut</em>, <em>Copy</em> and <em>Paste</em>; and <em>Preferences</em> and <em>Help</em>, both of which are disabled by default. You are free to leave out these default items, or add any other items to the menu, and to enable Preferences and/or Help by hooking them to the appropriate actions for your application.
+    </p>
+    <p>
+      The following setup code creates a basic application menu with one item, &quot;About My App&quot;, and all default menu items--&quot;Preferences&quot;, &quot;Help&quot;, and &quot;Edit&quot; (with &quot;Cut&quot;, &quot;Copy&quot;, and &quot;Paste&quot;). This code corresponds to the command handler code sample from above. Note the specification of a shortcut key to invoke the command.
+    </p>
+    <blockquote>
+      <pre>
+<code>this.appMenuModel = {
+  items: [
+      {label: &quot;About My App...&quot;, command: 'do-myAbout', shortcut: 'a'}
+  ]
+};
+
+this.controller.setupWidget(Mojo.Menu.appMenu, {}, this.appMenuModel);
+</code>
+</pre>
+    </blockquote>
+    <p>
+      Typically, you'd like to have the same Application Menu (or at least similar menus) presented throughout your application, but it would be painful to replicate the code in every scene. Earlier we referred to the commander stack and applying that here is helpful. You can place the this.appMenuModel definition and the command handler in your Stage Assistant, then instantiate the menu in each scene:
+    </p>
+    <blockquote>
+      <pre>
+<code>this.controller.setupWidget(Mojo.Menu.appMenu, {}, StageController.appMenuModel); 
+</code>
+</pre>
+    </blockquote>
+    <p>
+      The Stage Assistant will handle all the appMenu functions, but has to be aware of which is the active scene. Note the call to Mojo.Controller.stageController.activeScene() to get that scene in the command handler.
+    </p>
+    <h3 id="view-menu">
+      View Menu
+    </h3>
+    <p>
+      <img src="/images/palm/ViewMenu-Screenshot.png" alt="image"><br>
+      <br>
+      The View menu presents items as variable-sized buttons, either singly or in groups across the top of the scene. Individual button widths can be adjusted from within the item's property width; the framework adjusts the space between the buttons automatically. Using empty list items, you can force items to particular locations on the screen.
+    </p>
+    <p>
+      You can group buttons together or combine actionable buttons with header information as in this example from the News application:
+    </p>
+    <p>
+      <img src="/images/palm/NewsViewMenu-Screenshot.png" alt="image"><br>
+      <br>
+      To instantiate this menu you would use code that puts the back button, newsfeed header, and forward button into a single group, adjusting the width of the header to present an integrated look:
+    </p>
+    <blockquote>
+      <pre>
+<code>this.feedMenuModel = {
+  visible: true,
+  items: [{
+      items: [
+          { icon: &quot;&quot;, command: '', label: &quot;  &quot;},
+          { label: this.feed.title, width: 210 },
+          { icon: &quot;&quot;, command: '', label: &quot;  &quot;}
+      ]
+  }]
+};
+
+this.controller.setupWidget(Mojo.Menu.viewMenu,
+  { spacerHeight: 0, menuClass:'no-fade' },
+  this.feedMenuModel); 
+</code>
+</pre>
+    </blockquote>
+    <p>
+      Typically you would use the View menu for actionable buttons, buttons with an attached Submenu, or header displays as in our News example.
+    </p>
+    <p>
+      There are two attribute properties for View and Command Menus that differ from the App Menu. The spacerHeight sets the height of the menu items and affects spacing within the scene. By default, this is set to a zero value, causing the menu to float over the scene contents. By setting this height, the scene items are pushed down below the menu. The other property, menuClass, creates a class to use for styling this menu. By default the .view-menu class is used.
+    </p>
+    <h3 id="command-menu">
+      Command Menu
+    </h3>
+    <p>
+      Command Menu are items presented at the bottom of the screen. Items will include variable sized buttons that can be combined into groups. As with the View Menu, button widths can be adjusted from within the items property width, with the framework automatically adjusting the space between the buttons. You can override positioning by including empty list items to force an item to the right or the middle of the screen, or include an items entry with the disable pr operty set to true.
+    </p>
+    <p>
+      <img src="/images/palm/CmdMenu-Screenshot.png" alt="image"><br>
+      <br>
+      You can define toggle buttons or include buttons with other dynamic behavior:
+    </p>
+    <p>
+      <img src="/images/palm/CmdMenuGroup1-Screenshot.png" alt="image"><br>
+      <br>
+      You can group buttons together or combine actionable buttons into a selection group as in this example:
+    </p>
+    <p>
+      <img src="/images/palm/CmdMenuGroup2-Screenshot.png" alt="image"><br>
+      <br>
+      To instantiate this menu you would use code that puts the back button, newsfeed header and forward button into a single group, adjusting the width of the header to present an integrated look:
+    </p>
+    <blockquote>
+      <pre>
+<code>this.cmdMenuModel = {
+  visible: true,
+  items: [
+      {
+          items: [
+              {label: $L('Back'), icon:'back', command:'back'},
+              {label: $L('Forward'), icon:'forward', command:'fwd'}
+          ]
+      },
+      {
+          items: [
+              {label: $L('Back'), command:'back'},
+              {label: $L('Fwd'), command:'fwd'}
+          ]
+      }
+  ]
+};
+
+this.controller.setupWidget(Mojo.Menu.commandMenu, undefined, this.cmdMenuModel);   
+</code>
+</pre>
+    </blockquote>
+    <p>
+      There are two attribute properties for View and Command Menus that differ from the App Menu. The spacerHeight sets the height of the menu items and affects spacing within the scene. By default this is set to a zero value, causing the menu to float over the scene contents. By setting this height, the scene items are pushed down below the menu. The other property, menuClass, creates a class to use for styling this menu. By default the .view-menu class is used.
+    </p>
+    <h2 id="sub-menu">
+      Sub-menu
+    </h2>
+    <p>
+      Pop-up sub-menus can be used to offer a transient textual list of choices to the user, typically off of another menu type, or even from a DOM element in the scene. It accepts standard menu models with the addition of some unique properties, but unlike the other menu types, Sub-menu does not use the commander for propagating selections. Instead the onChoose callback is used.
+    </p>
+    <p>
+      You can create Sub-menus dynamically:
+    </p>
+    <blockquote>
+      <pre>
+<code>sceneController.popupSubmenu({
+  onChoose:  this.popupChoose,
+  placeNear: clickEvent.target,
+  items: [
+      {label: 'Apply', command: 'apply-cmd'},
+      {label: 'Applique', command: 'applique-cmd'},
+      {label: 'Applaud', command: 'applaud-cmd'},
+      {label: 'Approximate', command: 'approx-cmd'}
+  ]
+}); 
+</code>
+</pre>
+    </blockquote>
+    <p>
+      <img src="/images/palm/SubMenu%20Screenshot.png" alt="image"><br>
+      <br>
+      A modal list will appear, with the label choices presented. When the user selects an item, the onChoose function will be called (in the scope of the scene assistant) with the command property of the chosen item. If the user taps outside the popup menu, it's still dismissed, and the onChoose function is called with 'undefined' instead.
+    </p>
+    <p>
+      Within the items array, you have additional properties as well.
+    </p>
+		</div>
+	</body>
+</html>

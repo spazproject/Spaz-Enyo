@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>$if(pagetitle)$$pagetitle$$endif$</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="stylesheet" href="_css/chrome.css" />
+		<link rel="stylesheet" href="../_css/chrome.css" />
+		<link rel="stylesheet" href="../../_css/chrome.css" />
+		<link rel="stylesheet" href="../../../_css/chrome.css" />
+		<script src="_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="_js/doc.js" type="text/javascript"></script>
+		<script src="../_js/doc.js" type="text/javascript"></script>
+		<script src="../../_js/doc.js" type="text/javascript"></script>
+		<script src="../../../_js/doc.js" type="text/javascript"></script>
+	</head>
+	<body>
+		<div id="content">
+    
+    <h1 id="pdl_getappinfovalue">
+      PDL_GetAppinfoValue
+    </h1>
+    <h2 id="description">
+      Description
+    </h2>
+    <p>
+      Given a name, this call gets its corresponding value from the appinfo.json file. Besides name/value pairs required for configuration, you are allowed to store your own name/value pairs in this file. See Configuring Your Application's appinfo.json File for more information.
+    </p>
+    <p>
+      The value of name is passed back in the buffer variable. You should be aware of the requested value's size and set buffer and bufferLen accordingly. If buffer is not big enough to hold the value, then the value is truncated.
+    </p>
+    <h2 id="syntax">
+      Syntax
+    </h2>
+    <blockquote>
+      <pre>
+<code>PDL_Err PDL_GetAppinfoValue(const char *name, char *buffer, int bufferLen);               
+</code>
+</pre>
+    </blockquote>
+    <table border="0">
+      <tbody>
+        <tr>
+          <th>
+            Argument
+          </th>
+          <th>
+            Description
+          </th>
+        </tr>
+        <tr>
+          <td>
+            name
+          </td>
+          <td>
+            Name of the argument to extract.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            buffer
+          </td>
+          <td>
+            Pointer to the buffer.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            bufferLen
+          </td>
+          <td>
+            Length of the buffer.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h2 id="returns">
+      Returns
+    </h2>
+    <blockquote>
+      <pre>
+<code>PDL_INVALIDINPUT — buffer is NULL or its length is zero or name is NULL.
+PDL_APPINFO — Could not access appinfo file.
+PDL_NOERROR — Success.                    
+</code>
+</pre>
+    </blockquote>
+    <p>
+      <strong>Note:</strong>
+    </p>
+    <p>
+      For the <code>PDL_GetAppinfoValue</code> call, your application must be in the same directory as the appinfo.json file or in a sub-directory of where it resides—the call will scan up through the directory structure looking for it.
+    </p>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>$if(pagetitle)$$pagetitle$$endif$</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="stylesheet" href="_css/chrome.css" />
+		<link rel="stylesheet" href="../_css/chrome.css" />
+		<link rel="stylesheet" href="../../_css/chrome.css" />
+		<link rel="stylesheet" href="../../../_css/chrome.css" />
+		<script src="_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="_js/doc.js" type="text/javascript"></script>
+		<script src="../_js/doc.js" type="text/javascript"></script>
+		<script src="../../_js/doc.js" type="text/javascript"></script>
+		<script src="../../../_js/doc.js" type="text/javascript"></script>
+	</head>
+	<body>
+		<div id="content">
+    
+    <h1 id="services-overview">
+      Services Overview
+    </h1>
+    <p>
+      Services provide access to the core applications, hardware, and system services. There are two types of services:
+    </p>
+    <ul>
+      <li>
+        <strong>Application services</strong>, which provide access to core applications, such as:
+        <ul>
+          <li>Launching URLs through the browser
+          </li>
+          <li>Playing audio or video media
+          </li>
+        </ul>
+      </li>
+      <li>
+        <strong>System services</strong>, which expose hardware-based services and low-level OS functions, such as:
+        <ul>
+          <li>Getting device orientation or streaming accelerometer data
+          </li>
+          <li>Getting the current location or tracking location changes
+          </li>
+        </ul>
+      </li>
+    </ul>
+    <p>
+      Application services are a bit different from System services; for more information, read about Application Services below.
+    </p>
+    <h2 id="accessing-services">
+      Accessing Services
+    </h2>
+    <p>
+      All services are called asynchronously through the function serviceRequest, which takes two parameters: the URI of the service, and a JSON object containing parameters, callback functions, and other data needed in the service call. After the service runs, it returns a JSON result to the appropriate callback function depending on whether the call succeeded or failed. The callback function must parse the result data and handle it appropriately. Your application design should account for the possibility that a service may not return data immediately. Your application should keep running, and should not block the user from continuing to interact with the application while waiting for data to arrive.
+    </p>
+    <p>
+      There are two ways to call a service:
+    </p>
+    <ul>
+      <li>Use the scene controller's serviceRequest() method.
+      </li>
+      <li>Create a service request object.
+      </li>
+    </ul>
+    <p>
+      You should only create a request object if you need the subscription request to persist beyond the lifetime of the scene, or if you need to access services from outside a scene assistant — for example, in an application assistant or a stage assistant. When using a service request object, you are responsible for managing the object and destroying it when it is no longer needed.
+    </p>
+    <p>
+      It is generally preferable to use serviceRequest() because it allows the scene to manage the requests:
+    </p>
+    <ul>
+      <li>Requests with subscribe:true remain in memory until the scene is popped.
+      </li>
+      <li>Other requests are removed from memory on completion.
+      </li>
+    </ul>
+    <p>
+      If the scene is popped before the service request completes, the request is removed from memory and no result returns to the callback function.
+    </p>
+    <h3 id="syntax">
+      Syntax
+    </h3>
+    <p>
+      Using the scene controller's serviceRequest() method:
+    </p>
+    <blockquote>
+      <pre>
+<code>this.controller.serviceRequest('Service URI', JSON Object);
+</code>
+</pre>
+    </blockquote>
+    <p>
+      Creating a service Request Object:
+    </p>
+    <blockquote>
+      <pre>
+<code>Object = new Mojo.Service.Request('Service URI', JSON Object);
+</code>
+</pre>
+    </blockquote>
+    <h4 id="service-uri">
+      Service URI
+    </h4>
+    <p>
+      The Service URI is the URI to the service, in the form:
+    </p>
+    <blockquote>
+      <pre>
+<code>palm://service name
+</code>
+</pre>
+    </blockquote>
+    <p>
+      Example:
+    </p>
+    <blockquote>
+      <pre>
+<code>palm://com.palm.connectionmanager
+</code>
+</pre>
+    </blockquote>
+    <h4 id="json-object">
+      JSON Object
+    </h4>
+    <p>
+      The JSON object includes the method to call on the service, the parameters to pass to that method, and the callback functions to register for the result.
+    </p>
+    <table border="0" class="confluenceTable">
+      <tbody>
+        <tr>
+          <th class="confluenceTh">
+            Attribute<br>
+          </th>
+          <th class="confluenceTh">
+            Example
+          </th>
+          <th class="confluenceTh">
+            Description
+          </th>
+        </tr>
+        <tr>
+          <td class="confluenceTd">
+            method
+          </td>
+          <td class="confluenceTd">
+            method: 'getstatus'
+          </td>
+          <td class="confluenceTd">
+            The method to call on the service.
+          </td>
+        </tr>
+        <tr>
+          <td class="confluenceTd">
+            parameters
+          </td>
+          <td class="confluenceTd">
+            parameters: {subscribe: true}
+          </td>
+          <td class="confluenceTd">
+            Parameters to pass to the service method.
+          </td>
+        </tr>
+        <tr>
+          <td class="confluenceTd">
+            onSuccess
+          </td>
+          <td class="confluenceTd">
+            onSuccess: this.handleResponse
+          </td>
+          <td class="confluenceTd">
+            The callback function to call if the service request was successful.
+          </td>
+        </tr>
+        <tr>
+          <td class="confluenceTd">
+            onFailure
+          </td>
+          <td class="confluenceTd">
+            onFailure: this.handleFailure
+          </td>
+          <td class="confluenceTd">
+            The callback function to call if the service request failed.
+          </td>
+        </tr>
+        <tr>
+          <td class="confluenceTd">
+            onError
+          </td>
+          <td class="confluenceTd">
+            onError: this.handleError
+          </td>
+          <td class="confluenceTd">
+            The callback function to call if the service request resulted in an error.
+          </td>
+        </tr>
+        <tr>
+          <td class="confluenceTd">
+            onComplete
+          </td>
+          <td class="confluenceTd">
+            onComplete: this.handleComplete
+          </td>
+          <td class="confluenceTd">
+            The callback function to call if the service request is complete.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h4 id="example">
+      Example
+    </h4>
+    <blockquote>
+      <pre>
+<code>this.controller.serviceRequest('palm://com.palm.connectionmanager', {
+  method: 'getstatus',
+  parameters:  {subscribe: true},
+  onSuccess: this.handleResponse,
+  onFailure: this.handleFailure
+});
+</code>
+</pre>
+    </blockquote>
+    <h3 id="response-handling">
+      Response Handling
+    </h3>
+    <p>
+      The framework calls this.handleResponse on a successful response, passing in a JSON object. Example:
+    </p>
+    <blockquote>
+      <pre>
+<code>Connectionmanager:
+  { 
+  &quot;returnValue&quot;:true,
+  &quot;isInternetConnectionAvailable&quot;:true,
+  &quot;wifi&quot;:
+      {
+          &quot;state&quot;: &quot;connected&quot;,
+          &quot;ipAddress&quot;: &quot;10.0.2.15&quot;,
+          &quot;ssid&quot;:&quot;Emulator&quot;,
+          &quot;bssid&quot;:&quot;Emulator&quot;
+      },
+  &quot;wan&quot;:
+      {
+          &quot;state&quot;:&quot;disconnected&quot;
+      },
+  &quot;btpan&quot;:
+      {
+          &quot;state&quot;: &quot;disconnected&quot;
+      }
+  }
+</code>
+</pre>
+    </blockquote>
+    <p>
+      The callback function must process the response, taking appropriate action. For onFailure callbacks, typically there will be an errorText property containing a service-specific error string. See the individual Services for the expected errors.
+    </p>
+    <p>
+      Be sure to use .bind(this) when setting up your response callbacks to ensure that execution remains in the original scope when the callbacks are executed.
+    </p>
+    <h3 id="service-notifications">
+      Service Notifications
+    </h3>
+    <p>
+      Almost all services (other than those accessed through the Application Manager) allow the application to subscribe to notifications of service availability or unavailability. The meanings of these notifications are service-dependent and sometimes method-dependent. For example, the Connection Manager sends notifications on the gain/loss of a data connection over either of WiFi or WAN transports; the GPS service uses the notifications to send tracking updates.
+    </p>
+    <p>
+      Register by including a subscribe:true property in your parameters block when making a service request. Example:
+    </p>
+    <blockquote>
+      <pre>
+<code>this.controller.serviceRequest('palm://com.palm.connectionmanager', {
+  method: 'getstatus',
+  parameters: {
+      subscribe: true
+  },
+  onSuccess: this.handleResponse
+});
+</code>
+</pre>
+    </blockquote>
+    <p>
+      The callbacks come to the same onSuccess handler that receives the first response to the service request. All services direct notifications as well as the initial response to the onSuccess handler specified in the service request. Some services require different ways to register for notifications. For example, GPS registrations are made by setting the interval property to a non-zero value rather than using the subscribe property.
+    </p>
+    <h2 id="application-services">
+      Application Services
+    </h2>
+    <p>
+      Application services provide methods for accessing most core applications through the Application Manager service. The Application Manager chooses an appropriate handler based on the command and resource types specified by the request. The Application Manager provides two methods:
+    </p>
+    <ul>
+      <li>
+        <p>
+          open — lets the Application Manager choose the appropriate handler based on the target resource passed in.
+        </p>
+      </li>
+      <li>
+        <p>
+          launch — directly requests a specific handler, passing in the appropriate application ID and parameter block.
+        </p>
+      </li>
+    </ul>
+    <p>
+      In each case, it is up to the application to determine if it has been launched with the <em>open</em> method or the <em>launch</em> method, by inspecting the parameters passed to it. If the parameter object has the <em>target</em> property, the application has been invoked using the <em>open</em> method. Otherwise, it has been invoked with the <em>launch</em> method. It is up to each application to determine whether it supports execution via <em>launch</em>, <em>open</em>, or both. If an application supports the <em>launch</em> method, then it should document a list of parameters and their syntax/formats.
+    </p>
+    <p>
+      There is generally no return handling from Application Manager calls, so it is not necessary to specify callback functions with either method.
+    </p>
+    <h3 id="the-open-method">
+      The open method
+    </h3>
+    <p>
+      To let the Application Manager choose the appropriate handler based on the target resource, use the open method. The open method takes a resource encoded in a URI. The resource location and name, and any additional parameters, are appended per standard conventions.
+    </p>
+    <p>
+      Syntax:
+    </p>
+    <blockquote>
+      <pre>
+<code>this.controller.serviceRequest('palm://com.palm.applicationManager', {
+  method: 'open',
+  parameters:  {
+      target: ''
+  }
+});
+</code>
+</pre>
+    </blockquote>
+    <p>
+      For example, to dial the phone, you would use:
+    </p>
+    <blockquote>
+      <pre>
+<code>this.controller.serviceRequest('palm://com.palm.applicationManager', {
+  method:'open',
+  parameters: {
+      target: &quot;tel://4085551234&quot;
+  }
+});
+</code>
+</pre>
+    </blockquote>
+    <p>
+      or to get an unknown file from the web:
+    </p>
+    <blockquote>
+      <pre>
+<code>this.controller.serviceRequest('palm://com.palm.applicationManager', {
+  method: 'open',
+  parameters: {
+      target:&quot;http://www.domain.com/media/file.mp4
+  }
+)};
+</code>
+</pre>
+    </blockquote>
+    <p>
+      In each case, the Application Manager will route the request to the right application; in the latter case, it will download and route the file reference to the Video Player.
+    </p>
+    <h3 id="the-launch-method">
+      The launch method
+    </h3>
+    <p>
+      When the appropriate application to handle the request is already known, or if it is inconvenient or inefficient to force the parameters into a URI format, use the <em>launch</em> method. The launch method takes an application ID and a JSON object containing launch parameters as key-value pairs.
+    </p>
+    <p>
+      Syntax:
+    </p>
+    <blockquote>
+      <pre>
+<code>this.controller.serviceRequest('palm://com.palm.applicationManager', {
+  method: 'launch',
+  parameters: {
+      id: '',
+      params: ''
+  }
+});
+</code>
+</pre>
+    </blockquote>
+    <p>
+      For examples of using Application Services, see the Application Manager API.
+    </p>
+    <h3 id="cross-app-launch">
+      Cross-App Launch
+    </h3>
+    <p>
+      Application Manager calls launch the targeted application into a new card. To preserve the context of the current application and speed up the transition, you can use a cross-app launch, in which the targeted application is launched using pushScene instead of a call to the Application Manager. For example, to bring up the Camera, you could make the following call:
+    </p>
+    <blockquote>
+      <pre>
+<code>this.someAssistant.getStageController().pushScene(
+  { appId: 'com.palm.app.camera', name: 'capture' },
+  { sublaunch: true }
+);
+</code>
+</pre>
+    </blockquote>
+    <p>
+      Control will be returned back to your scene when the Camera finishes. You can do response handling in the activate method. Refer to the Services API for specific information about each service.
+    </p>
+    <h3 id="unsubscribing-from-a-service">
+      Unsubscribing from a Service
+    </h3>
+    <p>
+      When you are ready to unsubscribe from a Service, use the cancel() method on the service request object.
+    </p>
+    <blockquote>
+      <pre>
+<code>var myRequest = this.controller.serviceRequest({ subscribe: true });
+...
+myRequest.cancel(); // Kills the subscription 
+</code>
+</pre>
+    </blockquote>
+		</div>
+	</body>
+</html>

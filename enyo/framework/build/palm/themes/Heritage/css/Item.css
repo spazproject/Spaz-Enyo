@@ -1,0 +1,47 @@
+/* Copyright 2009-2011 Hewlett-Packard Development Company, L.P. All rights reserved. */
+.enyo-item {
+	border-top: 1px solid white;
+	border-bottom: 1px solid silver;
+	padding: 8px;
+}
+
+.enyo-held {
+	/*background-color: gray;*/
+	/* fancy... can we get away with this or do we need to use images? */
+	background: -webkit-gradient(linear, left top, left bottom, from(#555), to(#888));
+	border-top-color: #555;
+}
+
+.enyo-disabled {
+	color: gray;
+}
+
+.enyo-item.enyo-first {
+	border-top: 0;
+}
+
+.enyo-item.enyo-last {
+	border-bottom: 0;
+}
+
+.enyo-item.enyo-single {
+	border: 0;
+}
+
+.enyo-item.rounded {
+	-webkit-border-radius: 12px;
+}
+
+.enyo-item.rounded.enyo-first {
+	-webkit-border-bottom-right-radius: 0;
+	-webkit-border-bottom-left-radius: 0;
+}
+
+.enyo-item.rounded.enyo-middle {
+	-webkit-border-radius: 0;
+}
+
+.enyo-item.rounded.enyo-last {
+	-webkit-border-top-right-radius: 0;
+	-webkit-border-top-left-radius: 0;
+}

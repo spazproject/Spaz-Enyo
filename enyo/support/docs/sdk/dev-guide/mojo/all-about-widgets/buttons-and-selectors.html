@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>$if(pagetitle)$$pagetitle$$endif$</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="stylesheet" href="_css/chrome.css" />
+		<link rel="stylesheet" href="../_css/chrome.css" />
+		<link rel="stylesheet" href="../../_css/chrome.css" />
+		<link rel="stylesheet" href="../../../_css/chrome.css" />
+		<script src="_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="_js/doc.js" type="text/javascript"></script>
+		<script src="../_js/doc.js" type="text/javascript"></script>
+		<script src="../../_js/doc.js" type="text/javascript"></script>
+		<script src="../../../_js/doc.js" type="text/javascript"></script>
+	</head>
+	<body>
+		<div id="content">
+    
+    <h1 id="buttons-and-selectors">
+      Buttons and Selectors
+    </h1>
+    <p>
+      The widgets in this group share some common features:
+    </p>
+    <ul>
+      <li>Other than the Button, which has no value setting, the widgets allow you to define which property to use to hold the widget's data value. This can be useful when you want to use a single object to hold the data associated with multiple widgets as with a form.
+      </li>
+      <li>Any of the widgets can be disabled by setting the <em>disabled</em> property to <em>true</em>, and you can choose a different property to hold the disabled value by setting the disabledProperty in the widget attributes.
+      </li>
+    </ul>
+    <p>
+      For more detail refer to the API documentation, Sample code or Styles references.
+    </p>
+    <h2 id="button">
+      Button
+    </h2>
+    <p>
+      Mojo buttons can be enabled or disabled, and can optionally display an activity indicator, making them perfect for triggering an action expected to take some time. You should register as a listener for the Mojo.Event.tap event to allow a user to trigger actions.
+    </p>
+    <p>
+      To set up a button:
+    </p>
+    <blockquote>
+      <pre>
+<code>this.model = {
+  buttonLabel: &quot;Button&quot;
+};
+this.controller.setupWidget('button', {}, this.model);
+//add a listener
+this.controller.listen('button', Mojo.Event.tap, this.tapped.bind(this));
+</code>
+</pre>
+    </blockquote>
+    <p>
+      To react to a tap on the button:
+    </p>
+    <blockquote>
+      <pre>
+<code>tapped: function(event) {
+  Mojo.Log.info(&quot;button tapped&quot;);
+}
+</code>
+</pre>
+    </blockquote>
+    <p>
+      If you have no need for advanced features, consider just using the button styling provided by the framework to get a div that matches button styling, or creating your own div with your own styles. The divs below will both still trigger a Mojo.Event.tap event when the user taps on it.
+    </p>
+    <p>
+      Framework appearance:
+    </p>
+    <blockquote>
+      <pre>
+<code>&lt;div id=&quot;myButton&quot; class=&quot;palm-button&quot;&gt;Button&lt;/div&gt;
+</code>
+</pre>
+    </blockquote>
+    <h2 id="check-box">
+      Check Box
+    </h2>
+    <p>
+      A Check Box widget is used to control and indicate a binary state value in one element. Tapping a Check Box will toggle its state, presenting or removing a &quot;check mark&quot; depending on the previous state. The framework handles the display changes and will manage the widget's data model for you, toggling between two states that you defined at setup time. The check box is also one of the class of widgets that will allow you to specify a fieldName in the attributes. The framework will create a hidden input field as part of its setup that stores the current value of the check box for you, so that Mojo.View.serializeMojo on the form gives you all relevant information from the page.
+    </p>
+    <p>
+      Instantiate a basic check box that starts checked:
+    </p>
+    <blockquote>
+      <pre>
+<code>this.attributes = {
+  property: &quot;value&quot;,
+};
+this.model = {
+  value: true
+};
+this.controller.setupWidget('checkbox', this.attributes, this.model);
+</code>
+</pre>
+    </blockquote>
+    <p>
+      If you need to respond to the state change as it happens, the widget generates a Mojo.Event.propertyChange event when selected.
+    </p>
+    <blockquote>
+      <pre>
+<code>this.controller.listen('sample-checkbox', Mojo.Event.propertyChange, this.changed.bind(this));
+changed: function(propertyChangeEvent) {
+  Mojo.Log.info(&quot;The checkbox has changed to &quot; + propertyChangeEvent.value +
+      &quot; which is the same as in my model &quot; + this.model.value);
+}    
+</code>
+</pre>
+    </blockquote>
+    <h2 id="toggle-button">
+      Toggle Button
+    </h2>
+    <p>
+      The Check Box and Toggle Button are two different visual presentations of the same underlying widget. Mojo's ToggleButton will switch between two states each time it is tapped or swiped in the direction opposite its current state and generate a Mojo.Event.propertyChange event.
+    </p>
+    <blockquote>
+      <pre>
+<code>var attributes = {
+  modelProperty: &quot;value&quot;,
+};
+this.model = {
+  value: true
+};
+this.controller.setupWidget('toggle', attributes, this.model);
+</code>
+</pre>
+    </blockquote>
+    <h2 id="radio-button">
+      Radio Button
+    </h2>
+    <p>
+      If you need to a single widget to switch between multiple states while revealing all the state options on the screen, then a Radio Button may fit your needs. Mojo provides a classic Radio Button that presents each button as a labeled selection option in a horizontal array in which only one option can be selected at at time. You can expect to handle two or three states and with proper styling.
+    </p>
+    <p>
+      To create a radio button with three options, where the second option is selected:
+    </p>
+    <blockquote>
+      <pre>
+<code>var attributes = {
+  modelProperty: 'value',
+  choices: [
+      {label : 'First', value : 1},
+      {label : 'Second', value : 2},
+      {label : 'Third', value : 3},
+  ]
+};
+this.model = {
+  value: 2
+};
+this.controller.setupWidget('radiobutton', attributes, this.model);
+this.controller.listen('radiobutton', Mojo.Event.propertyChange, this.changed.bind(this));
+</code>
+</pre>
+    </blockquote>
+    <p>
+      When the user taps an option, the framework will handle the display change, update the modelProperty to the new choice and generate a Mojo.Event.propertyChange event. By listening to that event for that DIV element, you can respond to the selections if needed.
+    </p>
+    <blockquote>
+      <pre>
+<code>changed: function(propertyChangeEvent) {
+  Mojo.Log.info(&quot;The radiobutton has changed to &quot;
+      + propertyChangeEvent.value +
+      &quot; which is the same as in my model &quot; + this.model.value);
+} 
+</code>
+</pre>
+    </blockquote>
+    <h2 id="list-selector">
+      List Selector
+    </h2>
+    <p>
+      The List Selector behaves and is managed as a selector. It enables the selection of one of many options, presented in a pop-up list in which there is no practical limit to the number of options presented. It shares the same behavior present in the Sub-menu widget, but with a different visual representation.
+    </p>
+    <p>
+      Whenever the List Selector is tapped, the framework handles the display actions associated with displaying, navigating and selecting from the list pop-up, assign the selection to the widget model, generate a Mojo.Event.propertyChange event to notify your scene assistant of the change.
+    </p>
+    <p>
+      To setup a List Selector widget to display a user's current IM status:
+    </p>
+    <blockquote>
+      <pre>
+<code>this.selectorsModel = {currentStatus: 'away'};
+this.statuses = { [
+  {label:$L('Away'), value:&quot;away&quot;, secondaryIcon:'status-away'},
+  {label:$L('Available'), value:&quot;available&quot;,
+      secondaryIcon:'status-available', disabled:true},
+  {label:$L('Offline'), value:&quot;offline&quot;, secondaryIcon:'status-offline'} ]
+};
+this.controller.setupWidget('statusSelector', {label: $L('Status'),
+  choices: this.statuses, modelProperty:'currentStatus'}, this.selectorsModel);
+this.controller.listen('statusSelector',
+  Mojo.Event.propertyChange, this.changed.bindAsEventListener(this));
+changed: function(propertyChangeEvent) {
+  Mojo.Log.info(&quot;The user's current status has changed to &quot; +
+      this.selectorsModel.currentStatus);
+}
+</code>
+</pre>
+    </blockquote>
+    <p>
+      Where the List Selector is like the List widget is in its styling. To have the HP webOS look and feel, you'll need to wrap your widget declaration with styling DIVs like those used with the List widget. For more information or for a full explanation of the styling options, see the Styles and CSS Reference under the User Interface Guidelines section of the SDK Documentation.
+    </p>
+    <h2 id="slider">
+      Slider
+    </h2>
+    <p>
+      The last widget in this group is the Slider, which presents a range of selection options in the form of a horizontal slider with a control knob that can be dragged to the desired location.
+    </p>
+    <p>
+      Each time the slider is tapped, dragged and released, the value associated with the slider's <em>modelProperty</em> is updated and a Mojo.Event.propertyChange event is generated. The framework will use the minimum and maximum values you provide at setup to determine the current value associated with the slider. If you specify 0 to 100, and the knob is centered, the updated value will be 50; specify 0 and 1 and the updated value with be .5.
+    </p>
+    <p>
+      To setup a slider widget that ranges between values 0 and 1 and starts halfway through the slider:
+    </p>
+    <blockquote>
+      <pre>
+<code>var attributes = {
+  property: 'value',
+  maxValue: 1,
+  minValue: 0
+};
+this.model = {
+  value: .5
+};
+this.controller.setupWidget('slider', attributes, this.model);
+this.controller.listen('slider',Mojo.Event.propertyChange, this.propertyChanged.bind(this)); 
+</code>
+</pre>
+    </blockquote>
+    <p>
+      To manage updates to the value by the user:
+    </p>
+    <blockquote>
+      <pre>
+<code>propertyChanged: function(propertyChangeEvent) {
+  Mojo.Log.info(&quot;The slider has changed to &quot; + propertyChangeEvent.value +
+      &quot; which is the same as in my model &quot; + this.model.value);
+}
+</code>
+</pre>
+    </blockquote>
+    <p>
+      To change the value of the slider programmatically:
+    </p>
+    <blockquote>
+      <pre>
+<code>updateSliderValue: function(newValue) {
+  this.model.value = .75;
+  this.controller.modelChanged(this.model);
+}
+</code>
+</pre>
+    </blockquote>
+		</div>
+	</body>
+</html>

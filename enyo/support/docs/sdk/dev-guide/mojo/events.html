@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>$if(pagetitle)$$pagetitle$$endif$</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="stylesheet" href="_css/chrome.css" />
+		<link rel="stylesheet" href="../_css/chrome.css" />
+		<link rel="stylesheet" href="../../_css/chrome.css" />
+		<link rel="stylesheet" href="../../../_css/chrome.css" />
+		<script src="_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="_js/doc.js" type="text/javascript"></script>
+		<script src="../_js/doc.js" type="text/javascript"></script>
+		<script src="../../_js/doc.js" type="text/javascript"></script>
+		<script src="../../../_js/doc.js" type="text/javascript"></script>
+	</head>
+	<body>
+		<div id="content">
+    
+    <h1 id="events">
+      Events
+    </h1>
+    <p>
+      The Mojo framework provides a way to respond to user actions. If you are familiar with the W3C event model, the HP webOS event model will hold few surprises for you. Events are actions applied to scene elements. Tapping on a button, for example, generates an event. To be functional, the button must have a <em>handler</em>, a method for handling the tap event. Elements specify which events they handle by registering themselves as <em>listeners</em> for those events.
+    </p>
+    <h2 id="framework-event-types">
+      Framework Event Types
+    </h2>
+    <p>
+      Mojo includes the W3C event types, and also defines event types specific to webOS. The <a href="/reference/mojo/classes/mojo-event.html">Mojo.Event</a> section of the API documentation contains a complete list of event types, with descriptions and reference information.
+    </p>
+    <p>
+      Not all events are handled by widgets. The meaning of a non-widget event depends on the context in which the event occurs, and it must be handled accordingly.
+    </p>
+    <h3 id="custom-event-types">
+      Custom Event Types
+    </h3>
+    <p>
+      You can define your own event types with the mojo.event.make() method, and propagate them to event handlers by calling the mojo.event.send() method.
+    </p>
+    <h2 id="listening">
+      Listening
+    </h2>
+    <p>
+      When an event occurs, the framework notifies any code that is subscribed to handle the event. You can subscribe a DOM element to events by calling one of the following methods:
+    </p>
+    <ul>
+      <li>Mojo.Event.listen() or this.controller.listen()
+      </li>
+      <li>.addEventListener()
+      </li>
+      <li>observe()
+      </li>
+    </ul>
+    <p>
+      Make sure to remove any event listeners when they are no longer needed, generally in your scene assistant's cleanup() method; otherwise, your application may leak memory. It is especially important to remove listeners in two cases:
+    </p>
+    <ul>
+      <li>when the listener is attached to a DOM node outside of the scene
+      </li>
+      <li>when the listener is attached to a node within a closure
+      </li>
+    </ul>
+    <p>
+      These cases can lead to a memory leak if listeners are not removed. The basic pattern looks like this:
+    </p>
+    <blockquote>
+      <pre>
+<code>this.element = ...some DOM node...;
+this.element.addEventListener('whatever', someFunction.bind(this), false);
+</code>
+</pre>
+    </blockquote>
+    <p>
+      Even when the node is removed from the DOM, the cluster of objects is not garbage collected.
+    </p>
+    <p>
+      There is an issue with referencing elements by DOM ID. The Prototype $ and getElementById won't work across stage boundaries. If you have a multi-stage application, use this.controller.listen() if you pass an element by DOM ID, or this.controller.get() when you want to retrieve an element by DOM ID.
+    </p>
+    <p>
+      As in the standard HTML model, events bubble up the DOM tree; the parent DOM element receives the events that occur on any child elements. For widgets, you should observe events on the enclosing DIV element instead of on an element that is part of the widget implementation.
+    </p>
+    <p>
+      The following code snippets show how to subscribe to events using the Mojo.Event.listen() method, which is the preferred mechanism:
+    </p>
+    <ul>
+      <li>
+        <p>
+          Define the HTML DOM element associated with an event and assign an ID to the element.
+        </p>
+        <blockquote>
+          <pre>
+<code>&lt;button id='okButton'&gt;OK&lt;/button&gt;
+</code>
+</pre>
+        </blockquote>
+      </li>
+      <li>
+        <p>
+          Provide a JavaScript method to handle the event.
+        </p>
+        <blockquote>
+          <pre>
+<code>handleOk: function() {
+  Mojo.Log.info(&quot;Received the OK&quot;);
+}
+</code>
+</pre>
+        </blockquote>
+        <p>
+          This is the handler specified when the user subscribes to the event. The method is invoked by the browser when the event occurs. You should provide the event handling logic appropriate for the event and application context.
+        </p>
+      </li>
+      <li>
+        <p>
+          Subscribe to the event, using the element ID and specifying the event handler method.
+        </p>
+        <blockquote>
+          <pre>
+<code>this.okButton = this.controller.get('okButton');
+Mojo.Event.listen(this.okButton, Mojo.Event.tap,
+  this.handleOk.bind(this));
+</code>
+</pre>
+        </blockquote>
+      </li>
+    </ul>
+    <h3 id="stoplistening">
+      stopListening
+    </h3>
+    <p>
+      Use one of the following methods to remove your listener from events:
+    </p>
+    <ul>
+      <li>Mojo.Event.stopListening() or this.controller.stopListening()
+      </li>
+      <li>.removeEventListener()
+      </li>
+      <li>stopObserving()
+      </li>
+    </ul>
+    <p>
+      You should use the method that corresponds to the method used for listening to the event; in other words, use the Mojo method to stop listening if you used it for listening.
+    </p>
+    <p>
+      With any of these methods you must use the exact handler reference used in the listen method call. In the above example, the handler was specified as this.handleThanks.bind(this) which won't work in the stopListening method. Try this instead:
+    </p>
+    <blockquote>
+      <pre>
+<code>this.okButton = this.controller.get('okButton');
+this.eventHandler = this.handleOk.bind(this);
+Mojo.Event.listen(this.okButton, Mojo.Event.tap,
+  this.eventHandler);
+. . .
+Mojo.Event.stopListening(this.okButton, Mojo.Event.tap,
+  this.eventHandler);
+</code>
+</pre>
+    </blockquote>
+    <h2 id="using-events-with-widgets">
+      Using Events with Widgets
+    </h2>
+    <p>
+      Many widgets dispatch events. Applications can use these to better leverage the functionality built into the controls. Events are generally dispatched to the widget's element, the DIV defined in the scene's view HTML that has the x-mojo-element attribute.
+    </p>
+    <p>
+      For the list of widgets that propagate a particular event, refer to the event reference documentation in <a href="/reference/mojo/classes/mojo-event.html">Mojo.Event</a>.
+    </p>
+    <p>
+      For the list of events propagated by a widget, refer to the reference documentation for the particular widget in the API, specifically Mojo.Event, which indicates the widgets that each event is applied to.
+    </p>
+		</div>
+	</body>
+</html>

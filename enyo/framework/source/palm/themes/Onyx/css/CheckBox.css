@@ -1,0 +1,22 @@
+/* Copyright 2009-2011 Hewlett-Packard Development Company, L.P. All rights reserved. */
+.enyo-checkbox {
+	cursor: pointer;
+	display: inline-block;
+	vertical-align: middle;
+	height: 31px;
+	width: 30px;
+	margin: 0px;
+	background: url(../images/checkbox.png) -1px -1px;
+}
+
+.enyo-checkbox-checked {
+	background-position: -1px -33px;
+}
+
+.enyo-checkbox-disabled {
+	opacity: 0.4;
+}
+
+.enyo-checkbox-disabled.enyo-checkbox-checked {
+	opacity: 0.4;
+}

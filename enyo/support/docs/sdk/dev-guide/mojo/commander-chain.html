@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>$if(pagetitle)$$pagetitle$$endif$</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="stylesheet" href="_css/chrome.css" />
+		<link rel="stylesheet" href="../_css/chrome.css" />
+		<link rel="stylesheet" href="../../_css/chrome.css" />
+		<link rel="stylesheet" href="../../../_css/chrome.css" />
+		<script src="_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="_js/doc.js" type="text/javascript"></script>
+		<script src="../_js/doc.js" type="text/javascript"></script>
+		<script src="../../_js/doc.js" type="text/javascript"></script>
+		<script src="../../../_js/doc.js" type="text/javascript"></script>
+	</head>
+	<body>
+		<div id="content">
+    
+    <h1 id="commander-chain">
+      Commander Chain
+    </h1>
+    <p>
+      The HP webOS SDK provides a model for propagating commands through the app, which are stage and scene controllers called the Commander Chain. The DOM event model did not provide the fine-grained control needed for event propagation to serve this need. Although the commanders are often in the DOM, they are not consistently ordered with the event handling required.
+    </p>
+    <p>
+      The chain is an array of handlers, ordered like a stack. The handlers, or commanders, are put onto the chain in the order that they register themselves and events propagate according this order.
+    </p>
+    <h2 id="registering-commanders">
+      Registering Commanders
+    </h2>
+    <p>
+      Commanders are registered implicitly by declaring a handleCommand method as a stage-assistant or scene-assistant method, or for dialogs, when instantiated. The framework always adds the App-Assistants to the bottom of the Stage-Controller chain at instantiation.
+    </p>
+    <p>
+      Commanders can register explicitly by calling the pushCommander method from either StageController or SceneController. The commander is removed after popping the scene-assistant is popped or closing the application.
+    </p>
+    <h2 id="command-propagation">
+      Command Propagation
+    </h2>
+    <p>
+      The chain is really a tree of chains, illustrated in the figure. There is a chain for each StageController, and then within each stage there is a chain for each SceneController. Commands propagate starting with the first commander in the Scene-Controller chain in the active Scene. After calling all of the commanders in the Scene, propagation continues with the first commander in the StageController chain through the rest of the chain. There are chains for each of the inactive StageControllers and SceneControllers, but commands do not propagate to any inactive chains.
+    </p>
+    <p>
+      <img src="/images/palm/Commander_Chain_Propagation.png" alt="image"><br>
+      Figure - Commander Chain Propagation
+    </p>
+    <p>
+      Any commander can at any time stop propagation by calling event.stopPropagation. For example, a scene puts up a modal dialog, so it is implicitly added to the chain. It has the opportunity to handle a back event and stop propagation before it gets back to the scene that pushed the dialog. If not, the stage controller sees the back gesture and pops the scene, which is not the desired user experience.
+    </p>
+    <p>
+      Commanders can always remove themselves from the chain by calling the removeCommander method, either StageController or SceneController. For example:
+    </p>
+    <blockquote>
+      <pre>
+<code>{{this.controller.removeCommander(this);}}
+</code>
+</pre>
+    </blockquote>
+    <h2 id="events-and-commands">
+      Events and Commands
+    </h2>
+    <p>
+      There are three types of events that propagate through the chain:
+    </p>
+    <ul>
+      <li>Mojo.Event.back: indicates a back gesture.
+      </li>
+      <li>Mojo.Event.command: used for all menu commands.
+      </li>
+      <li>Mojo.Event.commandEnable: enables a menu item dynamically.
+      </li>
+    </ul>
+    <p>
+      Command and Command Enable events are both discussed under <a href="/dev-guide/mojo/all-about-widgets/menus.html">Menus - Code Examples</a>. The former is used when selecting a menu command and the latter when creating a menu for any menu item that includes the property commandEnable set to true. If any commander wants to inhibit the menu command, it calls stopPropagation to do so. The framework uses this to inhibit the Edit functions in the App Menu when anything other than a Text Field is in focus.
+    </p>
+    <h2 id="using-the-commander-chain-for-an-app-menu">
+      Using the Commander Chain for an App Menu
+    </h2>
+    <p>
+      A common application of the commander chain is the consolidation of the setup and handling of the AppMenu into the stage controller. You can create a global app menu attributes and model in the stage-assistant:
+    </p>
+    <blockquote>
+      <pre>
+<code>myMenuAttr = {omitDefaultItems: true};
+myMenuModel = {
+  visible: true,
+  items: [
+      {label: &quot;About My App...&quot;, command: 'do-about'},
+      Mojo.Menu.editItem,
+      { label: &quot;Preferences...&quot;, command: 'do-prefs' },
+      { label: &quot;Help...&quot;, command: 'do-help' }
+  ]
+};  
+</code>
+</pre>
+    </blockquote>
+    <p>
+      And add the handleCommand method:
+    </p>
+    <blockquote>
+      <pre>
+<code>// ----------------------------------------------------
+// Set up handlers for command menu
+//
+// handleCommand - Setup handlers for App menus
+//
+
+StageAssistant.prototype.handleCommand = function(event) {
+
+  // Find the current scene
+  var currentScene = Mojo.Controller.stageController.activeScene();
+
+  if(event.type == Mojo.Event.command) {
+      switch(event.command) {
+
+          case 'do-about':
+              currentScene.showAlertDialog({
+                  onChoose: function(value) {},
+                  title: $L(&quot;My App - v1.0&quot;),
+                  message: $L(&quot;Copyright 2008-2009, Palm Inc.&quot;),
+                  choices:[
+                      {label:$L(&quot;OK&quot;), value:&quot;&quot;}
+                  ]
+              });
+              break;
+
+          case 'do-prefs':
+              Mojo.Controller.stageController.pushScene(&quot;myPrefs&quot;, this);
+              break;
+
+          case 'do-help':
+              Mojo.Log.info(&quot;...........&quot;, &quot;Help selected from menu, not currently available.&quot;);
+              break;
+      }
+  }
+};
+</code>
+</pre>
+    </blockquote>
+    <p>
+      Then simply instantiate the menu in each scene with:
+    </p>
+    <blockquote>
+      <pre>
+<code>// Set up App Menu
+this.controller.setupWidget(Mojo.Menu.appMenu, myMenuAttr, myMenuModel); 
+</code>
+</pre>
+    </blockquote>
+    <p>
+      When the App Menu commands propagate, the stage-assistant handles them, but they need to be aware of the current scene, which can be done by setting the local variable currentScene to the active scene controller at the beginning of handleCommand. From there, the code is just as you would do it within a given scene.
+    </p>
+    <p>
+      You can override the application-wide behavior in a specific scene by defining scene-specific app menu attributes or model before setting up the app menu and including a handleCommand method in that scene to handle the app menu commands there. Do not forget to call event.stopPropagation if you use any of the same commands used in your global app menu.
+    </p>
+		</div>
+	</body>
+</html>

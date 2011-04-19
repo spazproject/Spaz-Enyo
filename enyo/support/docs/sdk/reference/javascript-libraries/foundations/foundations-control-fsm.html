@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>$if(pagetitle)$$pagetitle$$endif$</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="stylesheet" href="_css/chrome.css" />
+		<link rel="stylesheet" href="../_css/chrome.css" />
+		<link rel="stylesheet" href="../../_css/chrome.css" />
+		<link rel="stylesheet" href="../../../_css/chrome.css" />
+		<script src="_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="_js/doc.js" type="text/javascript"></script>
+		<script src="../_js/doc.js" type="text/javascript"></script>
+		<script src="../../_js/doc.js" type="text/javascript"></script>
+		<script src="../../../_js/doc.js" type="text/javascript"></script>
+	</head>
+	<body>
+		<div id="content">
+    
+    <h1 id="foundations.control.fsm">
+      Foundations.Control.FSM
+    </h1>
+    <p>
+      Implements a Finite State Machine (FSM) with &quot;states&quot; and &quot;events&quot;. States are defined in an object and are transitioned to via events.
+    </p>
+    <h2 id="using-foundations.control.fsm">
+      Using Foundations.Control.FSM
+    </h2>
+    <p>
+      FSMs model behavior where responses to future events depend upon previous events. FSMs consist of:
+    </p>
+    <ul>
+      <li>
+        <em>Events</em> that the app responds to.
+      </li>
+      <li>
+        <em>States</em> where the app waits between events.
+      </li>
+      <li>
+        <em>Transitions</em> between states in response to events.
+      </li>
+      <li>
+        <em>Actions</em> taken during transitions.
+      </li>
+      <li>
+        <em>Variables</em> that hold values needed by actions between events.
+      </li>
+    </ul>
+    <p>
+      FSMs are most useful in situations where many different types of events drive behavior, and the response to a particular event depends on the sequence of previous events.
+    </p>
+    <p>
+      States are a way to remember previous events, and transitions are a way to organize responses to future events.
+    </p>
+    <p>
+      FSMs are typically represented in one of two ways:
+    </p>
+    <ol style="list-style-type: decimal">
+      <li>Directed graphs -- Balloons represent states, and arrows between them represent transitions, which are labeled with events and actions.
+      </li>
+      <li>Two-dimensional tables -- Rows and columns represent events and states, and cells contain actions and transitions.
+      </li>
+    </ol>
+    <p>
+      A full discussion of FSMs is beyond the scope of this documentation, but there are numerous resources available on the Internet.
+    </p>
+    <h3 id="implementing-a-finite-state-machine">
+      Implementing a Finite State Machine
+    </h3>
+    <p>
+      Typically, to implement a FSM, you would create a &quot;states&quot; object that defines states, events, and transition processing similar to the following:
+    </p>
+    <blockquote>
+      <pre>
+<code>var states = {
+  stateOne: {
+      eventOne: function() {
+          // Do some processing and transition to another state
+      },
+      eventTwo: function() {
+      }
+  },
+  stateTwo: {
+      eventThree: function() {
+      },
+      eventFour: function() {
+      }
+  },
+  // ....
+};
+</code>
+</pre>
+    </blockquote>
+    <h3 id="allocating-a-finite-state-machine">
+      Allocating a Finite State Machine
+    </h3>
+    <p>
+      The following is a simple example of allocating a FSM:
+    </p>
+    <blockquote>
+      <pre>
+<code>// Load Foundation libraries
+var libraries = MojoLoader.require({ name: &quot;foundations&quot;, version: &quot;1.0&quot; });  
+
+// Create reference to FSM code
+var FSM = libraries[&quot;foundations&quot;].FSM; 
+
+// Create states, events, and transition processing object     
+var states = {
+  one: {
+      gotoTwo: function() {
+          // Event/Transition processing here...
+          this.go(&quot;two&quot;);  // FSM method
+      },
+      gotoThree: function() {
+          this.go(&quot;three&quot;);
+      }
+  },
+  two: {
+      gotoOne: function() {
+          this.go(&quot;one&quot;);
+      },
+      gotoThree: function() {
+          this.go(&quot;three&quot;);
+      }
+  },
+  three: {
+      gotoTwo: function() {
+          this.go(&quot;two&quot;);
+      },
+      gotoOne: function() {
+          this.go(&quot;one&quot;);
+      }
+  }
+};
+var context = {}; // some object
+
+// Allocate FSM    
+var fsm = new FSM(states, context); 
+</code>
+</pre>
+    </blockquote>
+    <p>
+      If no &quot;context&quot; is provided, then the states object is used as the context. If you only need one instance of a particular FSM, there is no reason for a separate context object.
+    </p>
+    <hr>
+    <h2 id="fsm-methods">
+      FSM Methods
+    </h2>
+    <ul>
+      <li>currentState -- Get FSM's current state.
+      </li>
+      <li>event -- Calls the named event method for the current state.
+      </li>
+      <li>go -- Transition from the current state to to the specified new state.
+      </li>
+    </ul>
+    <hr>
+    <h2 id="fsm.currentstate">
+      FSM.currentState
+    </h2>
+    <p>
+      Get FSM's current state.
+    </p>
+    <h3 id="syntax">
+      Syntax
+    </h3>
+    <blockquote>
+      <pre>
+<code>FSM.currentState();
+</code>
+</pre>
+    </blockquote>
+    <h3 id="parameters">
+      Parameters
+    </h3>
+    <blockquote>
+      <pre>
+<code>None.
+</code>
+</pre>
+    </blockquote>
+    <h3 id="returns">
+      Returns
+    </h3>
+    <blockquote>
+      <pre>
+<code>FSM current state.
+</code>
+</pre>
+    </blockquote>
+    <p>
+      <strong>Example</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>// Use example from &quot;Allocating...&quot;
+var fsm = new FSM(states, context);
+
+// Get initial state
+Mojo.Log.info(&quot;fsm current state = &quot;+ fsm.currentState());
+</code>
+</pre>
+    </blockquote>
+    <p>
+      <strong>Example Output</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>fsm current state = __uninitialized
+</code>
+</pre>
+    </blockquote>
+    <hr>
+    <h2 id="fsm.event">
+      FSM.event
+    </h2>
+    <p>
+      Calls the named event method for the current state. This usually, but not always, results in a state transition.
+    </p>
+    <h3 id="syntax-1">
+      Syntax
+    </h3>
+    <pre>
+    boolean FSM.event(<em>event</em>, <em>arguments</em>);
+</pre>
+    <h3 id="parameters-1">
+      Parameters
+    </h3>
+    <table border="1">
+      <thead>
+        <tr>
+          <th>
+            Argument
+          </th>
+          <th>
+            Required
+          </th>
+          <th>
+            Type
+          </th>
+          <th>
+            Description
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <em>event</em>
+          </td>
+          <td>
+            Yes
+          </td>
+          <td>
+            string
+          </td>
+          <td>
+            Event to call.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <em>arguments</em>
+          </td>
+          <td>
+            No
+          </td>
+          <td>
+            any array
+          </td>
+          <td>
+            Arguments to pass to event function.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="returns-1">
+      Returns
+    </h3>
+    <blockquote>
+      <pre>
+<code>true or false
+</code>
+</pre>
+    </blockquote>
+    <p>
+      <strong>Example</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>// Use example from &quot;Allocating...&quot;
+fsm.go(&quot;three&quot;);   
+Mojo.Log.info(&quot;fsm event gotoOne = &quot;+ fsm.event(&quot;gotoOne&quot;));   
+</code>
+</pre>
+    </blockquote>
+    <p>
+      <strong>Example Output</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>fsm event gotoOne = true
+</code>
+</pre>
+    </blockquote>
+    <hr>
+    <h2 id="fsm.go">
+      FSM.go
+    </h2>
+    <p>
+      Transition from the current state to to the specified new state. Though used in the FSM implementation, calling this is not really necessary - in general, you would want to use an event to switch between states. If not already there, this method transitions the FSM to the named state.
+    </p>
+    <h3 id="syntax-2">
+      Syntax
+    </h3>
+    <pre>
+    FSM.go(<em>nstate</em>);
+</pre>
+    <h3 id="parameters-2">
+      Parameters
+    </h3>
+    <table border="1">
+      <thead>
+        <tr>
+          <th>
+            Argument
+          </th>
+          <th>
+            Required
+          </th>
+          <th>
+            Type
+          </th>
+          <th>
+            Description
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <em>nstate</em>
+          </td>
+          <td>
+            No
+          </td>
+          <td>
+            any
+          </td>
+          <td>
+            Name of state to transition to.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="returns-2">
+      Returns
+    </h3>
+    <blockquote>
+      <pre>
+<code>None.
+</code>
+</pre>
+    </blockquote>
+    <p>
+      <strong>Example</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>// Use example from &quot;Allocating...&quot;
+fsm.go(&quot;two&quot;);
+// Get new state
+Mojo.Log.info(&quot;fsm current state = &quot;+ fsm.currentState());
+</code>
+</pre>
+    </blockquote>
+    <p>
+      <strong>Example Output</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>fsm current state = two
+</code>
+</pre>
+    </blockquote>
+		</div>
+	</body>
+</html>

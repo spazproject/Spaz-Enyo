@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>$if(pagetitle)$$pagetitle$$endif$</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="stylesheet" href="_css/chrome.css" />
+		<link rel="stylesheet" href="../_css/chrome.css" />
+		<link rel="stylesheet" href="../../_css/chrome.css" />
+		<link rel="stylesheet" href="../../../_css/chrome.css" />
+		<script src="_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="_js/doc.js" type="text/javascript"></script>
+		<script src="../_js/doc.js" type="text/javascript"></script>
+		<script src="../../_js/doc.js" type="text/javascript"></script>
+		<script src="../../../_js/doc.js" type="text/javascript"></script>
+	</head>
+	<body>
+		<div id="content">
+    
+    <h1 id="enyo-basics---from-the-bottom-up">
+      Enyo Basics - From the Bottom Up
+    </h1>
+    <p>
+      This document and its companion, <a href="enyo-basics-kinds-components-controls.html">Enyo Basics - Kinds, Components, and Controls</a>, provide an introduction to the conceptual underpinnings of the Enyo framework. Our assumption is that you, as a current (or potential) Enyo developer, are at least somewhat knowledgeable about Web development technologies, so we'll begin by looking at Enyo in relation to both HTML and JavaScript.
+    </p>
+    <h2 id="enyo-and-html-controls">
+      Enyo and HTML (Controls)
+    </h2>
+    <p>
+      One fundamental Enyo object is the <em>Control</em>. Controls work a lot like DOM nodes; in fact, each control usually translates directly to a node.
+    </p>
+    <p>
+      Here we create a trivial control and render it to the document body:
+    </p>
+    <blockquote>
+      <pre>
+<code>enyo.create({
+  content: &quot;Hello World&quot;
+}).renderInto(document.body);
+</code>
+</pre>
+    </blockquote>
+    <p>
+      This snippet of code produces the following HTML:
+    </p>
+    <blockquote>
+      <pre>
+<code>&lt;div id=&quot;control&quot;&gt;Hello World&lt;/div&gt;
+</code>
+</pre>
+    </blockquote>
+    <p>
+      A <code>Control</code> object is like a DOM node in that you can attach CSS classes and styles to it, and you can choose what kind of node you want to make. (Note that while HTML uses the term &quot;class&quot; to identify CSS classes, that word is reserved in JavaScript, so the Enyo convention is to use <code>&quot;className&quot;</code> instead.)
+    </p>
+    <blockquote>
+      <pre>
+<code>enyo.create({
+  nodeTag: &quot;span&quot;,
+  className: &quot;a-css-class&quot;,
+  style: &quot;color: purple;&quot;,
+  content: &quot;Hello World&quot;
+}).renderInto(document.body);
+</code>
+</pre>
+    </blockquote>
+    <p>
+      This yields the following HTML:
+    </p>
+    <blockquote>
+      <pre>
+<code>&lt;span id=&quot;control&quot; class=&quot;a-css-class&quot; style=&quot;color: purple;&quot;&gt;Hello World&lt;/span&gt;
+</code>
+</pre>
+    </blockquote>
+    <p>
+      We can nest controls just like we nest DOM nodes.
+    </p>
+    <blockquote>
+      <pre>
+<code>enyo.create({
+  components: [
+      {content: &quot;I'm in a container&quot;},
+      components: [
+          {content: &quot;I'm in a container that's in the container.&quot;}
+      ]},
+      {content: &quot;I'm in the first container.&quot;}
+  ]
+}).renderInto(document.body);
+</code>
+</pre>
+    </blockquote>
+    <p>
+      (Notice that we are defining controls in a block called <code>&quot;components&quot;</code>. The <code>Control</code> kind is derived from the <code>Component</code> kind, so a component is a more general object than a control. Thus the <code>components</code> block may contain both <code>Control</code> objects and non-control objects. For more on components and controls, see &quot;Enyo Basics - Kinds, Components, and Controls&quot;.)
+    </p>
+    <p>
+      Why bother with all this JavaScript when it's just generating HTML? Our goal in showing how closely Enyo controls map to HTML is simply to demystify the framework; once we start building applications, we'll find that working with controls rather than HTML will save us a lot of trouble.
+    </p>
+    <p>
+      For example, one obvious benefit of using controls is that they can encapsulate complex rendering and behavior:
+    </p>
+    <blockquote>
+      <pre>
+<code>enyo.create({
+  components: [
+      // button with custom graphics
+      {kind: &quot;Button&quot;},
+      // input box with special features like hinting and graphic fx
+      {kind: &quot;FancyInput&quot;},
+      // one-of-many selector with custom graphics
+      {kind: &quot;RadioGroup&quot;, components: [
+          {label: &quot;Alpha&quot;},
+          {label: &quot;Beta&quot;},
+          {label: &quot;Gamma&quot;}
+      ]}
+  ]
+}).renderInto(document.body);
+</code>
+</pre>
+    </blockquote>
+    <p>
+      The snippet above renders something like this:
+    </p>
+    <p>
+      <img src="/images/EnyoConceptual-button-input-radio.png"><br>
+    </p>
+    <h2 id="enyo-and-javascript-kinds">
+      Enyo and JavaScript (Kinds)
+    </h2>
+    <p>
+      JavaScript natively supports object templating and inheritance using functions and prototypes. Here's an example of classic JavaScript usage:
+    </p>
+    <blockquote>
+      <pre>
+<code>// an object constructor
+MyObject = function() {
+  this.data = [];
+};
+
+MyObject.prototype.toString = function() {
+  return this.data.join(&quot;, &quot;);
+};
+
+// another object constructor, built on the first one
+MySpecialObject = function() {
+  MyObject.apply(this, arguments);
+};
+
+MySpecialObject.prototype = new MyObject();
+
+MySpecialObject.prototype.toNumber = function() {
+  return this.data.length;
+};
+
+// Make an instance
+mso = new MySpecialObject();
+</code>
+</pre>
+    </blockquote>
+    <p>
+      In keeping with its heavily object-oriented nature, Enyo provides a method for generating constructors (object templates) with a compact syntax. Constructors built this way have some special features, and we call them <em>kinds</em>. The method used to create a kind is <code>enyo.kind</code>. Here's an example of <code>enyo.kind</code> in action:
+    </p>
+    <blockquote>
+      <pre>
+<code>// a kind
+enyo.kind({
+  name: &quot;MyKind&quot;,
+  constructor: function() {
+      this.data = [];
+  },
+  toString: function() {
+      return this.data.join(&quot;, &quot;);
+  }
+});
+
+// another kind, built on the first one
+enyo.kind({
+  name: &quot;MySpecialKind&quot;,
+  kind: &quot;MyKind&quot;,
+  toNumber: function() {
+      return this.data.length;
+  }
+});
+
+// Make an instance
+msk = new MySpecialKind();
+</code>
+</pre>
+    </blockquote>
+    <p>
+      (Note: Why do we use the term &quot;kind&quot;? These constructors aren't exactly types or classes, but rather specializations of <code>Object</code>. A similar idea exists in db8, where a db8 record schema is also called a kind. Moreover, JavaScript uses prototypal inheritance and not class-based inheritance, so to use the word &quot;class&quot; in the Enyo context would cause confusion.)
+    </p>
+    <p>
+      It's important to remember that <code>enyo.kind</code> isn't magic--it's performing the normal steps for generating a constructor, just keeping the boilerplate hidden.
+    </p>
+    <p>
+      There are several things to note about this example:
+    </p>
+    <ul>
+      <li>
+        <p>
+          The name of the kind is specified inside of the property block. This name will become a global variable that references the kind. Putting the name inside the block gives you an easy way to use namespacing. For example, say you write:
+        </p>
+        <blockquote>
+          <pre>
+<code>enyo.kind({name: &quot;Super.Special.Kind&quot;});
+</code>
+</pre>
+        </blockquote>
+        <p>
+          The namespaces <code>Super</code> and <code>Super.Special</code> will be created for you, and <code>Super.Special.Kind</code> will reference the new constructor.
+        </p>
+      </li>
+      <li>
+        <p>
+          Initialization code is placed in a special method called <code>constructor</code>. This is very similar to the body of the <code>MyObject</code> function in the first example. The main difference is that the <code>constructor</code> method is not called when inheriting from a kind (if you look closely at the first example, you can see that <code>MyObject</code> is called to create the prototype for <code>MySpecialObject</code>, which ends up creating an extraneous <code>data</code> array in the <code>MySpecialObject</code> prototype.)
+        </p>
+      </li>
+      <li>
+        <p>
+          To make a new kind that inherits from an old one, specify the old one's name in the new one's <code>kind</code> property. In the example, <code>MySpecialKind</code> is based on <code>MyKind</code>.
+        </p>
+      </li>
+    </ul>
+    <p>
+      All these kinds may start to sound confusing, but it all boils down to one simple idea: whenever we make something, whether a constructor or an instance, we say what <em>kind</em> it's based on. When creating an instance, for example, we might do this:
+    </p>
+    <blockquote>
+      <pre>
+<code>enyo.create({kind: &quot;aKind&quot;});
+</code>
+</pre>
+    </blockquote>
+    <p>
+      (Note: The input for <code>enyo.create</code> is a JavaScript object that describes the object to create. This kind of input is sometimes called a &quot;property block&quot; or &quot;property bag&quot;.)
+    </p>
+    <p>
+      Similarly, to make a new kind based on an existing kind, we could do this:
+    </p>
+    <blockquote>
+      <pre>
+<code>enyo.kind({kind: &quot;aKind&quot;});
+</code>
+</pre>
+    </blockquote>
+    <p>
+      This consistency makes the syntax easy to remember. It's turtles all the way down.
+    </p>
+		</div>
+	</body>
+</html>

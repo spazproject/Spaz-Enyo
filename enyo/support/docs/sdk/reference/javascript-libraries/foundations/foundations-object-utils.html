@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>$if(pagetitle)$$pagetitle$$endif$</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="stylesheet" href="_css/chrome.css" />
+		<link rel="stylesheet" href="../_css/chrome.css" />
+		<link rel="stylesheet" href="../../_css/chrome.css" />
+		<link rel="stylesheet" href="../../../_css/chrome.css" />
+		<script src="_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="_js/doc.js" type="text/javascript"></script>
+		<script src="../_js/doc.js" type="text/javascript"></script>
+		<script src="../../_js/doc.js" type="text/javascript"></script>
+		<script src="../../../_js/doc.js" type="text/javascript"></script>
+	</head>
+	<body>
+		<div id="content">
+    
+    <h1 id="foundations.objectutils">
+      Foundations.ObjectUtils
+    </h1>
+    <p>
+      This namespace contains functions that operate on objects.
+    </p>
+    <hr>
+    <h2 id="objectutils.toquerystring">
+      ObjectUtils.toQueryString()
+    </h2>
+    <p>
+      Takes an object of name/value pairs, for example:
+    </p>
+    <blockquote>
+      <pre>
+<code>{'key1': 'value one', 'key2': 'value 2' }
+</code>
+</pre>
+    </blockquote>
+    <p>
+      And turns it into a string, for example:
+    </p>
+    <blockquote>
+      <pre>
+<code>key1=value%20one&amp;key2=value%20two
+</code>
+</pre>
+    </blockquote>
+    <p>
+      It replaces the Prototype function Object.toQueryString.
+    </p>
+    <p>
+      <strong>Note:</strong>
+    </p>
+    <p>
+      Does not handle object arrays.
+    </p>
+    <h3 id="syntax">
+      Syntax
+    </h3>
+    <pre>
+    ObjectUtils.toQueryString(<em>obj</em>)
+</pre>
+    <h3 id="parameters">
+      Parameters
+    </h3>
+    <table border="1">
+      <thead>
+        <tr>
+          <th>
+            Argument
+          </th>
+          <th>
+            Required
+          </th>
+          <th>
+            Type
+          </th>
+          <th>
+            Description
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <em>obj</em>
+          </td>
+          <td>
+            Yes
+          </td>
+          <td>
+            any object
+          </td>
+          <td>
+            Object to convert to string.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="returns">
+      Returns
+    </h3>
+    <blockquote>
+      <pre>
+<code>{
+  object string : string
+}
+</code>
+</pre>
+    </blockquote>
+    <p>
+      <strong>Example</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>var libraries = MojoLoader.require({ name: &quot;foundations&quot;, version: &quot;1.0&quot; });
+var ObjectUtils = libraries[&quot;foundations&quot;].ObjectUtils;
+var ItemPrices = { &quot;Item&quot; : &quot;drink&quot;, &quot;price&quot; : 2};
+Mojo.Log.info(&quot;ItemPrices string = &quot;+ ObjectUtils.toQueryString(ItemPrices));
+</code>
+</pre>
+    </blockquote>
+    <p>
+      <strong>Example Output</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>ItemPrices string = Item=drink&amp;price=2
+</code>
+</pre>
+    </blockquote>
+		</div>
+	</body>
+</html>

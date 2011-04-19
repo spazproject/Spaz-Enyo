@@ -1,0 +1,18 @@
+/* Copyright 2009-2011 Hewlett-Packard Development Company, L.P. All rights reserved. */
+.enyo-header {
+	border-width: 35px 24px 13px 24px;
+	-webkit-border-image: url(../images/palm-page-header.png) 35 24 13 24 repeat stretch;
+	-webkit-box-sizing: border-box;
+	min-height: 50px;
+	color: #444;
+	background-color: inherit;
+}
+
+.enyo-header-inner {
+	margin: -35px -24px -13px -24px;
+	padding: 13px 16px;
+}
+
+.enyo-header-icon {
+	padding-right: 10px;
+}

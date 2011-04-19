@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>$if(pagetitle)$$pagetitle$$endif$</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="stylesheet" href="_css/chrome.css" />
+		<link rel="stylesheet" href="../_css/chrome.css" />
+		<link rel="stylesheet" href="../../_css/chrome.css" />
+		<link rel="stylesheet" href="../../../_css/chrome.css" />
+		<script src="_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="_js/doc.js" type="text/javascript"></script>
+		<script src="../_js/doc.js" type="text/javascript"></script>
+		<script src="../../_js/doc.js" type="text/javascript"></script>
+		<script src="../../../_js/doc.js" type="text/javascript"></script>
+	</head>
+	<body>
+		<div id="content">
+    
+    <h1 id="activity-manager">
+      Activity Manager
+    </h1><img src="/images/ActivityManager.jpg">
+    <p>
+      The Activity Manager service (com.palm.activitymanager) acts as a traffic cop for <em>Activities</em> (apps, services, tasks, network flows, etc.) running on the device, balancing Activity priorities and system resources to optimize the user's experience. The Activity Manager has the following goals:
+    </p>
+    <ul>
+      <li>The device remains responsive as possible.
+      </li>
+      <li>Background tasks do not affect device responsiveness.
+      </li>
+      <li>Foreground task with focus can always continue.
+      </li>
+      <li>Power use is optimized.
+      </li>
+      <li>Activities are prioritized and started, stopped, paused or canceled accordingly.
+      </li>
+      <li>Activities are not lost due to system reboots.
+      </li>
+    </ul>
+    <p>
+      <strong>In this Section:</strong>
+    </p>
+    <ul>
+      <li>Activity Manager Features
+      </li>
+      <li>Activity Participants
+      </li>
+      <li>Activity Lifecycle
+      </li>
+      <li>Activity Checklists
+      </li>
+    </ul>
+    <p>
+      See also: <a href="/reference/data-types/activity-manager.html">Activity Manager Data Types</a>
+    </p>
+    <p>
+      <a name="Features" id="Features">&#160;</a>
+    </p>
+    <hr>
+    <h2 id="activity-manager-features">
+      Activity Manager Features
+    </h2>
+    <p>
+      Activity Manager features include:
+    </p>
+    <ul>
+      <li>
+        <p>
+          <strong>Prioritization</strong> -- Activities should be created for any non-trivial use of system resources (i.e., CPU, the network). Apps and services can assign an Activity priority level property. The Activity Manager prioritizes Activities based on this and Activities' use of system resources to optimize the user's experience. Foreground Activities are given normal priority; background Activities are given a low priority and run as resources allow. You can set an Activity's priority with the <a href="/reference/data-types/activity-manager.html#Type">Type</a> object, which is an <a href="/reference/data-types/activity-manager.html#Activity">Activity</a> object sub-property.
+        </p>
+      </li>
+      <li>
+        <p>
+          <strong>Services run when needed</strong> -- To conserve system resources, services should run only when needed. Services should not remain running while subscribed to other services such as the TIL (Telephony Interface Layer) or db8 (<a href="http://en.wikipedia.org/wiki/JSON">JSON</a> database), waiting for events or the network to begin work or to communicate outside the device. The Activity Manager does not implement this capability, but it does facilitate it -- services and their Activities can use the Activity Manager to subscribe to other services on their behalf and monitor for responses, invoking a callback when a specified event has occurred. While waiting, services can exit, returning resources to the device until the service is again needed.
+        </p>
+      </li>
+      <li>
+        <p>
+          <strong>Scheduling and alignment</strong> -- Activities can be scheduled to run at a specific time or at a particular interval. Activities can be scheduled to run as a background Activity in the future if not needed immediately. To reduce how often the device is suspended and restarted, the Activity Manager batches Activities scheduled to run at approximately the same interval. See the <a href="/reference/data-types/activity-manager.html#Schedule">Schedule</a> data type for more information.
+        </p>
+      </li>
+      <li>
+        <p>
+          <strong>Persistence</strong> -- Using db8 state storage, Activities can persist across a device reboot. They can be atomically updated and re-scheduled to avoid being lost due to version updating, device crashes, or lost service. Use the <a href="/reference/data-types/activity-manager.html#Type">Type</a> object's &quot;persist&quot; flag to set this.
+        </p>
+      </li>
+      <li>
+        <p>
+          <strong>Requirements prior to running are met</strong> -- The Activity Manager can ensure that power-state, network access, telephony, battery and other pre-conditions are met before an Activity runs. In addition, the Activity Manager can send out update notices if these pre-conditions change while the Activity is running. See the <a href="/reference/data-types/activity-manager.html#Requirements">Requirements</a> data type for more information.
+        </p>
+      </li>
+      <li>
+        <p>
+          <strong>Triggers</strong> -- Activities with triggers do not run until an event occurs on a subscribed method. The Activity Manager can subscribe on behalf of the Activity creator and invoke the specified callback when a trigger event fires. This allows the service to exit and let the Activity Manager wait on its behalf. See the <a href="/reference/data-types/activity-manager.html#Triggers">Triggers</a> data type for more information.
+        </p>
+      </li>
+      <li>
+        <p>
+          <strong>Complete-and-Restart Activities</strong> -- When a service finishes processing an Activity, it can request the Activity Manager to restart the Activity with updated <a href="/reference/data-types/activity-manager.html#Schedule">schedule</a>, <a href="/reference/data-types/activity-manager.html#Triggers">triggers</a>, <a href="/reference/data-types/activity-manager.html#Requirements">requirements</a>, and callbacks.
+        </p>
+        <p>
+          See the <a href="/reference/services/activity-manager.html#complete">complete</a> API for more information.
+        </p>
+      </li>
+      <li>
+        <p>
+          <strong>Power Control</strong> -- The Activity Manager can ensure the device remains powered while an Activity is running. It can also <strong>debounce</strong> power, allowing the device to remain powered for a short time waiting for a new task to start. For example, in the case where a network sync service sent out a request and is waiting on an imminent response. In this case, it is better to wait since it takes less power than having the device suspend and restart.
+        </p>
+        <p>
+          Your service can request this functionality using the <a href="/reference/data-types/activity-manager.html#Type">Type</a> object's &quot;power&quot; and &quot;powerDebounce&quot; properties.
+        </p>
+      </li>
+      <li>
+        <p>
+          <strong>Standardized control</strong> -- The Activity Manager provides a standardized interface for controlling (start, stop, pause, and cancel) activity lifecycle.
+        </p>
+      </li>
+    </ul>
+    <p>
+      <a name="ActivityParticipants" id="ActivityParticipants">&#160;</a>
+    </p>
+    <hr>
+    <h2 id="activity-participants">
+      Activity Participants
+    </h2><img src="/images/ActivityParticipants.jpg">
+    <p>
+      A running Activity must have a <strong>parent</strong>. Initially, that would be the service or app that creates it. In addition, Activities can have <strong>subscribers</strong>, which include the Activity's parent, potential adopters and others wishing to monitor the Activity. Subscribers are services or apps that are sent Activity event notifications (start, stop, etc., see <a href="/reference/data-types/activity-manager.html#ActivityEvent">Activity Events</a> for a complete list). Adopters are subscribers who can also take over as an Activity's parent. They register their willingness to do this with the <code>adopt</code> method. Apps or services can subscribe to an Activity through either the <code>create</code>, <code>adopt</code>, or <code>monitor</code> methods.
+    </p>
+    <p>
+      If an Activity loses its parent, and there are no waiting adopters, it is canceled unless marked as <a href="/reference/data-types/activity-manager.html#Type">persistent</a> or <a href="/reference/data-types/activity-manager.html#Type">explicit</a>, and all subscribers are sent <code>cancel</code> events. When this happens, adopters have the opportunity to take over as the parent and keep the Activity alive. However, it is canceled if no app or service adopts the Activity during that time.
+    </p>
+    <p>
+      An Activity with a callback can briefly run without a parent while the callback is invoked; the Activity Manager waits for a specified time to see if the app or service adopts the Activity. If not adopted after that time, the Activity is canceled. If an Activity is marked as being persistent or explicit, it is restarted.
+    </p>
+    <p>
+      <a name="ActivityLifecycle" id="ActivityLifecycle">&#160;</a>
+    </p>
+    <hr>
+    <h2 id="activity-lifecycle">
+      Activity Lifecycle
+    </h2>
+    <p>
+      In most cases, an Activity is created to run in either the foreground or the background. A foreground Activity runs as soon as its specified prerequisites (<a href="/reference/data-types/activity-manager.html#Schedule">schedule</a>, <a href="/reference/data-types/activity-manager.html#Requirements">requirements</a>, <a href="/reference/data-types/activity-manager.html#Triggers">triggers</a>) are met.
+    </p>
+    <p>
+      When its prerequisites are met, a background Activity is moved into a <strong>ready</strong> queue, and a limited number are allowed to run depending on system resources. Activities can be scheduled to run at a specific time or when certain conditions (requirements) are met or events (triggers) occur. They can also be scheduled to repeat at a particular interval. The Activity Manager attempts to batch-run Activities repeating at the same interval, allowing the device to suspend/restart less frequently, conserving battery use.
+    </p>
+    <p>
+      When an Activity finishes, the parent informs the Activity Manager with the <code>complete</code> method. If the Activity has other subscribers, they are sent &quot;complete&quot; events. An Activity is not considered finished until all of its subscribers exit.
+    </p>
+    <p>
+      An Activity marked <strong>explicit</strong> (via the Type object) can only be terminated by its parent with a <code>stop</code>, <code>cancel</code>, or <code>complete</code> call. Otherwise, after a timeout, it is restarted via a specified callback. Explicit termination is also required if the Activity is defined with the <code>persist</code> attribute. In this case, the Activity state is stored in db8, continues across reboots, and requires explicit termination.
+    </p>
+    <p>
+      Activities that need to run to completion should be marked &quot;explicit&quot; or &quot;persist&quot;.
+    </p>
+    <p>
+      There are four methods specifically for ending an Activity:
+    </p>
+    <ul>
+      <li>
+        <p>
+          <strong>cancel</strong> -- The Activity is ended immediately, with little or no time for clean-up.
+        </p>
+      </li>
+      <li>
+        <p>
+          <strong>complete</strong> -- The Activity is ended, with an option to restart with new attributes.
+        </p>
+      </li>
+      <li>
+        <p>
+          <strong>stop</strong> -- The Activity is ended, but some time is allowed for clean-up.
+        </p>
+      </li>
+      <li>
+        <p>
+          <strong>release</strong> -- The parent frees an Activity, allowing time for adopters to take over as the parent and let the Activity continue. If no adopter takes over, the Activity is ended.
+        </p>
+      </li>
+    </ul>
+    <p>
+      <a name="HandlingIncomingRequests" id="HandlingIncomingRequests">&#160;</a>
+    </p>
+    <h3 id="handling-incoming-service-requests">
+      Handling Incoming Service Requests
+    </h3>
+    <p>
+      Any entity with bus access can generate a service request. Mostly they come from apps or the Activity Manager itself as a result of a scheduled or triggered Activity.
+    </p>
+    <p>
+      If the call comes from an app, the Mojo Framework should have allocated an Activity for the app (or the specific card) and passed it along with the other service call arguments. If the incoming call is the callback generated for a scheduled Activity that has been selected to run, the Activity Manager adds the <a href="/reference/data-types/activity-manager.html#CallbackProperty">&quot;$activity&quot;</a> property to the other callback parameters. This property contains information about the Activity, such as its requirements, triggers, and metadata.
+    </p>
+    <p>
+      Before processing a request, a service should associate itself with the Activity via the <code>adopt</code> or <code>monitor</code> calls. If the request could have a life of its own (a sync, for example), then calling <code>adopt</code> makes sense since the service could take over as the Activity's parent if the current parent exits. Otherwise, your service should call <code>monitor</code>.
+    </p>
+    <p>
+      A service should wait until the <code>adopt</code> or <code>monitor</code> call returns successfully before beginning Activity work. If either of these calls fail, it indicates the caller has exited and the request should not be processed.
+    </p>
+    <p>
+      Once <code>adopt</code> or <code>monitor</code> succeeds, the service can proceed to do the work indicated in the original incoming request. If the request was to simply kick-off a long running task, then the service should do this and simply return.
+    </p>
+    <p>
+      A service should continue to process incoming events on an Activity subscription. If a service receives a &quot;cancel&quot; event and the service did not use <code>adopt</code> to inform the Activity Manager that it was willing to take over as the Activity parent, it should be prepared to stop Activity work and unsubscribe. If it did use <code>adopt</code> and it receives the &quot;orphan&quot; event (indicating that the original parent(s) have unsubscribed and the service is now the Activity parent), then, when it is done, the service should call <code>complete</code> to inform the Activity Manager before unsubscribing.
+    </p>
+    <p>
+      <a name="ActivityLifecycleFlowchart" id="ActivityLifecycleFlowchart">&#160;</a>
+    </p>
+    <h3 id="activity-lifecycle-flowchart">
+      Activity Lifecycle Flowchart
+    </h3><img src="/images/ActivityLifecycleDiagram.jpg">
+    <p>
+      <a name="LifecycleFlows" id="LifecycleFlows">&#160;</a>
+    </p>
+    <h3 id="example-lifecycle-flows">
+      Example Lifecycle Flows
+    </h3>
+    <h4 id="normal-inbound-app-request">
+      Normal inbound app request
+    </h4>
+    <ul>
+      <li>App calls service method.
+      </li>
+      <li>Service subscribes to Activity by calling adopt (or monitor) using the app-provided Activity ID.
+      </li>
+      <li>Activity Manager returns success result to service.
+      </li>
+      <li>Service performs requested work.
+      </li>
+      <li>Service unsubscribes from Activity.
+      </li>
+      <li>Service returns result to app.
+      </li>
+    </ul>
+    <h4 id="potentially-long-running-inbound-app-request">
+      Potentially long running inbound app request
+    </h4>
+    <ul>
+      <li>App calls service method.
+      </li>
+      <li>Service subscribes to Activity by calling adopt (or monitor) using the app-provided Activity ID.
+      </li>
+      <li>Activity Manager returns success result to service.
+      </li>
+      <li>Service returns success result to app.
+      </li>
+      <li>Service performs requested work.
+      </li>
+      <li>Service unsubscribes from Activity.
+      </li>
+    </ul>
+    <h4 id="incoming-scheduled-background-activity">
+      Incoming scheduled background activity
+    </h4>
+    <ul>
+      <li>Activity Manager calls service-specified callback method.
+      </li>
+      <li>Service subscribes to Activity by calling adopt (or monitor) using the app-provided Activity ID.
+      </li>
+      <li>Activity Manager returns success result to service.
+      </li>
+      <li>Service performs requested work.
+      </li>
+      <li>Service calls complete for Activity.
+      </li>
+      <li>Activity Manager returns success.
+      </li>
+      <li>Service unsubscribes from Activity.
+      </li>
+    </ul>
+    <p>
+      <a name="Checklists" id="Checklists">&#160;</a>
+    </p>
+    <hr>
+    <h2 id="activity-checklists">
+      Activity Checklists
+    </h2>
+    <h3 id="incoming-requests">
+      Incoming Requests
+    </h3>
+    <ul>
+      <li>
+        <p>
+          Does your Service <code>adopt</code> (or join) the Activities on incoming requests? If not, your Service is not properly prioritized, and could be killed if the Activity Manager thinks it is running without any Activities.
+        </p>
+      </li>
+      <li>
+        <p>
+          Does your Service wait for the <code>adopt</code> (or join) to succeed before proceeding to perform the request?
+        </p>
+      </li>
+      <li>
+        <p>
+          For a long running request, does your service watch for &quot;cancel&quot; events and stop processing the Activity if one is received?
+        </p>
+      </li>
+      <li>
+        <p>
+          For background and non-immediate Activities, does your service process a bite-sized chunk of work and then re-schedule the Activity if there is more work to do rather than leave the background Activity in the running state for a long period of time?
+        </p>
+      </li>
+      <li>
+        <p>
+          Did you remember to <code>complete</code> your persistent or explicit Activities? If not, your callback will continue to be invoked.
+        </p>
+      </li>
+    </ul>
+    <h3 id="scheduled-activities">
+      Scheduled Activities
+    </h3>
+    <ul>
+      <li>
+        <p>
+          Does your Service exit when it has no work, and use the Activity Manager to schedule an Activity to launch it when more work becomes available?
+        </p>
+      </li>
+      <li>
+        <p>
+          Does your Service check to make sure its Trigger calls did not produce errors? For example, if bad parameters are provided for the Trigger, it will repeatedly fire, placing your Service and the Activity Manager in a infinite loop.
+        </p>
+      </li>
+      <li>
+        <p>
+          Does your Service use <code>complete</code> to update an Activity with new db8 watch parameters, rather than calling <code>complete</code> followed by <code>create</code> to start a new Activity? A crash between those two calls could leave you with no Activity.
+        </p>
+      </li>
+    </ul>
+    <h3 id="scheduled-interval-activities">
+      Scheduled Interval Activities
+    </h3>
+    <ul>
+      <li>
+        <p>
+          Does your Service use a <strong>smart</strong> interval for any repeating Activities, rather than creating a new scheduled Activity after the last completes?
+        </p>
+      </li>
+      <li>
+        <p>
+          Does your Service <strong>not</strong> use a &quot;precise&quot; interval if it does not need one? Precise intervals are not synchronized with other interval-based Activities and consume more power.
+        </p>
+      </li>
+      <li>
+        <p>
+          Does your Service call <code>complete</code> with <code>&quot;restart&quot;:true</code> specified to reschedule the Activity?
+        </p>
+      </li>
+    </ul>
+		</div>
+	</body>
+</html>

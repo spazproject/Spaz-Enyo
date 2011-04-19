@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>$if(pagetitle)$$pagetitle$$endif$</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="stylesheet" href="_css/chrome.css" />
+		<link rel="stylesheet" href="../_css/chrome.css" />
+		<link rel="stylesheet" href="../../_css/chrome.css" />
+		<link rel="stylesheet" href="../../../_css/chrome.css" />
+		<script src="_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="_js/doc.js" type="text/javascript"></script>
+		<script src="../_js/doc.js" type="text/javascript"></script>
+		<script src="../../_js/doc.js" type="text/javascript"></script>
+		<script src="../../../_js/doc.js" type="text/javascript"></script>
+	</head>
+	<body>
+		<div id="content">
+    
+    <h1 id="mojo.timing">
+      Mojo.Timing
+    </h1>
+    <h2 id="namespace-detail">
+      Namespace Detail
+    </h2>
+    <h2 id="method-summary">
+      Method Summary
+    </h2>
+    <ul>
+      <li>Mojo.Timing.<strong>createTimingString</strong>(prefix, label)
+      </li>
+      <li>Mojo.Timing.<strong>get</strong>(category)
+      </li>
+      <li>Mojo.Timing.<strong>getCategoriesWithPrefix</strong>(prefix)
+      </li>
+      <li>Mojo.Timing.<strong>pause</strong>(category)
+      </li>
+      <li>Mojo.Timing.<strong>PerfTimer</strong>(label)
+      </li>
+      <li>Mojo.Timing.<strong>reportSceneTiming</strong>(sceneName, sceneWindow)
+      </li>
+      <li>Mojo.Timing.<strong>reportTiming</strong>(prefix, label)
+      </li>
+      <li>Mojo.Timing.<strong>reset</strong>(category)
+      </li>
+      <li>Mojo.Timing.<strong>resetAll</strong>()
+      </li>
+      <li>Mojo.Timing.<strong>resetAllWithPrefix</strong>(prefix)
+      </li>
+      <li>Mojo.Timing.<strong>resetSceneTiming</strong>(sceneWindow)
+      </li>
+      <li>Mojo.Timing.<strong>resume</strong>(category)
+      </li>
+    </ul>
+    <hr>
+    <h2 id="method-detail">
+      Method Detail
+    </h2>
+    <h3 id="mojo.timing.createtimingstringprefix-label">
+      Mojo.Timing.<strong>createTimingString</strong>(prefix, label)
+    </h3>
+    <p>
+      Reports (with Mojo.Log.info) all the timings for a particular category prefix.
+    </p>
+    <h4 id="parameters">
+      Parameters
+    </h4>
+    <ul>
+      <li>{String} <strong>prefix</strong> - Prefix to define which timings to show
+      </li>
+      <li>{String} <strong>label</strong> - Label shown in the timing output
+      </li>
+    </ul>
+    <hr>
+    <h3 id="mojo.timing.perftimer-mojo.timing.getcategory">
+      {Mojo.Timing.PerfTimer} Mojo.Timing.<strong>get</strong>(category)
+    </h3>
+    <p>
+      Gets a performance timer for a particular category, creating it if needed.
+    </p>
+    <h4 id="parameters-1">
+      Parameters
+    </h4>
+    <ul>
+      <li>{String} <strong>category</strong> - Category of the timer
+      </li>
+    </ul>
+    <h4 id="returns">
+      Returns
+    </h4>
+    <p>
+      Performance timer for the category, or the null timer if timing is disabled.
+    </p>
+    <hr>
+    <h3 id="array-mojo.timing.getcategorieswithprefixprefix">
+      {Array} Mojo.Timing.<strong>getCategoriesWithPrefix</strong>(prefix)
+    </h3>
+    <p>
+      Returns a list of category strings with a common prefix.
+    </p>
+    <h4 id="parameters-2">
+      Parameters
+    </h4>
+    <ul>
+      <li>{String} <strong>prefix</strong> - the common prefix
+      </li>
+    </ul>
+    <h4 id="returns-1">
+      Returns
+    </h4>
+    <p>
+      Array of matching categories
+    </p>
+    <hr>
+    <h3 id="mojo.timing.pausecategory">
+      Mojo.Timing.<strong>pause</strong>(category)
+    </h3>
+    <p>
+      Pauses timing for a particular category.
+    </p>
+    <h4 id="parameters-3">
+      Parameters
+    </h4>
+    <ul>
+      <li>{String} <strong>category</strong> - category name
+      </li>
+    </ul>
+    <hr>
+    <h3 id="mojo.timing.perftimerlabel">
+      Mojo.Timing.<strong>PerfTimer</strong>(label)
+    </h3>
+    <p>
+      Creates a reset performance timer with a particular label.
+    </p>
+    <h4 id="parameters-4">
+      Parameters
+    </h4>
+    <ul>
+      <li>{String} <strong>label</strong> - Label used to identfy the timer, also used as the property name when added to the perfTimer's object.
+      </li>
+    </ul>
+    <hr>
+    <h3 id="mojo.timing.reportscenetimingscenename-scenewindow">
+      Mojo.Timing.<strong>reportSceneTiming</strong>(sceneName, sceneWindow)
+    </h3>
+    <p>
+      Reports timings for scene push/pop operations, labeled with prefix <code>'scene#'</code>.
+    </p>
+    <h4 id="parameters-5">
+      Parameters
+    </h4>
+    <ul>
+      <li>
+        <strong>sceneName</strong>
+      </li>
+      <li>
+        <strong>sceneWindow</strong>
+      </li>
+    </ul>
+    <hr>
+    <h3 id="mojo.timing.reporttimingprefix-label">
+      Mojo.Timing.<strong>reportTiming</strong>(prefix, label)
+    </h3>
+    <p>
+      Reports (with Mojo.Log.info) all the timings for a particular category prefix.
+    </p>
+    <h4 id="parameters-6">
+      Parameters
+    </h4>
+    <ul>
+      <li>{String} <strong>prefix</strong> - Prefix to define which timings to show
+      </li>
+      <li>{String} <strong>label</strong> - Label shown in the timing output
+      </li>
+    </ul>
+    <hr>
+    <h3 id="mojo.timing.resetcategory">
+      Mojo.Timing.<strong>reset</strong>(category)
+    </h3>
+    <p>
+      Reset the timings for a category.
+    </p>
+    <h4 id="parameters-7">
+      Parameters
+    </h4>
+    <ul>
+      <li>{String} <strong>category</strong> - name of the category to reset
+      </li>
+    </ul>
+    <hr>
+    <h3 id="mojo.timing.resetall">
+      Mojo.Timing.<strong>resetAll</strong>()
+    </h3>
+    <p>
+      Resets all the performance timers.
+    </p>
+    <hr>
+    <h3 id="mojo.timing.resetallwithprefixprefix">
+      Mojo.Timing.<strong>resetAllWithPrefix</strong>(prefix)
+    </h3>
+    <p>
+      Resets all the timers with a common prefix.
+    </p>
+    <h4 id="parameters-8">
+      Parameters
+    </h4>
+    <ul>
+      <li>{String} <strong>prefix</strong> - common prefix
+      </li>
+    </ul>
+    <hr>
+    <h3 id="mojo.timing.resetscenetimingscenewindow">
+      Mojo.Timing.<strong>resetSceneTiming</strong>(sceneWindow)
+    </h3>
+    <p>
+      Resets timings for scene push/pop operations.
+    </p>
+    <h4 id="parameters-9">
+      Parameters
+    </h4>
+    <ul>
+      <li>
+        <strong>sceneWindow</strong>
+      </li>
+    </ul>
+    <hr>
+    <h3 id="mojo.timing.resumecategory">
+      Mojo.Timing.<strong>resume</strong>(category)
+    </h3>
+    <p>
+      Starts or resumes timing for a particular category.
+    </p>
+    <h4 id="parameters-10">
+      Parameters
+    </h4>
+    <ul>
+      <li>{String} <strong>category</strong> - category name
+      </li>
+    </ul>
+		</div>
+	</body>
+</html>

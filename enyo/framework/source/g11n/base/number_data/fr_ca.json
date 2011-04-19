@@ -1,0 +1,6 @@
+{
+	"numberDivider": ",",
+	"numberDecimal": ".",
+	"currencyPrepend": "$",
+	"currencyAppend": ""
+}

@@ -1,0 +1,29 @@
+/* Copyright 2009-2011 Hewlett-Packard Development Company, L.P. All rights reserved. */
+.enyo-sliding-view-shadow {
+	position: absolute;
+	z-index: 2;
+	height: 100%;
+	width: 20px;
+	left: -20px;
+	background: url(../images/sliding-shadow.png) repeat-y;
+	pointer-events: none;
+}
+
+.enyo-sliding-view-nub {
+	position: absolute;
+	-webkit-box-sizing: border-box;
+	cursor: pointer;
+	z-index: 2;
+	left: -20px;
+	width: 40px;
+	top: 0;
+	bottom: 0;
+}
+
+.enyo-sliding-view {
+	position: relative;
+	/* make sure the layer exist from the beginning so behavior doesn't change
+	   the first time it's dragged.  This makes debugging and performance
+	   erratic */
+	-webkit-transform: translate3d(0,0,0);
+}

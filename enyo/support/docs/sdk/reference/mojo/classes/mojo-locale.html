@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>$if(pagetitle)$$pagetitle$$endif$</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="stylesheet" href="_css/chrome.css" />
+		<link rel="stylesheet" href="../_css/chrome.css" />
+		<link rel="stylesheet" href="../../_css/chrome.css" />
+		<link rel="stylesheet" href="../../../_css/chrome.css" />
+		<script src="_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="_js/doc.js" type="text/javascript"></script>
+		<script src="../_js/doc.js" type="text/javascript"></script>
+		<script src="../../_js/doc.js" type="text/javascript"></script>
+		<script src="../../../_js/doc.js" type="text/javascript"></script>
+	</head>
+	<body>
+		<div id="content">
+    
+    <h1 id="mojo.locale">
+      Mojo.Locale
+    </h1>
+    <h2 id="namespace-detail">
+      Namespace Detail
+    </h2>
+    <h2 id="summary">
+      Summary
+    </h2>
+    <ul>
+      <li>Mojo.Locale.<strong>getDayNames</strong>
+      </li>
+      <li>Mojo.Locale.<strong>getMonthNames</strong>
+      </li>
+    </ul>
+    <h2 id="method-summary">
+      Method Summary
+    </h2>
+    <ul>
+      <li>Mojo.Locale.<strong>getCurrentFormatRegion</strong>()
+      </li>
+      <li>Mojo.Locale.<strong>getCurrentLocale</strong>()
+      </li>
+      <li>Mojo.Locale.<strong>readStringTable</strong>(fileName, locale, pathToResourcesDir, mergeFunc)
+      </li>
+    </ul>
+    <hr>
+    <h2 id="detail">
+      Detail
+    </h2>
+    <h3 id="mojo.locale.getdaynames">
+      Mojo.Locale.<strong>getDayNames</strong>
+    </h3>
+    <p>
+      Returns an array containing the names of the weekdays in calendar order for the current locale. Array always starts with Sunday.
+    </p>
+    <hr>
+    <h3 id="mojo.locale.getmonthnames">
+      Mojo.Locale.<strong>getMonthNames</strong>
+    </h3>
+    <p>
+      Returns an array containing the names of the months in calendar order for the current locale. Array always starts with January.
+    </p>
+    <hr>
+    <h2 id="method-detail">
+      Method Detail
+    </h2>
+    <h3 id="mojo.locale.getcurrentformatregion">
+      Mojo.Locale.<strong>getCurrentFormatRegion</strong>()
+    </h3>
+    <p>
+      Returns the currently set region used for formatting (numbers, currency, dates, etc.; see Mojo.Format for more information) as an ISO 639- formatted string (e.g., 'us' for US formatting).
+    </p>
+    <h4 id="returns">
+      Returns
+    </h4>
+    <p>
+      Current format region identifier string.
+    </p>
+    <hr>
+    <h3 id="mojo.locale.getcurrentlocale">
+      Mojo.Locale.<strong>getCurrentLocale</strong>()
+    </h3>
+    <p>
+      Returns the currently set locale as an ISO 639-formatted string (e.g., <code>'en_us'</code> for US English).
+    </p>
+    <h4 id="returns-1">
+      Returns
+    </h4>
+    <p>
+      Current locale identifier string.
+    </p>
+    <hr>
+    <h3 id="mojo.locale.readstringtablefilename-locale-pathtoresourcesdir-mergefunc">
+      Mojo.Locale.<strong>readStringTable</strong>(fileName, locale, pathToResourcesDir, mergeFunc)
+    </h3>
+    <p>
+      This method loads and merges the localized string tables present in the application's or framework's resource locale hierarchy and returns the parsed results.
+    </p>
+    <h4 id="parameters">
+      Parameters
+    </h4>
+    <ul>
+      <li>
+        <p>
+          {String} <strong>fileName</strong> - name of JSON file. Defaults to &quot;strings.json&quot; if falsy.
+        </p>
+      </li>
+      <li>
+        <p>
+          {String} <strong>locale</strong> - name of locale. Defaults to current locale if null/undefined; nothing if empty string.
+        </p>
+      </li>
+      <li>
+        <p>
+          {String} <strong>pathToResourcesDir</strong> - defaults to the framework's resources directory.
+        </p>
+      </li>
+      <li>
+        <p>
+          {Function} <strong>mergeFunc</strong> - a function for merging an array of string &quot;tables&quot; into a single object. It takes the form of mergeFunc(tables), where 'tables' is an array of objects/arrays whose properties/values represent entries in a string table, and returns the resulting merger of those tables.
+        </p>
+        <p>
+          The 'tables' param is sorted in order of locale precedence from lowest to highest: unlocalized first, language second, region last. Missing string table files at any of those levels will be represented by an empty object: {}. Defaults to a function that merges Objects using Object.extend().
+        </p>
+      </li>
+    </ul>
+		</div>
+	</body>
+</html>

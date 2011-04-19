@@ -1,0 +1,318 @@
+/* Copyright 2009-2011 Hewlett-Packard Development Company, L.P. All rights reserved. */
+/* Copyright 2009 Palm, Inc.  All rights reserved. */
+
+
+.notification-title {
+		font-size: 18px;
+		font-weight: bold;
+		color: #fff;
+}
+
+.notification-text {
+		font-size: 14px;
+		font-weight: bold;
+		color: #fff;
+}
+
+.popupalert-container {
+		width: 320px;
+		height: 180px;
+		vertical-align: middle;
+		background-color: #000000;
+		color: #ffffff;
+}
+
+.popupalert-container.popupalert-text {
+		margin-top: 5px;
+		width: 260px;
+		height: 38px;
+		margin-top: 4px;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		font-size: 14px;
+		line-height: 20px;
+		font-weight: bold;
+}
+
+.system-notification {
+		overflow: hidden;
+}
+
+.message {
+	position: relative;
+	margin:10px 20px 10px 20px;
+}
+
+.message .notification-icon {
+		float: right;
+		margin-left:10px;
+}
+
+.message .notification-icon + .notification-text {
+	min-height:50px;
+}
+
+.message .notification-text .title {
+		/*padding: 15px 0 0 10px;*/
+		margin-bottom:5px;
+		font-size: 18px;
+		font-weight: bold;
+		color: #fff;
+}
+
+.message .notification-text .body {
+		/*padding: 0 0 0 10px;*/
+		font-size: 14px;
+		font-weight: bold;
+		color: #fff;
+}       
+
+.palm-notification-button {
+		height: 45px;
+		font-size: 20px;
+		color: #fff;
+		text-align: center;
+		line-height: 45px;
+		margin-bottom: 10px;
+		-webkit-border-image: url(../images/palm-notification-button.png) 0 20 45 20;
+		-webkit-box-sizing: border-box;
+		-webkit-user-select: none;
+   		border-width: 0px 20px 0px 20px;
+}       
+
+.palm-notification-button.selected {
+		-webkit-border-image: url(../images/palm-notification-button.png) 45 20 0 20;
+}
+
+.palm-notification-button.affirmative {    
+		-webkit-border-image: url(../images/palm-notification-button-affirmative.png) 0 20 45 20;   
+}
+
+.palm-notification-button.affirmative.selected {
+		-webkit-border-image: url(../images/palm-notification-button-affirmative.png) 45 20 0 20;
+}
+                                                                                            
+.palm-notification-button.negative {    
+		-webkit-border-image: url(../images/palm-notification-button-negative.png) 0 20 45 20;   
+}
+
+.palm-notification-button.negative.selected {
+		-webkit-border-image: url(../images/palm-notification-button-negative.png) 45 20 0 20;
+}
+
+.palm-notification-button.alternate {
+		-webkit-border-image: url(../images/palm-notification-button-alternate.png) 0 20 45 20;   
+}
+
+.palm-notification-button.alternate.selected {
+		-webkit-border-image: url(../images/palm-notification-button-alternate.png) 45 20 0 20;
+}
+
+/*drive mode*/
+
+.system-notification.drive-mode .message .notification-icon {
+		background: url(../images/drive-mode-icon.png) top left no-repeat;
+		width: 50px;
+		height: 80px;
+}
+
+/*power off*/
+
+.system-notification.power-off .message .notification-icon {
+		background: url(../images/warning-icon.png) top left no-repeat;
+		width: 70px;
+		height: 90px;
+}
+
+.system-notification .info-icon {
+  height: 50px;
+  width: 66px;
+  background: url(../images/palm-notification-button-affirmative-info.png) no-repeat top center;
+  right:-20px;
+  position: absolute;
+  margin-top: -47px;
+}
+
+.system-notification .info-icon.selected {
+  background: url(../images/palm-notification-button-affirmative-info.png) no-repeat center center;
+}
+
+.system-notification.usb-mode .info-icon {
+  height: 50px;
+  width: 66px;
+  background: url(../images/palm-notification-button-info.png) no-repeat top center;
+  right: -20px;
+  position: absolute;
+  margin-top: -3px;
+}
+
+.system-notification.usb-mode .info-icon.selected {
+  background: url(../images/palm-notification-button-info.png) no-repeat center center;
+}
+
+/*network availability*/
+
+.system-notification.network-availability .message .notification-icon {
+		background: url(../images/wifi-zero-bars.png) bottom left no-repeat;
+		width: 54px;
+		height: 60px;
+}
+
+/*flight mode*/
+
+.system-notification.flight-mode .message .notification-icon {
+		background: url(../images/flight-mode-icon.png) center center no-repeat;
+		width: 53px;
+		height: 55px;
+}
+
+/*low battery */
+
+
+.system-notification.low-battery {
+		height: 150px; 
+}
+
+.system-notification.low-battery .notification-text {
+		min-height: 70px; 
+}
+
+.system-notification.low-battery .message .low-battery {
+		background: url(../images/system-notification-lowbattery.png) center center no-repeat;
+		width: 48px;
+		height: 70px;
+}
+
+/*oh snap!*/
+
+.system-notification.warning .message .notification-icon {
+		background: url(../images/warning-icon.png) bottom left no-repeat;
+		height: 59px;
+		width: 59px;
+		margin-top:-8px;
+		margin-right:-8px;
+}
+
+/*wifi*/
+
+.system-notification.wifi .message .notification-icon {
+		background: url(../images/system-notification-wifi-icon.png) bottom left no-repeat;
+		width: 60px;
+		height: 48px;
+}         
+                    
+/*bluetooth*/
+.system-notification.bluetooth .notification-text {
+	min-height: 57px;
+}
+.system-notification.bluetooth .message .notification-icon {
+		background: url(../images/system-notification-bluetooth.png) bottom left no-repeat;
+		width: 58px;
+		height: 70px;
+		margin-top:-8px;
+		margin-right:-8px;
+}
+
+/*location service*/
+
+.system-notification.location .message .notification-icon {
+		background: url(../images/system-notification-location-services.png) bottom left no-repeat;
+		width: 64px;
+		height: 64px;
+		margin-right:-9px;
+}
+
+/*update*/
+.system-notification.update .message .notification-icon {
+		background: url(../images/notification-large-update.png) bottom left no-repeat;
+		width: 48px;
+		height: 48px;
+}
+
+/* full-screen drive mode */
+
+body.usb-drive-fullscreen {
+		background: #000 url(../images/drive-mode-fullscreen.png) top left no-repeat;
+}
+
+body.media-sync-fullscreen {
+		background: #000 url(../images/media-sync-fullscreen.png) top left no-repeat;
+}
+
+.usb-drive-fullscreen .eject-text,
+.media-sync-fullscreen .eject-text {
+		width: 100%;
+		text-align: center;
+		position: fixed;
+		bottom: 4px;
+		font-size: 14px;
+		font-weight: bold;
+		color: #fff;
+}
+
+.palm-dashboard-text.normal { 
+	font-weight: normal;
+}
+
+.palm-dashboard-icon.charging { background: url(../images/notification-large-usb.png) center left no-repeat; }
+
+.palm-dashboard-icon.dock { background: url(../images/notification-large-dock.png) center left no-repeat; }
+
+.palm-dashboard-icon.dataimport { background: url(../images/notification-large-sync.png) center left no-repeat; }
+
+.palm-dashboard-icon.phonenetworkerror { background: url(../images/notification-large-error.png) center left no-repeat; }
+
+.palm-dashboard-icon.updateAvailable { background: url(../images/notification-large-update.png) center left no-repeat; }
+
+.palm-dashboard-icon.tutorial { background: url(../images/notification-large-tutorial.png) center left no-repeat; }
+
+.palm-dashboard-icon.apprestore { background: url(../images/notification-large-appcatalog.png) center left no-repeat; }
+
+.palm-dashboard-icon.info { background: url(../images/notification-large-info.png) center left no-repeat; }
+
+.palm-dashboard-icon.opensearch { background: url(../images/opensearch-large-icon.png) center left no-repeat; }
+
+/* syncing account specific styles */
+
+.sync-activity-animation {
+	margin-top: 7px;
+	float: right;
+}
+
+.palm-dashboard-icon.dashboard-account-icon { 
+  background: url(../images/notification-large-sync.png) center left no-repeat;
+}
+
+.palm-dashboard-icon.dashboard-account-icon.EAS,
+.palm-dashboard-icon.dashboard-account-icon.eas {     
+  background: url(../images/notification-large-outlook.png) center center no-repeat;
+}
+
+.palm-dashboard-icon.dashboard-account-icon.Google,
+.palm-dashboard-icon.dashboard-account-icon.gmail {     
+  background: url(../images/notification-large-google.png) center center no-repeat;
+}
+
+.palm-dashboard-icon.dashboard-account-icon.facebook {       
+  background: url(../images/notification-large-facebook.png) center center no-repeat;
+}
+
+.palm-dashboard-icon.dashboard-account-icon.linkedin {       
+  background: url(../images/notification-large-linkedin.png) center center no-repeat;
+}
+
+.palm-dashboard-icon.dashboard-account-icon.yahoo {       
+  background: url(../images/notification-large-yahoo.png) center center no-repeat;
+}
+
+/** REMOVE THIS AFTER 1.0 **/
+/** This is a duplicate from global-notifications.css for account sycning dashboard scenes**/
+.palm-activity-indicator-small { 
+        background: url(../images/activity-indicator-32x32.png) no-repeat; 
+        height: 32px;
+        width: 32px;
+}
+
+.palm-dark .palm-activity-indicator-small { 
+	background: url(../images/activity-indicator-32x32-dark.png) no-repeat; 
+}

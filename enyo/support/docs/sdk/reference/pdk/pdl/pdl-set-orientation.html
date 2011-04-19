@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>$if(pagetitle)$$pagetitle$$endif$</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="stylesheet" href="_css/chrome.css" />
+		<link rel="stylesheet" href="../_css/chrome.css" />
+		<link rel="stylesheet" href="../../_css/chrome.css" />
+		<link rel="stylesheet" href="../../../_css/chrome.css" />
+		<script src="_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="_js/doc.js" type="text/javascript"></script>
+		<script src="../_js/doc.js" type="text/javascript"></script>
+		<script src="../../_js/doc.js" type="text/javascript"></script>
+		<script src="../../../_js/doc.js" type="text/javascript"></script>
+	</head>
+	<body>
+		<div id="content">
+    
+    <h1 id="pdl_setorientation">
+      PDL_SetOrientation
+    </h1>
+    <h2 id="description">
+      Description
+    </h2>
+    <p>
+      Notifies the system of the application's orientation, allowing it to align pop-up alerts and banner messages accordingly. For example, if you are in landscape mode, call this with <code>PDL_ORIENTATION_270</code>.
+    </p>
+    <p>
+      Legal values are:
+    </p>
+    <ul>
+      <li>
+        <code>PDL_ORIENTATION_0</code> — The center button is below the screen.
+      </li>
+      <li>
+        <code>PDL_ORIENTATION_90</code> — The center button is to the left of the screen.
+      </li>
+      <li>
+        <code>PDL_ORIENTATION_180</code> — The center button is above the screen.
+      </li>
+      <li>
+        <code>PDL_ORIENTATION_270</code> — The center button is to the right of the screen.
+      </li>
+    </ul>
+    <h2 id="syntax">
+      Syntax
+    </h2>
+    <blockquote>
+      <pre>
+<code>PDL_Err PDL_SetOrientation(PDL_Orientation orientation);
+</code>
+</pre>
+    </blockquote>
+    <h2 id="returns">
+      Returns
+    </h2>
+    <blockquote>
+      <pre>
+<code>PDL_INVALIDINPUT — Invalid orientation passed.
+PDL_ECONNECTION — Unable to communicate with app card.
+PDL_NOERROR — Success.
+</code>
+</pre>
+    </blockquote>
+		</div>
+	</body>
+</html>

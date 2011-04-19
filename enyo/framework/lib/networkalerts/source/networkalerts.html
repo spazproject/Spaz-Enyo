@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+	"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<title>Network Alerts</title>
+	<script src="../../../enyo.js" type="text/javascript"></script>
+</head>
+
+<body>
+	<script type="text/javascript">
+		var view;
+		var wName = window.name;
+		console.log("Window name " + wName);
+		if(wName == "NetworkAlerts-WiFi-Alert")
+			view = new WiFiAlert();
+		else if(wName == "NetworkAlerts-FlightMode-Alert")
+			view = new FlightModeAlert();
+		else if(wName == "NetworkAlerts-BT-Alert")
+			view = new BluetoothAlert();
+		else if(wName == "NetworkAlerts-ManualNetwork-Alert")
+			view = new ManualNetworkAlert();
+
+		view && view.renderInto(document.body);
+	</script>
+</body>
+</html>

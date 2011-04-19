@@ -1,0 +1,915 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>$if(pagetitle)$$pagetitle$$endif$</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="stylesheet" href="_css/chrome.css" />
+		<link rel="stylesheet" href="../_css/chrome.css" />
+		<link rel="stylesheet" href="../../_css/chrome.css" />
+		<link rel="stylesheet" href="../../../_css/chrome.css" />
+		<script src="_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="_js/doc.js" type="text/javascript"></script>
+		<script src="../_js/doc.js" type="text/javascript"></script>
+		<script src="../../_js/doc.js" type="text/javascript"></script>
+		<script src="../../../_js/doc.js" type="text/javascript"></script>
+	</head>
+	<body>
+		<div id="content">
+    
+    <h1 id="mojo.widget.webview">
+      Mojo.Widget.WebView
+    </h1>
+    <h2 id="namespace-detail">
+      Namespace Detail
+    </h2>
+    <h3 id="overview">
+      Overview
+    </h3>
+    <p>
+      To embed a contained web object, declare and instantiate a WebView widget. You can bound the widget within your declaration to get a scrolling view, or allow it to take over an entire scene at your discretion. You can use it to render local markup or to load an external URL; as long as you can define the source as a URL, WebView can be applied.
+    </p>
+    <h3 id="declaration">
+      Declaration
+    </h3>
+    <blockquote>
+      <pre>
+<code>&lt;div x-mojo-element=&quot;WebView&quot; id=&quot;WebId&quot; class=&quot;WebClass&quot; name=&quot;WebName&quot;&gt;&lt;/div&gt;
+</code>
+</pre>
+    </blockquote>
+    <table border="1">
+      <tbody>
+        <tr>
+          <th>
+            Properties
+          </th>
+          <th>
+            Required
+          </th>
+          <th>
+            Value
+          </th>
+          <th>
+            Description
+          </th>
+        </tr>
+        <tr>
+          <td>
+            x-mojo-element
+          </td>
+          <td>
+            Required
+          </td>
+          <td>
+            WebView
+          </td>
+          <td>
+            Declares the widget as type 'WebView'.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            id
+          </td>
+          <td>
+            Required
+          </td>
+          <td>
+            Any String
+          </td>
+          <td>
+            Identifies the widget element for use when instantiating or rendering.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            class
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            Any String
+          </td>
+          <td>
+            Provide your own unique class and override the framework's styles.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            name
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            Any String
+          </td>
+          <td>
+            Adds a unique name to the WebView widget; generally used in templates.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="events">
+      Events
+    </h3>
+    <blockquote>
+      <pre>
+<code>Mojo.Event.listen(this.controller.get(&quot;WebId&quot;),
+  Mojo.Event.webViewLoadProgress, this.handleUpdate);
+</code>
+</pre>
+    </blockquote>
+    <table border="1">
+      <tbody>
+        <tr>
+          <th>
+            Event Type
+          </th>
+          <th>
+            Value
+          </th>
+          <th>
+            Event Handling
+          </th>
+        </tr>
+        <tr>
+          <td>
+            Mojo.Event.webViewLoadStarted
+          </td>
+          <td></td>
+          <td>
+            Indicates that the WebView widget has started loading the content.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Mojo.Event.webViewLoadProgress
+          </td>
+          <td>
+            progress
+          </td>
+          <td>
+            Indicates that some progress has been made in loading content and returns the amount in progress. Note: this will show 100% even in the case of a failed page load.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Mojo.Event.webViewLoadStopped
+          </td>
+          <td></td>
+          <td>
+            Indicates that the page has finished loading. Note: &quot;finished loading&quot; is a tricky concept in AJAX web pages, so be careful how you use this event.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Mojo.Event.webViewLoadFailed
+          </td>
+          <td>
+            errorCode, message
+          </td>
+          <td>
+            Indicates that the content failed to load and supplies an error code (errorCode) and localized message (message).
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Mojo.Event.webViewDownloadFinished
+          </td>
+          <td>
+            url, mimeType, tmpFilePath
+          </td>
+          <td>
+            File download completed.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Mojo.Event.webViewLinkClicked
+          </td>
+          <td>
+            url
+          </td>
+          <td>
+            The user tapped a link.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Mojo.Event.webViewTitleUrlChanged
+          </td>
+          <td>
+            title, url, canGoBack, canGoForward
+          </td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>
+            Mojo.Event.webViewTitleChanged
+          </td>
+          <td>
+            title
+          </td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>
+            Mojo.Event.webViewUrlChanged
+          </td>
+          <td>
+            url, canGoBack, canGoForward
+          </td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>
+            Mojo.Event.webViewCreatePage
+          </td>
+          <td>
+            pageIdentifier
+          </td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>
+            Mojo.Event.webViewTapRejected
+          </td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>
+            Mojo.Event.webViewScrollAndScaleChanged
+          </td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>
+            Mojo.Event.webViewEditorFocused
+          </td>
+          <td>
+            focused
+          </td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>
+            Mojo.Event.webViewUpdateHistory
+          </td>
+          <td>
+            url, reload
+          </td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>
+            Mojo.Event.webViewSetMainDocumentError
+          </td>
+          <td>
+            domain, errorCode, failingURL, message
+          </td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>
+            Mojo.Event.webViewServerConnect
+          </td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>
+            Mojo.Event.webViewServerDisconnect
+          </td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>
+            Mojo.Event.webViewResourceHandoff
+          </td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>
+            Mojo.Event.webViewFirstPaintComplete
+          </td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>
+            Mojo.Event.webViewUrlRedirect
+          </td>
+          <td>
+            url, appId
+          </td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>
+            Mojo.Event.webViewModifierTap
+          </td>
+          <td>
+            up, linkInfo
+          </td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>
+            Mojo.Event.webViewMimeNotSupported
+          </td>
+          <td>
+            url, mimeType
+          </td>
+          <td>
+            Indicates that the BrowserServer cannot handle a given URL.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Mojo.Event.webViewMimeHandoff
+          </td>
+          <td>
+            url, mimeType
+          </td>
+          <td>
+            Indicates that the BrowserServer cannot (or isn't supposed to) handle a mime type.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Mojo.Event.webViewPluginSpotlightStart
+          </td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>
+            Mojo.Event.webViewPluginSpotlightEnd
+          </td>
+          <td></td>
+          <td></td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="instantiation">
+      Instantiation
+    </h3>
+    <blockquote>
+      <pre>
+<code>this.controller.setupWidget(&quot;WebId&quot;,
+  this.attributes = {
+      url: 'http://www.palm.com',
+      minFontSize: 18,
+      virtualpagewidth: 20,
+      virtualpageheight: 10
+  },
+  this.model = {
+  }
+); 
+</code>
+</pre>
+    </blockquote>
+    <h3 id="attribute-properties">
+      Attribute Properties
+    </h3>
+    <table border="1">
+      <tbody>
+        <tr>
+          <th>
+            Attribute Property
+          </th>
+          <th>
+            Type
+          </th>
+          <th>
+            Required
+          </th>
+          <th>
+            Default
+          </th>
+          <th>
+            Description
+          </th>
+        </tr>
+        <tr>
+          <td>
+            virtualpageheight
+          </td>
+          <td>
+            Integer
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            none
+          </td>
+          <td>
+            <b>DEPRECATED</b> The browser's virtual page height.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            virtualpagewidth
+          </td>
+          <td>
+            Integer
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            none
+          </td>
+          <td>
+            <b>DEPRECATED</b> The browser's virtual page width.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            url
+          </td>
+          <td>
+            String
+          </td>
+          <td>
+            Required
+          </td>
+          <td>
+            none
+          </td>
+          <td>
+            The initial URL to display.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            pageIdentifier
+          </td>
+          <td>
+            String
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            none
+          </td>
+          <td>
+            The BrowserServer page identifier. This is used when the BrowserServer instructs an application to open a new page.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            minFontSize
+          </td>
+          <td>
+            Integer
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            none
+          </td>
+          <td>
+            The minimum font size that the browser will display.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            topMargin
+          </td>
+          <td>
+            Integer
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            none
+          </td>
+          <td>
+            The margin above the WebView that is scrolled off the screen when a new page is loaded.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            cacheAdapter
+          </td>
+          <td>
+            Boolean
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            undefined
+          </td>
+          <td>
+            If true, cache this adapter; if false, do not. If undefined, use the browser-adapter default. Default is undefined.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            interrogateClicks
+          </td>
+          <td>
+            Boolean
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            false
+          </td>
+          <td>
+            If the host application wants to be called for every hyperlink click via Mojo.Event.webViewLinkClicked event.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            showClickedLink
+          </td>
+          <td>
+            Boolean
+          </td>
+          <td>
+            Optional
+          </td>
+          <td>
+            true
+          </td>
+          <td>
+            Styles a clicked link with grey background and border.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <p>
+      Note that virtualpageheight and virtualpagewidth attributes are deprecated. The supported method for controlling the size of content within a WebView is to use a viewport meta tag in the target HTML file. See the article on Developing Web Content for the Palm webOS Platform for more information.
+    </p>
+    <h3 id="model-properties">
+      Model Properties
+    </h3>
+    <p>
+      The WebView widget has no model properties.
+    </p>
+    <h3 id="methods">
+      Methods
+    </h3>
+    <table border="1">
+      <tbody>
+        <tr>
+          <th>
+            Method
+          </th>
+          <th>
+            Arguments
+          </th>
+          <th>
+            Description
+          </th>
+        </tr>
+        <tr>
+          <td>
+            setTopMargin
+          </td>
+          <td>
+            Integer
+          </td>
+          <td>
+            Sets the top margin (in pixels).
+          </td>
+        </tr>
+        <tr>
+          <td>
+            clearCache
+          </td>
+          <td>
+            None
+          </td>
+          <td>
+            Clears browser cache. Will clear the cache for all open pages.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            clearCookies
+          </td>
+          <td>
+            None
+          </td>
+          <td>
+            Clears browser cookies. Will clear cookies for all open pages.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            deleteImage
+          </td>
+          <td>
+            String {fname}
+          </td>
+          <td>
+            Deletes the image file specified by the argument.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            generateIconFromFile
+          </td>
+          <td>
+            String {inFilName}, String {outFileName}, Number {left}, Number {top}, Number {right}, Number {bottom}
+          </td>
+          <td>
+            Generates a 64x64 pixel icon from a portion of an input file. The output icon will be given a drop shadow and sheen consistent with other launcher icons.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            goBack
+          </td>
+          <td>
+            None
+          </td>
+          <td>
+            Goes to the previous page in the user's browing history.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            goForward
+          </td>
+          <td>
+            None
+          </td>
+          <td>
+            Goes to the next page in the user's browsing history.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            openURL
+          </td>
+          <td>
+            String
+          </td>
+          <td>
+            Navigates to the specified url in the WebView.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            reloadPage
+          </td>
+          <td>
+            None
+          </td>
+          <td>
+            Reloads the currently loaded page.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            resizeImage
+          </td>
+          <td>
+            String {inFileName}, String {outFileName},Number {width}, Number {height}
+          </td>
+          <td>
+            Resizes the input file (PNG format only) to the specified width/height and writes the new image to the specified output file. Note that pathnames must be relative names (e.g., '/tmp/image.png') rather than URL-like (e.g., 'file://var/usr/applications/myApp/images/image.png').
+          </td>
+        </tr>
+        <tr>
+          <td>
+            getHistoryState
+          </td>
+          <td>
+            Function {successCb}
+          </td>
+          <td>
+            Retrieves the current history state from the Browser server. Will call successCb with results.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            isEditing
+          </td>
+          <td>
+            Function {callback}
+          </td>
+          <td>
+            Determines if an editable field is in focus. Will call &quot;callback&quot; with boolean value.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            insertStringAtCursor
+          </td>
+          <td>
+            String {string}
+          </td>
+          <td>
+            Inserts given string at cursor position of editable field in focus.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            setBlockPopups
+          </td>
+          <td>
+            Boolean
+          </td>
+          <td>
+            Enables or disables popup blocking. This setting is on a per-WebView widget basis.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            setAcceptCookies
+          </td>
+          <td>
+            Boolean
+          </td>
+          <td>
+            Enables or disables accepting cookies. This setting is on a per-WebView widget basis.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            addUrlRedirect
+          </td>
+          <td>
+            String {urlRe}, Boolean {redirect},Object {userData}, Number {type}
+          </td>
+          <td>
+            Adds a URL redirect. When the browser server nagivates to a URL matching urlRe and redirect is true, then it will not navigate to that URL and will instead send a Mojo.Event.webViewUrlRedirect event.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            addSystemRedirects
+          </td>
+          <td>
+            String {appId}
+          </td>
+          <td>
+            Adds all entries from the system's command/resource handlers table. The optional appId parameter can be used to omit all command/resource handler entries that match a given app ID.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            saveViewToFile
+          </td>
+          <td>
+            String {fname}, Number {left}, Number {top}, Number {width}, Number {height}
+          </td>
+          <td>
+            Saves the current view to the specified file. The save region is optional. If omitted then the full view will be saved to fname.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            setEnableJavaScript
+          </td>
+          <td>
+            Boolean
+          </td>
+          <td>
+            Enables or disables JavaScript. This setting is on a per-WebView widget basis.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            stopLoad
+          </td>
+          <td>
+            None
+          </td>
+          <td>
+            Stops loading the current page.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            focus
+          </td>
+          <td>
+            None
+          </td>
+          <td>
+            Focuses the WebView widget.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            blur
+          </td>
+          <td>
+            None
+          </td>
+          <td>
+            Blurs the WebView widget.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            clearHistory
+          </td>
+          <td>
+            None
+          </td>
+          <td>
+            Clears session history. This setting is on a per-WebView widget basis.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            setShowClickedLink
+          </td>
+          <td>
+            Boolean
+          </td>
+          <td>
+            Enhances the showing of a clicked link. This setting is on a per-WebView widget basis.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            copy
+          </td>
+          <td>
+            Function {callback}
+          </td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>
+            selectAll
+          </td>
+          <td>
+            None
+          </td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>
+            pluginSpotlightRemove
+          </td>
+          <td>
+            None
+          </td>
+          <td>
+            WebView gets out of the spotlight mode, in which gestures only go into the spotlight rect. Gestures modified by meta go into the adapter and not into the spotlight.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            pluginSpotlightCreate
+          </td>
+          <td>
+            Number {left}, Number {top}, Number {right}, Number {bottom}, String {mode}, Boolean {notifyClient})
+          </td>
+          <td>
+            Creates spotlight at given rectangle.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="summary">
+      Summary
+    </h3>
+    <ul>
+      <li>Mojo.Widget.WebView.<strong>DialogPromptAssistant</strong>
+      </li>
+      <li>Mojo.Widget.WebView.<strong>DialogUsernamePasswordAssistant</strong>
+      </li>
+    </ul>
+    <h3 id="detail">
+      Detail
+    </h3>
+    <h4 id="mojo.widget.webview.dialogpromptassistant">
+      Mojo.Widget.WebView.<strong>DialogPromptAssistant</strong>
+    </h4>
+    <p>
+      Assistant for the prompt dialog.
+    </p>
+    <h4 id="mojo.widget.webview.dialogusernamepasswordassistant">
+      Mojo.Widget.WebView.<strong>DialogUsernamePasswordAssistant</strong>
+    </h4>
+    <p>
+      Assistant for the username/password dialog.
+    </p>
+		</div>
+	</body>
+</html>

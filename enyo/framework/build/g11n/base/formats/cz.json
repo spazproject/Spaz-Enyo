@@ -1,0 +1,56 @@
+{
+	"numberTripleDivider": " ",
+	"numberDecimal": ",",
+	"currencyPrepend": "Kč",
+	"currencyAppend": "",
+	"percentageSpace": false,
+	"localeName": "Czech Republic",
+	"titleCase": false,
+
+	"fullDate": "EEEE, d. MMMM yyyy",
+	"longDate": "d. MMMM yyyy",
+	"mediumDate": "d.M.yyyy",
+	"defaultDate": "d.M.yyyy",
+	"shortDate": "d.M.yy",
+	"dateFieldOrder": "dmy",
+	"timeFieldOrder": "hma",
+
+	"fullTime24": "HH:mm:ss",
+	"fullTime12": "hh:mm:ss a",
+	"longTime24": "HH:mm:ss zzz",
+	"longTime12": "hh:mm:ss a zzz",
+	"mediumTime24": "H:mm:ss",
+	"mediumTime12": "h:mm:ss a",
+	"defaultTime24": "H:mm:ss",
+	"defaultTime12": "h:mm:ss a",
+	"shortTime24": "H:mm",
+	"shortTime12": "h:mm a",
+	"dateTimeFormat": "DATE TIME",
+
+	"is12HourDefault": true,
+	"firstDayOfWeek": 1,
+	
+	"isMetric": true,
+
+	"shortDMDate": "d.M",
+	"mediumDMDate": "d.M",
+	"longDMDate": "d. MMMM",
+	"shortMYDate": "M.yy",
+	"mediumMYDate": "M.yyyy",
+	"longMYDate": "MMMM yyyy",
+
+	"shortWeekday": "EE",
+	"mediumWeekday": "EEE",
+	"longWeekday": "EEEE",
+
+	"weekDateFormat": "WEEK, DATE",
+	"timeAFormat": "TIME AM",
+	"timeZFormat": "TIME ZONE",
+	"timeAZFormat": "TIME AM ZONE",
+
+	"smallTime12": "h:mm",
+	"bigTime12": "hh:mm:ss",
+
+	"smallTime24": "H:mm",
+	"bigTime24": "HH:mm:ss"
+}

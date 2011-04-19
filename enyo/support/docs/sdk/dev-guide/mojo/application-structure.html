@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>$if(pagetitle)$$pagetitle$$endif$</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="stylesheet" href="_css/chrome.css" />
+		<link rel="stylesheet" href="../_css/chrome.css" />
+		<link rel="stylesheet" href="../../_css/chrome.css" />
+		<link rel="stylesheet" href="../../../_css/chrome.css" />
+		<script src="_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="_js/doc.js" type="text/javascript"></script>
+		<script src="../_js/doc.js" type="text/javascript"></script>
+		<script src="../../_js/doc.js" type="text/javascript"></script>
+		<script src="../../../_js/doc.js" type="text/javascript"></script>
+	</head>
+	<body>
+		<div id="content">
+    
+    <h1 id="application-structure">
+      Application Structure
+    </h1>
+    <p>
+      Every HP webOS application should follow a conventional directory structure. The Command Line Tools include palm-generate, which creates a new application project and this complete structure automatically with as little as an application name as an argument:
+    </p>
+    <blockquote>
+      <pre>
+<code>palm-generate MyApp
+</code>
+</pre>
+    </blockquote>
+    <p>
+      The <code>MyApp/views</code> directory and everything within it is required along with valid <code>appinfo.json</code> and <code>sources.json</code> files at the root level of the app directory. The rest of the structure and naming is recommended but not required.
+    </p>
+    <blockquote>
+      <pre>
+<code>MyApp
+  -&gt; app
+  -&gt; assistants
+  -&gt; first-assistant.js
+  -&gt; second-assistant.js
+  -&gt; ...
+  -&gt; models
+  -&gt; views
+  -&gt; first
+  -&gt; first-scene.html
+  -&gt; second
+  -&gt; second-scene.html
+  -&gt; ...
+  -&gt; appinfo.json
+  -&gt; icon.png
+  -&gt; images
+  -&gt; image1.png
+  -&gt; image2.jpg
+  -&gt; index.html
+  -&gt; sources.json
+  -&gt; stylesheets
+  -&gt; css1.css
+  -&gt; ...
+</code>
+</pre>
+    </blockquote>
+    <p>
+      The sections that follow explain each of the directories, as well as the individual files <code>appinfo.json</code>, <code>sources.json</code>, <code>icon.png</code>, and <code>index.html</code>.
+    </p>
+    <h2 id="app-folder">
+      App Folder
+    </h2>
+    <p>
+      An application's logic and presentation files reside in the MyApp folder, which provides a directory structure based on the model-view-controller (MVC) pattern. You can choose any name for your application, but MyApp should correspond to the value of the id property in <a href="/reference/config/appinfo.json.html">appinfo.json</a>.
+    </p>
+    <h3 id="assistants">
+      Assistants
+    </h3>
+    <p>
+      Assistants are application-specific JavaScript functions that leverage the framework's controllers to customize the application's behavior. There are several kinds of assistants, the most common of which are scene assistants which implement a particular view of the application. For example, in the Contacts application there is a scene that handles the details of an individual contact. The scene not only displays that contact's information, but also provides the ability to interact with the various fields that present that information. The Contacts application uses a scene assistant to handle the logic of that interactivity. See <a href="introduction-to-applications.html">Introduction to HP webOS Applications</a> for more information on assistants and controllers.
+    </p>
+    <h3 id="models">
+      Models
+    </h3>
+    <p>
+      Applications that include data models would locate them in the models directory. The number and types of files is entirely application dependent and it isn't unusual for an application to have nothing in this directory or for the directory to be missing.
+    </p>
+    <h3 id="views">
+      Views
+    </h3>
+    <p>
+      HTML files describe the application's layout and display elements, and all the files are located in the views directory of your application. A scene assistant has one main HTML view file, which provides the static structure and content of its presentation page. It can also include HTML template view files that may be used to display dynamic data, such as JavaScript object properties from a scene assistant. These files are fragments of the UI that are combined together by the framework to produce the final presentation.
+    </p>
+    <p>
+      Each scene has a specific view directory that uses the scene's name, and a single HTML file within it for the scene's view file. For example, the <em>first</em> scene has a view directory of first within which is the view file, named <code>first-scene.html</code>. If there are any templates used in the first scene, then they would also likely be in the first directory.
+    </p>
+    <h2 id="images">
+      Images
+    </h2>
+    <p>
+      An application's images are located in the images folder. When referring to images from inside an assistant, use the following to specify the path: <code>images/</code>. When referring to images from a CSS file, use the following to specify the path: <code>url(../images/)</code>. The images folder may also contain sub-directories.
+    </p>
+    <h2 id="stylesheets">
+      Stylesheets
+    </h2>
+    <p>
+      An application's cascading style sheets (CSS) are placed in the stylesheets directory. In general, a web application designer typically uses HTML to structure the layout of a page and CSS to style the presentation. The same principle applies to webOS applications, and CSS files work in the conventional way.
+    </p>
+    <p>
+      Make sure to load any CSS files in your index.html file as follows:
+    </p>
+    <blockquote>
+      <pre>
+<code>&lt;link href=&quot;/stylesheets/&lt;stylesheet-name&gt;&quot; media=&quot;screen&quot; rel=&quot;stylesheet&quot; type=&quot;text/css&quot; /&gt;
+</code>
+</pre>
+    </blockquote>
+    <h2 id="appinfo.json">
+      appinfo.json
+    </h2>
+    <p>
+      The appinfo.json file provides configuration information to the framework to load the application and run it. The Application Manager is responsible for putting the application in the Launcher.
+    </p>
+    <p>
+      Here's an example of an appinfo.json file:
+    </p>
+    <blockquote>
+      <pre>
+<code>{
+  &quot;title&quot;: &quot;MyApp&quot;,
+  &quot;type&quot;: &quot;web&quot;,
+  &quot;main&quot;: &quot;index.html&quot;,
+  &quot;id&quot;: &quot;com.mydomain.app.myapp&quot;,
+  &quot;version&quot;: &quot;1.0&quot;,
+  &quot;vendor&quot;: &quot;mydomain&quot;
+}
+</code>
+</pre>
+    </blockquote>
+    <p>
+      There's a lot more on appinfo.json in <a href="/reference/config/appinfo.json.html">appinfo.json</a>, which covers each of the properties and their possible values in detail.
+    </p>
+    <h2 id="sources.json">
+      sources.json
+    </h2>
+    <p>
+      For info about creating and formatting sources.json, see <a href="/reference/config/sources.json.html">sources.json</a>.
+    </p>
+    <h2 id="icon.png">
+      icon.png
+    </h2>
+    <p>
+      This file is the icon to be used for your application. Application icons should be 1 in. square, 64 x 64 pixels, encoded as a PNG with 24 bit/pixel RGB and 8 bits alpha. The icon's image should be about 56 x 56 pixels within the PNG bounds. Designers, or those interested in icon design guidelines, should refer to the <a href="/design/mojo/ui-guidelines.html">User Interface Guidelines</a>.
+    </p>
+    <h2 id="index.html">
+      index.html
+    </h2>
+    <p>
+      Following web standards, index.html is the first page that the framework loads for an application unless changed with an assignment in <code>appinfo.json</code>. All your code belongs in your assistants, and your HTML belongs in your view files, so there is very little to go into <code>index.html</code>, but you do need to load the Mojo framework here and any application-specific CSS.
+    </p>
+    <p>
+      You should always specify the latest version of the framework that you know is compatible with your application. HP will include old versions of the framework in webOS releases so you don't need to worry about your application breaking when HP updates the framework. For example, your application's <code>index.html</code> will look something like this:
+    </p>
+    <blockquote>
+      <pre>
+<code>&lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD XHTML 1.0 Transitional//EN&quot;
+  &quot;http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd&quot;&gt;
+&lt;html xmlns=&quot;http://www.w3.org/1999/xhtml&quot; xml:lang=&quot;en&quot; lang=&quot;en&quot;&gt;
+&lt;head&gt;
+&lt;title&gt;My App&lt;/title&gt;
+&lt;script src=&quot;/usr/palm/frameworks/mojo/mojo.js&quot; x-mojo-version=&quot;1&quot;
+  type=&quot;text/javascript&quot;&gt;&lt;/script&gt;
+&lt;link href=&quot;/stylesheets/MyApp.css&quot; media=&quot;screen&quot; rel=&quot;stylesheet&quot;
+  type=&quot;text/css&quot; /&gt;
+&lt;/head&gt;
+&lt;body&gt;
+ .
+ .
+&lt;/body&gt;
+&lt;/html&gt;
+</code>
+</pre>
+    </blockquote>
+    <p>
+      This code loads the framework version indicated by the x-mojo-version property. You do need to specify your application stylesheets explicitly.
+    </p>
+    <p>
+      The framework includes the Prototype library and the standard webOS style sheet automatically within the main application window, but not within child windows. There is more discussion of that in Advanced Topics.
+    </p>
+		</div>
+	</body>
+</html>

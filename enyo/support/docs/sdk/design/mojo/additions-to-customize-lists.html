@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>$if(pagetitle)$$pagetitle$$endif$</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="stylesheet" href="_css/chrome.css" />
+		<link rel="stylesheet" href="../_css/chrome.css" />
+		<link rel="stylesheet" href="../../_css/chrome.css" />
+		<link rel="stylesheet" href="../../../_css/chrome.css" />
+		<script src="_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="_js/doc.js" type="text/javascript"></script>
+		<script src="../_js/doc.js" type="text/javascript"></script>
+		<script src="../../_js/doc.js" type="text/javascript"></script>
+		<script src="../../../_js/doc.js" type="text/javascript"></script>
+	</head>
+	<body>
+		<div id="content">
+    
+    <h1 id="additions-to-customize-lists">
+      Additions to Customize Lists
+    </h1>
+    <p>
+      The HP webOS™ platform provides a few design additions to help organize the lists used in applications, including separators and dividers. Dividers can have labels and icons, and even be collapsible. Collapsible dividers show/hide information under it by tapping the divider.
+    </p>
+    <p>
+      The following table provides additional information with image examples.
+    </p>
+    <table border="0">
+      <tbody>
+        <tr>
+          <th>
+            Item
+          </th>
+          <th>
+            Descriptions
+          </th>
+          <th>
+            Example
+          </th>
+        </tr>
+        <tr>
+          <td>
+            Divider
+          </td>
+          <td>
+            <p>
+              A divider has a simple line or a label with a horizontal line to its right. There are a variety of display styles. They are used as headers for groups of information. Implemented by using the Mojo.Widget.List API with the divider attributes.<br>
+              <br>
+              Example: An alphabetical list of contacts, where each divider has a letter to organize contacts by their last names.
+            </p>
+          </td>
+          <td>
+            <img src="/images/palm/ui_summary/divider_alpha.jpg" border="0" align="absmiddle">
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Divider, collaspible
+          </td>
+          <td>
+            <p>
+              A collapsible divider has a label followed by a horizontal line and then a button. Tap the button to open and display the items under that divider, and then tap again to close it. Implemented by using the Mojo.Widget.List API with the divider attributes.
+            </p>
+            <p>
+              Example: Open the Email application, tap the mail label to show the folders under that account.
+            </p>
+          </td>
+          <td>
+            <img src="/images/palm/ui_summary/dividers_collapsible.jpg" border="0" align="absmiddle">
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Drawers
+          </td>
+          <td>
+            This item is essentially a container that shows and hides the items contained within it. You can structure lists with multiple levels of drawers. Implemented by using the Mojo.Widget.Drawer API.<br>
+            <br>
+            Examples:
+            <ul class="alternate">
+              <li>The Email application allows users to show/hide the list of folders under each Email Account divider.
+              </li>
+              <li>The Application Menu contains an Edit command that displays its submenu items for Cut, Copy, and Paste.
+              </li>
+              <li>The Contacts application allows users to &quot;link&quot; multiple contact profiles together to collect all of the information they have about a person from multiple sources into a single contact record.
+              </li>
+            </ul>
+          </td>
+          <td>
+            <img src="/images/palm/ui_summary/drawers.gif" border="0" width="200" height="142">
+          </td>
+        </tr>
+      </tbody>
+    </table>
+		</div>
+	</body>
+</html>

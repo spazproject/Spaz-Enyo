@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>$if(pagetitle)$$pagetitle$$endif$</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="stylesheet" href="_css/chrome.css" />
+		<link rel="stylesheet" href="../_css/chrome.css" />
+		<link rel="stylesheet" href="../../_css/chrome.css" />
+		<link rel="stylesheet" href="../../../_css/chrome.css" />
+		<script src="_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="_js/doc.js" type="text/javascript"></script>
+		<script src="../_js/doc.js" type="text/javascript"></script>
+		<script src="../../_js/doc.js" type="text/javascript"></script>
+		<script src="../../../_js/doc.js" type="text/javascript"></script>
+	</head>
+	<body>
+		<div id="content">
+    
+    <h1 id="anatomy-of-a-widget">
+      Anatomy of a Widget
+    </h1>
+    <p>
+      The HP webOS application framework, known as Mojo, provides a variety of widgets for applications to use. This page provides a high-level explanation of how Mojo widgets work from the perspectives of both application developers and widget authors.
+    </p>
+    <h2 id="the-application-perspective">
+      The Application Perspective
+    </h2>
+    <p>
+      Widgets are intended to provide reusable, relatively complex behaviors for apps in an easy to use format with appearance that follows the styling guidelines for webOS.
+    </p>
+    <p>
+      Unlike other frameworks, many widgets are not entirely intended to be &quot;black boxes&quot;, but are more like &quot;helpers&quot;, which generate complex HTML and provide useful behaviors.
+    </p>
+    <h3 id="declaring-widgets">
+      Declaring Widgets
+    </h3>
+    <p>
+      Widgets are declared in HTML as empty divs, as shown below:
+    </p>
+    <blockquote>
+      <pre>
+<code>&lt;div id=&quot;myListSelector&quot; x-mojo-element=&quot;ListSelector&quot;&gt;&lt;/div&gt; 
+</code>
+</pre>
+    </blockquote>
+    <p>
+      The x-mojo-element attribute specifies the widget class added to the application scene when a widget is set up. Widget instantiation is likely to change the contents of the div it is specified on. (An exception to this is the Drawer widget), but may also add HTML to other parts of the scene, or update the style of its div. This widget instantiation can happen in two ways:
+    </p>
+    <ol style="list-style-type: decimal">
+      <li>When a scene is pushed and the view HTML includes widgets, including HTML specified as part of a render template added to the original scene content
+      </li>
+      <li>When a widget is specified in an HTML template used by another widget, like the List widget.
+      </li>
+    </ol>
+    <h3 id="widget-setup">
+      Widget Setup
+    </h3>
+    <p>
+      Before a widget can be instantiated, it must be set up. This usually happens in the scene assistant's setup() method by calling SceneController.setupWidget() to specify the starting conditions of the widget. setupWidget() accepts up to two pieces of data, the attributes and the model. Not every widget requires both a model and attributes.
+    </p>
+    <p>
+      If the application developer does not set up the widget in the setup method of the scene, they must call instantiateChildWidgets on the container div after setup.
+    </p>
+    <p>
+      The details differ depending on the widget, but here's an example for the ListSelector:
+    </p>
+    <blockquote>
+      <pre>
+<code>var selectorChoices = [{name:'Cosa', value:'spanish-thing'},
+  {name:'Chose', value:'french-thing'},
+  {name:'Ding', value:'german-thing'}
+];
+var selectorAttributes = {label: 'Pick a Thing',
+  choices: selectorChoices,
+  modelProperty:'value' };
+this.selectorModel = {value:'spanish-thing'};
+this.controller.setupWidget('myListSelector', selectorAttributes, this.selectorModel); 
+</code>
+</pre>
+    </blockquote>
+    <p>
+      As you'd expect, the widgetName argument specifies which widget the attributes and model apply to. This can be either the id or name attribute of the widget's div element. It's usually fine to use id, but remember that all element IDs in the page's DOM must be unique, so don't assign an id to your widget if it will be used in a list, or there are multiple copies of it on a single scene. In these cases, just use name instead.
+    </p>
+    <p>
+      The second parameter to setupWidget() specifies the attributes for the widget. These are properties that affect the behavior and display of the widget, but are not tied to the actual data being displayed or edited. Widget attributes currently cannot be changed after the widget is instantiated. Widgets will provide defaults for all required attributes, so it is not necessary to specify all attributes when setting up a widget. A ListSelector is used to edit a property that can have one of several values, so in this case, the attributes consists of three things:
+    </p>
+    <ol style="list-style-type: decimal">
+      <li>The label for the widget.
+      </li>
+      <li>The name of the property to edit/display from the model.
+      </li>
+      <li>The list of possible values for the property.
+      </li>
+    </ol>
+    <p>
+      Widgets that support being disabled or getting data from a model will also supply two attributes. These are the same for all widgets, and allow the application developer to specify a different property name if the default one is taken.
+    </p>
+    <ul>
+      <li>modelProperty -&gt; the property in the model to read data from; default is 'value'
+      </li>
+      <li>disabledProperty -&gt; if disabling the widget is supported, the application developer can supply a disabledProperty in the model. Default is 'disabled'.
+      </li>
+    </ul>
+    <p>
+      The last parameter to setupWidget() specifies the data model object the widget should use. This is the actual <em>user data</em> that the widget operates on (displays it, edits it, etc.). It will often change, requiring the widget to update itself. In the previous case, it consists of only one property, which the list selector has been configured to edit: value.
+    </p>
+    <p>
+      Some properties of a widget may be specified in either the model OR the attributes. If specified in both, the widget will use the property specified in the model. Application developers should specify the property in the model if they believe they will have to change it later, or they are instantiating the widget as part of a List (more on this below).
+    </p>
+    <h3 id="changing-widget-data-models">
+      Changing Widget Data Models
+    </h3>
+    <p>
+      When a widget model changes, the application (usually the scene assistant) is required to call the modelChanged() method on the widget's scene controller, passing the model object that changed. The scene controller will then automatically notify all widgets using that model, so they can properly update given the current state of the model.
+    </p>
+    <p>
+      To continue with the ListSelector example:
+    </p>
+    <blockquote>
+      <pre>
+<code>this.selectorModel.value = &quot;new value&quot;;
+this.controller.modelChanged(this.selectorModel);
+</code>
+</pre>
+    </blockquote>
+    <p>
+      Note that calling modelChanged() with an entirely new model object will not do what you want, since the framework tracks model objects, not model variable names. The result would simply be that no change would occur, since no widgets would be using that new model object and so nobody would be notified of the change.
+    </p>
+    <p>
+      The whoChangedIt argument is intended to represent the identity of whoever is responsible for the change to the model. This is matched against a similar value provided when subscribing to model changes, and is used to ensure that objects are not notified of their own changes to a model. Scene assistants (and widget assistants, where applicable) will usually simply pass this. This argument is optional.
+    </p>
+    <p>
+      modelChanged() is handy for updating widgets to reflect changes in their models, but if you need to actually change the model object that a widget is using, you must use setWidgetModel() instead. While setupWidget() applies to all widgets with the given name, setWidgetModel() only ever applies to a single widget. So you must pass the widget's id, or the actual widget DOM element. (Internally, setWidgetModel calls $(widget)).)
+    </p>
+    <p>
+      Here's a sample, following the ListSelector example:
+    </p>
+    <blockquote>
+      <pre>
+<code>// SceneController.setWidgetModel(widget, newModel);
+
+// Use a new model object in place of the old one:
+this.selectorModel = {value:'german-thing'};
+
+// Set the widget to use the new model:
+this.controller.setWidgetModel('myListSelector', this.selectorModel);
+</code>
+</pre>
+    </blockquote>
+    <h3 id="using-widgets-in-lists">
+      Using Widgets in Lists
+    </h3>
+    <p>
+      The distinction between widget attributes and models can become fuzzy at times, because some widgets allow a particular property to be specified in either place. The distinction becomes important when you are using widgets inside list items. List supports this, and there are examples in the <strong>framework-library</strong> sample code.
+    </p>
+    <p>
+      The way this works is that the HTML template used to render the list items (and provided by the scene assistant) can include widgets, which are set up much like any other widget. The main difference is that the model objects used with list item widgets do not come from the widgets' setupWidget calls. Instead, the model object used for a list item widget is actually the same object specified in the items array for the list.
+    </p>
+    <p>
+      Here is an example based on the 'Widgets in a List' demo in the <strong>framework-library</strong> app. This demo shows a List, where each item includes a ListSelector. The HTML for the scene simply declares a List widget. The HTML template subwidgets/subwidgets-item used for the list items declares the widgets that will be repeated for each list item as shown:
+    </p>
+    <blockquote>
+      <pre>
+<code>&lt;div class=&quot;row&quot;&gt;
+  &lt;div class=&quot;title&quot;&gt;
+      &lt;div name=&quot;listSelector1&quot; class=&quot;palm-list-selector&quot; x-mojo-element=&quot;ListSelector&quot;&gt;&lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;  
+</code>
+</pre>
+    </blockquote>
+    <p>
+      Note that the widget declared in the item template does not have an id attribute specified. An element id <strong>must</strong> be unique across the entire DOM. Because this element will be duplicated for each list item, you cannot an IDs to it. Instead, use name, which setupWidget() accepts in place of an id.
+    </p>
+    <p>
+      The List (widgetList) and ListSelector widgets are set up as follows:
+    </p>
+    <blockquote>
+      <pre>
+<code>this.controller.setupWidget('widgetList',
+  {itemTemplate:'subwidgets/subwidgets-item'}, this.widgetList);
+//note: ListSelector does not take a model argument in this case
+this.controller.setupWidget('listSelector1',
+  {label: 'Laugh', property: 'laugh', choices: this.laughChoices});
+</code>
+</pre>
+    </blockquote>
+    <p>
+      The List is set up as you'd expect: specify an element id, attributes object, and model.
+    </p>
+    <ul>
+      <li>The model contains an array of list item objects that will be used in turn when rendering each list item.
+      </li>
+      <li>Each object in that array can be used for property substitution when rendering the list item template, and is also used as the model for all the child widgets of the list item.
+      </li>
+    </ul>
+    <p>
+      This scheme allows the model for listSelector1 to be different for every list item, while also avoiding the complexity of having to specify one model per subwidget.
+    </p>
+    <p>
+      The ListSelector is set up slightly differently. There's no model specified in setupWidget(), only the attributes. This is because listSelector1 is rendered in a list context, so its model object comes from the array of list item objects as described above. The attributes specified in setupWidget() apply to <strong>all</strong> instances of the listSelector1 widget, in all the items in the list. In contrast, the widget's model is different for each instance of listSelector1.
+    </p>
+    <h3 id="observing-and-handling-widget-events">
+      Observing and Handling Widget Events
+    </h3>
+    <p>
+      The details of event handling will depend on what widget is being used, the desired functionality, and the structure of any app-provided HTML templates. That said, apps generally set up event listeners in the scene assistant's setup() method, and listeners are usually added to the widget div declared in the HTML. For example, the ListSelector widget sends a Mojo.Event.propertyChange event when the value changes, and a scene assistant would observe the one declared above with some code like this:
+    </p>
+    <blockquote>
+      <pre>
+<code>this.handleSelectorChange = this.handleSelectorChange.bindAsEventListener(this);
+this.controller.listen(&quot;myListSelector&quot;, Mojo.Event.propertyChanged,
+  this.handleSelectorChange);
+</code>
+</pre>
+    </blockquote>
+    <p>
+      The event handling can be somewhat more complicated for a widget like List where the list item content is defined by an app-provided HTML template. The list items can contain any number of inputs, other interactive elements, or widgets. In order to help simplify event handling for these cases, List supports Mojo.Event.listTap and Mojo.Event.listChange events. Scene assistants can add event listeners to the widget div as usual if they are listening for these <em>list events</em>. The events carry enough information to determine the proper response:
+    </p>
+    <ol style="list-style-type: decimal">
+      <li>a reference to the model object used for the particular list item that was clicked/changed. (model)
+      </li>
+      <li>the data specifically attached to the row that was affected (item)
+      </li>
+      <li>the absolute index of the row affected (index)
+      </li>
+      <li>the originalEvent, so that the application developer can investigate what caused the event, and possible what specific item in the list was tapped or changed (if it were another widget)
+      </li>
+    </ol>
+    <p>
+      Read more about this on the <a href="/dev-guide/mojo/events.html">Events</a> page.
+    </p>
+    <h2 id="the-framework-perspective">
+      The Framework Perspective
+    </h2>
+    <p>
+      Widgets can be instantiated in the following ways:
+    </p>
+    <ul>
+      <li>By the framework, when a scene is pushed (for widgets in the scene HTML).
+      </li>
+      <li>By a widget, when rendering subwidgets (e.g., when a list item template includes widgets).
+      </li>
+      <li>Upon request, dynamically (as in the case of popup menus and alert dialogs).
+      </li>
+    </ul>
+    <p>
+      In each case, the framework identifies the widget's DOM element or creates a new WidgetController, and instantiates a new object. This encapsulates the generic widget behavior needed by all widgets, and takes the following initialization steps:
+    </p>
+    <ul>
+      <li>Looks up the model and attributes for the widget, so they are available to the assistant.
+      </li>
+      <li>Instantiates the appropriate widget assistant class, based on the value of the widget element's x-mojo-element tag. The widget assistant contains the actual widget-specific implementation. The actual javascript code for these widgets is generally found in the mojo_widget_*.js files.
+      </li>
+      <li>Subscribes the assistant to modelChanged() notifications for its model object.
+      </li>
+      <li>Sets up some standard properties so they are available to the assistant through the widget controller: element, attributes, and model.
+      </li>
+      <li>Sets the controller property on the widget assistant to refer to the widget controller.
+      </li>
+      <li>Calls the widget's assistant's setup() method. This is where widgets build out the appropriate HTML under the widget element, based on the model and attributes. Widgets also attach any required event listeners to various parts of their UI in order to provide higher level events to applications (e.g., the Mojo.Event.listTap event).
+      </li>
+    </ul>
+    <p>
+      In the case of widgets that need to render subwidgets, things are slightly more complex, but also handled by the framework. There's an instantiateChildWidgets() method available on the widget controller, which is used to easily instantiate newly rendered child widgets.
+    </p>
+		</div>
+	</body>
+</html>

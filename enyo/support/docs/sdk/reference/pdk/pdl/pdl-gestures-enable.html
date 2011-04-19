@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>$if(pagetitle)$$pagetitle$$endif$</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="stylesheet" href="_css/chrome.css" />
+		<link rel="stylesheet" href="../_css/chrome.css" />
+		<link rel="stylesheet" href="../../_css/chrome.css" />
+		<link rel="stylesheet" href="../../../_css/chrome.css" />
+		<script src="_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="_js/doc.js" type="text/javascript"></script>
+		<script src="../_js/doc.js" type="text/javascript"></script>
+		<script src="../../_js/doc.js" type="text/javascript"></script>
+		<script src="../../../_js/doc.js" type="text/javascript"></script>
+	</head>
+	<body>
+		<div id="content">
+    
+    <h1 id="pdl_gesturesenable">
+      PDL_GesturesEnable
+    </h1>
+    <h2 id="description">
+      Description
+    </h2>
+    <p>
+      Enables or disables the wave bar. Call this function with <code>PDL_FALSE</code> to disable; <code>PDL_TRUE</code> to enable. The default is enabled.
+    </p>
+    <h2 id="syntax">
+      Syntax
+    </h2>
+    <blockquote>
+      <pre>
+<code>PDL_Err PDL_GesturesEnable(PDL_bool Enable);          
+</code>
+</pre>
+    </blockquote>
+    <h2 id="returns">
+      Returns
+    </h2>
+    <blockquote>
+      <pre>
+<code>PDL_ECONNECTION — Unable to communicate with app card.
+PDL_NOERROR — Success.                       
+</code>
+</pre>
+    </blockquote>
+    <p>
+      <strong>Note:</strong>
+    </p>
+    <p>
+      The wave bar allows you to access the Quick Launch menu from within fullscreen applications when you cannot access the standard launcher bar without first minimizing the app to Card view. It appears on screen as a wavy curve.
+    </p>
+    <p>
+      <img src="/images/palm/pdk_pdl_gestures.jpg" alt="image"><br>
+      Device displaying the wave bar.
+    </p>
+		</div>
+	</body>
+</html>

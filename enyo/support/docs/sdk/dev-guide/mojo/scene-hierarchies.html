@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>$if(pagetitle)$$pagetitle$$endif$</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="stylesheet" href="_css/chrome.css" />
+		<link rel="stylesheet" href="../_css/chrome.css" />
+		<link rel="stylesheet" href="../../_css/chrome.css" />
+		<link rel="stylesheet" href="../../../_css/chrome.css" />
+		<script src="_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="_js/doc.js" type="text/javascript"></script>
+		<script src="../_js/doc.js" type="text/javascript"></script>
+		<script src="../../_js/doc.js" type="text/javascript"></script>
+		<script src="../../../_js/doc.js" type="text/javascript"></script>
+	</head>
+	<body>
+		<div id="content">
+    
+    <h1 id="scene-hierarchies-in-webos-applications">
+      Scene Hierarchies in webOS Applications
+    </h1>
+    <p>
+      Applications on the HP webOS platform are designed very carefully in order to enable the following things:
+    </p>
+    <ul>
+      <li>Users can navigate throughout the application in a logical and consistent way.
+      </li>
+      <li>Users can quickly and easily &quot;find their way back&quot; to the place they were before.
+      </li>
+    </ul>
+    <p>
+      The <a href="/design/mojo/hi-guidelines.html">User Interface Guidelines</a> tell you how to &quot;work out the flow&quot; to make sure that all of the scenes support the tasks users want to do. The guidelines also say that the &quot;Back Gesture&quot; should be used to navigate to the previous scene in the application's &quot;scene hierarchy.&quot; You might be wondering what a scene hierarchy is, and why it's so important to consistently use the Back Gesture to navigate the scene hierarchy.
+    </p>
+    <h2 id="how-webos-applications-work">
+      How webOS Applications Work
+    </h2>
+    <p>
+      When a webOS application is launched, it opens a card and displays its first scene. Users can tap lists, buttons, or commands in that scene to perform actions that affect the current scene, or display a new one. Sometimes those things happen in the application's initial card, and sometimes a tap or command performs an action that opens another card. Let's look at some applications that HP ships on webOS devices to see how this works.
+    </p>
+    <h2 id="email-application">
+      Email Application
+    </h2>
+    <p>
+      When the Email app is opened, it opens a single card and displays its <strong>Overview</strong> scene, which shows a list of the different email accounts you've configured for display in the application. I've configured mine to show email from two accounts: my work account (MS Exchange) and my personal account (AOL). I can tap my <strong>AOL Inbox</strong> in the Overview scene, and the <strong>List of Emails</strong> scene is opened (in the same card in the Email app). I can tap an email message in the list and it is displayed in the <strong>Read Message</strong> scene (in the same card). If I decide I want to read my work email instead, I can perform the Back Gesture two times to navigate back to the Overview scene (orange arrows in the diagram).
+    </p>
+    <p>
+      <img src="/images/palm/EmailSceneHierarchy.png" alt="image"><br>
+      <br>
+      This is a great example because it shows how an application can do a lot using a set of scenes in a single card, with the Back Gesture enabling consistent navigation through the scene hierarchy. This pattern holds true even when the user performs an action that opens another card. When the user taps the Compose, Reply, Reply All, or Forward buttons in any of the scenes in Card 1 in the Email app, a new card is opened, in which the user can compose a new message. Imagine that the user wants to add a picture to the email message. When they tap the &quot;Add Attachment&quot; button, they can tap a photo album to view a set of thumbnail images, tap one to see it, and then tap a button to attach the file. If, at any time, they decide not to attach a file, they can use the Back Gesture to return to the email message they were writing.
+    </p>
+    <h2 id="calendar-application">
+      Calendar Application
+    </h2>
+    <p>
+      The Calendar application has a very simple scene hierarchy and uses the Back Gesture consistently. It's being used as a second example because it illustrates some additional concepts that are important to note.
+    </p>
+    <p>
+      <img src="/images/palm/CalendarSceneHierarchy.png" alt="image"><br>
+      <br>
+      When the Calendar app is opened, it opens a single card and displays the <strong>Calendar</strong> scene, which has three views: Day, Week, and Month. Tapping these view types displays the same data, but in different ways. When users tap these different view options, we DO NOT record each view change as an &quot;event&quot; that can be &quot;traveled back through&quot; using the Back Gesture. Controls that change the content (or view of the content) within a scene should not be recorded as &quot;historical events&quot; that can be traveled back through using the Back Gesture. The Calendar app illustrates this. Using the Back Gesture on an application's first scene always minimizes the application to a card in the webOS, and the Calendar app does this, even after switching between Day, Week, and Month view several times.
+    </p>
+    <p>
+      As you would expect, users can tap the calendar or use commands to perform other actions in the Calendar app. Two examples are shown above, and the Back Gesture is used consistently in each. Try it on your own to understand how scenes are opened and how the Back Gesture works in each case.
+    </p>
+    <h2 id="why-this-matters">
+      Why This Matters
+    </h2>
+    <p>
+      When users begin using a webOS device, they'll use default applications like Phone, Email, Calendar and more right away, and will become very familiar with the way those applications work. It's imperative that your application work the way these apps do, so that users will understand how to use your application right away. If you design your app in a different manner, users will very likely be frustrated and confused because it's difficult to navigate throughout your app...and that's not good. Instead, design your app so that users have a successful experience right from the beginning.
+    </p>
+		</div>
+	</body>
+</html>

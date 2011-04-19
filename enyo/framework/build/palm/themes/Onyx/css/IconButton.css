@@ -1,0 +1,12 @@
+/* Copyright 2009-2011 Hewlett-Packard Development Company, L.P. All rights reserved. */
+.enyo-button-icon {
+	display: inline-block;
+	vertical-align: baseline;
+	width: 32px;
+	height: 32px;
+	margin: -6px 4px -10px 4px;
+}
+
+.enyo-button-down .enyo-button-icon {
+	background-position: 0 -32px;
+}

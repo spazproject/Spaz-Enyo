@@ -1,0 +1,166 @@
+body {
+	font-family: Verdana;
+	font-size: 12px;
+	background: #FEFEFE;
+	margin: 0;
+	padding: 0;
+	color: #444;
+}
+
+h1, h2, h3, h4, h5, h6, h7, h8 {
+	color: black;
+}
+
+/* Layout */
+
+#main {
+	margin-left: 242px;
+	height: 100%;
+	position: relative;
+}
+
+#doc {
+	width: 100%;
+	height: 100%;
+	border: none;
+}
+
+/* Nav */
+
+#nav {
+	position: fixed;
+	width: 240px;
+	top: 0;
+	bottom: 0;
+	background: #eee;
+	border: 1px solid #BBB;
+	border-top: none;
+	border-bottom: none;
+	font-size: 0.95em;
+}
+
+#nav ul {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+}
+
+#nav li {
+	margin: 0;
+	padding: 0 1em;
+}
+
+#nav li li {
+	padding: 0;
+}
+
+#nav li li li {
+	padding: 0 0 0 1em;
+}
+
+#nav a {
+	text-decoration: none;
+	color: inherit;
+	display: block;
+}
+
+#nav h2 {
+	background: #989898 url("hp-logo.png") 0.5em 0.45em no-repeat;
+	color: white;
+	font-weight: normal;
+	text-align: right;
+	margin: 0;
+	padding: 0 0.75em 0 0;
+	font-size: 1.2em;
+	height: 4em;
+	line-height: 4em;
+}
+
+
+#scroll {
+	position: absolute;
+	top: 4.8em;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	overflow-y: auto;
+	overflow-x: hidden;
+}
+
+#toc li {
+	border-bottom: 1px solid #BBB;
+	padding-top: 0.5em !important;
+	padding-bottom: 0.4em !important;
+	font-size: 1.25em;
+	color: black;
+}
+
+#toc li li {
+	font-size: 0.8em;
+	color: #444;
+	border: none;
+	padding-top: 0;
+	padding-bottom: 0;
+	margin: 0;
+}
+
+#toc li li li {
+	font-size: inherit;
+}
+
+#toc li {
+	display: none;
+}
+
+#toc .hilite {
+	background: white;
+}
+
+#toc .current {
+	color: #DD6600;
+}
+
+#toc li .current {
+	font-weight: bold;
+}
+
+#toc .current ul {
+	font-weight: normal;
+	color: #444;
+}
+
+/* Doc */
+
+#content {
+	font-family: Verdana;
+	font-size: 12px;
+	background: #FEFEFE;
+	margin: 2em;
+	padding: 0;
+	color: #444;
+	max-width: 60em;
+}
+
+#content p, #content ul {
+	max-width: 40em;
+	line-height: 1.4em;
+}
+
+#content table {
+	width: 100%;
+	border-collapse: collapse;
+}
+
+#content table, #content tbody {
+	font-size: inherit;
+}
+
+#content td, #content th {
+	border: 1px solid #444;
+	padding: 0.5em 1em;
+}
+
+#content th {
+	color: black;
+	background: #CCC;
+}

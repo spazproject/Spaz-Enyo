@@ -1,0 +1,28 @@
+/* Copyright 2009-2011 Hewlett-Packard Development Company, L.P. All rights reserved. */
+.enyo-addressing-list, .enyo-addressing-item-divider, .enyo-addressing-item-addresses {
+}
+
+.enyo-addressing-type {
+	float: right;
+	font-size: 14px;
+	color: #1F75BF;
+	text-transform: uppercase;
+}
+
+.enyo-addressing-item-selected {
+	background: lightblue;
+}
+
+.enyo-addressing-favorite {
+	display: inline-block;
+	background: url(../images/addressing-favorite.png);
+	width: 16px;
+	height: 16px;
+	top: 2px;
+	margin-left: 4px;
+}
+
+.enyo-addressing-list-spinner {
+	position: absolute;
+	bottom: 0;
+}

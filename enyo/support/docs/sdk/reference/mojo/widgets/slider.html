@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>$if(pagetitle)$$pagetitle$$endif$</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="stylesheet" href="_css/chrome.css" />
+		<link rel="stylesheet" href="../_css/chrome.css" />
+		<link rel="stylesheet" href="../../_css/chrome.css" />
+		<link rel="stylesheet" href="../../../_css/chrome.css" />
+		<script src="_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="_js/doc.js" type="text/javascript"></script>
+		<script src="../_js/doc.js" type="text/javascript"></script>
+		<script src="../../_js/doc.js" type="text/javascript"></script>
+		<script src="../../../_js/doc.js" type="text/javascript"></script>
+	</head>
+	<body>
+		<div id="content">
+    
+    <h1 id="mojo.widget.slider">
+      Mojo.Widget.Slider
+    </h1>
+    <h2 id="namespace-detail">
+      Namespace Detail
+    </h2>
+    <h3 id="overview">
+      Overview
+    </h3>
+    <p>
+      The Slider presents a range of selection options in the form of a horizontal slider with a control knob that can be tapped and dragged to the desired location. You must specify minimum (leftmost) and maximum (rightmost) values for the slider; you can optionally specify intermediate choices that will trigger additional behavior.
+    </p>
+    <h3 id="declaration">
+      Declaration
+    </h3>
+    <blockquote>
+      <pre>
+<code>&lt;div x-mojo-element=&quot;Slider&quot; id=&quot;sliderId&quot; class=&quot;sliderClass&quot;
+  name=&quot;sliderName&quot;&gt;&lt;/div&gt;
+</code>
+</pre>
+    </blockquote>
+    <table border="1">
+      <tr>
+        <th>
+          Properties
+        </th>
+        <th>
+          Required
+        </th>
+        <th>
+          Value
+        </th>
+        <th>
+          Description
+        </th>
+      </tr>
+      <tr>
+        <td>
+          x-mojo-element
+        </td>
+        <td>
+          Required
+        </td>
+        <td>
+          Slider
+        </td>
+        <td>
+          Declares the widget as type 'Slider'
+        </td>
+      </tr>
+      <tr>
+        <td>
+          id
+        </td>
+        <td>
+          Required
+        </td>
+        <td>
+          Any String
+        </td>
+        <td>
+          Identifies the widget element for use when instantiating or rendering.
+        </td>
+      </tr>
+      <tr>
+        <td>
+          class
+        </td>
+        <td>
+          Optional
+        </td>
+        <td>
+          Any String
+        </td>
+        <td>
+          Slider uses .palm-slider-container by default, but you can override this setting.
+        </td>
+      </tr>
+      <tr>
+        <td>
+          name
+        </td>
+        <td>
+          Optional
+        </td>
+        <td>
+          Any String
+        </td>
+        <td>
+          Adds a unique name to the Slider widget; generally used in templates.
+        </td>
+      </tr>
+    </table>
+    <h3 id="events">
+      Events
+    </h3>
+    <blockquote>
+      <pre>
+<code>Mojo.Event.listen(this.controller.get(&quot;sliderId&quot;),
+  Mojo.Event.propertyChange, this.handleUpdate);
+</code>
+</pre>
+    </blockquote>
+    <table border="1">
+      <tr>
+        <th>
+          Event Type
+        </th>
+        <th>
+          Value
+        </th>
+        <th>
+          Event Handling
+        </th>
+      </tr>
+      <tr>
+        <td>
+          Mojo.Event.propertyChange
+        </td>
+        <td>
+          {value: pos}
+        </td>
+        <td></td>
+      </tr>
+    </table>
+    <h3 id="instantiation">
+      Instantiation
+    </h3>
+    <blockquote>
+      <pre>
+<code>this.controller.setupWidget(&quot;listselectorId&quot;,
+  this.attributes = {
+      minValue: 0,
+      maxValue: 100
+  },
+  this.model = {
+      value: 3,
+      disabled: false
+  }
+); 
+</code>
+</pre>
+    </blockquote>
+    <h3 id="attribute-properties">
+      Attribute Properties
+    </h3>
+    <table border="1">
+      <tr>
+        <th>
+          Attribute Property
+        </th>
+        <th>
+          Type
+        </th>
+        <th>
+          Required
+        </th>
+        <th>
+          Default
+        </th>
+        <th>
+          Description
+        </th>
+      </tr>
+      <tr>
+        <td>
+          modelProperty
+        </td>
+        <td>
+          String
+        </td>
+        <td>
+          Optional
+        </td>
+        <td>
+          value
+        </td>
+        <td>
+          Model property name for slider state
+        </td>
+      </tr>
+      <tr>
+        <td>
+          minValue
+        </td>
+        <td>
+          Integer
+        </td>
+        <td>
+          Required
+        </td>
+        <td></td>
+        <td>
+          Starting value, or leftmost value on slider
+        </td>
+      </tr>
+      <tr>
+        <td>
+          maxValue
+        </td>
+        <td>
+          Integer
+        </td>
+        <td>
+          Required
+        </td>
+        <td></td>
+        <td>
+          Ending value, or rightmost value on slider
+        </td>
+      </tr>
+      <tr>
+        <td>
+          round
+        </td>
+        <td>
+          Boolean
+        </td>
+        <td>
+          Optional
+        </td>
+        <td>
+          FALSE
+        </td>
+        <td>
+          If true, will round the slider value to the nearest integer; if 1, will be used for starting value.
+        </td>
+      </tr>
+      <tr>
+        <td>
+          updateInterval
+        </td>
+        <td>
+          Integer
+        </td>
+        <td>
+          Optional
+        </td>
+        <td>
+          0
+        </td>
+        <td>
+          If &gt;0, will send updates every <code>updateInterval</code> seconds.
+        </td>
+      </tr>
+    </table>
+    <h3 id="model-properties">
+      Model Properties
+    </h3>
+    <table border="1">
+      <tr>
+        <th>
+          Model Property
+        </th>
+        <th>
+          Type
+        </th>
+        <th>
+          Required
+        </th>
+        <th>
+          Default
+        </th>
+        <th>
+          Description
+        </th>
+      </tr>
+      <tr>
+        <td>
+          value
+        </td>
+        <td>
+          Integer
+        </td>
+        <td>
+          Required
+        </td>
+        <td>
+          none
+        </td>
+        <td>
+          Value of widget; this will be sanitized to be between minValue and maxValue.
+        </td>
+      </tr>
+    </table>
+    <h3 id="methods">
+      Methods
+    </h3>
+    <p>
+      The Slider widget has no methods.
+    </p>
+		</div>
+	</body>
+</html>

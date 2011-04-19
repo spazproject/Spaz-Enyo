@@ -1,0 +1,16 @@
+{
+	"region": "in",
+	"skipTrunk": true,
+	"trunkCode": "0",
+	"iddCode": "00",
+	"dialingPlan": "open",
+	"commonFormatChars": " ()-",
+	"fieldLengths": {
+		"areaCode": 0,
+		"mobilePrefix": 3,
+		"serviceCode": 0,
+		"emergency": 0,
+		"minLocalLength": 7,
+		"maxLocalLength": 8
+	}
+}

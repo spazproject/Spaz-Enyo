@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>$if(pagetitle)$$pagetitle$$endif$</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="stylesheet" href="_css/chrome.css" />
+		<link rel="stylesheet" href="../_css/chrome.css" />
+		<link rel="stylesheet" href="../../_css/chrome.css" />
+		<link rel="stylesheet" href="../../../_css/chrome.css" />
+		<script src="_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="_js/doc.js" type="text/javascript"></script>
+		<script src="../_js/doc.js" type="text/javascript"></script>
+		<script src="../../_js/doc.js" type="text/javascript"></script>
+		<script src="../../../_js/doc.js" type="text/javascript"></script>
+	</head>
+	<body>
+		<div id="content">
+    
+    <h1 id="dialogs-and-containers">
+      Dialogs and Containers
+    </h1>
+    <p>
+      Mojo containers can be used to encapsulate certain displays or actions to simplify the remaining scene. Drawers and Dialogs are used to keep features hidden except when they are needed, while Scrollers can be used to create <em>windows</em> within the scene, preserving the position of the rest of the view.
+    </p>
+    <h2 id="dialogs">
+      Dialogs
+    </h2>
+    <p>
+      The framework will automatically focus the first focusable item in a Dialog, like it does in scenes. Please note that if you launch a Dialog by tapping on an element in the main scene, you need to stop the Mojo.Event.tap event before launching the Dialog. Since your scene has handled the event by opening a new container, you don't want the event that created the container to still be active on the main scene.
+    </p>
+    <blockquote>
+      <pre>
+<code>this.controller.listen('launchDialogButton',
+  Mojo.Event.tap,
+  this.handleTap.bind(this));
+
+handleTap: function(tapEvent) {
+  //received a tap on the launch dialog button, so stop the event
+  tapEvent.stop();
+  this.controller.showDialog({
+      template: 'myscene/my-dialog',
+      assistant: new SampleDialogAssistant(this)
+  });
+}    
+</code>
+</pre>
+    </blockquote>
+    <h3 id="showdialog">
+      showDialog()
+    </h3>
+    <p>
+      Dialogs can be used to display custom content to the user in the form of a modal dialog box. You can render anything in a Dialog that you can render in a scene. To create a dialog, you'll call this.controller.showDialog with a JSON object containing at least properties for a scene template, an HTML file describing the dialog content which will look like any other scene view file, and a JavaScript function which will be called when the dialog is invoked. The dialog assistant is like a scene assistant, and has setup, activate, deactivate, and cleanup methods. For example:
+    </p>
+    <blockquote>
+      <pre>
+<code>var dialog = this.controller.showDialog({
+  template: 'myscene/my-dialog',
+  assistant: new SampleDialogAssistant(this)
+});
+
+//put in a full example of a dialog assistant
+var SampleDialogAssistant = Class.create({
+
+  initialize: function(sceneAssistant) {
+      this.sceneAssistant = sceneAssistant;
+      this.controller = sceneAssistant.controller;
+  },
+
+  setup : function(widget) {
+      this.widget = widget;
+      this.controller.get('thanksButton').addEventListener(Mojo.Event.tap,
+          this.handleThanks.bindAsEventListener(this));
+      },
+
+  handleThanks: function() {
+      this.sceneAssistant.outputDisplay.innerHTML = $L(&quot;Dialog result = &quot;) +
+          this.sceneAssistant.loremRating.rating;
+      this.widget.mojo.close();
+  }
+});    
+</code>
+</pre>
+    </blockquote>
+    <p>
+      To programatically close the dialog:
+    </p>
+    <blockquote>
+      <pre>
+<code>dialog.mojo.close(); 
+</code>
+</pre>
+    </blockquote>
+    <h3 id="showalertdialog">
+      showAlertDialog()
+    </h3>
+    <p>
+      To display a short message to the user, use an Alert Dialog with a message and one or more selection options presented as buttons. When an option is selected, your specified callback function is called with the value assigned to the selection. If there is no selection (e.g., the user gestures <em>back</em> to exit the dialog) then the onChoose function is called with an undefined value.
+    </p>
+    <p>
+      You would call this as this.controller.showAlertDialog(model) where model includes properties for the onChoose function, a message and the choices array. The choices array can offer any number of choices with each choice being a button in the dialog, usually stacked vertically. Each choice entry has a label, a value and a type where type corresponds to one of the CSS button classes (primary, secondary, dismissal, affirmative or negative) or your own classname. The classnames are optional.
+    </p>
+    <h3 id="errordialog">
+      errorDialog()
+    </h3>
+    <p>
+      The simplest dialog is a modal error dialog with a short message and confirmation button used for dismissing the dialog. These should be used to just display error messages to the user as they do not allow the user to make choices, but only to dismiss the dialog after receiving the information presented.
+    </p>
+    <blockquote>
+      <pre>
+<code>var error = &quot;An error has occurred.&quot;;
+Mojo.Controller.errorDialog(error);    
+</code>
+</pre>
+    </blockquote>
+    <h2 id="drawer">
+      Drawer
+    </h2>
+    <p>
+      Drawers are container widgets that can be &quot;open&quot;, allowing child content to be displayed normally, or &quot;closed&quot;, keeping it out of view. The open state of the drawer depends on a single model property, but can also be updated by calling widget methods, described in the API documentation. Unlike other widgets, where the inner content of the DIV on which the widget is defined is replaced, the contents of a Drawer widget div are preserved by the framework. The framework will wrap whatever content is contained within the div and make it possible to show and hide it in an animated fashion.
+    </p>
+    <p>
+      This shows a Drawer widget with an embedded List widget and content. The Drawer widget will automatically resize to enclose all content added from the dynamic list and the other static div contained within it.
+    </p>
+    <blockquote>
+      <pre>
+<code>&lt;div id='listDrawer' x-mojo-element=&quot;Drawer&quot;&gt;
+  &lt;div class=&quot;palm-row&quot;&gt;This is just some content&lt;/div&gt;
+  &lt;div id=&quot;list&quot; x-mojo-element=&quot;List&quot;&gt;&lt;/div&gt;
+&lt;div&gt;    
+</code>
+</pre>
+    </blockquote>
+    <h2 id="scroller">
+      Scroller
+    </h2>
+    <p>
+      The scroller widget is used to provide all scrolling behavior. By default, each scene contains a Scroller widget. You can disable this default behavior by having a truthy value in the disableSceneScroller property in the scene arguments to pushScene). The Scroller widget can also be instantiated anywhere else in the scene. The framework will automatically update the position of itself with respect to the screen.
+    </p>
+    <h3 id="creating-a-scroller">
+      Creating a Scroller
+    </h3>
+    <p>
+      You do not need to call setupWidget on a scroller; simply add the Scroller element to a DIV that has bounded width and height, and it will use the default scroll mode of &quot;vertical.&quot; If you are experiencing issues with Scroller functionality, make sure that your DIV has bounded width and height. This is a common mistake when using the widget.
+    </p>
+    <blockquote>
+      <pre>
+<code>&lt;div id=&quot;scroller&quot; style=&quot;width:100px; height:500px&quot; x-mojo-element=&quot;Scroller&quot;&gt;&lt;/div&gt;
+</code>
+</pre>
+    </blockquote>
+    <h3 id="scrollers-and-widgets">
+      Scrollers and Widgets
+    </h3>
+    <p>
+      Sometimes, it is useful to get the scroller for a particular widget. To do that, call:
+    </p>
+    <blockquote>
+      <pre>
+<code>var scroller = Mojo.View.getScrollerForElement(myDiv);    
+</code>
+</pre>
+    </blockquote>
+    <h3 id="scroll-listeners">
+      Scroll Listeners
+    </h3>
+    <p>
+      To listen for changes to scroll position, first add your scene assistant as a listener for the Scroller:
+    </p>
+    <blockquote>
+      <pre>
+<code>var scroller = this.controller.sceneScroller;scroller.addListener(this);    
+</code>
+</pre>
+    </blockquote>
+    <p>
+      Then, implement the &quot;moved&quot; function in your assistant.
+    </p>
+    <blockquote>
+      <pre>
+<code>moved: function(scrollEnding, position) {
+  Mojo.Log.info(&quot;The scroller is at position: y coordinate: &quot; +
+      position.y + &quot; , x coordinate: &quot; + position.x);
+};
+</code>
+</pre>
+    </blockquote>
+    <p>
+      The first argument, scrollEnding, is true if this call to moved from the scroller is the last before it stops. Position represents the X and Y coordinates of the Scroller when the function is called. Note: if you make a change in response to every listener callback, it will make scrolling slower.
+    </p>
+    <h3 id="scrolling-modes">
+      Scrolling Modes
+    </h3>
+    <p>
+      You can select one of six scrolling modes, specified in the mode property of the widget's attributes:
+    </p>
+    <ol style="list-style-type: decimal">
+      <li>free: allow scrolling along the x and y axis.
+      </li>
+      <li>horizontal: allow scrolling only along the horizontal axis.
+      </li>
+      <li>vertical: allow scrolling only along the vertical axis; default.
+      </li>
+      <li>dominant: allow scrolling along the horizontal or vertical axis, but not both at once. The direction of the intial drag will determine the axis of scrolling.
+      </li>
+      <li>horizontal-snap: In this mode, scrolling is locked to the horizontal axis, but snaps to points determined by the position of the block elements found in the model's snapElements property. As the scroller scrolls from snap point to snap point it will send a Mojo.Event.propertyChange event.
+      </li>
+      <li>vertical-snap: similarly, this mode locks scrolling to the vertical axis, but snaps to points determined by the elements in the snapElements property array.
+      </li>
+    </ol>
+    <h3 id="programatically-updating-the-scroller">
+      Programatically Updating the Scroller
+    </h3>
+    <p>
+      The Scroller widget provides a number of ways to programatically update its position. This can be useful if you want to expose a specific element on the scene, return the user to the top (or bottom) of a scene, or just adjust to a new location.
+    </p>
+    <p>
+      To reveal a specific element on a page:
+    </p>
+    <blockquote>
+      <pre>
+<code>//first, get the scroller associated with this element,
+//so that you are updating the correct Scroller Widget
+var myDiv = this.controller.get('myDiv');
+var scroller = Mojo.View.getScrollerForElement(myDiv);
+
+//next, update the scroller
+scroller.mojo.revealElement(myDiv); 
+</code>
+</pre>
+    </blockquote>
+		</div>
+	</body>
+</html>

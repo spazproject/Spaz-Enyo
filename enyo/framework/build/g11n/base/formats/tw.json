@@ -1,0 +1,59 @@
+{
+	"numberTripleDivider": ",",
+	"numberDecimal": ".",
+	"currencyPrepend": "$",
+	"currencyAppend": "",
+	"percentageSpace": false,
+	"localeName": "Taiwan",
+	"titleCase": false,
+
+	"fullDate": "yyyy年M月d日EEEE",
+	"longDate": "yyyy年M月d日",
+	"mediumDate": "yyyy-M-d",
+	"defaultDate": "yyyy-M-d",
+	"shortDate": "yy-M-d",
+	"dateFieldOrder": "ymd",
+	"timeFieldOrder": "ahm",
+	
+	"isMetric": true,
+
+	"fullTime24": "HH时mm分ss秒",
+	"fullTime12": "ahh时mm分ss秒",
+	"longTime24": "HH时mm分ss秒zzz",
+	"longTime12": "ahh时mm分ss秒zzz",
+	"mediumTime24": "HH:mm:ss",
+	"mediumTime12": "ahh:mm:ss",
+	"defaultTime24": "HH:mm:ss",
+	"defaultTime12": "ahh:mm:ss",
+	"shortTime24": "HH:mm",
+	"shortTime12": "ah:mm",
+	"dateTimeFormat": "DATE TIME",
+
+	"is12HourDefault": true,
+	"firstDayOfWeek": 0,
+
+	"shortDMDate": "M-d",
+	"mediumDMDate": "M-d",
+	"longDMDate": "M月d日",
+	"shortMYDate": "yy-M",
+	"mediumMYDate": "yyyy-M",
+	"longMYDate": "yyyy年M月",
+
+	"singleWeekday": "E",
+	"shortWeekday": "EE",
+	"mediumWeekday": "EEE",
+	"longWeekday": "EEEE",
+
+	"weekDateFormat": "DATEWEEK",
+	"timeAFormat": "AMTIME",
+	"timeZFormat": "TIMEZONE",
+	"timeAZFormat": "AMTIMEZONE",
+
+	"smallTime12": "h:mm",
+	"bigTime12": "hh时mm分ss秒",
+
+	"smallTime24": "H:mm",
+	"bigTime24": "HH时mm分ss秒",
+	
+	"defaultPhotoSize": "4x6"
+}

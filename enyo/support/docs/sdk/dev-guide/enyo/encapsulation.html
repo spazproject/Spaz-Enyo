@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>$if(pagetitle)$$pagetitle$$endif$</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="stylesheet" href="_css/chrome.css" />
+		<link rel="stylesheet" href="../_css/chrome.css" />
+		<link rel="stylesheet" href="../../_css/chrome.css" />
+		<link rel="stylesheet" href="../../../_css/chrome.css" />
+		<script src="_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="_js/doc.js" type="text/javascript"></script>
+		<script src="../_js/doc.js" type="text/javascript"></script>
+		<script src="../../_js/doc.js" type="text/javascript"></script>
+		<script src="../../../_js/doc.js" type="text/javascript"></script>
+	</head>
+	<body>
+		<div id="content">
+    
+    <h1 id="encapsulation">
+      Encapsulation
+    </h1>
+    <h2 id="enyo-scoping">
+      Enyo Scoping
+    </h2>
+    <p>
+      Enyo kinds are meant to be self-contained, so that they may be reused in different scenarios. Encapsulation is a major goal shaping the way scoping works in Enyo.
+    </p>
+    <p>
+      In a kind definition, the list of components determines what is in scope for the kind. In other words, the <code>this.$</code> hash for a kind contains the collection of components defined in the kind.
+    </p>
+    <p>
+      Code should not attempt to access components in another object's <code>$</code> hash. For example, <code>this.$.oneComponent.$.itsChild</code> should be avoided, as it breaks encapsulation by assuming the presence of something (<code>itsChild</code>) that is not in the scope of the current kind.
+    </p>
+    <h2 id="communication-between-objects">
+      Communication Between Objects
+    </h2>
+    <p>
+      So how do you allow one object to communicate with another? In one of two ways: by calling methods or sending events.
+    </p>
+    <p>
+      Picture the UI as a series of controls nested within other controls.
+    </p>
+    <ul>
+      <li>To communicate from the outer layers in, have the parent call an exposed method on the child, then repeat as necessary until you reach your destination. This behavior is required to maintain encapsulation. The moment a kind assumes the presence of a certain child more than one level away, encapsulation is broken, and that kind cannot be used outside of that particular situation.
+      </li>
+      <li>To communicate from the inside out, use events. (Events are explained in greater detail in a separate article.)
+      </li>
+    </ul>
+    <h2 id="globals">
+      Globals
+    </h2>
+    <p>
+      Globals are bad. There should be virtually no reason to have global variables in Enyo. If you find yourself using lots of globals, most likely you are not honoring encapsulation, and some number of your kinds are defined such that they are limited to one particular usage.
+    </p>
+		</div>
+	</body>
+</html>

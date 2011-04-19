@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>$if(pagetitle)$$pagetitle$$endif$</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="stylesheet" href="_css/chrome.css" />
+		<link rel="stylesheet" href="../_css/chrome.css" />
+		<link rel="stylesheet" href="../../_css/chrome.css" />
+		<link rel="stylesheet" href="../../../_css/chrome.css" />
+		<script src="_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="_js/doc.js" type="text/javascript"></script>
+		<script src="../_js/doc.js" type="text/javascript"></script>
+		<script src="../../_js/doc.js" type="text/javascript"></script>
+		<script src="../../../_js/doc.js" type="text/javascript"></script>
+	</head>
+	<body>
+		<div id="content">
+    
+    <h1 id="foundations.class">
+      Foundations.Class
+    </h1>
+    <p>
+      This namespace contains a method for creating classes.
+    </p>
+    <hr>
+    <h2 id="class.create">
+      Class.create()
+    </h2>
+    <p>
+      Creates class objects that can call their own initialize (contructor) methods.
+    </p>
+    <p>
+      If the first argument is a class, it is treated as the new class's superclass, and all its methods are inherited. Otherwise, any arguments passed are treated as objects, and their methods are copied over as instance methods of the new class.
+    </p>
+    <h3 id="syntax">
+      Syntax
+    </h3>
+    <pre>
+    Class.create(<em>superclass</em>, <em>methods</em>);
+</pre>
+    <h3 id="parameters">
+      Parameters
+    </h3>
+    <table border="1">
+      <thead>
+        <tr>
+          <th>
+            Argument
+          </th>
+          <th>
+            Required
+          </th>
+          <th>
+            Type
+          </th>
+          <th>
+            Description
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <em>superclass</em>
+          </td>
+          <td>
+            No
+          </td>
+          <td>
+            object
+          </td>
+          <td>
+            If no superclass, the passed methods are used in creating the new class.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <em>methods</em>
+          </td>
+          <td>
+            No
+          </td>
+          <td>
+            objects
+          </td>
+          <td>
+            Methods to implement. If nothing is passed, methods are inherited from the superclass. Methods passed override methods in the superclass.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="returns">
+      Returns
+    </h3>
+    <blockquote>
+      <pre>
+<code>{
+  Class Object
+}
+</code>
+</pre>
+    </blockquote>
+    <p>
+      <strong>Example</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>var libraries = MojoLoader.require({ name: &quot;foundations&quot;, version: &quot;1.0&quot; });
+var Class = libraries[&quot;foundations&quot;].Class; 
+var Pet = Class.create(  {
+  //our 'constructor'
+  initialize: function(petName, age){
+      this.name = petName;
+      this.age = age;
+  },
+
+  log: function(){
+      Mojo.Log.info(&quot;I do not know what I should say, but my name is &quot; + this.name);
+  }
+});
+
+var famousDog = new Pet(&quot;Santas Little Helper&quot;, 15);
+famousDog.log();
+</code>
+</pre>
+    </blockquote>
+    <p>
+      <strong>Example Output</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>I do not know what I should say, but my name is Santas Little Helper
+</code>
+</pre>
+    </blockquote>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,110 @@
+/* Copyright 2009-2011 Hewlett-Packard Development Company, L.P. All rights reserved. */
+.enyo-grouped-toolbutton {
+	font-size: 20px;
+	color: #fff;
+	text-align: center;
+	height: 50px;
+	border-width: 0;
+	border-style: none;
+	padding: 0;
+	line-height: 50px;
+	min-width: 32px;
+	box-sizing: content-box;
+	/**/
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	
+}
+
+.enyo-grouped-toolbutton.enyo-first {
+	padding: 0px 13px 0px 0px;
+	border-width: 0px 1px 0px 23px;
+	-webkit-border-image: url(../images/grouped-toolbutton.png) 0 1 950 23;
+}
+
+.enyo-grouped-toolbutton.enyo-middle {
+	padding: 0px 14px 0px 14px;
+	border-width: 0px 1px 0px 1px;
+	-webkit-border-image: url(../images/grouped-toolbutton.png) 250 1 700 1;
+}
+
+.enyo-grouped-toolbutton.enyo-single {
+	padding: 0px 14px 0px 14px;
+	border-width: 0px 23px 0px 23px;
+	-webkit-border-image: url(../images/grouped-toolbutton.png) 750 23 200 23;
+}
+
+.enyo-grouped-toolbutton.enyo-last {
+	padding: 0px 0px 0px 13px;
+	border-width: 0px 23px 0px 1px;
+	-webkit-border-image: url(../images/grouped-toolbutton.png) 500 23 450 1;
+}
+
+/* down */
+.enyo-grouped-toolbutton.enyo-first.enyo-button-down {
+	-webkit-border-image: url(../images/grouped-toolbutton.png) 50 1 900 23;
+}
+
+.enyo-grouped-toolbutton.enyo-middle.enyo-button-down {
+	-webkit-border-image: url(../images/grouped-toolbutton.png) 300 1 650 1;
+}
+
+.enyo-grouped-toolbutton.enyo-single.enyo-button-down {
+	-webkit-border-image: url(../images/grouped-toolbutton.png) 800 23 150 23;
+}
+
+.enyo-grouped-toolbutton.enyo-last.enyo-button-down {
+	-webkit-border-image: url(../images/grouped-toolbutton.png) 550 23 400 1;
+}
+
+/* depressed */
+.enyo-grouped-toolbutton.enyo-first.enyo-button-depressed {
+	-webkit-border-image: url(../images/grouped-toolbutton.png) 100 1 850 23;
+}
+
+.enyo-grouped-toolbutton.enyo-middle.enyo-button-depressed {
+	-webkit-border-image: url(../images/grouped-toolbutton.png) 350 1 600 1;
+}
+
+.enyo-grouped-toolbutton.enyo-single.enyo-button-depressed {
+	-webkit-border-image: url(../images/grouped-toolbutton.png) 850 23 100 23;
+}
+
+.enyo-grouped-toolbutton.enyo-last.enyo-button-depressed {
+	-webkit-border-image: url(../images/grouped-toolbutton.png) 600 23 350 1;
+}
+
+/* depressed + down */
+.enyo-grouped-toolbutton.enyo-first.enyo-button-depressed.enyo-button-down {
+	-webkit-border-image: url(../images/grouped-toolbutton.png) 150 1 800 23;
+}
+
+.enyo-grouped-toolbutton.enyo-middle.enyo-button-depressed.enyo-button-down {
+	-webkit-border-image: url(../images/grouped-toolbutton.png) 400 1 550 1;
+}
+
+.enyo-grouped-toolbutton.enyo-single.enyo-button-depressed.enyo-button-down {
+	-webkit-border-image: url(../images/grouped-toolbutton.png) 900 23 50 23;
+}
+
+.enyo-grouped-toolbutton.enyo-last.enyo-button-depressed.enyo-button-down {
+	-webkit-border-image: url(../images/grouped-toolbutton.png) 650 23 300 1;
+}
+
+/* disabled */
+.enyo-grouped-toolbutton.enyo-first.enyo-button-disabled {
+	-webkit-border-image: url(../images/grouped-toolbutton.png) 200 1 750 23;
+}
+
+.enyo-grouped-toolbutton.enyo-middle.enyo-button-disabled {
+	-webkit-border-image: url(../images/grouped-toolbutton.png) 450 1 500 1;
+}
+
+.enyo-grouped-toolbutton.enyo-single.enyo-button-disabled {
+	-webkit-border-image: url(../images/grouped-toolbutton.png) 950 23 0 23;
+}
+
+.enyo-grouped-toolbutton.enyo-last.enyo-button-disabled {
+	-webkit-border-image: url(../images/grouped-toolbutton.png) 700 23 250 1;
+}

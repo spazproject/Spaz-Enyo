@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>$if(pagetitle)$$pagetitle$$endif$</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="stylesheet" href="_css/chrome.css" />
+		<link rel="stylesheet" href="../_css/chrome.css" />
+		<link rel="stylesheet" href="../../_css/chrome.css" />
+		<link rel="stylesheet" href="../../../_css/chrome.css" />
+		<script src="_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="_js/doc.js" type="text/javascript"></script>
+		<script src="../_js/doc.js" type="text/javascript"></script>
+		<script src="../../_js/doc.js" type="text/javascript"></script>
+		<script src="../../../_js/doc.js" type="text/javascript"></script>
+	</head>
+	<body>
+		<div id="content">
+    
+    <h1 id="mojo.view">
+      Mojo.View
+    </h1>
+    <h2 id="namespace-detail">
+      Namespace Detail
+    </h2>
+    <p>
+      All User Interface (UI) layout files are located in the views folder of your application. Much of the user interface in Mojo is assembled out of text files containing fragments of HTML and special tags indicating locations to insert dynamic data.
+    </p>
+    <p>
+      A scene assistant has one main HTML view file, which provides the static structure and content of its presentation page. It also includes zero or more HTML template view files that may be used to display dynamic data, such as JavaScript object properties from a scene assistant.
+    </p>
+    <p>
+      Developers can use templates directly by calling Mojo.View.render, but more often they will pass names of templates as part of widget setup or use them implicitly in scene creation.
+    </p>
+    <h2 id="method-summary">
+      Method Summary
+    </h2>
+    <ul>
+      <li>Mojo.View.<strong>addTemplateLocation</strong>(basePath, localizedPath, viewFolderName)
+      </li>
+      <li>Mojo.View.<strong>addTouchFeedback</strong>(targetElement)
+      </li>
+      <li>Mojo.View.<strong>advanceFocus</strong>(containingElement, optionalSelection)
+      </li>
+      <li>Mojo.View.<strong>clearTouchFeedback</strong>(root)
+      </li>
+      <li>Mojo.View.<strong>convertToNode</strong>(htmlContent, targetDocument)
+      </li>
+      <li>Mojo.View.<strong>convertToNodeList</strong>(htmlContent, targetDocument)
+      </li>
+      <li>Mojo.View.<strong>getFocusableList</strong>(containingElement)
+      </li>
+      <li>Mojo.View.<strong>getFocusedElement</strong>(containingElement)
+      </li>
+      <li>Mojo.View.<strong>getScrollerForElement</strong>(targetElement)
+      </li>
+      <li>Mojo.View.<strong>makeFocusable</strong>(targetElement)
+      </li>
+      <li>Mojo.View.<strong>makeNotFocusable</strong>(targetElement)
+      </li>
+      <li>Mojo.View.<strong>removeTouchFeedback</strong>(targetElement)
+      </li>
+      <li>Mojo.View.<strong>render</strong>(renderParams)
+      </li>
+      <li>Mojo.View.<strong>requiresProperties</strong>(element, target, one)
+      </li>
+      <li>Mojo.View.<strong>visible</strong>(element)
+      </li>
+    </ul>
+    <hr>
+    <h2 id="method-detail">
+      Method Detail
+    </h2>
+    <h3 id="mojo.view.addtemplatelocationbasepath-localizedpath-viewfoldername">
+      Mojo.View.<strong>addTemplateLocation</strong>(basePath, localizedPath, viewFolderName)
+    </h3>
+    <p>
+      Adds a pair of locations to be used for loading localized templates. If a template is specified by full path and the base path is a prefix of the full path, the localized path for the correct locale will be searched first for the template.
+    </p>
+    <h4 id="parameters">
+      Parameters
+    </h4>
+    <ul>
+      <li>{String} <strong>basePath</strong> - Path containing templates
+      </li>
+      <li>{String} <strong>localizedPath</strong> - Path containing localized resources
+      </li>
+      <li>{String} <strong>viewFolderName</strong> - Name of the folder inside the resources folder that contains the views.
+      </li>
+    </ul>
+    <hr>
+    <h3 id="mojo.view.addtouchfeedbacktargetelement">
+      Mojo.View.<strong>addTouchFeedback</strong>(targetElement)
+    </h3>
+    <p>
+      Adds touch feedback to a new element and always removes touch feedback from the existing highlighted element.
+    </p>
+    <h4 id="parameters-1">
+      Parameters
+    </h4>
+    <ul>
+      <li>{Element} <strong>targetElement</strong> - Element to which to add feedback
+      </li>
+    </ul>
+    <hr>
+    <h3 id="mojo.view.advancefocuscontainingelement-optionalselection">
+      Mojo.View.<strong>advanceFocus</strong>(containingElement, optionalSelection)
+    </h3>
+    <p>
+      Advances the current text focus to the next focusable element in the containing element, or sets it to the first focusable element in the container if nothing in the container is currently focused.
+    </p>
+    <h4 id="parameters-2">
+      Parameters
+    </h4>
+    <ul>
+      <li>{Element} <strong>containingElement</strong> - Element in which to advance focus
+      </li>
+      <li>
+        <strong>optionalSelection</strong>
+      </li>
+    </ul>
+    <hr>
+    <h3 id="mojo.view.cleartouchfeedbackroot">
+      Mojo.View.<strong>clearTouchFeedback</strong>(root)
+    </h3>
+    <h4 id="parameters-3">
+      Parameters
+    </h4>
+    <ul>
+      <li>
+        <strong>root</strong>
+      </li>
+    </ul>
+    <hr>
+    <h3 id="mojo.view.converttonodehtmlcontent-targetdocument">
+      Mojo.View.<strong>convertToNode</strong>(htmlContent, targetDocument)
+    </h3>
+    <p>
+      Converts the given HTML content into nodes, and returns the first element node at the top level of the content.
+    </p>
+    <h4 id="parameters-4">
+      Parameters
+    </h4>
+    <ul>
+      <li>{Object} <strong>htmlContent</strong>
+      </li>
+      <li>
+        <strong>targetDocument</strong>
+      </li>
+    </ul>
+    <hr>
+    <h3 id="mojo.view.converttonodelisthtmlcontent-targetdocument">
+      Mojo.View.<strong>convertToNodeList</strong>(htmlContent, targetDocument)
+    </h3>
+    <p>
+      Returns a nodelist resulting from converting the given html content into nodes. A shared rendering div is used for this conversion, so the caller should not keep a reference to the nodelist, and needs to remove the nodes from their parent (the shared div).
+    </p>
+    <h4 id="parameters-5">
+      Parameters
+    </h4>
+    <ul>
+      <li>{Object} <strong>htmlContent</strong> - the html content to convert
+      </li>
+      <li>
+        <strong>targetDocument</strong>
+      </li>
+    </ul>
+    <hr>
+    <h3 id="stringobjectarraybooleannumber-mojo.view.getfocusablelistcontainingelement">
+      {String|Object|Array|Boolean|Number} Mojo.View.<strong>getFocusableList</strong>(containingElement)
+    </h3>
+    <p>
+      Returns a list of DOM elements that are considered focusable.
+    </p>
+    <h4 id="parameters-6">
+      Parameters
+    </h4>
+    <ul>
+      <li>{Element} <strong>containingElement</strong> - Defines the subtree of the DOM to search for focusable elements. The element itself is not included in the search.
+      </li>
+    </ul>
+    <hr>
+    <h3 id="mojo.view.getfocusedelementcontainingelement">
+      Mojo.View.<strong>getFocusedElement</strong>(containingElement)
+    </h3>
+    <p>
+      Returns the currently focused element inside the passed-in container, or null if there is no such element.
+    </p>
+    <h4 id="parameters-7">
+      Parameters
+    </h4>
+    <ul>
+      <li>{Element} <strong>containingElement</strong> - Element to search
+      </li>
+    </ul>
+    <hr>
+    <h3 id="mojo.view.getscrollerforelementtargetelement">
+      Mojo.View.<strong>getScrollerForElement</strong>(targetElement)
+    </h3>
+    <p>
+      Searches from targetElement up the DOM looking for a Scroller widget that contains the targetElement.
+    </p>
+    <h4 id="parameters-8">
+      Parameters
+    </h4>
+    <ul>
+      <li>
+        <strong>targetElement</strong> - the element to get the scroller for.
+      </li>
+    </ul>
+    <hr>
+    <h3 id="mojo.view.makefocusabletargetelement">
+      Mojo.View.<strong>makeFocusable</strong>(targetElement)
+    </h3>
+    <p>
+      Marks an element as being one that can be focused. Currently implemented by adding a tabindex attribute of value &quot;0&quot;.
+    </p>
+    <h4 id="parameters-9">
+      Parameters
+    </h4>
+    <ul>
+      <li>{Element} <strong>targetElement</strong> - Element to make focusable
+      </li>
+    </ul>
+    <hr>
+    <h3 id="mojo.view.makenotfocusabletargetelement">
+      Mojo.View.<strong>makeNotFocusable</strong>(targetElement)
+    </h3>
+    <p>
+      Marks an element as being one that can not be focused. Currently implemented by removing the tab index value
+    </p>
+    <h4 id="parameters-10">
+      Parameters
+    </h4>
+    <ul>
+      <li>{Element} <strong>targetElement</strong> - Element to make not focusable
+      </li>
+    </ul>
+    <hr>
+    <h3 id="mojo.view.removetouchfeedbacktargetelement">
+      Mojo.View.<strong>removeTouchFeedback</strong>(targetElement)
+    </h3>
+    <p>
+      Removes touch feedback from an element.
+    </p>
+    <h4 id="parameters-11">
+      Parameters
+    </h4>
+    <ul>
+      <li>{Element} <strong>targetElement</strong> - Element from which to remove touch feedback
+      </li>
+    </ul>
+    <hr>
+    <h3 id="mojo.view.renderrenderparams">
+      Mojo.View.<strong>render</strong>(renderParams)
+    </h3>
+    <p>
+      Use a partial and <strong>one</strong> or more objects to create HTML markup.
+    </p>
+    <p>
+      The first example shows how we would bind a single object to a template:
+    </p>
+    <blockquote>
+      <pre>
+<code>var content = Mojo.View.render({object: contact, template: 'detail/header'});
+headerElement.innerHTML = content; 
+</code>
+</pre>
+    </blockquote>
+    <p>
+      This shows how we render a list of objects with a template and a separator:
+    </p>
+    <blockquote>
+      <pre>
+<code>var content = Mojo.View.render({collection: songs, template: 'list/song',
+  separator: 'list/separator''});
+listElement.innerHTML = content; 
+</code>
+</pre>
+    </blockquote>
+    <h4 id="parameters-12">
+      Parameters
+    </h4>
+    <ul>
+      <li>
+        <p>
+          <strong>renderParams</strong> - a hash that may contain the following property names and values:
+        </p>
+        <ul>
+          <li>
+            <p>
+              [object] the object to use to resolve property references in the template.
+            </p>
+          </li>
+          <li>
+            <p>
+              [collection] a list of objects to bind individually to a template in order to create a list.
+            </p>
+          </li>
+          <li>
+            <p>
+              [attributes] an extra object which is additionally used to resolve property references in templates, when the property does not exist in 'object' or the appropriate 'collection' element.
+            </p>
+          </li>
+          <li>
+            <p>
+              [formatters] A hash of property names to formatter functions which should be applied prior to rendering. See Mojo.Model.format().
+            </p>
+          </li>
+          <li>
+            <p>
+              [template] the partial or full path to the template.
+            </p>
+          </li>
+          <li>
+            <p>
+              [separator] when rendering a collection, a template to use as a separator between individual list elements.
+            </p>
+          </li>
+        </ul>
+      </li>
+    </ul>
+    <hr>
+    <h3 id="mojo.view.requirespropertieselement-target-one">
+      Mojo.View.<strong>requiresProperties</strong>(element, target, one)
+    </h3>
+    <p>
+      Given a DOM element and a target object, hide the element if the value of any of the named properties are undefined or have a false value in the target.
+    </p>
+    <h4 id="parameters-13">
+      Parameters
+    </h4>
+    <ul>
+      <li>{Object} <strong>element</strong> - DOM element to hide
+      </li>
+      <li>{Object} <strong>target</strong> - object to check for property definitions
+      </li>
+      <li>{Object} <strong>one</strong> - one or more property names
+      </li>
+    </ul>
+    <hr>
+    <h3 id="boolean-mojo.view.visibleelement">
+      {Boolean} Mojo.View.<strong>visible</strong>(element)
+    </h3>
+    <p>
+      Returns true if the element and all of its ancestors are visible.
+    </p>
+    <h4 id="parameters-14">
+      Parameters
+    </h4>
+    <ul>
+      <li>{Object|} <strong>element</strong> - element to check for visibility
+      </li>
+    </ul>
+		</div>
+	</body>
+</html>

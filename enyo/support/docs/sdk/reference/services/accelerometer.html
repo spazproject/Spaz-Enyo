@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>$if(pagetitle)$$pagetitle$$endif$</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="stylesheet" href="_css/chrome.css" />
+		<link rel="stylesheet" href="../_css/chrome.css" />
+		<link rel="stylesheet" href="../../_css/chrome.css" />
+		<link rel="stylesheet" href="../../../_css/chrome.css" />
+		<script src="_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="_js/doc.js" type="text/javascript"></script>
+		<script src="../_js/doc.js" type="text/javascript"></script>
+		<script src="../../_js/doc.js" type="text/javascript"></script>
+		<script src="../../../_js/doc.js" type="text/javascript"></script>
+	</head>
+	<body>
+		<div id="content">
+    
+    <h1 id="accelerometer">
+      Accelerometer
+    </h1>
+    <p>
+      <a href="#screencast"><img src="/images/accsamplescreen.png"></a><br>
+      Watch the screencast!
+    </p>
+    <p>
+      The Accelerometer service uses acceleration events to provide information to applications:
+    </p>
+    <ul>
+      <li>
+        <p>
+          Orientation events—useful for rotating your application between portrait and landscape mode to match the orientation of the device.
+        </p>
+      </li>
+      <li>
+        <p>
+          Shake events—can be applied in creative ways as an alternative for user input such as a start/stop indicator.
+        </p>
+      </li>
+      <li>
+        <p>
+          Raw accelerometer data—useful for games or other applications that can integrate device movement directly into the application's interaction with the user.
+        </p>
+      </li>
+    </ul>
+    <p>
+      Unlike the other system services, the Accelerometer service communicates via events; the application uses framework controller functions or event listeners to receive the events. For information about listening to events (and stopping listening) see the Events page.
+    </p>
+    <h2 id="orientation-events">
+      Orientation events
+    </h2>
+    <p>
+      It's extremely simple to enable your application to respond to changes in screen orientation. Within your stage assistant or main scene assistant, set your application's card stage window to a free orientation through the stage controller's setWindowOrientation() method. Example:
+    </p>
+    <blockquote>
+      <pre>
+<code>if (this.controller.stageController.setWindowOrientation) {
+  this.controller.stageController.setWindowOrientation(&quot;free&quot;);
+}
+</code>
+</pre>
+    </blockquote>
+    <p>
+      The system automatically rotates the stage window, following the orientation of the device between up (portrait), right (clockwise rotation from up), down (portrait but the reverse of up) or left (counter-clockwise from up). You can use the same method to force an orientation with any of up, down, left or right passed as a string as the argument.
+    </p>
+    <p>
+      There is a corresponding getWindowOrientation() method to retrieve the current stage window orientation.
+    </p>
+    <p>
+      If you want to something more than simply rotate the stage's window, you can add a listener to the stage window for the orientationchange event, and then respond to the change. Example:
+    </p>
+    <blockquote>
+      <pre>
+<code>this.controller.listen(document, 'orientationchange',
+  this.handleOrientation.bindAsEventListener(this));
+...
+MyAssistant.prototype.handleOrientation(event) {
+  Mojo.Log.info(&quot;Orientation change position: &quot;, event.position, &quot; pitch: &quot;, event.pitch,
+      &quot; roll: &quot;, event.roll);
+};
+</code>
+</pre>
+    </blockquote>
+    <p>
+      The new orientation data are passed as properties to the event object described in Table 1.
+    </p>
+    <table border="1">
+      <tbody>
+        <tr>
+          <th>
+            Property
+          </th>
+          <th>
+            Value
+          </th>
+          <th>
+            Description
+          </th>
+        </tr>
+        <tr>
+          <td>
+            position
+          </td>
+          <td>
+            Integer
+          </td>
+          <td>
+            Numeric value from 0 to 5:
+            <ul>
+              <li>0 = face up
+              </li>
+              <li>1 = face down
+              </li>
+              <li>2 = up, or normal portrait
+              </li>
+              <li>3 = down, or reverse portrait
+              </li>
+              <li>4 = left, or landscape, left side down
+              </li>
+              <li>5 = right, or landscape, right side down
+              </li>
+            </ul>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            roll
+          </td>
+          <td>
+            Float
+          </td>
+          <td>
+            Right-handed rotation about the x-axis (in degrees)
+          </td>
+        </tr>
+        <tr>
+          <td>
+            pitch
+          </td>
+          <td>
+            Float
+          </td>
+          <td>
+            Right-handed rotation about the y-axis (in degrees)
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h2 id="pitch-and-roll">
+      Pitch and Roll
+    </h2>
+    <p>
+      Pitch and roll are values that describe the orientation of the device:
+    </p>
+    <ul>
+      <li>
+        <p>
+          Pitch refers to the angle of forward/back rotation—from -90 (power button edge is highest) to 90 (power button edge is lowest).
+        </p>
+      </li>
+      <li>
+        <p>
+          Roll refers to the angle of side-to-side rotation—from -90 (rotated 90 degrees to the left) to 90 (rotated 90 degrees to the right).
+        </p>
+      </li>
+    </ul>
+    <p>
+      <img src="/images/pitch-roll-small.png" alt="image"><br>
+      <br>
+      Pitch and roll both range from -90 to 90 degrees. When the device is lying flat, both pitch and roll are zero. For any combination of pitch and roll, there are two orientations that return the same values. You can use the position property to distinguish the two cases.
+    </p>
+    <h2 id="shake">
+      Shake
+    </h2>
+    <p>
+      There are three events:
+    </p>
+    <ul>
+      <li>shakestart
+      </li>
+      <li>shaking
+      </li>
+      <li>shakeend
+      </li>
+    </ul>
+    <p>
+      As you would expect, the start and end events are sent as soon as a shaking motion starts or stops. Shaking events are sent regularly while shaking continues, at the same rate as raw events, or 4Hz. The events include a magnitude property (in units of gravitational acceleration or g's) where a large value indicates more vigorous shaking.
+    </p>
+    <blockquote>
+      <pre>
+<code>this.controller.listen(document, 'shaking', this.handleShaking.bindAsEventListener(this));
+...
+MyAssistant.prototype.shaking(event) {
+  Mojo.Log.info(&quot;Shaking with magnitude: &quot;, event.magnitude);
+);
+</code>
+</pre>
+    </blockquote>
+    <p>
+      In practice, you may not need to listen to the shake start and end events unless you have some specific actions for those events. The shaking events begin as soon as the shaking motion starts and cease when the shaking stops.
+    </p>
+    <h2 id="raw-accelerometer-data">
+      Raw Accelerometer Data
+    </h2>
+    <p>
+      Detailed acceleration data is provided with each acceleration event, which is sent at 4Hz whenever the device is in motion. While it is accurate enough for games and similar dynamic applications, it won't be sufficient to allow inertial position tracking applications. Acceleration events are targeted at the window and do not bubble.
+    </p>
+    <blockquote>
+      <pre>
+<code>this.controller.listen(document, 'acceleration',
+  this.handleAcceleration.bindAsEventListener(this));
+...
+MyAssistant.prototype.acceleration(event) {
+  Mojo.Log.info(&quot;X: &quot;, event.accelX, &quot;; Y:&quot;, event.accelY, &quot;; Z:&quot;,
+      event.accelZ, &quot;; time: &quot;, event.time);
+</code>
+</pre>
+    </blockquote>
+    <p>
+      If a more frequent acceleration data update is required, pass the &quot;fastAccelerometer&quot; parameter to the StageController.setWindowProperties method to increase the update rate to 30Hz.
+    </p>
+    <blockquote>
+      <pre>
+<code>this.controller.stageController.setWindowProperties({fastAccelerometer:true});
+</code>
+</pre>
+    </blockquote>
+    <p>
+      Acceleration events contain additional properties as described in the following table.
+    </p>
+    <table border="1">
+      <tbody>
+        <tr>
+          <th>
+            Property
+          </th>
+          <th>
+            Value
+          </th>
+          <th>
+            Description
+          </th>
+        </tr>
+        <tr>
+          <td>
+            accelX
+          </td>
+          <td>
+            Float
+          </td>
+          <td>
+            Acceleration along the X axis (in g's)
+          </td>
+        </tr>
+        <tr>
+          <td>
+            accelY
+          </td>
+          <td>
+            Float
+          </td>
+          <td>
+            Acceleration along the Y axis (in g's)
+          </td>
+        </tr>
+        <tr>
+          <td>
+            accelZ
+          </td>
+          <td>
+            Float
+          </td>
+          <td>
+            Acceleration along the Z axis (in g's)
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <p>
+      <a name="screencast" id="screencast">&#160;</a>
+    </p>
+    <h2 id="see-a-demo">
+      See a demo
+    </h2>
+    <p>
+      This screencast takes you through a simple example of using raw accelerometer X, Y, and Z data, as well as roll, pitch, and screen orientation.
+    </p><object width="640" height="390">
+      <param name="movie" value="http://www.youtube.com/v/q5vDkWise6I&rel=0&hl=en_US&feature=player_embedded&version=3">
+      <param name="allowFullScreen" value="true">
+      <param name="allowScriptAccess" value="always">
+      <embed src="http://www.youtube.com/v/q5vDkWise6I&rel=0&hl=en_US&feature=player_embedded&version=3" type="application/x-shockwave-flash" allowfullscreen="true" allowscriptaccess="always" width="640" height="390">
+    </object>
+    <h2 id="sample-code-from-the-screencast">
+      Sample code from the screencast
+    </h2>
+    <p>
+      This is a pretty straightforward application. After pushing the main scene from the stage assistant, the only code involved is main-assistant.js and main-scene.html.
+    </p>
+    <h3 id="main-assistant.js">
+      main-assistant.js
+    </h3>
+    <blockquote>
+      <pre>
+<code>function MainAssistant() {
+}
+
+MainAssistant.prototype.handleAcceleration = function(event){
+  this.controller.get(&quot;accx&quot;).update(&quot;X = &quot; + event.accelX);
+  this.controller.get(&quot;accy&quot;).update(&quot;Y = &quot; + event.accelY);
+  this.controller.get(&quot;accz&quot;).update(&quot;Z = &quot; + event.accelZ);
+}
+
+MainAssistant.prototype.handleOrientation = function(event){
+  var position = [
+      &quot;Flat, face up&quot;,
+      &quot;Flat, face down&quot;,
+      &quot;Upright&quot;,
+      &quot;Upside Down&quot;,
+      &quot;Pointed left&quot;,
+      &quot;Pointed right&quot;];
+      
+  this.controller.get(&quot;position&quot;).update(&quot;Orientation: &quot; + position[event.position]);
+  this.controller.get(&quot;roll&quot;).update(&quot;Roll: &quot; + event.roll + &quot; degrees&quot;);
+  this.controller.get(&quot;pitch&quot;).update(&quot;Pitch: &quot; + event.pitch + &quot; degrees&quot;);
+}
+
+MainAssistant.prototype.setup = function() {
+  if (this.controller.stageController.setWindowOrientation) {     
+      this.controller.stageController.setWindowOrientation(&quot;free&quot;);
+      this.controller.stageController.setWindowProperties({ fastAccelerometer: true });
+  }
+  
+  this.handleOrientation = this.handleOrientation.bindAsEventListener(this);
+  Mojo.Event.listen(document, 'orientationchange', this.handleOrientation);
+  this.handleAcceleration = this.handleAcceleration.bindAsEventListener(this);
+  Mojo.Event.listen(document, 'acceleration', this.handleAcceleration);
+};
+
+MainAssistant.prototype.cleanup = function(event) {
+  Mojo.Event.stopListening(document, 'orientationchange',this.handleOrientation);
+  Mojo.Event.stopListening(document, 'acceleration',this.handleAcceleration);
+};
+</code>
+</pre>
+    </blockquote>
+    <h3 id="main-scene.html">
+      main-scene.html
+    </h3>
+    <blockquote>
+      <pre>
+<code>&lt;div id=&quot;main&quot; class = &quot;palm-hasheader&quot;&gt;
+  &lt;div class=&quot;palm-header&quot;&gt;Accelerometer test&lt;/div&gt;
+  &lt;div id=&quot;accx&quot; name=&quot;accx&quot; class=&quot;palm-body-text&quot;&gt;0&lt;/div&gt;
+  &lt;div id=&quot;accy&quot; name=&quot;accy&quot; class=&quot;palm-body-text&quot;&gt;0&lt;/div&gt;
+  &lt;div id=&quot;accz&quot; name=&quot;accz&quot; class=&quot;palm-body-text&quot;&gt;0&lt;/div&gt;
+  
+  &lt;div id=&quot;position&quot; class=&quot;palm-body-text&quot;&gt;Position&lt;/div&gt;
+  &lt;div id=&quot;roll&quot; class=&quot;palm-body-text&quot;&gt;0&lt;/div&gt;
+  &lt;div id=&quot;pitch&quot; class=&quot;palm-body-text&quot;&gt;0&lt;/div&gt;
+&lt;/div&gt;
+</code>
+</pre>
+    </blockquote>
+		</div>
+	</body>
+</html>

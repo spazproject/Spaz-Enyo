@@ -1,0 +1,1835 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>$if(pagetitle)$$pagetitle$$endif$</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="stylesheet" href="_css/chrome.css" />
+		<link rel="stylesheet" href="../_css/chrome.css" />
+		<link rel="stylesheet" href="../../_css/chrome.css" />
+		<link rel="stylesheet" href="../../../_css/chrome.css" />
+		<script src="_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="_js/doc.js" type="text/javascript"></script>
+		<script src="../_js/doc.js" type="text/javascript"></script>
+		<script src="../../_js/doc.js" type="text/javascript"></script>
+		<script src="../../../_js/doc.js" type="text/javascript"></script>
+	</head>
+	<body>
+		<div id="content">
+    
+    <h1 id="db8-data-types">
+      db8 Data Types
+    </h1>
+    <table border="1" cellspacing="5" cellpadding="5">
+      <thead>
+        <tr bgcolor="tan">
+          <th>
+            Data Type
+          </th>
+          <th width="400">
+            Description
+          </th>
+          <th>
+            Ref'd by
+          </th>
+          <th>
+            Wrapper<br>
+            APIs
+          </th>
+          <th>
+            Service<br>
+            APIs
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <a href="#BatchOperation">BatchOperation</a>
+          </td>
+          <td>
+            Method and parameters for operation in batch.
+          </td>
+          <td>
+            &#160;
+          </td>
+          <td>
+            &#160;
+          </td>
+          <td>
+            <a href="/reference/services/db8.html#batch">batch</a>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <a href="#BatchResponse">BatchResponse</a>
+          </td>
+          <td>
+            Response to batch API call.
+          </td>
+          <td>
+            &#160;
+          </td>
+          <td>
+            &#160;
+          </td>
+          <td>
+            <a href="/reference/services/db8.html#batch">batch</a>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <a href="#CountResponse">CountResponse</a>
+          </td>
+          <td>
+            Number of objects affected by operation.
+          </td>
+          <td>
+            &#160;
+          </td>
+          <td>
+            <a href="/reference/javascript-libraries/foundations/foundations-data-db.html#del">del</a><br>
+            <a href="/reference/javascript-libraries/foundations/foundations-data-db.html#merge">merge</a>
+          </td>
+          <td>
+            <a href="/reference/services/db8.html#del">del</a><br>
+            <a href="/reference/services/db8.html#merge">merge</a>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <a href="#ErrResponse">ErrResponse</a>
+          </td>
+          <td>
+            Standard error response, containing operation success or failure flag, error code and error message.
+          </td>
+          <td>
+            &#160;
+          </td>
+          <td>
+            <a href="/reference/javascript-libraries/foundations/foundations-data-db.html#del">del</a><br>
+            <a href="/reference/javascript-libraries/foundations/foundations-data-db.html#delKind">delKind</a><br>
+            <a href="/reference/javascript-libraries/foundations/foundations-data-db.html#find">find</a><br>
+            <a href="/reference/javascript-libraries/foundations/foundations-data-db.html#get">get</a><br>
+            <a href="/reference/javascript-libraries/foundations/foundations-data-db.html#merge">merge</a><br>
+            <a href="/reference/javascript-libraries/foundations/foundations-data-db.html#put">put</a><br>
+            <a href="/reference/javascript-libraries/foundations/foundations-data-db.html#putKind">putKind</a><br>
+            <a href="/reference/javascript-libraries/foundations/foundations-data-db.html#reserveIds">reserveIds</a>
+          </td>
+          <td>
+            <a href="/reference/services/db8.html#del">batch</a><br>
+            <a href="/reference/services/db8.html#del">del</a><br>
+            <a href="/reference/services/db8.html#delKind">delKind</a><br>
+            <a href="/reference/services/db8.html#find">find</a><br>
+            <a href="/reference/services/db8.html#get">get</a><br>
+            <a href="/reference/services/db8.html#merge">merge</a><br>
+            <a href="/reference/services/db8.html#put">put</a><br>
+            <a href="/reference/services/db8.html#putKind">putKind</a><br>
+            <a href="/reference/services/db8.html#reserveIds">reserveIds</a><br>
+            <a href="/reference/services/db8.html#search">search</a><br>
+            <a href="/reference/services/db8.html#watch">watch</a>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <a href="#FindResponse">FindResponse</a>
+          </td>
+          <td>
+            Response to find operation.
+          </td>
+          <td>
+            &#160;
+          </td>
+          <td>
+            <a href="/reference/javascript-libraries/foundations/foundations-data-db.html#find">find</a>
+          </td>
+          <td>
+            <a href="/reference/services/db8.html#find">find</a><br>
+            <a href="/reference/services/db8.html#search">search</a>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <a href="#GetResponse">GetResponse</a>
+          </td>
+          <td>
+            Parameters for get objects operation response.
+          </td>
+          <td>
+            &#160;
+          </td>
+          <td>
+            <a href="/reference/javascript-libraries/foundations/foundations-data-db.html#get">get</a>
+          </td>
+          <td>
+            <a href="/reference/services/db8.html#get">get</a>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <a href="#IndexClause">IndexClause</a>
+          </td>
+          <td>
+            Used for creating indexes for kind object.
+          </td>
+          <td>
+            &#160;
+          </td>
+          <td>
+            <a href="/reference/javascript-libraries/foundations/foundations-data-db.html#putKind">putKind</a><br>
+          </td>
+          <td>
+            <a href="/reference/services/db8.html#putKind">putKind</a>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <a href="#IndexPropClause">IndexPropClause</a>
+          </td>
+          <td>
+            Defines index property.
+          </td>
+          <td>
+            <a href="#IndexClause">IndexClause</a>
+          </td>
+          <td>
+            &#160;
+          </td>
+          <td>
+            &#160;
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <a href="#NotificationResponse">NotificationResponse</a>
+          </td>
+          <td>
+            Notifies caller of change in query results.
+          </td>
+          <td>
+            &#160;
+          </td>
+          <td>
+            <a href="/reference/javascript-libraries/foundations/foundations-data-db.html#find">find</a>
+          </td>
+          <td>
+            <a href="/reference/services/db8.html#find">find</a><br>
+            <a href="/reference/services/db8.html#search">search</a><br>
+            <a href="/reference/services/db8.html#watch">watch</a>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <a href="#PutResponse">PutResponse</a>
+          </td>
+          <td>
+            Indicates success of operation and returns <code>id</code> and <code>rev</code> fields for each object.
+          </td>
+          <td>
+            &#160;
+          </td>
+          <td>
+            <a href="/reference/javascript-libraries/foundations/foundations-data-db.html#del">del</a><br>
+            <a href="/reference/javascript-libraries/foundations/foundations-data-db.html#merge">merge</a><br>
+            <a href="/reference/javascript-libraries/foundations/foundations-data-db.html#put">put</a>
+          </td>
+          <td>
+            <a href="/reference/services/db8.html#del">del</a><br>
+            <a href="/reference/services/db8.html#merge">merge</a><br>
+            <a href="/reference/services/db8.html#put">put</a>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <a href="#PutResult">PutResult</a>
+          </td>
+          <td>
+            Contains <code>id</code> and <code>rev</code> field for JSON data object stored in put operation.
+          </td>
+          <td>
+            <a href="#PutResponse">PutResponse</a>
+          </td>
+          <td>
+            &#160;
+          </td>
+          <td>
+            &#160;
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <a href="#Query">Query</a>
+          </td>
+          <td>
+            Defines db8 query.
+          </td>
+          <td>
+            &#160;
+          </td>
+          <td>
+            <a href="/reference/javascript-libraries/foundations/foundations-data-db.html#del">del</a><br>
+            <a href="/reference/javascript-libraries/foundations/foundations-data-db.html#merge">merge</a><br>
+            <a href="/reference/javascript-libraries/foundations/foundations-data-db.html#find">find</a>
+          </td>
+          <td>
+            <a href="/reference/services/db8.html#del">del</a><br>
+            <a href="/reference/services/db8.html#merge">merge</a><br>
+            <a href="/reference/services/db8.html#find">find</a><br>
+            <a href="/reference/services/db8.html#watch">watch</a>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <a href="#ReserveIdsResponse">ReserveIdsResponse</a>
+          </td>
+          <td>
+            Contains operation success or failure flag and array of reserved db8 IDs.
+          </td>
+          <td>
+            &#160;
+          </td>
+          <td>
+            <a href="/reference/javascript-libraries/foundations/foundations-data-db.html#reserveIds">reserveIds</a>
+          </td>
+          <td>
+            <a href="/reference/services/db8.html#reserveIds">reserveIds</a>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <a href="#RevSetClause">RevSetClause</a>
+          </td>
+          <td>
+            Defines a revision set for a kind. See <a href="/dev-guide/mojo/db8.html#UsingRevSets">Using Revision Sets</a> for more information.
+          </td>
+          <td>
+            &#160;
+          </td>
+          <td>
+            &#160;
+          </td>
+          <td>
+            <a href="/reference/services/db8.html#putKind">putKind</a>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <a href="#RevSetPropClause">RevSetPropClause</a>
+          </td>
+          <td>
+            Defines a property in a revision set.
+          </td>
+          <td>
+            <a href="#RevSetClause">RevSetClause</a>
+          </td>
+          <td>
+            &#160;
+          </td>
+          <td>
+            &#160;
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <a href="#SuccessResponse">SuccessResponse</a>
+          </td>
+          <td>
+            Indicates operation success or failure.
+          </td>
+          <td>
+            &#160;
+          </td>
+          <td>
+            <a href="/reference/javascript-libraries/foundations/foundations-data-db.html#delKind">delKind</a><br>
+            <a href="/reference/services/db8.html#putKind">putKind</a>
+          </td>
+          <td>
+            <a href="/reference/services/db8.html#delKind">delKind</a><br>
+            <a href="/reference/services/db8.html#putKind">putKind</a><br>
+            <a href="/reference/services/db8.html#watch">watch</a>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <a href="#WhereClause">WhereClause</a>
+          </td>
+          <td>
+            Defines SQL-like JSON where clause for query.
+          </td>
+          <td>
+            <a href="#Query">Query</a>
+          </td>
+          <td>
+            &#160;
+          </td>
+          <td>
+            &#160;
+          </td>
+        </tr>
+      </tbody>
+    </table><br>
+    <p>
+      <a name="BatchOperation" id="BatchOperation">&#160;</a>
+    </p>
+    <hr>
+    <h2 id="batchoperation">
+      BatchOperation
+    </h2>
+    <p>
+      Method and params for <a href="/reference/services/db8.html#batch">batch</a> operation.
+    </p>
+    <h3 id="schema">
+      Schema
+    </h3>
+    <pre>
+{
+   "method" : string,
+   "params" : any
+}
+</pre>
+    <h3 id="elements">
+      Elements
+    </h3>
+    <table border="1" cellpadding="5" cellspacing="5">
+      <thead>
+        <tr bgcolor="tan">
+          <th>
+            Element
+          </th>
+          <th>
+            Required
+          </th>
+          <th>
+            Type
+          </th>
+          <th width="500">
+            Description
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            method
+          </td>
+          <td>
+            Yes
+          </td>
+          <td>
+            string
+          </td>
+          <td>
+            Operation to perform. Possible values: &quot;del&quot;, &quot;find&quot;, &quot;get&quot;, &quot;merge&quot;, or &quot;put&quot;.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            params
+          </td>
+          <td>
+            Yes
+          </td>
+          <td>
+            any
+          </td>
+          <td>
+            Method parameters.
+          </td>
+        </tr>
+      </tbody>
+    </table><br>
+    <p>
+      <a name="BatchResponse" id="BatchResponse">&#160;</a>
+    </p>
+    <hr>
+    <h2 id="batchresponse">
+      BatchResponse
+    </h2>
+    <p>
+      Response to <a href="/reference/services/db8.html#batch">batch</a> operation.
+    </p>
+    <h3 id="schema-1">
+      Schema
+    </h3>
+    <pre>
+{
+   "returnValue" : boolean,
+   "responses"   : any array
+}
+</pre>
+    <h3 id="elements-1">
+      Elements
+    </h3>
+    <table border="1" cellpadding="5" cellspacing="5">
+      <thead>
+        <tr bgcolor="tan">
+          <th>
+            Element
+          </th>
+          <th>
+            Required
+          </th>
+          <th>
+            Type
+          </th>
+          <th width="500">
+            Description
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            returnValue
+          </td>
+          <td>
+            Yes
+          </td>
+          <td>
+            boolean
+          </td>
+          <td>
+            Success (true) or Failure (false).
+          </td>
+        </tr>
+        <tr>
+          <td>
+            responses
+          </td>
+          <td>
+            Yes
+          </td>
+          <td>
+            any array
+          </td>
+          <td>
+            Array of responses for each of the operations in the batch.
+          </td>
+        </tr>
+      </tbody>
+    </table><br>
+    <p>
+      <a name="CountResponse" id="CountResponse">&#160;</a>
+    </p>
+    <hr>
+    <h2 id="countresponse">
+      CountResponse
+    </h2>
+    <p>
+      Number of objects affected by operation.
+    </p>
+    <h3 id="schema-2">
+      Schema
+    </h3>
+    <pre>
+{
+   "returnValue" : boolean,
+   "count"       : int
+}
+</pre>
+    <h3 id="elements-2">
+      Elements
+    </h3>
+    <table border="1" cellpadding="5" cellspacing="5">
+      <thead>
+        <tr bgcolor="tan">
+          <th>
+            Element
+          </th>
+          <th>
+            Required
+          </th>
+          <th>
+            Type
+          </th>
+          <th width="500">
+            Description
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            returnValue
+          </td>
+          <td>
+            Yes
+          </td>
+          <td>
+            boolean
+          </td>
+          <td>
+            <code>true</code> (success) or <code>false</code> (failure).
+          </td>
+        </tr>
+        <tr>
+          <td>
+            count
+          </td>
+          <td>
+            Yes
+          </td>
+          <td>
+            int
+          </td>
+          <td>
+            Number of objects affected by operation.
+          </td>
+        </tr>
+      </tbody>
+    </table><br>
+    <p>
+      <a name="ErrResponse" id="ErrResponse">&#160;</a>
+    </p>
+    <hr>
+    <h2 id="errresponse">
+      ErrResponse
+    </h2>
+    <p>
+      Standard error response, containing operation success or failure flag, error code and error message.
+    </p>
+    <h3 id="schema-3">
+      Schema
+    </h3>
+    <pre>
+{
+   "returnValue" : boolean,
+   "errorCode"   : int,
+   "errorText"   : string
+}
+</pre>
+    <h3 id="elements-3">
+      Elements
+    </h3>
+    <table border="1" cellpadding="5" cellspacing="5">
+      <thead>
+        <tr>
+          <th>
+            Element
+          </th>
+          <th>
+            Required
+          </th>
+          <th>
+            Type
+          </th>
+          <th width="500">
+            Description
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            returnValue
+          </td>
+          <td>
+            Yes
+          </td>
+          <td>
+            boolean
+          </td>
+          <td>
+            <code>true</code> (success) or <code>false</code> (failure).
+          </td>
+        </tr>
+        <tr>
+          <td>
+            errorCode
+          </td>
+          <td>
+            Yes
+          </td>
+          <td>
+            int
+          </td>
+          <td>
+            Numeric error code.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            errorText
+          </td>
+          <td>
+            Yes
+          </td>
+          <td>
+            string
+          </td>
+          <td>
+            Error message.
+          </td>
+        </tr>
+      </tbody>
+    </table><br>
+    <p>
+      <a name="FindResponse" id="FindResponse">&#160;</a>
+    </p>
+    <hr>
+    <h2 id="findresponse">
+      FindResponse
+    </h2>
+    <p>
+      Response to a find objects operation.
+    </p>
+    <h3 id="schema-4">
+      Schema
+    </h3>
+    <pre>
+{
+   "returnValue" : boolean,
+   "results"     : any,
+   "count"       : int,
+   "next"        : string
+}
+</pre>
+    <h3 id="elements-4">
+      Elements
+    </h3>
+    <table border="1" cellpadding="5" cellspacing="5">
+      <thead>
+        <tr bgcolor="tan">
+          <th>
+            Element
+          </th>
+          <th>
+            Required
+          </th>
+          <th>
+            Type
+          </th>
+          <th width="500">
+            Description
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            returnValue
+          </td>
+          <td>
+            Yes
+          </td>
+          <td>
+            boolean
+          </td>
+          <td>
+            <code>true</code> (success) or <code>false</code> (failure).
+          </td>
+        </tr>
+        <tr>
+          <td>
+            results
+          </td>
+          <td>
+            Yes
+          </td>
+          <td>
+            any
+          </td>
+          <td>
+            Array of db8 kind data objects. What is returned depends on the query and what is stored.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            count
+          </td>
+          <td>
+            No
+          </td>
+          <td>
+            int
+          </td>
+          <td>
+            Number of results that would have been returned if a limit had not been specified.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            next
+          </td>
+          <td>
+            No
+          </td>
+          <td>
+            string
+          </td>
+          <td>
+            Key to pass as query's <code>&quot;page&quot;</code> property when retrieving next page of results.
+          </td>
+        </tr>
+      </tbody>
+    </table><br>
+    <p>
+      <a name="GetResponse" id="GetResponse">&#160;</a>
+    </p>
+    <hr>
+    <h2 id="getresponse">
+      GetResponse
+    </h2>
+    <p>
+      Parameters for get objects operation response.
+    </p>
+    <h3 id="schema-5">
+      Schema
+    </h3>
+    <pre>
+{
+      "returnValue" : boolean,
+      "results"     : any
+}
+</pre>
+    <h3 id="elements-5">
+      Elements
+    </h3>
+    <table border="1" cellpadding="5" cellspacing="5">
+      <thead>
+        <tr bgcolor="tan">
+          <th>
+            Element
+          </th>
+          <th>
+            Required
+          </th>
+          <th>
+            Type
+          </th>
+          <th width="500">
+            Description
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            returnValue
+          </td>
+          <td>
+            Yes
+          </td>
+          <td>
+            boolean
+          </td>
+          <td>
+            <code>true</code> (success) or <code>false</code> (failure).
+          </td>
+        </tr>
+        <tr>
+          <td>
+            result
+          </td>
+          <td>
+            Yes
+          </td>
+          <td>
+            any object array
+          </td>
+          <td>
+            Returns array of stored db8 data objects.
+          </td>
+        </tr>
+      </tbody>
+    </table><br>
+    <p>
+      <a name="IndexClause" id="IndexClause">&#160;</a>
+    </p>
+    <hr>
+    <h2 id="indexclause">
+      IndexClause
+    </h2>
+    <p>
+      Used in the <code>putKind</code> call for creating kind object indexes. Note that indexes determine the type of queries your app can make. See <a href="/dev-guide/mojo/db8.html#QueriesAndIndexing">Queries and Indexing</a> for more information.
+    </p>
+    <p>
+      Set the <code>&quot;incDel&quot;</code> flag to <code>true</code> if you want future queries to return marked as deleted objects. Objects are not completely deleted until an administrative purge operation takes place.
+    </p>
+    <h3 id="schema-6">
+      Schema
+    </h3>
+    <pre>
+{
+   "name"    : string,
+   "props"   : <a href="#IndexPropClause">IndexPropClause</a>,
+   "incDel"  : boolean
+}
+</pre>
+    <h3 id="elements-6">
+      Elements
+    </h3>
+    <table border="1" cellpadding="5" cellspacing="5">
+      <thead>
+        <tr bgcolor="tan">
+          <th>
+            Element
+          </th>
+          <th>
+            Required
+          </th>
+          <th>
+            Type
+          </th>
+          <th width="500">
+            Description
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            name
+          </td>
+          <td>
+            Yes
+          </td>
+          <td>
+            string
+          </td>
+          <td>
+            Index name
+          </td>
+        </tr>
+        <tr>
+          <td>
+            props
+          </td>
+          <td>
+            Yes
+          </td>
+          <td>
+            <a href="#IndexPropClause">IndexPropClause</a>
+          </td>
+          <td>
+            Array of properties to index together.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            incDel
+          </td>
+          <td>
+            No
+          </td>
+          <td>
+            boolean
+          </td>
+          <td>
+            Include deleted objects flag. Default is <code>false</code>.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <p>
+      <strong>Example</strong>
+    </p>
+    <pre>
+<code>{
+   &quot;name&quot;   : &quot;state&quot;, 
+   &quot;props&quot;  : [{&quot;name&quot;: &quot;state&quot;}],
+   &quot;incDel&quot; : false
+}
+</code>
+</pre><br>
+    <p>
+      <a name="IndexPropClause" id="IndexPropClause">&#160;</a>
+    </p>
+    <hr>
+    <h2 id="indexpropclause">
+      IndexPropClause
+    </h2>
+    <p>
+      Defines index property for <a href="#IndexClause">IndexClause</a>
+    </p>
+    <h3 id="schema-7">
+      Schema
+    </h3>
+    <pre>
+{
+   "name"     : string,
+   "collate"  : string, 
+   "default"  : any,
+   "tokenize" : string,
+   "type"     : string
+}
+</pre>
+    <h3 id="elements-7">
+      Elements
+    </h3>
+    <table border="1" cellpadding="5" cellspacing="5">
+      <thead>
+        <tr bgcolor="tan">
+          <th>
+            Element
+          </th>
+          <th>
+            Required
+          </th>
+          <th>
+            Type
+          </th>
+          <th width="500">
+            Description
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            name
+          </td>
+          <td>
+            Yes
+          </td>
+          <td>
+            string
+          </td>
+          <td>
+            Name of property being indexed.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            collate <a name="collate" id="collate">&#160;</a>
+          </td>
+          <td>
+            No
+          </td>
+          <td>
+            string
+          </td>
+          <td>
+            Indicates the string comparison routine used to order the index. Must be one of the following:
+            <ul>
+              <li>
+                <strong>default</strong>—Does binary comparison.
+              </li>
+              <li>
+                <strong>primary</strong>—Compares base characters (for example, &quot;a&quot; &lt; &quot;b&quot;) without considering accents, case, or tone marks.
+              </li>
+              <li>
+                <strong>secondary</strong>—Accents in the characters are considered secondary differences (for example, &quot;as&quot; &lt; &quot;às&quot; &lt; &quot;at&quot;). Other differences between letters can also be considered secondary differences, depending on the language. A secondary difference is ignored when there is a primary difference anywhere in the strings.
+              </li>
+              <li>
+                <strong>tertiary</strong>—Upper and lower case differences in characters are distinguished at the tertiary level (for example, &quot;ao&quot; &lt; &quot;Ao&quot; &lt; &quot;aò&quot;). In addition, a variant of a letter differs from the base form on the tertiary level (such as &quot;A&quot; and &quot;?&quot;). A tertiary difference is ignored when there is a primary or secondary difference anywhere in the strings.
+              </li>
+            </ul>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            default
+          </td>
+          <td>
+            No
+          </td>
+          <td>
+            any
+          </td>
+          <td>
+            Default value to set for this property at insertion time, if not present.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <a name="tokenize" id="tokenize">tokenize</a>
+          </td>
+          <td>
+            No
+          </td>
+          <td>
+            string
+          </td>
+          <td>
+            <p>
+              Indicates if words in strings should be broken up, i.e., should &quot;Hello World&quot; become &quot;Hello&quot; and &quot;World&quot; for purposes of indexing.
+            </p>
+            <p>
+              Must be one of the following:
+            </p>
+            <ul>
+              <li>
+                <strong>none</strong>—Does not tokenize.
+              </li>
+              <li>
+                <strong>default</strong>—Use the default for the locale (which may strip stop-words). Stop-words are common words that are stripped for purposes of indexing, i.e., &quot;the&quot;, &quot;a&quot;, &quot;an&quot;, &quot;is&quot;, etc.
+              </li>
+              <li>
+                <strong>all</strong>—Tokenizes all words.
+              </li>
+            </ul>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            type
+          </td>
+          <td>
+            Yes
+          </td>
+          <td>
+            string
+          </td>
+          <td>
+            &quot;single&quot; or &quot;multi&quot;. Single property or multiple properties.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <p>
+      <a name="NotificationResponse" id="NotificationResponse">&#160;</a>
+    </p>
+    <hr>
+    <h2 id="notificationresponse">
+      NotificationResponse
+    </h2>
+    <p>
+      Notifies caller of change in query results returned from a &quot;find&quot; call.
+    </p>
+    <h3 id="schema-8">
+      Schema
+    </h3>
+    <pre>
+{
+   "returnValue" : boolean,
+   "fired"       : boolean
+}
+</pre>
+    <h3 id="elements-8">
+      Elements
+    </h3>
+    <table border="1" cellpadding="5" cellspacing="5">
+      <thead>
+        <tr bgcolor="tan">
+          <th>
+            Element
+          </th>
+          <th>
+            Required
+          </th>
+          <th>
+            Type
+          </th>
+          <th width="500">
+            Description
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            returnValue
+          </td>
+          <td>
+            No
+          </td>
+          <td>
+            boolean
+          </td>
+          <td>
+            <code>true</code> (success) or <code>false</code> (failure).
+          </td>
+        </tr>
+        <tr>
+          <td>
+            fired
+          </td>
+          <td>
+            Yes
+          </td>
+          <td>
+            boolean
+          </td>
+          <td>
+            Change notification flag.
+          </td>
+        </tr>
+      </tbody>
+    </table><br>
+    <p>
+      <a name="PutResponse" id="PutResponse">&#160;</a>
+    </p>
+    <hr>
+    <h2 id="putresponse">
+      PutResponse
+    </h2>
+    <p>
+      Indicates success of operation and returns id and rev fields for each object.
+    </p>
+    <h3 id="schema-9">
+      Schema
+    </h3>
+    <pre>
+{
+   "returnValue" : boolean,
+   "results"     : <a href="#PutResult">PutResult</a> 
+}
+</pre>
+    <h3 id="elements-9">
+      Elements
+    </h3>
+    <table border="1" cellpadding="5" cellspacing="5">
+      <thead>
+        <tr bgcolor="tan">
+          <th>
+            Element
+          </th>
+          <th>
+            Required
+          </th>
+          <th>
+            Type
+          </th>
+          <th width="500">
+            Description
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            returnValue
+          </td>
+          <td>
+            Yes
+          </td>
+          <td>
+            boolean
+          </td>
+          <td>
+            <code>true</code> (success) or <code>false</code> (failure).
+          </td>
+        </tr>
+        <tr>
+          <td>
+            results
+          </td>
+          <td>
+            Yes
+          </td>
+          <td>
+            <a href="#PutResult">PutResult</a>
+          </td>
+          <td>
+            Array of objects containing the id and rev of each object that was put.
+          </td>
+        </tr>
+      </tbody>
+    </table><br>
+    <p>
+      <a name="PutResult" id="PutResult">&#160;</a>
+    </p>
+    <hr>
+    <h2 id="putresult">
+      PutResult
+    </h2>
+    <p>
+      Contains &quot;id&quot; and &quot;rev&quot; fields in PutResponse for JSON data object.
+    </p>
+    <h3 id="schema-10">
+      Schema
+    </h3>
+    <pre>
+{
+   "id"    : any,
+   "rev"   : any
+}
+</pre>
+    <h3 id="elements-10">
+      Elements
+    </h3>
+    <table border="1" cellpadding="5" cellspacing="5">
+      <thead>
+        <tr bgcolor="tan">
+          <th>
+            Element
+          </th>
+          <th>
+            Required
+          </th>
+          <th>
+            Type
+          </th>
+          <th width="500">
+            Description
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            id
+          </td>
+          <td>
+            Yes
+          </td>
+          <td>
+            any
+          </td>
+          <td>
+            ID of the object that was put.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            rev
+          </td>
+          <td>
+            Yes
+          </td>
+          <td>
+            any
+          </td>
+          <td>
+            Object's revision ID. Every db8 object has this ID field. db8 maintains a global rev id counter that is incremented every time a db8 object is created or updated.
+          </td>
+        </tr>
+      </tbody>
+    </table><br>
+    <p>
+      <a name="Query" id="Query">&#160;</a>
+    </p>
+    <hr>
+    <h2 id="query">
+      Query
+    </h2>
+    <p>
+      Defines a db8 query.
+    </p>
+    <h3 id="schema-11">
+      Schema
+    </h3>
+    <pre>
+{
+   "select"  : string array,
+   "from"    : string,
+   "where"   : <a href="#WhereClause">WhereClause</a> array,
+   "orderBy" : string,
+   "desc"    : boolean,
+   "incDel"  : boolean,
+   "limit"   : int,
+   "page"    : string
+}
+</pre>
+    <h3 id="elements-11">
+      Elements
+    </h3>
+    <table border="1" cellpadding="5" cellspacing="5">
+      <thead>
+        <tr bgcolor="tan">
+          <th>
+            Element
+          </th>
+          <th>
+            Required
+          </th>
+          <th>
+            Type
+          </th>
+          <th width="500">
+            Description
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            select
+          </td>
+          <td>
+            No
+          </td>
+          <td>
+            string array
+          </td>
+          <td>
+            Array of property names to return.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            from
+          </td>
+          <td>
+            Yes
+          </td>
+          <td>
+            string
+          </td>
+          <td>
+            Name of kind to retrieve results from.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            where
+          </td>
+          <td>
+            No
+          </td>
+          <td>
+            <a href="#WhereClause">WhereClause</a> array
+          </td>
+          <td>
+            Array of clauses to test.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            orderBy
+          </td>
+          <td>
+            No
+          </td>
+          <td>
+            string
+          </td>
+          <td>
+            Order results on this property.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            desc
+          </td>
+          <td>
+            No
+          </td>
+          <td>
+            boolean
+          </td>
+          <td>
+            Return results in descending order.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            incDel
+          </td>
+          <td>
+            No
+          </td>
+          <td>
+            boolean
+          </td>
+          <td>
+            Include deleted objects. Deleted objects have _del=true.<br>
+            <strong>Note:</strong> You can only request this if the &quot;incDel&quot; field was true when you created your indexes during a &quot;putKind&quot; operation. Otherwise, the query fails with a &quot;no index for this query&quot; message.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            limit
+          </td>
+          <td>
+            No
+          </td>
+          <td>
+            int
+          </td>
+          <td>
+            Specifies maximum number of results to return (0-500). Default is 500.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            page
+          </td>
+          <td>
+            No
+          </td>
+          <td>
+            string
+          </td>
+          <td>
+            Page key returned by previous query.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <p>
+      <strong>Example</strong>
+    </p>
+    <pre>
+<code>{
+   &quot;select&quot;  : [&quot;displayName&quot;, &quot;state&quot;],
+   &quot;from&quot;    : &quot;com.mystuff.contacts:1&quot;,
+   &quot;where&quot;   : [{&quot;prop&quot;:&quot;state&quot;,&quot;op&quot;:&quot;=&quot;,&quot;val&quot;:&quot;CA&quot;}], 
+   &quot;orderBy&quot; : &quot;displayName&quot;,
+   &quot;desc&quot;    : true 
+}
+</code>
+</pre>
+    <p>
+      <a name="ReserveIdsResponse" id="ReserveIdsResponse">&#160;</a>
+    </p>
+    <hr>
+    <h2 id="reserveidsresponse">
+      ReserveIdsResponse
+    </h2>
+    <p>
+      Contains operation success or failure flag and array of reserved db8 IDs returned from <code>&quot;reserveIds&quot;</code> call.
+    </p>
+    <h3 id="schema-12">
+      Schema
+    </h3>
+    <pre>
+{
+   "returnValue" : boolean,
+   "ids"         : string array
+}
+</pre>
+    <h3 id="elements-12">
+      Elements
+    </h3>
+    <table border="1" cellpadding="5" cellspacing="5">
+      <thead>
+        <tr bgcolor="tan">
+          <th>
+            Element
+          </th>
+          <th>
+            Required
+          </th>
+          <th>
+            Type
+          </th>
+          <th width="500">
+            Description
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            returnValue
+          </td>
+          <td>
+            Yes
+          </td>
+          <td>
+            boolean
+          </td>
+          <td>
+            <code>true</code> (success) or <code>false</code> (failure).
+          </td>
+        </tr>
+        <tr>
+          <td>
+            ids
+          </td>
+          <td>
+            No
+          </td>
+          <td>
+            string array
+          </td>
+          <td>
+            Array of reserved IDs.
+          </td>
+        </tr>
+      </tbody>
+    </table><br>
+    <p>
+      <a name="RevSetClause" id="RevSetClause">&#160;</a>
+    </p>
+    <hr>
+    <h2 id="revsetclause">
+      RevSetClause
+    </h2>
+    <p>
+      Defines a <em>revision set</em>—subset of an object's properties that your app can be notified about when one of the properties is modified. See <a href="/dev-guide/mojo/db8.html#UsingRevSets">Using Revision Sets</a> for more information.
+    </p>
+    <h3 id="schema-13">
+      Schema
+    </h3>
+    <pre>
+{
+   "name"  : string,
+   "props" : <a href="#RevSetPropClause">RevSetPropClause</a> array
+}
+</pre>
+    <h3 id="elements-13">
+      Elements
+    </h3>
+    <table border="1" cellpadding="5" cellspacing="5">
+      <thead>
+        <tr bgcolor="tan">
+          <th>
+            Element
+          </th>
+          <th>
+            Required
+          </th>
+          <th>
+            Type
+          </th>
+          <th width="500">
+            Description
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            name
+          </td>
+          <td>
+            Yes
+          </td>
+          <td>
+            string
+          </td>
+          <td>
+            Name of the revision set (unique to this kind).
+          </td>
+        </tr>
+        <tr>
+          <td>
+            props
+          </td>
+          <td>
+            Yes
+          </td>
+          <td>
+            <a href="#RevSetPropClause">RevSetPropClause</a> array
+          </td>
+          <td>
+            Array of properties to include in revision set.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <p>
+      <a name="RevSetPropClause" id="RevSetPropClause">&#160;</a>
+    </p>
+    <hr>
+    <h2 id="revsetpropclause">
+      RevSetPropClause
+    </h2>
+    <p>
+      A property in a <a href="#RevSetClause">RevSetClause</a>.
+    </p>
+    <h3 id="schema-14">
+      Schema
+    </h3>
+    <pre>
+{
+   "name"  : string,
+}
+</pre>
+    <h3 id="elements-14">
+      Elements
+    </h3>
+    <table border="1" cellpadding="5" cellspacing="5">
+      <thead>
+        <tr bgcolor="tan">
+          <th>
+            Element
+          </th>
+          <th>
+            Required
+          </th>
+          <th>
+            Type
+          </th>
+          <th width="500">
+            Description
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            name
+          </td>
+          <td>
+            Yes
+          </td>
+          <td>
+            string
+          </td>
+          <td>
+            Name of property to include in revision set.
+          </td>
+        </tr>
+      </tbody>
+    </table><br>
+    <p>
+      <a name="SuccessResponse" id="SuccessResponse">&#160;</a>
+    </p>
+    <hr>
+    <h2 id="successresponse">
+      SuccessResponse
+    </h2>
+    <p>
+      Indicates operation success or failure.
+    </p>
+    <h3 id="schema-15">
+      Schema
+    </h3>
+    <pre>
+{
+   "name"  : string,
+}
+</pre>
+    <h3 id="elements-15">
+      Elements
+    </h3>
+    <table border="1" cellpadding="5" cellspacing="5">
+      <thead>
+        <tr bgcolor="tan">
+          <th>
+            Element
+          </th>
+          <th>
+            Type
+          </th>
+          <th width="500">
+            Description
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            returnValue
+          </td>
+          <td>
+            boolean
+          </td>
+          <td>
+            <code>true</code> (success) or <code>false</code> (failure).
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <p>
+      <strong>Example</strong>
+    </p>
+    <pre>
+<code>{
+   &quot;returnValue&quot;: false
+}
+</code>
+</pre>
+    <p>
+      <a name="WhereClause" id="WhereClause">&#160;</a>
+    </p>
+    <hr>
+    <h2 id="whereclause">
+      WhereClause
+    </h2>
+    <p>
+      Defines a SQL-like JSON where clause for a db8 <a href="#Query">Query</a>.
+    </p>
+    <h3 id="schema-16">
+      Schema
+    </h3>
+    <pre>
+{
+   "prop"    : string,
+   "op"      : string, 
+   "val"     : any,
+   "collate" : string
+}
+</pre>
+    <h3 id="elements-16">
+      Elements
+    </h3>
+    <table border="1" cellpadding="5" cellspacing="5">
+      <thead>
+        <tr bgcolor="tan">
+          <th>
+            Element
+          </th>
+          <th>
+            Required
+          </th>
+          <th>
+            Type
+          </th>
+          <th width="500">
+            Description
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            prop
+          </td>
+          <td>
+            Yes
+          </td>
+          <td>
+            string
+          </td>
+          <td>
+            Name of property to test.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            op
+          </td>
+          <td>
+            Yes
+          </td>
+          <td>
+            string
+          </td>
+          <td>
+            Test operator. Must be one of the following:<br>
+            &quot;&lt;&quot;, &quot;&lt;=&quot;, &quot;=&quot;, &quot;&gt;=&quot;, &quot;&gt;&quot;, &quot;!=&quot;, &quot;%&quot;, &quot;?&quot;<br>
+            (less than, less than or equal, equals, greater than or equal, greater than, not equal, wildcard, and full-text)<br>
+            The &quot;%&quot; operator (aka - the prefix operator) will return all matches beginning with the value specified.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            val
+          </td>
+          <td>
+            Yes
+          </td>
+          <td>
+            any
+          </td>
+          <td>
+            Value to test against.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            collate
+          </td>
+          <td>
+            No
+          </td>
+          <td>
+            any
+          </td>
+          <td>
+            Indicates the string comparison routine used to order the results. See the <code>collate</code> field in the <a href="#IndexPropClause">IndexPropClause</a> data structure for more information.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <p>
+      <strong>Example</strong>
+    </p>
+    <pre>
+<code>{
+   &quot;prop&quot; : &quot;state&quot;,
+   &quot;op&quot;   : &quot;=&quot;,
+   &quot;val&quot;  : &quot;CA&quot;
+}
+</code>
+</pre>
+		</div>
+	</body>
+</html>

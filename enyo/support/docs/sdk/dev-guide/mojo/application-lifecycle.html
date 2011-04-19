@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>$if(pagetitle)$$pagetitle$$endif$</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="stylesheet" href="_css/chrome.css" />
+		<link rel="stylesheet" href="../_css/chrome.css" />
+		<link rel="stylesheet" href="../../_css/chrome.css" />
+		<link rel="stylesheet" href="../../../_css/chrome.css" />
+		<script src="_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="_js/doc.js" type="text/javascript"></script>
+		<script src="../_js/doc.js" type="text/javascript"></script>
+		<script src="../../_js/doc.js" type="text/javascript"></script>
+		<script src="../../../_js/doc.js" type="text/javascript"></script>
+	</head>
+	<body>
+		<div id="content">
+    
+    <h1 id="application-lifecycle">
+      Application Lifecycle
+    </h1>
+    <p>
+      Outside of the core applications, all HP webOS applications are deployed over the web. Applications are found in the App Catalog, an application distribution service, built into all webOS devices for customer access and available to all registered developers as a distribution channel. In this section, the application lifecycle will be described from installation on device through launch, runtime, and removal.
+    </p>
+    <p>
+      <img src="/images/palm/App_Lifecycle.png" alt="image"><br>
+      <br>
+      As summarized by the diagram, the application experience starts with the discovery of an application through the App Catalog. After the user selects an application, it is downloaded and installed on the device. The lifecycle continues through Launch and the various runtime states, and terminates with the application's removal from the device.
+    </p>
+    <h2 id="discovery-download-and-install">
+      Discovery, Download and Install
+    </h2>
+    <p>
+      Through the on-device App Catalog, the user can select an application, download it, and install it on the device. Provided that the application is validly signed, it will be installed by the webOS System Manager and will appear in the Launcher. The installer also checks for required appinfo.json properties such as unique, valid appid and a version number.
+    </p>
+    <h2 id="launch-foreground-and-background---launch-cycle">
+      Launch, Foreground, and Background - Launch Cycle
+    </h2>
+    <p>
+      All applications are launched from the launcher into the foreground as a single card, which may be switched between foreground and background by the user. Each of these lifecycle phase transitions (launch, activate, deactivate, close) is indicated by one or more events. Applications are able to post notifications, create and update a dashboard panel, and create additional cards at any time, whether in the foreground view or not.
+    </p>
+    <p>
+      The most basic application is one with a single card stage, but depending on your application needs, you can:
+    </p>
+    <ul>
+      <li>add additional card stages
+      </li>
+      <li>add a dashboard stage
+      </li>
+      <li>add a dashboard stage with no card stage
+      </li>
+      <li>use the Alarms service to wake up periodically and post notifications or open a dashboard or card stage if needed
+      </li>
+    </ul>
+    <p>
+      Applications can also be launched or sub-launched through a handleLaunch method in their AppAssistant. Including this method registers the app with the Application Manager service and allows the app to be launched from another application via the Application Manager or from a point within their own application such as from a Dashboard panel. In this latter case, it is better to call handleLaunch directly as a method of the AppAssistant as it is a more direct call and not subject to the overhead of going through the Application Manager.
+    </p>
+    <p>
+      The Launch Cycle is explained in detail in a <a href="/dev-guide/mojo/launch-cycle.html">separate document</a>.
+    </p>
+    <h2 id="update">
+      Update
+    </h2>
+    <p>
+      Applications are updated periodically by the system. If running, the application is closed, the new version is installed, and the app is re-launched. There isn't an update event, so the app needs to reconcile changes after installation, including data migration or other compatibility needs.
+    </p>
+    <h2 id="delete">
+      Delete
+    </h2>
+    <p>
+      The user can opt to remove an application and its data from the device. When the user attempts to delete an application, the system will stop the application if needed and remove its components from the device. This includes removing it from the launcher and any local application data, plus any data added to the webOS application databases such as Contacts or Calendar data. When an application is closed, all of its stages are closed and any pending Alarms requests are canceled.
+    </p>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>$if(pagetitle)$$pagetitle$$endif$</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="stylesheet" href="_css/chrome.css" />
+		<link rel="stylesheet" href="../_css/chrome.css" />
+		<link rel="stylesheet" href="../../_css/chrome.css" />
+		<link rel="stylesheet" href="../../../_css/chrome.css" />
+		<script src="_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="_js/doc.js" type="text/javascript"></script>
+		<script src="../_js/doc.js" type="text/javascript"></script>
+		<script src="../../_js/doc.js" type="text/javascript"></script>
+		<script src="../../../_js/doc.js" type="text/javascript"></script>
+	</head>
+	<body>
+		<div id="content">
+    
+    <h1 id="mojo.model.cookie">
+      Mojo.Model.Cookie
+    </h1>
+    <h2 id="class-detail">
+      Class Detail
+    </h2>
+    <p>
+      Creates a cookie object with a particular name.
+    </p>
+    <p>
+      <strong>Note:</strong>
+    </p>
+    <p>
+      When doing a get(), the current functionality will match prefixes of the cookie name, rather than the entire cookie. For example, cookie1 and cookie2 will look the same when trying to retrieve the value. This will be corrected in a future release of webOS.
+    </p>
+    <p>
+      For the time being, cookie names all need to start with different letters. Alternatively, use standard DOM methods for setting and getting cookies.
+    </p>
+    <h3 id="parameters">
+      Parameters
+    </h3>
+    <ul>
+      <li>{String} <strong>cookieName</strong> - Name for the cookie
+      </li>
+      <li>{Object} <strong>optionalDocument</strong> <em>Optional</em> - document in which to store the cookie. Defaults to the current document.
+      </li>
+    </ul>
+    <h2 id="method-summary">
+      Method Summary
+    </h2>
+    <ul>
+      <li>
+        <strong>get</strong>()
+      </li>
+      <li>
+        <strong>put</strong>(objectToStore, expirationDate)
+      </li>
+      <li>
+        <strong>remove</strong>()
+      </li>
+    </ul>
+    <hr>
+    <h2 id="method-detail">
+      Method Detail
+    </h2>
+    <h3 id="get">
+      <strong>get</strong>()
+    </h3>
+    <p>
+      Returns the object stored in this cookie, or undefined if no such cookie exists.
+    </p>
+    <hr>
+    <h3 id="putobjecttostore-expirationdate">
+      <strong>put</strong>(objectToStore, expirationDate)
+    </h3>
+    <p>
+      Creates or updates the value of this cookie.
+    </p>
+    <h4 id="parameters-1">
+      Parameters
+    </h4>
+    <ul>
+      <li>{Object} <strong>objectToStore</strong> - Object to store in a cookie. Must be something that can be that can be encoded in JSON.
+      </li>
+      <li>{Date} <strong>expirationDate</strong> <em>Optional</em> - expiration date. Setting this to the current time or earlier will cause the cookie to be deleted.
+      </li>
+    </ul>
+    <hr>
+    <h3 id="remove">
+      <strong>remove</strong>()
+    </h3>
+    <p>
+      Deletes this cookie.
+    </p>
+    <p>
+      Example
+    </p>
+    <blockquote>
+      <pre>
+<code>var cookie1 = new Mojo.Model.Cookie(&quot;test&quot;);
+var expiration = new Date(&quot;December 30, 2010 00:00:00&quot;);
+cookie1.put(&quot;This is my info&quot;, expiration);
+
+var cookie2 = new Mojo.Model.Cookie(&quot;test&quot;);
+Mojo.Log.info(&quot;cookie2 value = &quot; + cookie2.get());
+</code>
+</pre>
+    </blockquote>
+    <p>
+      Yields in the log:
+    </p>
+    <blockquote>
+      <pre>
+<code>info: cookie2 value = This is my info. 
+</code>
+</pre>
+    </blockquote>
+		</div>
+	</body>
+</html>

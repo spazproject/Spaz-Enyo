@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>$if(pagetitle)$$pagetitle$$endif$</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="stylesheet" href="_css/chrome.css" />
+		<link rel="stylesheet" href="../_css/chrome.css" />
+		<link rel="stylesheet" href="../../_css/chrome.css" />
+		<link rel="stylesheet" href="../../../_css/chrome.css" />
+		<script src="_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="_js/doc.js" type="text/javascript"></script>
+		<script src="../_js/doc.js" type="text/javascript"></script>
+		<script src="../../_js/doc.js" type="text/javascript"></script>
+		<script src="../../../_js/doc.js" type="text/javascript"></script>
+	</head>
+	<body>
+		<div id="content">
+    
+    <h1 id="foundations.comms.ajaxcall">
+      Foundations.Comms.AjaxCall
+    </h1>
+    <p>
+      Wrappers for async <a href="http://en.wikipedia.org/wiki/Ajax_%28programming%29" target="_blank">Ajax</a> calls and a Palm bus service call. All calls are made asynchronously and are implemented using 'Futures', Palm's mechanism for async calls. See the <a href="foundations-control-future.html">Futures</a> documentation for more information. The examples provided with each call demonstrate how Futures are used.
+    </p>
+    <h2 id="ajax-options">
+      Ajax Options
+    </h2>
+    <p>
+      The Ajax calls detailed below can each take the following <em>options</em> object:
+    </p>
+    <blockquote>
+      <pre>
+<code>{
+  &quot;bodyEncoding&quot;    : string,
+  &quot;customRequest&quot;   : string,
+  &quot;headers&quot;         : any object,
+  &quot;joinableHeaders&quot; : string array,
+  &quot;nocompression&quot;   : boolean   // not currently supported; &quot;true&quot; by default
+}
+</code>
+</pre>
+    </blockquote>
+    <table border="1">
+      <thead>
+        <tr>
+          <th>
+            Element
+          </th>
+          <th>
+            Required
+          </th>
+          <th>
+            Type
+          </th>
+          <th>
+            Description
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            bodyEncoding
+          </td>
+          <td>
+            No
+          </td>
+          <td>
+            string
+          </td>
+          <td>
+            Encoding of the body data. Can be either 'ascii' or 'utf8'; 'utf8' is the default.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            customRequest
+          </td>
+          <td>
+            No
+          </td>
+          <td>
+            string
+          </td>
+          <td>
+            Used to specify a custom request method such as &quot;PROPFIND&quot;, instead of the usual &quot;GET&quot; or &quot;POST&quot;.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            headers
+          </td>
+          <td>
+            No
+          </td>
+          <td>
+            object array
+          </td>
+          <td>
+            Array of headers to send in an Ajax POST request.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            joinableHeaders
+          </td>
+          <td>
+            No
+          </td>
+          <td>
+            string array
+          </td>
+          <td>
+            <p>
+              Set of response headers joined as a comma-delimited list when more than one instance is received from a server, per RFC 2616 (Hypertext Transfer Protocol -- HTTP/1.1), section 4.2.<br>
+            </p>Example:
+            <pre>
+options = { "joinableHeaders": ['Set-Cookies']};
+ 
+</pre>When received as:
+            <pre>
+    "Set-Cookies: YT-1300"
+    "Set-Cookies: T-16"
+</pre>will be packaged as:
+            <pre>
+    "Set-Cookies": "YT-1300, T-16"
+</pre>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            noncompression
+          </td>
+          <td>
+            No
+          </td>
+          <td>
+            boolean
+          </td>
+          <td>
+            If 'true', accepted response encodings do not include compressed formats. Compression is useful if a large amount of data is sent in the response.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h2 id="ajaxcall.get">
+      AjaxCall.get
+    </h2>
+    <h3 id="syntax">
+      Syntax
+    </h3>
+    <pre>
+    Future AjaxCall.get(<em>url</em>, <em>options</em>);
+</pre>
+    <h3 id="parameters">
+      Parameters
+    </h3>
+    <table border="1">
+      <thead>
+        <tr>
+          <th>
+            Argument
+          </th>
+          <th>
+            Required
+          </th>
+          <th>
+            Type
+          </th>
+          <th>
+            Description
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <em>url</em>
+          </td>
+          <td>
+            Yes
+          </td>
+          <td>
+            string
+          </td>
+          <td>
+            URL
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <em>options</em>
+          </td>
+          <td>
+            No
+          </td>
+          <td>
+            object
+          </td>
+          <td>
+            See details in Communication Utilities overview.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="returns">
+      Returns
+    </h3>
+    <blockquote>
+      <pre>
+<code>Text from server.
+</code>
+</pre>
+    </blockquote>
+    <p>
+      <strong>Example</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>var libraries = MojoLoader.require({ name: &quot;foundations&quot;, version: &quot;1.0&quot; });
+var Future = libraries[&quot;foundations&quot;].Control.Future;
+var AjaxCall = libraries[&quot;foundations&quot;].Comms.AjaxCall;
+
+var options = { &quot;bodyEncoding&quot;:&quot;utf8&quot;};
+var future1 = AjaxCall.get(&quot;http://www.w3schools.com/ajax/ajax_info.txt&quot;, options);
+future1.then(function(future)
+{
+  if (future.result.status == 200) // 200 = Success
+      Mojo.Log.info('Ajax get success ' + JSON.stringify(future.result));
+  else Mojo.Log.info('Ajax get fail');
+});
+</code>
+</pre>
+    </blockquote>
+    <p>
+      <strong>Example Output</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>Ajax get success 
+{
+  &quot;readyState&quot;:4,
+  &quot;responseText&quot;:&quot;&lt;p&gt;AJAX is not a new programming language.&lt;/p&gt;\r\n&lt;p&gt;AJAX is a technique for creating fast and dynamic web pages.&lt;/p&gt;&quot;,
+  &quot;onloadstart&quot;:null,
+  &quot;onerror&quot;:null,
+  &quot;onabort&quot;:null,
+  &quot;withCredentials&quot;:false,
+  &quot;status&quot;:200,
+  &quot;responseXML&quot;:null,
+  &quot;onload&quot;:null,
+  &quot;onprogress&quot;:null,
+  &quot;upload&quot;:{
+      &quot;onloadstart&quot;:null,
+      &quot;onabort&quot;:null,
+      &quot;onerror&quot;:null,
+      &quot;onload&quot;:null,
+      &quot;onprogress&quot;:null
+  },
+  &quot;statusText&quot;:&quot;&quot;,
+  &quot;_complete&quot;:true
+}
+</code>
+</pre>
+    </blockquote>
+    <hr>
+    <h2 id="ajaxcall.head">
+      AjaxCall.head
+    </h2>
+    <p>
+      Returns only the meta-information contained in the HTTP headers.
+    </p>
+    <h3 id="syntax-1">
+      Syntax
+    </h3>
+    <pre>
+    Future AjaxCall.head(<em>url</em>, <em>options</em>);
+</pre>
+    <h3 id="parameters-1">
+      Parameters
+    </h3>
+    <table border="1">
+      <thead>
+        <tr>
+          <th>
+            Argument
+          </th>
+          <th>
+            Required
+          </th>
+          <th>
+            Type
+          </th>
+          <th>
+            Description
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <em>url</em>
+          </td>
+          <td>
+            Yes
+          </td>
+          <td>
+            string
+          </td>
+          <td>
+            URL
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <em>options</em>
+          </td>
+          <td>
+            No
+          </td>
+          <td>
+            object
+          </td>
+          <td>
+            See details in Communication Utilities overview
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="returns-1">
+      Returns
+    </h3>
+    <blockquote>
+      <pre>
+<code>Response object from server.
+</code>
+</pre>
+    </blockquote>
+    <p>
+      <strong>Example</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>var libraries = MojoLoader.require({ name: &quot;foundations&quot;, version: &quot;1.0&quot; });
+var Future      = libraries[&quot;foundations&quot;].Control.Future;
+var AjaxCall = libraries[&quot;foundations&quot;].Comms.AjaxCall;
+
+var options = { &quot;bodyEncoding&quot;:&quot;utf8&quot;};
+var future1 = AjaxCall.head(&quot;http://www.w3schools.com/ajax/ajax_info.txt&quot;, options);
+future1.then(function(future)
+{
+  if (future.result.status == 200)  // 200 = Success
+      Mojo.Log.info('Ajax head success ' + JSON.stringify(future.result));
+  else Mojo.Log.info('Ajax head fail');
+});
+</code>
+</pre>
+    </blockquote>
+    <p>
+      <strong>Example Output</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>Ajax head success 
+{
+  &quot;readyState&quot;:4,
+  &quot;responseText&quot;:&quot;&quot;,
+  &quot;onloadstart&quot;:null,
+  &quot;onerror&quot;:null,
+  &quot;onabort&quot;:null,
+  &quot;withCredentials&quot;:false,
+  &quot;status&quot;:200,
+  &quot;responseXML&quot;:null,
+  &quot;onload&quot;:null,
+  &quot;onprogress&quot;:null,
+  &quot;upload&quot;:{
+      &quot;onloadstart&quot;:null,
+      &quot;onabort&quot;:null,
+      &quot;onerror&quot;:null,
+      &quot;onload&quot;:null,
+  &quot;onprogress&quot;:null
+  },
+  &quot;statusText&quot;:&quot;&quot;,
+  &quot;_complete&quot;:true
+}
+</code>
+</pre>
+    </blockquote>
+    <hr>
+    <h2 id="ajaxcall.post">
+      AjaxCall.post
+    </h2>
+    <p>
+      A post request is different from a get request in the following ways:
+    </p>
+    <ul>
+      <li>A block of data is sent with the request in the message body. There are usually extra headers to describe this message body, like &quot;Content-Type:&quot; and &quot;Content-Length:&quot;.
+      </li>
+      <li>The request URI is not a resource to retrieve but, instead, a program to handle the data you are sending.
+      </li>
+      <li>The HTTP response is normally program output, not a static file.
+      </li>
+    </ul>
+    <h3 id="syntax-2">
+      Syntax
+    </h3>
+    <pre>
+    Future AjaxCall.post(<em>url</em>, <em>body</em>, <em>options</em>);
+</pre>
+    <h3 id="parameters-2">
+      Parameters
+    </h3>
+    <table border="1">
+      <thead>
+        <tr>
+          <th>
+            Argument
+          </th>
+          <th>
+            Required
+          </th>
+          <th>
+            Type
+          </th>
+          <th>
+            Description
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <em>url</em>
+          </td>
+          <td>
+            Yes
+          </td>
+          <td>
+            string
+          </td>
+          <td>
+            URL
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <em>body</em>
+          </td>
+          <td>
+            Yes
+          </td>
+          <td>
+            any
+          </td>
+          <td>
+            Additional data, i.e., form data.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <em>options</em>
+          </td>
+          <td>
+            No
+          </td>
+          <td>
+            object
+          </td>
+          <td>
+            See details in Communication Utilities overview
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="returns-2">
+      Returns
+    </h3>
+    <blockquote>
+      <pre>
+<code>Response object from server.
+</code>
+</pre>
+    </blockquote>
+    <p>
+      <strong>Example</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>var libraries   = MojoLoader.require({ name: &quot;foundations&quot;, version: &quot;1.0&quot; });
+var AjaxCall    = libraries[&quot;foundations&quot;].Comms.AjaxCall;
+var Future      = libraries[&quot;foundations&quot;].Control.Future;
+
+var options = { &quot;bodyEncoding&quot;:&quot;utf8&quot;, &quot;headers&quot;: [{&quot;Content-type&quot;:&quot;application/x-www-form-urlencoded&quot;}]};
+var url = &quot;http://www.javascriptkit.com/dhtmltutors/basicform.php?name=HuggyBear&amp;age=25&quot;;
+var body = &quot;&quot;;
+var future1 = AjaxCall.post(url, body, options);
+future1.then(function(future)
+{
+  if (future.result.status == 200) // Success
+  Mojo.Log.info('Ajax post success ' + JSON.stringify(future.result));
+  else Mojo.Log.info('Ajax post fail ='+ JSON.stringify(future.result));
+});
+</code>
+</pre>
+    </blockquote>
+    <p>
+      <strong>Example Output</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>Ajax post success 
+{
+  &quot;readyState&quot;:4,
+  &quot;responseText&quot;:&quot;&lt;span style='color:red'&gt;Welcome &lt;b&gt;HuggyBear&lt;/b&gt; to JavaScript Kit.
+      So you're &lt;b&gt;25&lt;/b&gt; years old eh?&lt;/span&gt;&quot;,
+  &quot;onloadstart&quot;:null,
+  &quot;onerror&quot;:null,
+  &quot;onabort&quot;:null,
+  &quot;withCredentials&quot;:false,
+  &quot;status&quot;:200,
+  &quot;responseXML&quot;:null,
+  &quot;onload&quot;:null,
+  &quot;onprogress&quot;:null,
+  &quot;upload&quot;:{
+      &quot;onloadstart&quot;:null,
+      &quot;onabort&quot;:null,
+      &quot;onerror&quot;:null,
+      &quot;onload&quot;:null,
+      &quot;onprogress&quot;:null
+  },
+  &quot;statusText&quot;:&quot;&quot;,
+  &quot;_complete&quot;:true
+}
+</code>
+</pre>
+    </blockquote>
+		</div>
+	</body>
+</html>

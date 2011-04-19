@@ -1,0 +1,1645 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>$if(pagetitle)$$pagetitle$$endif$</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="stylesheet" href="_css/chrome.css" />
+		<link rel="stylesheet" href="../_css/chrome.css" />
+		<link rel="stylesheet" href="../../_css/chrome.css" />
+		<link rel="stylesheet" href="../../../_css/chrome.css" />
+		<script src="_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="_js/doc.js" type="text/javascript"></script>
+		<script src="../_js/doc.js" type="text/javascript"></script>
+		<script src="../../_js/doc.js" type="text/javascript"></script>
+		<script src="../../../_js/doc.js" type="text/javascript"></script>
+	</head>
+	<body>
+		<div id="content">
+    
+    <h1 id="foundations.control.future">
+      Foundations.Control.Future
+    </h1>
+    <p>
+      A <em>Future</em> is a class that provides a mechanism for implementing asychronous callbacks. The advantage with using Futures is that it handles results and exceptions in a more flexible way than traditional callback mechanisms.
+    </p>
+    <h2 id="using-foundations.control.future">
+      Using Foundations.Control.Future
+    </h2>
+    <h3 id="allocating-a-future">
+      Allocating a Future
+    </h3>
+    <p>
+      The following is a simple example of allocating a Future:
+    </p>
+    <blockquote>
+      <pre>
+<code>// Load Foundation libraries
+var libraries = MojoLoader.require({ name: &quot;foundations&quot;, version: &quot;1.0&quot; });
+
+// Create reference to Futures class
+var Future = libraries[&quot;foundations&quot;].Control.Future;
+
+// Allocate Future
+var f = new Future(&quot;Hello&quot;);  // Allocate Future
+</code>
+</pre>
+    </blockquote>
+    <p>
+      Every Future has a &quot;result&quot; property and the above allocation initializes its value to &quot;Hello&quot;.
+    </p>
+    <h3 id="future-model">
+      Future Model
+    </h3>
+    <p>
+      The Future model is a series of stages: &quot;Do this, then, when done, do this with the result&quot;. Each stage is created with an invocation of the Future object's &quot;then&quot; method. The &quot;then&quot; method registers a function that is invoked when the &quot;result&quot; property gets set.
+    </p>
+    <p>
+      Here is a simple example:
+    </p>
+    <blockquote>
+      <pre>
+<code>var libraries = MojoLoader.require({ name: &quot;foundations&quot;, version: &quot;1.0&quot; }); 
+var Future = libraries[&quot;foundations&quot;].Control.Future;
+var f = new Future(&quot;Hello&quot;);
+
+f.then(function(future) {
+  if (future.result == &quot;Hello&quot;) {
+      // Do some processing...
+      future.result = &quot;Success&quot;;
+  }
+});
+
+f.then(function(future) {
+  if (future.result == &quot;Success&quot;) {
+      // Do some more processing...
+      future.result = &quot;Did stage 2&quot;;
+  }
+});
+
+f.then(function(future) {
+  if (future.exception) {
+      future.result = false;
+      // Log exception...
+  }
+  else {
+      // Total operation success
+      future.result = true;
+  }
+});
+</code>
+</pre>
+    </blockquote>
+    <p>
+      Here is a more involved example -- a Foundations AJAX call is made to retrieve a user's remote ID, which is then used to search the local db8 database for that user's contact information:
+    </p>
+    <blockquote>
+      <pre>
+<code>var libraries = MojoLoader.require({ name: &quot;foundations&quot;, version: &quot;1.0&quot; });
+var Future = libraries[&quot;foundations&quot;].Control.Future;
+var DB = libraries[&quot;foundations&quot;].Data.DB;
+var AjaxCall = libraries[&quot;foundations&quot;].Comms.AjaxCall;
+
+var f = AjaxCall.get(&quot;http://www.foobar.com/theAnswer&quot;);  // Returns a Future
+
+f.then(this, function(future)
+{
+  var status = future.result.status;
+
+  if (status === 200 ) // 200 = Success
+  {
+      var response = future.result.responseJSON;
+      var id = response.id;
+      var query = {
+          from: &quot;com.palm.contacts:1&quot;,
+          where: [{ &quot;prop&quot;: &quot;remote_id&quot;, &quot;op&quot;: &quot;=&quot;, &quot;val&quot;: id }]
+      };
+      return DB.find(query);  // Call returns a Future
+  }
+  future.result = { returnValue : false, status: status };
+});
+
+f.then(function(future) {
+  if (future.result.returnValue === true)
+  {
+      var record = future.result.results[0];  // Get first record from query
+      Mojo.Log.info(&quot;record =&quot; + JSON.stringify(record));
+      future.result = { returnValue: true };
+  }
+  else {
+      future.result = { returnValue: false };
+  }   
+});
+</code>
+</pre>
+    </blockquote>
+    <p>
+      The following is happening here:
+    </p>
+    <ul>
+      <li>
+        <p>
+          The AjaxCall creates a Future and returns it to the caller.
+        </p>
+      </li>
+      <li>
+        <p>
+          The returned Future calls its &quot;then&quot; method, which registers a scope (&quot;this&quot;) and a function that is executed when the Future's &quot;result&quot; property gets set (from the AjaxCall).
+        </p>
+      </li>
+      <li>
+        <p>
+          The &quot;then&quot; function is called when the &quot;result&quot; gets set. The triggered Future is passed in as the only argument. Note that if &quot;result&quot; had been set before the &quot;then&quot; method was called, the registered function would have been immediately called.
+        </p>
+      </li>
+      <li>
+        <p>
+          In the registered function, the Future's &quot;result&quot; property is read. If the Future contains an &quot;exception&quot;, rather than returning this, the &quot;exception&quot; is re-thrown here. See the next section on error handling for details.
+        </p>
+      </li>
+      <li>
+        <p>
+          The retrieved &quot;id&quot; value is used in a db8 find query to look up the user's record in the local db8 database. Since &quot;DB.find&quot; also returns a Future, we can return that result from the &quot;then&quot; to chain the two Futures together.
+        </p>
+      </li>
+      <li>
+        <p>
+          Finally, when the record has been retrieved from db8 storage, it is logged to the console.
+        </p>
+      </li>
+    </ul>
+    <h3 id="basic-usage">
+      Basic Usage
+    </h3>
+    <p>
+      The following is the basic pattern for using Futures:
+    </p>
+    <ul>
+      <li>
+        <p>
+          Create a Future or obtain one from a Foundations library call (i.e., Ajax calls (get, head or post) or PalmCall or the db8 wrapper APIs).
+        </p>
+      </li>
+      <li>
+        <p>
+          Call the Future's &quot;then&quot; method to set up a function to call when the Future has a result.
+        </p>
+      </li>
+      <li>
+        <p>
+          Do something that will cause the Future's result to get set.
+        </p>
+      </li>
+    </ul>
+    <h3 id="error-handling">
+      Error Handling
+    </h3>
+    <p>
+      If the function specified in a &quot;then&quot; throws an exception, the exception is logged and stored in the Future. The next time the Future's &quot;result&quot; property is accessed, it is re-thrown. This allows your app to defer error handling to the end of the chain, if desired. Note, however, that reading a Future's &quot;exception&quot; resets the mechanism that causes errors to be re-thrown.
+    </p>
+    <p>
+      <strong>Deferred error-handling example:</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>var libraries = MojoLoader.require({ name: &quot;foundations&quot;, version: &quot;1.0&quot; });
+var Future = libraries[&quot;foundations&quot;].Control.Future;
+var f = new Future(&quot;Hello&quot;);
+f.then(function(future) {
+  if (future.result == &quot;Hello&quot;) {
+      throw &quot;Error&quot;;      
+  }
+  future.result = &quot;Success&quot;;
+});
+f.then(function(future) {
+  if (future.result == &quot;Success&quot;) // Error is re-thrown on this access
+  {
+       Mojo.Log.info(&quot;In stage 2&quot;);
+  }
+  future.result = &quot;Did stage 2&quot;;
+});
+f.then(function(future) {
+  if (future.exception) {
+      Mojo.Log.info(&quot;Stage 3 Exception&quot;);
+      future.result = false;
+  }
+  else {
+      future.result = true;
+  }
+});
+</code>
+</pre>
+    </blockquote>
+    <p>
+      <strong>Logged output:</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>Stage 3 Exception
+</code>
+</pre>
+    </blockquote>
+    <h3 id="passing-error-functions">
+      Passing Error Functions
+    </h3>
+    <p>
+      When calling &quot;then&quot;, you can specify a function to run if the previous stage threw an error:
+    </p>
+    <blockquote>
+      <pre>
+<code>var f = new Future(&quot;Hello&quot;);
+f.then(function(future) {
+  if (future.result == &quot;Hello&quot;) {
+      throw &quot;Error&quot;;
+  }
+  future.result = &quot;Success&quot;;
+});
+
+f.then(function(future) {
+  Mojo.Log.info(&quot;In stage 2&quot;);
+  future.result = &quot;Did stage 2&quot;;
+},
+function(future) {        // Pass this error handling function
+  Mojo.Log.info(&quot;In error handler, error was &quot;+future.exception);
+  future.result = &quot;Skipped stage 2&quot;;
+});
+</code>
+</pre>
+    </blockquote>
+    <p>
+      As an alternative to this (since reading reading a Future's &quot;exception&quot; resets the mechanism that causes errors to be re-thrown), you could have the following code:
+    </p>
+    <blockquote>
+      <pre>
+<code>f.then(function(future) {
+  if (future.exception) {
+      // do some error recovery
+  }
+  future.result=true;
+});
+</code>
+</pre>
+    </blockquote>
+    <h3 id="creating-a-future-wide-error-handler">
+      Creating a Future-wide Error Handler
+    </h3>
+    <p>
+      The &quot;onError&quot; function establishes a Future-wide error handler that is invoked for every thrown error.
+    </p>
+    <p>
+      For example:
+    </p>
+    <blockquote>
+      <pre>
+<code>var f = new Future(&quot;Hello&quot;);
+f.onError(function(future) {
+  Mojo.Log.info(&quot;In error handler, error was: &quot;+future.exception);
+  future.result = true;
+});
+f.then(function(future) {
+  future.result;
+  throw(&quot;1&quot;);
+});
+f.then(function(future) {
+  future.result;
+  throw(&quot;2&quot;);
+});
+f.then(function(future) {
+  future.result;
+  throw(&quot;3&quot;);
+});
+</code>
+</pre>
+    </blockquote>
+    <p>
+      Logged Output:
+    </p>
+    <blockquote>
+      <pre>
+<code>In error handler, error was: 1
+In error handler, error was: 2
+In error handler, error was: 3
+</code>
+</pre>
+    </blockquote>
+    <h3 id="guidelines-for-implementing-futures">
+      Guidelines for Implementing Futures
+    </h3>
+    <ul>
+      <li>
+        <p>
+          <strong>&quot;then&quot; functions should read the Future's &quot;result&quot; property before doing anything.</strong>
+        </p>
+        <p>
+          This allows errors to propagate correctly (see Error Handling).
+        </p>
+      </li>
+      <li>
+        <p>
+          <strong>&quot;then&quot; functions should always set the Future's &quot;result&quot; property.</strong>
+        </p>
+        <p>
+          They should do this either directly, or as the result of a callback. It should do this exactly once, no matter what path the code takes.
+        </p>
+      </li>
+      <li>
+        <p>
+          <strong>Use a Finite State Machine (FSM) design.</strong>
+        </p>
+        <p>
+          Imagine your Future chain or sequence as a Finite State Machine (FSM). Map out the states and state transitions ahead of time, and write your code accordingly.
+        </p>
+        <p>
+          If your FSM has branches or cycles you can use a Future's &quot;nest&quot; method to handle these conditionally. It is not recommended you use &quot;then&quot; handlers for the same Future at different levels to do this.
+        </p>
+      </li>
+      <li>
+        <p>
+          <strong>Implement a flat hierarchy.</strong>
+        </p>
+        <p>
+          Because their control flow is linear and declared up front, flat hierarchies are easier to understand than deep ones. Avoid making and using more Futures than are necessary.
+        </p>
+        <p>
+          Attaching additional &quot;then&quot; handlers in nested functions is not recommended -- the execution order and response of &quot;then&quot; handlers at different levels is hard to anticipate.
+        </p>
+      </li>
+    </ul><!-- <li><p><strong>Use "nest" to abstract code branches.</strong></p>
+
+<p>You can use the "nest" method to abstract a complex and unrelated sub-sequence 
+from the main sequence. Whether or not the sub-sequence's result is valid or an error, the
+main sequence always resumes upon sub-sequence completion.</p>
+</li> -->
+    <ul>
+      <li>
+        <p>
+          <strong>Always access a future &quot;result&quot; before setting it again.</strong>
+        </p>
+        <p>
+          Always read a Future's result before setting a new value. If the previous step resulted in an error, it aborts immediately and prevents unnecessary further processing.
+        </p>
+        <p>
+          Always read a Future's result before using &quot;nest&quot; to tack on another step. These two should be done together in a &quot;then&quot;. The one exception is if the &quot;nest&quot; is the first step in the sequence and there is no initial value.
+        </p>
+      </li>
+      <li>
+        <p>
+          <strong>Utility functions should return new objects.</strong>
+        </p>
+        <p>
+          When designing utility APIs that use Futures, try to have them return new Future objects rather than accepting a client-provided Future object as a parameter. This gives more control to the caller and avoids letting the utility function clobber Future flow or make any assumptions.
+        </p>
+        <p>
+          If you think of utility methods as complex and unrelated sub-sequences (see &quot;nest&quot; above), expecting them to return new Futures and connecting them with &quot;nest&quot; seems very logical.
+        </p>
+        <p>
+          If you are writing a utility method and it needs to execute a conditional or branch, you should do one more step: since loops and branches usually mean deferred attachment of &quot;then&quot; functions, you should wrap this future sequence in a single outer future to return to the caller. This way, when the caller inevitably attaches &quot;then&quot; functions early, they will not break your private inner sequence.
+        </p>
+      </li>
+      <li>
+        <p>
+          <strong>Name your &quot;then&quot; functions.</strong>
+        </p>
+        <p>
+          If your Future sequence has many steps, it could be helpful to name your &quot;then&quot; functions rather than leaving them anonymous. It is easier for someone else to follow a list of named steps than a long sequence of unrelated functions.
+        </p>
+      </li>
+    </ul>
+    <hr>
+    <h2 id="future-properties">
+      Future Properties
+    </h2>
+    <ul>
+      <li>
+        <strong>exception</strong> -- Contains the Future's exception, if there is one. Reading or writing this property is the same as accessing it with &quot;getException&quot; or &quot;setException&quot;.
+      </li>
+      <li>
+        <strong>result</strong> -- Contains the Future's result. Reading or writing this property is the same as accessing it with &quot;getResult&quot; or &quot;setResult&quot;.
+      </li>
+    </ul>
+    <hr>
+    <h2 id="future-methods">
+      Future Methods
+    </h2>
+    <ul>
+      <li>callback -- Provides for a standard callback mechanism.
+      </li>
+      <li>cancel -- Cancels any pending &quot;then&quot; stages.
+      </li>
+      <li>getException -- Gets the Future's most recent exception captured in a &quot;then&quot; or &quot;now&quot; function.
+      </li>
+      <li>getResult -- Get the Future's &quot;result&quot; property value.
+      </li>
+      <li>nest -- Nest a Future inside the current Future.
+      </li>
+      <li>now -- Calls the scope and function immediately in the Future's scope.
+      </li>
+      <li>onError -- Defines a Future-wide error handler.
+      </li>
+      <li>setException -- Sets the Future's &quot;exception&quot; property.
+      </li>
+      <li>setResult -- Sets the Future's &quot;result&quot; property.
+      </li>
+      <li>status -- Returns the Future's current status.
+      </li>
+      <li>then -- Register a scope and function for execution when a Future has a result or exception set.
+      </li>
+      <li>whilst -- Provides a Futures looping construct.
+      </li>
+    </ul>
+    <h3 id="code-sample-notes">
+      Code Sample Notes
+    </h3>
+    <p>
+      The code samples for the &quot;nest&quot; and &quot;then&quot; methods require the following db8 database set-up:
+    </p>
+    <blockquote>
+      <pre>
+<code>// 1. Load and reference required libraries
+
+var libraries = MojoLoader.require({ name: &quot;foundations&quot;, version: &quot;1.0&quot; });
+var Future = libraries[&quot;foundations&quot;].Control.Future;
+var DB = libraries[&quot;foundations&quot;].Data.DB;
+
+// 2. Create a db8 kind object
+
+var testKind = { name: &quot;dbtest:1&quot;,  owner: &quot;com.palm.foundmain&quot;,
+  indexes: [ //** create indexes
+      {name:&quot;name&quot;, props: [{name: &quot;name&quot;}]},
+      {name:&quot;profession&quot;, props:[{name: &quot;profession&quot;}]}   
+  ]
+};
+
+// 3.  Create 5 test data objects
+
+var testData =  [ { _kind: testKind.name, name: &quot;Mark&quot;, age: 40, profession: &quot;engineer&quot; },
+  {  _kind: testKind.name, name: &quot;Yvette&quot;, age: 36,  profession: &quot;trainer&quot; },
+  {  _kind: testKind.name, name: &quot;Lenny&quot;, age: 45, profession: &quot;engineer&quot; },
+  {  _kind: testKind.name, name: &quot;Homer&quot;, age: 51, profession: &quot;safety inspector&quot;},
+  {  _kind: testKind.name, name: &quot;Marge&quot;, age: 48, profession: &quot;homemaker&quot; }
+];
+
+// 4. Use db8 JavaScript wrapper API calls to create the kind and test objects (no error checking)
+
+DB.putKind(testKind.name, testKind.owner, testKind.indexes);
+DB.put(testData); 
+</code>
+</pre>
+    </blockquote>
+    <p>
+      The above code creates a db8 <strong>kind</strong> and then puts 5 JSON data objects <strong>of that kind</strong> into db8 storage using db8 JavaScript wrapper API calls. See the db8 documentation for more information.
+    </p>
+    <hr>
+    <h2 id="callback">
+      callback
+    </h2>
+    <p>
+      Wraps and returns the scope and function pair in a new function that requires no arguments. Generally, this is used to interface the Futures mechanism to the common function callback schemes that Ajax and HTML5 databases use.
+    </p>
+    <h3 id="syntax">
+      Syntax
+    </h3>
+    <pre>
+    Future.callback(<em>scope</em>, <em>func</em>);
+</pre>
+    <h3 id="parameters">
+      Parameters
+    </h3>
+    <table border="1">
+      <thead>
+        <tr>
+          <th>
+            Argument
+          </th>
+          <th>
+            Required
+          </th>
+          <th>
+            Type
+          </th>
+          <th>
+            Description
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <em>scope</em>
+          </td>
+          <td>
+            No
+          </td>
+          <td>
+            any object
+          </td>
+          <td>
+            Call scope
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <em>func</em>
+          </td>
+          <td>
+            Yes
+          </td>
+          <td>
+            Function
+          </td>
+          <td>
+            Function to call.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="returns">
+      Returns
+    </h3>
+    <blockquote>
+      <pre>
+<code>None.
+</code>
+</pre>
+    </blockquote>
+    <p>
+      <strong>Example</strong>
+    </p>
+    <p>
+      In this example, a callback function is used in a &quot;setTimeout&quot; call.
+    </p>
+    <blockquote>
+      <pre>
+<code>var libraries = MojoLoader.require({ name: &quot;foundations&quot;, version: &quot;1.0&quot; });
+var Future    = libraries[&quot;foundations&quot;].Control.Future;
+var f = new Future();
+
+setTimeout(f.callback(this, function() {
+  f.result = &quot;passed&quot;;
+}), 100);
+
+f.then(function(future) {
+  Mojo.Log.info(&quot;In then, f.result=&quot;+f.result);
+});
+</code>
+</pre>
+    </blockquote>
+    <hr>
+    <h2 id="cancel">
+      cancel
+    </h2>
+    <p>
+      Cancels any pending &quot;then&quot; clauses. The Future is marked as canceled. It is an error to set a new result or &quot;then&quot; for a canceled Future.
+    </p>
+    <h3 id="syntax-1">
+      Syntax
+    </h3>
+    <blockquote>
+      <pre>
+<code>Future.cancel();
+</code>
+</pre>
+    </blockquote>
+    <h3 id="parameters-1">
+      Parameters
+    </h3>
+    <blockquote>
+      <pre>
+<code>None.
+</code>
+</pre>
+    </blockquote>
+    <h3 id="returns-1">
+      Returns
+    </h3>
+    <blockquote>
+      <pre>
+<code>None.
+</code>
+</pre>
+    </blockquote>
+    <p>
+      <strong>Example</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>var libraries = MojoLoader.require({ name: &quot;foundations&quot;, version: &quot;1.0&quot; });
+var Future = libraries[&quot;foundations&quot;].Control.Future;
+var f = new Future();
+f.then( this, function(future) {
+  future.cancel();
+  future.result=&quot;DONE&quot;;
+}
+).then( this, function(future) {
+  Mojo.Log.info(&quot;Should never get here&quot;);
+}
+);
+</code>
+</pre>
+    </blockquote>
+    <hr>
+    <h2 id="getexception">
+      getException
+    </h2>
+    <p>
+      Gets the Future's most recent exception captured in a &quot;then&quot; or &quot;now&quot; function.
+    </p>
+    <h3 id="syntax-2">
+      Syntax
+    </h3>
+    <blockquote>
+      <pre>
+<code>Future.getException();
+</code>
+</pre>
+    </blockquote>
+    <h3 id="parameters-2">
+      Parameters
+    </h3>
+    <blockquote>
+      <pre>
+<code>None.
+</code>
+</pre>
+    </blockquote>
+    <h3 id="returns-2">
+      Returns
+    </h3>
+    <blockquote>
+      <pre>
+<code>Exception value.
+</code>
+</pre>
+    </blockquote>
+    <p>
+      <strong>Example</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>var libraries = MojoLoader.require({ name: &quot;foundations&quot;, version: &quot;1.0&quot; });
+var Future    = libraries[&quot;foundations&quot;].Control.Future;
+var AssertUtils = libraries[&quot;foundations&quot;].Assert;
+var f = new Future(&quot;Hello&quot;);
+
+f.then(function(future) {
+  future.exception = 2;
+});
+
+f.then(function(future) {
+  var e = future.getException();
+  AssertUtils.requireEqual(e, 2);
+  future.setException(3);
+});
+
+f.then(function(future) {
+  var e = future.getException();
+  AssertUtils.requireEqual(e, 3);
+  future.result = &quot;Passed&quot;;       
+  Mojo.Log.info(&quot;future.result = &quot;+future.result);
+});
+</code>
+</pre>
+    </blockquote>
+    <hr>
+    <h2 id="getresult">
+      getResult
+    </h2>
+    <p>
+      Get the Future's result property value. Calling this does not stop the future's exception (if any) from being re-thrown.
+    </p>
+    <h3 id="syntax-3">
+      Syntax
+    </h3>
+    <blockquote>
+      <pre>
+<code>Future.getResult();
+</code>
+</pre>
+    </blockquote>
+    <h3 id="parameters-3">
+      Parameters
+    </h3>
+    <blockquote>
+      <pre>
+<code>None.
+</code>
+</pre>
+    </blockquote>
+    <h3 id="returns-3">
+      Returns
+    </h3>
+    <blockquote>
+      <pre>
+<code>Future result value.
+</code>
+</pre>
+    </blockquote>
+    <p>
+      <strong>Example</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>var libraries = MojoLoader.require({ name: &quot;foundations&quot;, version: &quot;1.0&quot; });
+var Future    = libraries[&quot;foundations&quot;].Control.Future;
+var AssertUtils = libraries[&quot;foundations&quot;].Assert;    
+var f = new Future(1);
+
+f.then(function(future) {
+  AssertUtils.requireEqual(1, future.result);
+  future.result = 2;
+});
+
+f.then(function(future) {
+  AssertUtils.requireEqual(2, future.getResult());
+  future.setResult(3);
+});
+
+f.then(function(future) {
+  AssertUtils.requireEqual(future.result, future.getResult());
+  future.setResult(&quot;passed&quot;);
+});
+</code>
+</pre>
+    </blockquote>
+    <hr>
+    <h2 id="nest">
+      nest
+    </h2>
+    <p>
+      Nest a Future inside the current Future. This is useful when one Future contains many other Futures (for example, when a Future is created, which contains a number of database operations, each of which returns a Future). When an inner-Future completes, any results it contains propagate to the outer-Future.
+    </p>
+    <p>
+      Nests are useful as a way to abstract a complex and unrelated sub-sequence from the main sequence. They ensure that the main sequence always resumes upon sub-sequence completion, whether or not the sub-sequence resulted in an error or valid result.
+    </p>
+    <h3 id="syntax-4">
+      Syntax
+    </h3>
+    <pre>
+    Future.nest(<em>innerfuture</em>);
+</pre>
+    <h3 id="parameters-4">
+      Parameters
+    </h3>
+    <table border="1">
+      <thead>
+        <tr>
+          <th>
+            Argument
+          </th>
+          <th>
+            Required
+          </th>
+          <th>
+            Type
+          </th>
+          <th>
+            Description
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <em>innerfuture</em>
+          </td>
+          <td>
+            Yes
+          </td>
+          <td>
+            Future
+          </td>
+          <td>
+            Future to nest within the current future.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="returns-4">
+      Returns
+    </h3>
+    <blockquote>
+      <pre>
+<code>None.
+</code>
+</pre>
+    </blockquote>
+    <p>
+      <strong>Example</strong>
+    </p>
+    <p>
+      Do a series of db8 database finds, each of which returns a Future, and aggregate the results. See &quot;Code Sample Notes&quot; above to see how this code sample is set up.
+    </p>
+    <blockquote>
+      <pre>
+<code>// Allocate Future
+var libraries = MojoLoader.require({ name: &quot;foundations&quot;, version: &quot;1.0&quot; });
+var Future = libraries[&quot;foundations&quot;].Control.Future;
+var DB = libraries[&quot;foundations&quot;].Data.DB;
+var f = new Future(&quot;hello&quot;);
+
+// Retrieve and aggregate 3 records from db8 storage
+var result1, result2, result3;
+f.nest(DB.find({ &quot;from&quot;: &quot;dbtest:1&quot;, &quot;limit&quot;:1, &quot;where&quot;: [{ &quot;prop&quot;:&quot;profession&quot;, &quot;op&quot;:&quot;=&quot;, &quot;val&quot;:&quot;engineer&quot;}]}).then( function(f)
+{
+  result1 = f.result.results[0];  
+}));
+
+f.nest(DB.find({ &quot;from&quot;: &quot;dbtest:1&quot;, &quot;limit&quot;:1, &quot;where&quot;: [{ &quot;prop&quot; :&quot;profession&quot;, &quot;op&quot;: &quot;=&quot;, &quot;val&quot;:&quot;homemaker&quot;}]}).then( function(f)
+{
+  result2 = f.result.results[0];
+}));
+
+f.nest(DB.find({&quot;from&quot;:&quot;dbtest:1&quot;, &quot;limit&quot;:1, &quot;where&quot;: [{ &quot;prop&quot; :&quot;profession&quot;, &quot;op&quot;: &quot;=&quot;, &quot;val&quot;:&quot;trainer&quot;}]}).then( function(f)
+{
+  result3 = f.result.results[0];
+  f.result = {
+      rec1:  result1,
+      rec2:  result2,
+      rec3:  result3
+  };
+  Mojo.Log.info(&quot;Final result=&quot;+JSON.stringify(f.result));
+}));
+</code>
+</pre>
+    </blockquote>
+    <p>
+      <strong>Example Output</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>Final result=
+{
+  &quot;rec1&quot;:{
+      &quot;_id&quot;:&quot;++HJdTuywUsIfU6N&quot;,
+      &quot;_kind&quot;:&quot;dbtest:1&quot;,
+      &quot;_rev&quot;:5074,
+      &quot;age&quot;:40,
+      &quot;name&quot;:&quot;Mark&quot;,
+      &quot;profession&quot;:&quot;engineer&quot;
+  },
+  &quot;rec2&quot;:{
+      &quot;_id&quot;:&quot;++HJdTuz3o4ez4D3&quot;,
+      &quot;_kind&quot;:&quot;dbtest:1&quot;,
+      &quot;_rev&quot;:5078,
+      &quot;age&quot;:48,
+      &quot;name&quot;:&quot;Marge&quot;,
+      &quot;profession&quot;:&quot;homemaker&quot;
+      },
+  &quot;rec3&quot;:{
+      &quot;_id&quot;:&quot;++HJdTuyyN44nzZl&quot;,
+      &quot;_kind&quot;:&quot;dbtest:1&quot;,
+      &quot;_rev&quot;:5075,
+      &quot;age&quot;:36,
+      &quot;name&quot;:&quot;Yvette&quot;,
+      &quot;profession&quot;:&quot;trainer&quot;
+  }
+}
+</code>
+</pre>
+    </blockquote>
+    <hr>
+    <h2 id="now">
+      now
+    </h2>
+    <p>
+      Calls the scope and function immediately in the current Future's scope. This behaves like &quot;then&quot; except the function is immediately executed rather than waiting for &quot;result&quot; to be set. Generally, this is useful if your app wants to capture any exceptions the &quot;now&quot; function might generate, and assign them to the Future.
+    </p>
+    <h3 id="syntax-5">
+      Syntax
+    </h3>
+    <pre>
+    Future.now(<em>scope</em>, <em>func</em>, <em>errorFunc</em>);
+</pre>
+    <h3 id="parameters-5">
+      Parameters
+    </h3>
+    <table border="1">
+      <thead>
+        <tr>
+          <th>
+            Argument
+          </th>
+          <th>
+            Required
+          </th>
+          <th>
+            Type
+          </th>
+          <th>
+            Description
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <em>scope</em>
+          </td>
+          <td>
+            No
+          </td>
+          <td>
+            any
+          </td>
+          <td>
+            Call scope
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <em>func</em>
+          </td>
+          <td>
+            Yes
+          </td>
+          <td>
+            Function
+          </td>
+          <td>
+            Function to call.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <em>errorFunc</em>
+          </td>
+          <td>
+            No
+          </td>
+          <td>
+            Function
+          </td>
+          <td>
+            Error function to invoke on failure.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="returns-5">
+      Returns
+    </h3>
+    <blockquote>
+      <pre>
+<code>None.
+</code>
+</pre>
+    </blockquote>
+    <p>
+      <strong>Example</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>var libraries = MojoLoader.require({ name: &quot;foundations&quot;, version: &quot;1.0&quot; });
+var Future    = libraries[&quot;foundations&quot;].Control.Future;
+var f = new Future(&quot;Hello&quot;);
+
+f.then(function(future) {
+  Mojo.Log.info(&quot;In first stage&quot;);
+  if (future.result == &quot;Hello&quot;) {
+      setTimeout(function() { Mojo.Log.info(&quot;100 ms passed&quot;); future.result = &quot;Success&quot;; }, 100);
+  }
+});
+
+f.now(function(future) {
+  if (future.result == &quot;Success&quot; )
+      Mojo.Log.info(&quot;First then finished&quot;);
+  else
+      Mojo.Log.info(&quot;Finished stage 2 before stage 1&quot;);
+  future.result=&quot;Stage 2 done&quot;;          
+});
+
+f.then(function(future) {
+  Mojo.Log.info(&quot;In stage 3 &quot;);
+  if (future.exception)
+      future.result = false;
+  else
+      future.result = true;
+});
+</code>
+</pre>
+    </blockquote>
+    <p>
+      <strong>Example Output</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>In first stage
+Finished stage 2 before stage 1
+In stage 3
+100 ms passed
+</code>
+</pre>
+    </blockquote>
+    <p>
+      If the &quot;now&quot; was a &quot;then&quot;, you would see the following output:
+    </p>
+    <blockquote>
+      <pre>
+<code>In first stage
+100 ms passed
+First then finished
+In stage 3
+</code>
+</pre>
+    </blockquote>
+    <hr>
+    <h2 id="onerror">
+      onError
+    </h2>
+    <p>
+      Used to define a Future-wide error handler. This overrides the default error handling in a Future (which passes the exception through to the next <strong>then</strong> clause). Instead, all errors are passed to the function defined with this call.
+    </p>
+    <h3 id="syntax-6">
+      Syntax
+    </h3>
+    <pre>
+    Future.OnError(<em>func</em>);
+</pre>
+    <h3 id="parameters-6">
+      Parameters
+    </h3>
+    <table border="1">
+      <thead>
+        <tr>
+          <th>
+            Argument
+          </th>
+          <th>
+            Required
+          </th>
+          <th>
+            Type
+          </th>
+          <th>
+            Description
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <em>func</em>
+          </td>
+          <td>
+            Yes
+          </td>
+          <td>
+            Function
+          </td>
+          <td>
+            Function to call when error occurs.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="returns-6">
+      Returns
+    </h3>
+    <blockquote>
+      <pre>
+<code>None.
+</code>
+</pre>
+    </blockquote>
+    <p>
+      <strong>Example</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>var libraries = MojoLoader.require({ name: &quot;foundations&quot;, version: &quot;1.0&quot; });
+var Future    = libraries[&quot;foundations&quot;].Control.Future;
+var f = new Future(&quot;Hello&quot;);
+
+f.onError(function(future) {
+  Mojo.Log.info(&quot;In error handler, error was: &quot;+future.exception);
+  future.result = false;
+});
+</code>
+</pre>
+    </blockquote>
+    <hr>
+    <h2 id="setexception">
+      setException
+    </h2>
+    <p>
+      Sets the exception for the Future.
+    </p>
+    <h3 id="syntax-7">
+      Syntax
+    </h3>
+    <pre>
+    Future.setException(<em>value</em>);
+</pre>
+    <h3 id="parameters-7">
+      Parameters
+    </h3>
+    <table border="1">
+      <thead>
+        <tr>
+          <th>
+            Argument
+          </th>
+          <th>
+            Required
+          </th>
+          <th>
+            Type
+          </th>
+          <th>
+            Description
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <em>value</em>
+          </td>
+          <td>
+            Yes
+          </td>
+          <td>
+            any
+          </td>
+          <td>
+            Value to set.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="returns-7">
+      Returns
+    </h3>
+    <blockquote>
+      <pre>
+<code>None.
+</code>
+</pre>
+    </blockquote>
+    <p>
+      <strong>Example</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>var libraries   = MojoLoader.require({ name: &quot;foundations&quot;, version: &quot;1.0&quot; });
+var Future      = libraries[&quot;foundations&quot;].Control.Future;
+var AssertUtils = libraries[&quot;foundations&quot;].Assert;
+
+var f = new Future(&quot;Hello&quot;);
+
+f.then(function(future) {
+  future.exception = 2;
+});
+
+f.then(function(future) {
+  var e = future.exception;
+  AssertUtils.requireEqual(e, 2);
+  future.setException(3);
+});
+
+f.then(function(future) {
+  var e = future.exception;
+  AssertUtils.requireEqual(e, 3);
+  future.result = &quot;Passed&quot;;
+  Mojo.Log.info(&quot;future.result = &quot;+future.result);
+});
+</code>
+</pre>
+    </blockquote>
+    <hr>
+    <h2 id="setresult">
+      setResult
+    </h2>
+    <p>
+      Sets the Future's &quot;result&quot; property. Calling this does not stop the future's exception (if any) from being re-thrown.
+    </p>
+    <h3 id="syntax-8">
+      Syntax
+    </h3>
+    <pre>
+    Future.setResult(<em>value</em>);
+</pre>
+    <h3 id="parameters-8">
+      Parameters
+    </h3>
+    <table border="1">
+      <thead>
+        <tr>
+          <th>
+            Argument
+          </th>
+          <th>
+            Required
+          </th>
+          <th>
+            Type
+          </th>
+          <th>
+            Description
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <em>value</em>
+          </td>
+          <td>
+            Yes
+          </td>
+          <td>
+            any
+          </td>
+          <td>
+            Value to set.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="returns-8">
+      Returns
+    </h3>
+    <p>
+      <strong>Example</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>var libraries = MojoLoader.require({ name: &quot;foundations&quot;, version: &quot;1.0&quot; });
+var Future    = libraries[&quot;foundations&quot;].Control.Future;
+var AssertUtils = libraries[&quot;foundations&quot;].Assert;
+
+var f = new Future(1);
+f.then(function(future) {
+  AssertUtils.requireEqual(1, future.result);
+  future.result = 2;
+});
+
+f.then(function(future) {
+  AssertUtils.requireEqual(2, future.getResult());
+  future.setResult(3);
+});
+
+f.then(function(future) {
+  AssertUtils.requireEqual(future.result, future.getResult());
+  future.setResult(&quot;passed&quot;);
+});
+</code>
+</pre>
+    </blockquote>
+    <hr>
+    <h2 id="status">
+      status
+    </h2>
+    <p>
+      Returns the Future's current status.
+    </p>
+    <h3 id="syntax-9">
+      Syntax
+    </h3>
+    <blockquote>
+      <pre>
+<code>string Future.status();
+</code>
+</pre>
+    </blockquote>
+    <h3 id="parameters-9">
+      Parameters
+    </h3>
+    <blockquote>
+      <p>
+        None.
+      </p>
+    </blockquote>
+    <h3 id="returns-9">
+      Returns
+    </h3>
+    <p>
+      One of the following:
+    </p>
+    <ul>
+      <li>
+        <code>cancelled -- A pending result or exception was cancelled.</code>
+      </li>
+      <li>
+        <code>exception -- An exception is pending.</code>
+      </li>
+      <li>
+        <code>none -- No result, exception, or cancellation is pending.</code>
+      </li>
+      <li>
+        <code>result -- A result is pending.</code>
+      </li>
+    </ul>
+    <hr>
+    <h2 id="then">
+      then
+    </h2>
+    <p>
+      Register a scope and function for execution when a Future has a result or exception set. You can register multiple &quot;thens&quot; and they are organized in the order registered. One &quot;then&quot; function is called per &quot;result&quot; or &quot;exception&quot; set on the Future.
+    </p>
+    <p>
+      The function registered in the &quot;then&quot; should take the form:
+    </p>
+    <blockquote>
+      <pre>
+<code>function myThenFunc(future) { .... }
+</code>
+</pre>
+    </blockquote>
+    <p>
+      The Future passed as the argument is the one that triggered the function call, allowing the same function to be used in different Futures. The function is executed in the scope passed. If the function throws any exceptions that are not handled, the Future passes them to subsequent &quot;then&quot; handlers.
+    </p>
+    <h3 id="syntax-10">
+      Syntax
+    </h3>
+    <pre>
+    Future.then(<em>scope</em>, <em>thenfunc</em>, <em>errorfunc</em>);
+</pre>
+    <h3 id="parameters-10">
+      Parameters
+    </h3>
+    <table border="1">
+      <thead>
+        <tr>
+          <th>
+            Argument
+          </th>
+          <th>
+            Required
+          </th>
+          <th>
+            Type
+          </th>
+          <th>
+            Description
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <em>scope</em>
+          </td>
+          <td>
+            No
+          </td>
+          <td>
+            any object
+          </td>
+          <td>
+            Call scope
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <em>thenfunc</em>
+          </td>
+          <td>
+            Yes
+          </td>
+          <td>
+            Function
+          </td>
+          <td>
+            Function to call.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <em>errorFunc</em>
+          </td>
+          <td>
+            No
+          </td>
+          <td>
+            Function
+          </td>
+          <td>
+            Error function to invoke on failure.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="returns-10">
+      Returns
+    </h3>
+    <blockquote>
+      <pre>
+<code>None.
+</code>
+</pre>
+    </blockquote>
+    <p>
+      <strong>Example</strong>
+    </p>
+    <p>
+      The following example invokes the JavaScript wrapper API (which returns a future) for the db8 &quot;find&quot; (query) call once each in three different &quot;thens&quot;. The final &quot;then&quot; aggregrates the results of all three find/then calls.
+    </p>
+    <blockquote>
+      <pre>
+<code>var libraries = MojoLoader.require({ name: &quot;foundations&quot;, version: &quot;1.0&quot; });
+var Future    = libraries[&quot;foundations&quot;].Control.Future;
+var DB        = libraries[&quot;foundations&quot;].Data.DB;
+
+var f = new Future(&quot;hello&quot;);
+var result1, result2, result3;
+f.then(DB.find({ &quot;from&quot;: &quot;dbtest:1&quot;, &quot;limit&quot;:1, &quot;where&quot;: [{ &quot;prop&quot;:&quot;profession&quot;, &quot;op&quot;:&quot;=&quot;, &quot;val&quot;:&quot;engineer&quot;}]}).then( function(f)
+{
+  result1 = f.result.results[0];
+}));
+
+f.then(DB.find({ &quot;from&quot;: &quot;dbtest:1&quot;, &quot;limit&quot;:1, &quot;where&quot;: [{ &quot;prop&quot; :&quot;profession&quot;, &quot;op&quot;: &quot;=&quot;, &quot;val&quot;:&quot;homemaker&quot;}]}).then( function(f)
+{
+  result2 = f.result.results[0];
+}));
+
+f.then(DB.find({&quot;from&quot;:&quot;dbtest:1&quot;, &quot;limit&quot;:1, &quot;where&quot;: [{ &quot;prop&quot; :&quot;profession&quot;, &quot;op&quot;: &quot;=&quot;, &quot;val&quot;:&quot;trainer&quot;}]}).then( function(f)
+{
+  result3 = f.result.results[0];
+  f.result = {
+      rec1:  result1,
+      rec2:  result2,
+      rec3:  result3
+  };
+  Mojo.Log.info(&quot;Final result=&quot;+JSON.stringify(f.result));
+}));
+</code>
+</pre>
+    </blockquote>
+    <p>
+      <strong>Example Output</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>Final result=
+{
+  &quot;rec1&quot;:{
+      &quot;_id&quot;:&quot;++HJdTuywUsIfU6N&quot;,
+      &quot;_kind&quot;:&quot;dbtest:1&quot;,
+      &quot;_rev&quot;:5074,
+      &quot;age&quot;:40,
+      &quot;name&quot;:&quot;Mark&quot;,
+      &quot;profession&quot;:&quot;engineer&quot;
+  },
+  &quot;rec2&quot;:{
+      &quot;_id&quot;:&quot;++HJdTuz3o4ez4D3&quot;,
+      &quot;_kind&quot;:&quot;dbtest:1&quot;,
+      &quot;_rev&quot;:5078,
+      &quot;age&quot;:48,
+      &quot;name&quot;:&quot;Marge&quot;,
+      &quot;profession&quot;:&quot;homemaker&quot;
+  },
+  &quot;rec3&quot;:{
+      &quot;_id&quot;:&quot;++HJdTuyyN44nzZl&quot;,
+      &quot;_kind&quot;:&quot;dbtest:1&quot;,
+      &quot;_rev&quot;:5075,
+      &quot;age&quot;:36,
+      &quot;name&quot;:&quot;Yvette&quot;,
+      &quot;profession&quot;:&quot;trainer&quot;
+  }
+}
+</code>
+</pre>
+    </blockquote>
+    <hr>
+    <h2 id="whilst">
+      whilst
+    </h2>
+    <p>
+      Provides a Futures looping construct. Every time through the loop, &quot;conditionfunc&quot; is executed. If it returns a &quot;true&quot; value, then &quot;func&quot; is called using Future.now().
+    </p>
+    <h3 id="syntax-11">
+      Syntax
+    </h3>
+    <pre>
+    Future.whilst(<em>scope</em>, <em>conditionfunc</em>, <em>func</em>, <em>errorfunc</em>);
+</pre>
+    <h3 id="parameters-11">
+      Parameters
+    </h3>
+    <table border="1">
+      <thead>
+        <tr>
+          <th>
+            Argument
+          </th>
+          <th>
+            Required
+          </th>
+          <th>
+            Type
+          </th>
+          <th>
+            Description
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <em>scope</em>
+          </td>
+          <td>
+            No
+          </td>
+          <td>
+            any object
+          </td>
+          <td>
+            Call scope
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <em>conditionfunc</em>
+          </td>
+          <td>
+            Yes
+          </td>
+          <td>
+            Function
+          </td>
+          <td>
+            Function executed every time through loop.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <em>func</em>
+          </td>
+          <td>
+            Yes
+          </td>
+          <td>
+            Function
+          </td>
+          <td>
+            Function to call.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <em>errorFunc</em>
+          </td>
+          <td>
+            No
+          </td>
+          <td>
+            Function
+          </td>
+          <td>
+            Error function to invoke on failure.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="returns-11">
+      Returns
+    </h3>
+    <blockquote>
+      <pre>
+<code>None.
+</code>
+</pre>
+    </blockquote>
+    <p>
+      <strong>Example</strong>
+    </p>
+    <p>
+      The following will execute the &quot;now&quot; function once, the &quot;whilst&quot; 10 times and, finally, the &quot;then&quot; once.
+    </p>
+    <blockquote>
+      <pre>
+<code>var libraries = MojoLoader.require({ name: &quot;foundations&quot;, version: &quot;1.0&quot; });
+var Future = libraries[&quot;foundations&quot;].Control.Future;
+var f = new Future(&quot;Hello&quot;);
+
+f.now( function(f)
+  {
+      f.result = 0;
+  }
+  ).whilst(this, function(f)
+      {
+          return f.result &lt; 10;
+      },
+      function(f)
+      {
+          f.result++;
+      }
+      ).then( function(f)
+          {
+              if (f.result == 10) {
+              f.result = &quot;Done&quot;;
+          } else {
+              f.result = &quot;Error, should have been 10, was &quot;+f.result;
+          }
+      }
+);
+</code>
+</pre>
+    </blockquote>
+		</div>
+	</body>
+</html>

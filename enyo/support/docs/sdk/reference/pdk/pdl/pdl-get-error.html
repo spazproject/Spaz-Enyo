@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>$if(pagetitle)$$pagetitle$$endif$</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="stylesheet" href="_css/chrome.css" />
+		<link rel="stylesheet" href="../_css/chrome.css" />
+		<link rel="stylesheet" href="../../_css/chrome.css" />
+		<link rel="stylesheet" href="../../../_css/chrome.css" />
+		<script src="_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="_js/doc.js" type="text/javascript"></script>
+		<script src="../_js/doc.js" type="text/javascript"></script>
+		<script src="../../_js/doc.js" type="text/javascript"></script>
+		<script src="../../../_js/doc.js" type="text/javascript"></script>
+	</head>
+	<body>
+		<div id="content">
+    
+    <h1 id="pdl_geterror">
+      PDL_GetError
+    </h1>
+    <h2 id="description">
+      Description
+    </h2>
+    <p>
+      Returns a null terminated string containing information about the last internal PDL error. This is the initial error that occurred, not the subsequent errors that a calling sequence could generate.
+    </p>
+    <p>
+      The string is statically allocated—you should not attempt to <em>free</em>.
+    </p>
+    <h2 id="syntax">
+      Syntax
+    </h2>
+    <blockquote>
+      <pre>
+<code>const char *PDL_GetError(void);             
+</code>
+</pre>
+    </blockquote>
+    <h2 id="returns">
+      Returns
+    </h2>
+    <blockquote>
+      <pre>
+<code>Pointer to null-terminated string.
+</code>
+</pre>
+    </blockquote>
+    <h2 id="example">
+      Example
+    </h2>
+    <blockquote>
+      <pre>
+<code>if (PDL_GetLanguage(buffer, len) != PDL_NOERROR) 
+  fprintf(stdout, &quot;PDL_GetLanguage failed, err = %s\n&quot;, PDL_GetError()); 
+</code>
+</pre>
+    </blockquote>
+		</div>
+	</body>
+</html>

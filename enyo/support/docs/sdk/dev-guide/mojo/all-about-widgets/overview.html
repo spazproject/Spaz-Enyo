@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>$if(pagetitle)$$pagetitle$$endif$</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="stylesheet" href="_css/chrome.css" />
+		<link rel="stylesheet" href="../_css/chrome.css" />
+		<link rel="stylesheet" href="../../_css/chrome.css" />
+		<link rel="stylesheet" href="../../../_css/chrome.css" />
+		<script src="_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="_js/doc.js" type="text/javascript"></script>
+		<script src="../_js/doc.js" type="text/javascript"></script>
+		<script src="../../_js/doc.js" type="text/javascript"></script>
+		<script src="../../../_js/doc.js" type="text/javascript"></script>
+	</head>
+	<body>
+		<div id="content">
+    
+    <h1 id="all-about-widgets">
+      All About Widgets
+    </h1>
+    <p>
+      Supporting the HP webOS user interface are UI Widgets and a set of standard styles for use with the widgets and within your scenes. Mojo defines default styles for scenes and for each of the widgets. You get the styles simply by declaring and using the widgets, or you can override the styles either collectively or individually with custom CSS.
+    </p>
+    <p>
+      A widget is declared within your HTML as an empty div with an <code>x-mojo-element</code> attribute. Typically, you would declare the widget within a scene's view file, then direct Mojo to instantiate the widget during the corresponding scene assistant setup method using the scene controller's <code>setupWidget</code> method. You listen for events associated with the widget to take actions dictated by the user through widget or to update data associated with the widget. The framework applies default styles to the widget; you can override those styles in your CSS but in many cases the default styles will work perfectly.
+    </p>
+    <h2 id="how-to-use-this-section">
+      How to Use this Section
+    </h2>
+    <p>
+      All Mojo widgets are included here, along with some UI API functions that act like widgets. The widgets have been grouped into categories for easier review and because many of the widgets within a category share common behavior. You need to read the first page, &quot;<a href="anatomy-of-a-widget.html">Anatomy of a Widget</a>&quot;, before reading the pages describing the widgets but otherwise you can read the articles in this section in any order you like, or read them as you want to learn about specific widgets.
+    </p>
+    <p>
+      Each page is a collection of widget descriptions that include a light definition of the widget's declaration and setup, event handling and styling, along with some helpful tips in using the widget. There is a table that summarizes the widget's properties, relevant events and style names. You will be directly with links to the specific API documentation, sample code and style guide for that widget—it is in that detail documentation that you will get code-level information. This document will be more than high level information but not as detailed as you might need to write code to use the widget.
+    </p>
+    <table border="0">
+      <tbody>
+        <tr>
+          <th>
+            Topic
+          </th>
+          <th>
+            Description
+          </th>
+        </tr>
+        <tr>
+          <td>
+            <a href="anatomy-of-a-widget.html">Anatomy of a Widget</a>
+          </td>
+          <td>
+            Defines the basic organization of an application and the function of the configuration file and each of its properties.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <a href="buttons-and-selectors.html">Buttons and Selectors</a>
+          </td>
+          <td>
+            Overview of the Button, CheckBox, ToggleButton, RadioButton, ListSelector, and Slider widgets.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <a href="dialogs-and-containers.html">Dialogs and Containers</a>
+          </td>
+          <td>
+            Covers showDialog, showAlertDialog, and showErrorDialog functions, and Drawer and Scroller widgets.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <a href="indicators.html">Indicators</a>
+          </td>
+          <td>
+            Overview of indicators; describes the Spinner and the ProgressPill, ProgressBar, Progress, and ProgressSlider widgets.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <a href="lists.html">Lists</a>
+          </td>
+          <td>
+            Overview of the List widget and FilterList.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <a href="media-objects.html">Media Objects</a>
+          </td>
+          <td>
+            HTML 5 compliant objects for embedding video and audio.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <a href="menus.html">Menus</a>
+          </td>
+          <td>
+            Describes Menu functions and handlers, including AppMenu, Command Menu, View Menu, and Submenu.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <a href="pickers.html">Pickers</a>
+          </td>
+          <td>
+            Describes Pickers, including Date, Time, Integer, and the FilePicker application.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <a href="text-fields.html">Text Fields</a>
+          </td>
+          <td>
+            TextField, PasswordField, FilterField, and RichTextEdit widgets are described here.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <a href="viewers.html">Viewers</a>
+          </td>
+          <td>
+            <p>
+              Describes Web and Image viewers.
+            </p>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+		</div>
+	</body>
+</html>

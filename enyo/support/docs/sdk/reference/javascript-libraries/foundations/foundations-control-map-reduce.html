@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>$if(pagetitle)$$pagetitle$$endif$</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="stylesheet" href="_css/chrome.css" />
+		<link rel="stylesheet" href="../_css/chrome.css" />
+		<link rel="stylesheet" href="../../_css/chrome.css" />
+		<link rel="stylesheet" href="../../../_css/chrome.css" />
+		<script src="_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="_js/doc.js" type="text/javascript"></script>
+		<script src="../_js/doc.js" type="text/javascript"></script>
+		<script src="../../_js/doc.js" type="text/javascript"></script>
+		<script src="../../../_js/doc.js" type="text/javascript"></script>
+	</head>
+	<body>
+		<div id="content">
+    
+    <h1 id="foundations.control">
+      Foundations.Control
+    </h1>
+    <p>
+      This library provides a version of <a href="http://en.wikipedia.org/wiki/MapReduce" target="_blank">MapReduce</a> using Futures, Palm's mechanism for handling asynchronous callbacks.
+    </p>
+    <h2 id="control.mapreduce">
+      Control.mapReduce
+    </h2>
+    <ul>
+      <li>
+        <p>
+          Map -- The map function is applied iteratively to each passed dataset element and the results are sent to reduce. The map function must return a Future.
+        </p>
+      </li>
+      <li>
+        <p>
+          Reduce -- The reduce function takes map results and combines them for the final result. The reduce function must return a Future and accept an array of objects where each is:
+        </p>
+      </li>
+    </ul>
+    <blockquote>
+      <pre>
+<code>{ item: &lt;original data&gt;, result: &lt;normal result&gt;, exception: &lt;error result&gt; }
+</code>
+</pre>
+    </blockquote>
+    <p>
+      Only &quot;result&quot; or &quot;exception&quot; is present, never both.
+    </p>
+    <p>
+      By default, any exceptions in map are propagated to reduce and the returned future. To suppress or otherwise override this behavior, implement reduce.
+    </p>
+    <h3 id="syntax">
+      Syntax
+    </h3>
+    <pre>
+    Future mapReduce(<em>config</em>, <em>data</em>)
+</pre>
+    <h3 id="parameters">
+      Parameters
+    </h3>
+    <table border="1">
+      <thead>
+        <tr>
+          <th>
+            Argument
+          </th>
+          <th>
+            Required
+          </th>
+          <th>
+            Type
+          </th>
+          <th>
+            Description
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <em>config</em>
+          </td>
+          <td>
+            Yes
+          </td>
+          <td>
+            object
+          </td>
+          <td>
+            Object containing map and reduce functions.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <em>data</em>
+          </td>
+          <td>
+            Yes
+          </td>
+          <td>
+            any array
+          </td>
+          <td>
+            The map function is applied iteratively to each element in the dataset.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="returns">
+      Returns
+    </h3>
+    <blockquote>
+      <pre>
+<code>Future containing results.
+</code>
+</pre>
+    </blockquote>
+    <p>
+      <strong>Example</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>var libraries = MojoLoader.require({ name: &quot;foundations&quot;, version: &quot;1.0&quot; });
+var Future    = libraries[&quot;foundations&quot;].Control.Future;
+var mapReduce = libraries[&quot;foundations&quot;].Control.mapReduce;
+var data = [
+  {name: &quot;duck&quot;, say: &quot;quack&quot;, after: 300},
+  {name: &quot;duck&quot;, say: &quot;quack&quot;, after: 100},
+  {name: &quot;goose&quot;, say: &quot;quark&quot;, after: 200}
+];
+
+function map(animal) {
+  var f = new Future();
+  setTimeout(function() {
+      try {
+          f.result = [animal.name, &quot; has this much to say: &quot;, animal.say].join();
+      } catch (e) {
+          f.exception = e;
+      }
+  }, animal.after);
+  return f;
+};
+
+function reduce(results) {
+  // do not throw errors, just pass them through
+  return new Future().immediate(results);
+};
+
+var future = mapReduce( { map: map, reduce: reduce }, data);
+
+future.then(function() {                
+  var result = future.result;
+  Mojo.Log.info(&quot;mapReduce =&quot;+JSON.stringify(result));
+});
+</code>
+</pre>
+    </blockquote>
+    <p>
+      <strong>Example Output</strong>
+    </p>
+    <blockquote>
+      <pre>
+<code>mapReduce =
+[
+  {
+      &quot;item&quot;:{
+          &quot;name&quot;:&quot;duck&quot;,
+          &quot;say&quot;:&quot;quack&quot;,
+          &quot;after&quot;:100
+      },
+      &quot;result&quot;:&quot;duck, has this much to say: ,quack&quot;
+  },
+  {
+      &quot;item&quot;:{
+          &quot;name&quot;:&quot;goose&quot;,
+          &quot;say&quot;:&quot;quark&quot;,
+          &quot;after&quot;:200
+      },
+      &quot;result&quot;:&quot;goose, has this much to say: ,quark&quot;
+  },
+  {
+      &quot;item&quot;:{
+          &quot;name&quot;:&quot;duck&quot;,
+          &quot;say&quot;:&quot;quack&quot;,
+          &quot;after&quot;:300
+      },
+      &quot;result&quot;:&quot;duck, has this much to say: ,quack&quot;
+  }
+]
+</code>
+</pre>
+    </blockquote>
+		</div>
+	</body>
+</html>

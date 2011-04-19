@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>$if(pagetitle)$$pagetitle$$endif$</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="stylesheet" href="_css/chrome.css" />
+		<link rel="stylesheet" href="../_css/chrome.css" />
+		<link rel="stylesheet" href="../../_css/chrome.css" />
+		<link rel="stylesheet" href="../../../_css/chrome.css" />
+		<script src="_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="_js/doc.js" type="text/javascript"></script>
+		<script src="../_js/doc.js" type="text/javascript"></script>
+		<script src="../../_js/doc.js" type="text/javascript"></script>
+		<script src="../../../_js/doc.js" type="text/javascript"></script>
+	</head>
+	<body>
+		<div id="content">
+    
+    <h1 id="exiting-the-application">
+      Exiting the Application
+    </h1>
+    <p>
+      When a user dismisses it, an application is sent an <code>SDL_QUIT</code> event message. If the app does not exit within 1 second, it is terminated.
+    </p>
+    <p>
+      Your app should call <code>PDL_Quit</code> before calling <code>SDL_Quit</code> and exiting. <code>PDL_Quit</code> frees internal storage the PDL allocated for the app, shuts down the PDL, and performs other clean-up. After calling it, your app <strong>cannot</strong> safely invoke PDL calls.
+    </p>
+    <p>
+      <strong>Note:</strong>
+    </p>
+    <p>
+      Applications should not self-exit.
+    </p>
+		</div>
+	</body>
+</html>

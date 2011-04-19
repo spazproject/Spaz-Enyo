@@ -1,0 +1,987 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>$if(pagetitle)$$pagetitle$$endif$</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="stylesheet" href="_css/chrome.css" />
+		<link rel="stylesheet" href="../_css/chrome.css" />
+		<link rel="stylesheet" href="../../_css/chrome.css" />
+		<link rel="stylesheet" href="../../../_css/chrome.css" />
+		<script src="_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="_js/doc.js" type="text/javascript"></script>
+		<script src="../_js/doc.js" type="text/javascript"></script>
+		<script src="../../_js/doc.js" type="text/javascript"></script>
+		<script src="../../../_js/doc.js" type="text/javascript"></script>
+	</head>
+	<body>
+		<div id="content">
+    
+    <h1 id="mojo.event">
+      Mojo.Event
+    </h1>
+    <h2 id="namespace-detail">
+      Namespace Detail
+    </h2>
+    <p>
+      Holds functionality related to the UI Toolkit Events.
+    </p>
+    <h2 id="summary">
+      Summary
+    </h2>
+    <ul>
+      <li>Mojo.Event.<strong>aboutToActivate</strong>
+      </li>
+      <li>Mojo.Event.<strong>activate</strong>
+      </li>
+      <li>Mojo.Event.<strong>back</strong>
+      </li>
+      <li>Mojo.Event.<strong>command</strong>
+      </li>
+      <li>Mojo.Event.<strong>commandEnable</strong>
+      </li>
+      <li>Mojo.Event.<strong>dragEnd</strong>
+      </li>
+      <li>Mojo.Event.<strong>dragging</strong>
+      </li>
+      <li>Mojo.Event.<strong>dragStart</strong>
+      </li>
+      <li>Mojo.Event.<strong>filter</strong>
+      </li>
+      <li>Mojo.Event.<strong>filterImmediate</strong>
+      </li>
+      <li>Mojo.Event.<strong>flick</strong>
+      </li>
+      <li>Mojo.Event.<strong>forward</strong>
+      </li>
+      <li>Mojo.Event.<strong>hold</strong>
+      </li>
+      <li>Mojo.Event.<strong>holdEnd</strong>
+      </li>
+      <li>Mojo.Event.<strong>imageViewChanged</strong>
+      </li>
+      <li>Mojo.Event.<strong>keydown</strong>
+      </li>
+      <li>Mojo.Event.<strong>keypress</strong>
+      </li>
+      <li>Mojo.Event.<strong>keyup</strong>
+      </li>
+      <li>Mojo.Event.<strong>listAdd</strong>
+      </li>
+      <li>Mojo.Event.<strong>listChange</strong>
+      </li>
+      <li>Mojo.Event.<strong>listDelete</strong>
+      </li>
+      <li>Mojo.Event.<strong>listReorder</strong>
+      </li>
+      <li>Mojo.Event.<strong>listTap</strong>
+      </li>
+      <li>Mojo.Event.<strong>orientationChange</strong>
+      </li>
+      <li>Mojo.Event.<strong>progressComplete</strong>
+      </li>
+      <li>Mojo.Event.<strong>progressIconTap</strong>
+      </li>
+      <li>Mojo.Event.<strong>propertyChange</strong>
+      </li>
+      <li>Mojo.Event.<strong>scrollStarting</strong>
+      </li>
+      <li>Mojo.Event.<strong>singleTap</strong>
+      </li>
+      <li>Mojo.Event.<strong>sliderDragEnd</strong>
+      </li>
+      <li>Mojo.Event.<strong>sliderDragStart</strong>
+      </li>
+      <li>Mojo.Event.<strong>stageActivate</strong>
+      </li>
+      <li>Mojo.Event.<strong>stageDeactivate</strong>
+      </li>
+      <li>Mojo.Event.<strong>tap</strong>
+      </li>
+      <li>Mojo.Event.<strong>webViewImageSaved</strong>
+      </li>
+    </ul>
+    <h2 id="method-summary">
+      Method Summary
+    </h2>
+    <ul>
+      <li>Mojo.Event.<strong>listen</strong>(target, type{string}, handlerFunction, useCapture)
+      </li>
+      <li>Mojo.Event.<strong>listenForFocusChanges</strong>(node, handler)
+      </li>
+      <li>Mojo.Event.<strong>listenForHoldEvent</strong>(node, downEvent, upEvent, handler, timeout)
+      </li>
+      <li>Mojo.Event.<strong>make</strong>(name{string}, details, optionalDocument, optionalBubbles, optionaCancel)
+      </li>
+      <li>Mojo.Event.<strong>send</strong>(element, name{string}, mojoDetails, optionalBubbles, optionaCancel)
+      </li>
+      <li>Mojo.Event.<strong>sendKeyDownAndUpEvents</strong>(keyDescription, optionalDocument)
+      </li>
+      <li>Mojo.Event.<strong>sendKeyEvent</strong>(keyDescription, optionalEventType, optionalDocument)
+      </li>
+      <li>Mojo.Event.<strong>stopListening</strong>(target, type{string}, handlerFunction, useCapture)
+      </li>
+    </ul>
+    <hr>
+    <h2 id="detail">
+      Detail
+    </h2>
+    <h3 id="mojo.event.abouttoactivate">
+      Mojo.Event.<strong>aboutToActivate</strong>
+    </h3>
+    <p>
+      Generated before a scene is displayed. Allows widgets or scenes to delay the scene transition if needed.
+    </p>
+    <h4 id="supported-widgets">
+      Supported Widgets
+    </h4>
+    <ul>
+      <li>None.
+      </li>
+    </ul>
+    <hr>
+    <h3 id="mojo.event.activate">
+      Mojo.Event.<strong>activate</strong>
+    </h3>
+    <p>
+      An activate event is generated when a scene is loaded.
+    </p>
+    <h4 id="supported-widgets-1">
+      Supported Widgets
+    </h4>
+    <ul>
+      <li>None.
+      </li>
+    </ul>
+    <hr>
+    <h3 id="mojo.event.back">
+      Mojo.Event.<strong>back</strong>
+    </h3>
+    <p>
+      This event is sent through the active commander chain when a back gesture is recognized (or the back key is pressed on the desktop).
+    </p>
+    <p>
+      It's currently generated by the stage assistant, which also responds to it in handleCommand(). If no other clients handle the event, then the stage assistant will do so by closing the current dialog or popping the current scene.
+    </p>
+    <h4 id="custom-event-fields">
+      Custom Event Fields
+    </h4>
+    <ul>
+      <li>originalEvent: The original click Event object which caused this event to be dispatched. Useful for disambiguating changes if the list items contain multiple input fields.
+      </li>
+    </ul>
+    <h4 id="supported-widgets-2">
+      Supported Widgets
+    </h4>
+    <ul>
+      <li>None.
+      </li>
+    </ul>
+    <hr>
+    <h3 id="mojo.event.command">
+      Mojo.Event.<strong>command</strong>
+    </h3>
+    <p>
+      A command event is generated when a menu item is selected.
+    </p>
+    <h4 id="supported-widgets-3">
+      Supported Widgets
+    </h4>
+    <ul>
+      <li>None.
+      </li>
+    </ul>
+    <hr>
+    <h3 id="mojo.event.commandenable">
+      Mojo.Event.<strong>commandEnable</strong>
+    </h3>
+    <p>
+      Menu items that specify checkEnabled:true in the menu model cause the menu system to check their enable state before displaying them. This is useful for items in submenus and the appmenu, because they are not constantly displayed (like items in the command and view menus), meaning their enable state always appears correct when the menu is popped up. The command-enabled event is generated as part of menu updating. To check the enable state of a menu item, a command-enable event is sent through the commander chain. This event does not go through the DOM. If nothing in the commander chain calls preventDefault() on the event, the menu item will be enabled.
+    </p>
+    <h4 id="supported-widgets-4">
+      Supported Widgets
+    </h4>
+    <ul>
+      <li>None.
+      </li>
+    </ul>
+    <hr>
+    <h3 id="mojo.event.dragend">
+      Mojo.Event.<strong>dragEnd</strong>
+    </h3>
+    <p>
+      An up action following a Mojo.Event.dragStart event generates a dragEnd event.
+    </p>
+    <h4 id="supported-widgets-5">
+      Supported Widgets
+    </h4>
+    <ul>
+      <li>None.
+      </li>
+    </ul>
+    <hr>
+    <h3 id="mojo.event.dragging">
+      Mojo.Event.<strong>dragging</strong>
+    </h3>
+    <p>
+      Movement following the Mojo.Event.dragStart event generates dragging events.
+    </p>
+    <h4 id="supported-widgets-6">
+      Supported Widgets
+    </h4>
+    <ul>
+      <li>None.
+      </li>
+    </ul>
+    <hr>
+    <h3 id="mojo.event.dragstart">
+      Mojo.Event.<strong>dragStart</strong>
+    </h3>
+    <p>
+      A down action followed by movement outsided of a system-defined radius generates a Mojo.Event.dragStart event. Usually, the Mojo.Event.dragStart event is handled by the scroller. However, any element that chooses to handle this event gets all subsequent drag events.
+    </p>
+    <h4 id="supported-widgets-7">
+      Supported Widgets
+    </h4>
+    <ul>
+      <li>None.
+      </li>
+    </ul>
+    <hr>
+    <h3 id="mojo.event.filter">
+      Mojo.Event.<strong>filter</strong>
+    </h3>
+    <p>
+      Entering data in the filterbox generates a filter event after a client of default specified delay.
+    </p>
+    <h4 id="supported-widgets-8">
+      Supported Widgets
+    </h4>
+    <ul>
+      <li>
+        <a href="/reference/mojo/widgets/filter-field.html">Mojo.Widget.FilterField</a>
+      </li>
+    </ul>
+    <hr>
+    <h3 id="mojo.event.filterimmediate">
+      Mojo.Event.<strong>filterImmediate</strong>
+    </h3>
+    <p>
+      Entering data in the filterbox generates a filter event as soon as a key is typed.
+    </p>
+    <h4 id="supported-widgets-9">
+      Supported Widgets
+    </h4>
+    <ul>
+      <li>
+        <a href="/reference/mojo/widgets/filter-field.html">Mojo.Widget.FilterField</a>
+      </li>
+    </ul>
+    <hr>
+    <h3 id="mojo.event.flick">
+      Mojo.Event.<strong>flick</strong>
+    </h3>
+    <p>
+      Movement greater than a system-defined rate, between down and up events, generates a flick event.
+    </p>
+    <h4 id="supported-widgets-10">
+      Supported Widgets
+    </h4>
+    <ul>
+      <li>None.
+      </li>
+    </ul>
+    <hr>
+    <h3 id="mojo.event.forward">
+      Mojo.Event.<strong>forward</strong>
+    </h3>
+    <p>
+      This event is sent through the active commander chain when a forward gesture is recognized
+    </p>
+    <h4 id="supported-widgets-11">
+      Supported Widgets
+    </h4>
+    <ul>
+      <li>None.
+      </li>
+    </ul>
+    <hr>
+    <h3 id="mojo.event.hold">
+      Mojo.Event.<strong>hold</strong>
+    </h3>
+    <p>
+      A down movement lasting greater than a system-defined time interval and with movement within a limited radius generates a hold event. The hold event is associated with the Mojo.Event.hold event.
+    </p>
+    <h4 id="supported-widgets-12">
+      Supported Widgets
+    </h4>
+    <ul>
+      <li>None.
+      </li>
+    </ul>
+    <hr>
+    <h3 id="mojo.event.holdend">
+      Mojo.Event.<strong>holdEnd</strong>
+    </h3>
+    <p>
+      An up movement following a hold event generates a Mojo.Event.holdEnd event.
+    </p>
+    <h4 id="supported-widgets-13">
+      Supported Widgets
+    </h4>
+    <ul>
+      <li>None.
+      </li>
+    </ul>
+    <hr>
+    <h3 id="mojo.event.imageviewchanged">
+      Mojo.Event.<strong>imageViewChanged</strong>
+    </h3>
+    <p>
+      Sent from an ImageView widget when the current center image has been changed via a gesture.
+    </p>
+    <h4 id="supported-widgets-14">
+      Supported Widgets
+    </h4>
+    <ul>
+      <li>
+        <a href="/reference/mojo/widgets/image-view.html">Mojo.Widget.ImageView</a>
+      </li>
+    </ul>
+    <hr>
+    <h3 id="mojo.event.keydown">
+      Mojo.Event.<strong>keydown</strong>
+    </h3>
+    <p>
+      Forwarded keydown event. Only supported on the currently active sceneElement or container.
+    </p>
+    <h4 id="custom-event-fields-1">
+      Custom Event Fields
+    </h4>
+    <ul>
+      <li>originalEvent: keyboard event that triggered this event.
+      </li>
+    </ul>
+    <h4 id="supported-widgets-15">
+      Supported Widgets
+    </h4>
+    <ul>
+      <li>None.
+      </li>
+    </ul>
+    <hr>
+    <h3 id="mojo.event.keypress">
+      Mojo.Event.<strong>keypress</strong>
+    </h3>
+    <p>
+      Forwarded keydown event. Only supported on the currently active sceneElement or container.
+    </p>
+    <h4 id="custom-event-fields-2">
+      Custom Event Fields
+    </h4>
+    <ul>
+      <li>originalEvent: keyboard event that triggered this event.
+      </li>
+    </ul>
+    <h4 id="supported-widgets-16">
+      Supported Widgets
+    </h4>
+    <ul>
+      <li>None.
+      </li>
+    </ul>
+    <hr>
+    <h3 id="mojo.event.keyup">
+      Mojo.Event.<strong>keyup</strong>
+    </h3>
+    <p>
+      Forwarded keyup event. Only supported on the currently active sceneElement or container.
+    </p>
+    <h4 id="custom-event-fields-3">
+      Custom Event Fields
+    </h4>
+    <ul>
+      <li>originalEvent: keyboard event that triggered this event.
+      </li>
+    </ul>
+    <h4 id="supported-widgets-17">
+      Supported Widgets
+    </h4>
+    <ul>
+      <li>None.
+      </li>
+    </ul>
+    <hr>
+    <h3 id="mojo.event.listadd">
+      Mojo.Event.<strong>listAdd</strong>
+    </h3>
+    <p>
+      This event is dispatched to the widget element when the special &quot;Add&quot; item at the end of the list is clicked. This item appears when the addItemLabel property is defined in the widget's attributes or model, and a custom event name is used to give applications an easy way to identify the expected behavior.
+    </p>
+    <h4 id="custom-event-fields-4">
+      Custom Event Fields
+    </h4>
+    <ul>
+      <li>model: The model object used to render the List to which an item should be added.
+      </li>
+      <li>originalEvent: The original click Event object which caused this event to be dispatched. Useful for disambiguating changes if the list items contain multiple input fields.
+      </li>
+      <li>item: The item model to be added. Only defined for listAdd events resulting from a drag/drop from a different list.
+      </li>
+      <li>index: The index at which to add the new item. Only defined for listAdd events resulting from a drag/drop from a different list.
+      </li>
+    </ul>
+    <h4 id="supported-widgets-18">
+      Supported Widgets
+    </h4>
+    <ul>
+      <li>
+        <a href="/reference/mojo/widgets/list.html">Mojo.Widget.List</a>
+      </li>
+    </ul>
+    <hr>
+    <h3 id="mojo.event.listchange">
+      Mojo.Event.<strong>listChange</strong>
+    </h3>
+    <p>
+      This event is dispatched to the widget element when a list item is clicked. As with Mojo.Event.listTap, the app handler is responsible for sorting out which part of the list item changed if there are multiple options, and event.originalEvent.target should be the input element that changed.
+    </p>
+    <h4 id="custom-event-fields-5">
+      Custom Event Fields
+    </h4>
+    <ul>
+      <li>object: The object from the listItems array in the model associated with the changed list item.
+      </li>
+      <li>model: The model object used to render the List.
+      </li>
+      <li>originalEvent: The original change Event object which caused this event to be dispatched. Useful for disambiguating changes if the list items contain multiple input fields.
+      </li>
+    </ul>
+    <h4 id="supported-widgets-19">
+      Supported Widgets
+    </h4>
+    <ul>
+      <li>
+        <a href="/reference/mojo/widgets/list.html">Mojo.Widget.List</a>
+      </li>
+    </ul>
+    <hr>
+    <h3 id="mojo.event.listdelete">
+      Mojo.Event.<strong>listDelete</strong>
+    </h3>
+    <p>
+      This event is dispatched to the widget element when an item is deleted from the list. SceneAssistants will often listen for this event on List widgets, and should respond by deleting the given item from the model (and database, if any). If preventDefault() is called on the listDelete event, then the default deletion behavior in the list widget will not occur.
+    </p>
+    <h4 id="custom-event-fields-6">
+      Custom Event Fields
+    </h4>
+    <ul>
+      <li>model: The widget's model object.
+      </li>
+      <li>item: The model object for the list item being deleted.
+      </li>
+      <li>index: The index of the list item being deleted.
+      </li>
+    </ul>
+    <h4 id="supported-widgets-20">
+      Supported Widgets
+    </h4>
+    <ul>
+      <li>
+        <a href="/reference/mojo/widgets/list.html">Mojo.Widget.List</a>
+      </li>
+    </ul>
+    <hr>
+    <h3 id="mojo.event.listreorder">
+      Mojo.Event.<strong>listReorder</strong>
+    </h3>
+    <p>
+      This event is dispatched to the widget element when an item is reordered. SceneAssistants will often listen for this event on List widgets, and should respond by reordering the given item model as indicated (and persist the changes to disk if appropriate).
+    </p>
+    <h4 id="custom-event-fields-7">
+      Custom Event Fields
+    </h4>
+    <ul>
+      <li>model: The widget's model object.
+      </li>
+      <li>item: The model object for the list item being moved.
+      </li>
+      <li>fromIndex: The current index of the list item, which it should be moved from.
+      </li>
+      <li>toIndex: The new index of the list item, which it should be moved to.
+      </li>
+    </ul>
+    <h4 id="supported-widgets-21">
+      Supported Widgets
+    </h4>
+    <ul>
+      <li>
+        <a href="/reference/mojo/widgets/list.html">Mojo.Widget.List</a>
+      </li>
+    </ul>
+    <hr>
+    <h3 id="mojo.event.listtap">
+      Mojo.Event.<strong>listTap</strong>
+    </h3>
+    <p>
+      This event is dispatched to the widget element when there is a mojo-tap event on a list item. The app handler is responsible for sorting out which part of the list item was clicked if necessary, since that depends entirely on the template provided. It's useful to look at event.originalEvent.target. This is the target of the original click or change event that caused the higher level mojo event to be dispatched. It will be an input element containing the new value for a change event, or the item's sub-element that was actually clicked for a click event. For example:
+    </p>
+    <blockquote>
+      <pre>
+<code>listClickHandler: function(event) {
+  // Only respond to clicks on the label element,
+  // not the editable text field.
+  if(event.originalEvent.target.tagName == &quot;LABEL&quot;) {
+      Mojo.Log.info(event.item.data +&quot;: &quot;+event.item.definition);
+  }
+} 
+</code>
+</pre>
+    </blockquote>
+    <h4 id="custom-event-fields-8">
+      Custom Event Fields
+    </h4>
+    <ul>
+      <li>item: The object from the listItems array in the model associated with the clicked list item.
+      </li>
+      <li>model: The model object used to render the List.
+      </li>
+      <li>originalEvent: The original click Event object which caused this event to be dispatched. Useful for disambiguating clicks if the list items contain multiple clickable elements.
+      </li>
+    </ul>
+    <h4 id="supported-widgets-22">
+      Supported Widgets
+    </h4>
+    <ul>
+      <li>
+        <a href="/reference/mojo/widgets/list.html">Mojo.Widget.List</a>
+      </li>
+    </ul>
+    <hr>
+    <h3 id="mojo.event.orientationchange">
+      Mojo.Event.<strong>orientationChange</strong>
+    </h3>
+    <p>
+      Sent by the scene controller on the scene element when the screen orientation changes. Contains an orientation property describing the orientation.
+    </p>
+    <hr>
+    <h3 id="mojo.event.progresscomplete">
+      Mojo.Event.<strong>progressComplete</strong>
+    </h3>
+    <p>
+      Sent when progress reaches 100%.
+    </p>
+    <h4 id="supported-widgets-23">
+      Supported Widgets
+    </h4>
+    <ul>
+      <li>
+        <a href="/reference/mojo/widgets/progress-pill.html">Mojo.Widget.ProgressPill</a>
+      </li>
+      <li>
+        <a href="/reference/mojo/widgets/progress-bar.html">Mojo.Widget.ProgressBar</a>
+      </li>
+    </ul>
+    <hr>
+    <h3 id="mojo.event.progressicontap">
+      Mojo.Event.<strong>progressIconTap</strong>
+    </h3>
+    <p>
+      Sent when the icon on the ProgressPill is tapped by the user.
+    </p>
+    <h4 id="custom-event-fields-9">
+      Custom Event Fields
+    </h4>
+    <ul>
+      <li>model: model associated with this progress pill.
+      </li>
+    </ul>
+    <h4 id="supported-widgets-24">
+      Supported Widgets
+    </h4>
+    <ul>
+      <li>
+        <a href="/reference/mojo/widgets/progress-pill.html">Mojo.Widget.ProgressPill</a>
+      </li>
+      <li>
+        <a href="/reference/mojo/widgets/progress-bar.html">Mojo.Widget.ProgressBar</a>
+      </li>
+    </ul>
+    <hr>
+    <h3 id="mojo.event.propertychange">
+      Mojo.Event.<strong>propertyChange</strong>
+    </h3>
+    <p>
+      This event is dispatched to the widget element when property-editing widgets change values.
+    </p>
+    <h4 id="custom-event-fields-10">
+      Custom Event Fields
+    </h4>
+    <ul>
+      <li>property: Name of the property that changed.
+      </li>
+      <li>value: New value of the property.
+      </li>
+      <li>model: The model object to which the property change applies.
+      </li>
+    </ul>
+    <p>
+      Sometimes available:
+    </p>
+    <ul>
+      <li>oldValue: value of the widget before this change.
+      </li>
+      <li>originalEvent: event that triggered the propertyChange event to be sent.
+      </li>
+    </ul>
+    <h4 id="supported-widgets-25">
+      Supported Widgets
+    </h4>
+    <ul>
+      <li>
+        <a href="/reference/mojo/widgets/list-selector.html">Mojo.Widget.ListSelector</a>
+      </li>
+      <li>
+        <a href="/reference/mojo/widgets/password-field.html">Mojo.Widget.PasswordField</a>
+      </li>
+      <li>
+        <a href="/reference/mojo/widgets/radio-button.html">Mojo.Widget.RadioButton</a>
+      </li>
+      <li>
+        <a href="/reference/mojo/widgets/scroller.html">Mojo.Widget.Scroller</a>
+      </li>
+      <li>
+        <a href="/reference/mojo/widgets/slider.html">Mojo.Widget.Slider</a>
+      </li>
+      <li>
+        <a href="/reference/mojo/widgets/text-field.html">Mojo.Widget.TextField</a>
+      </li>
+      <li>
+        <a href="/reference/mojo/widgets/toggle-button.html">Mojo.Widget.ToggleButton</a>
+      </li>
+    </ul>
+    <hr>
+    <h3 id="mojo.event.scrollstarting">
+      Mojo.Event.<strong>scrollStarting</strong>
+    </h3>
+    <p>
+      When contained in a scroller, down action followed by movement generates a scroll-starting event.
+    </p>
+    <h4 id="supported-widgets-26">
+      Supported Widgets
+    </h4>
+    <ul>
+      <li>
+        <a href="/reference/mojo/widgets/scroller.html">Mojo.Widget.Scroller</a>
+      </li>
+    </ul>
+    <hr>
+    <h3 id="mojo.event.singletap">
+      Mojo.Event.<strong>singleTap</strong>
+    </h3>
+    <p>
+      A native down-and-up movement within a limited time interval and within a limited radius generates a single tap event.
+    </p>
+    <p>
+      It's sent when Mojo.handleSingleTap is called and has the following properties: x, y, shiftKey, ctrlKey, altKey, metaKey, timestamp.
+    </p>
+    <h4 id="supported-widgets-27">
+      Supported Widgets
+    </h4>
+    <ul>
+      <li>None.
+      </li>
+    </ul>
+    <hr>
+    <h3 id="mojo.event.sliderdragend">
+      Mojo.Event.<strong>sliderDragEnd</strong>
+    </h3>
+    <p>
+      Sent when the draggable element on the Slider is dropped.
+    </p>
+    <h4 id="supported-widgets-28">
+      Supported Widgets
+    </h4>
+    <ul>
+      <li>
+        <a href="/reference/mojo/widgets/slider.html">Mojo.Widget.Slider</a>
+      </li>
+      <li>
+        <a href="/reference/mojo/widgets/progress-slider.html">Mojo.Widget.ProgressSlider</a>
+      </li>
+    </ul>
+    <hr>
+    <h3 id="mojo.event.sliderdragstart">
+      Mojo.Event.<strong>sliderDragStart</strong>
+    </h3>
+    <p>
+      Sent when the draggable element on the Slider is picked up to be dragged.
+    </p>
+    <h4 id="supported-widgets-29">
+      Supported Widgets
+    </h4>
+    <ul>
+      <li>
+        <a href="/reference/mojo/widgets/slider.html">Mojo.Widget.Slider</a>
+      </li>
+      <li>
+        <a href="/reference/mojo/widgets/progress-slider.html">Mojo.Widget.ProgressSlider</a>
+      </li>
+    </ul>
+    <hr>
+    <h3 id="mojo.event.stageactivate">
+      Mojo.Event.<strong>stageActivate</strong>
+    </h3>
+    <p>
+      A stageActivate event is generated when a stage becomes active and is potentially receiving the user's attention. For card stages, this is when the stage is maximized and fills the screen. The event is sent to the top scene, and bubbles up to the stage's document.
+    </p>
+    <h4 id="supported-widgets-30">
+      Supported Widgets
+    </h4>
+    <ul>
+      <li>None.
+      </li>
+    </ul>
+    <hr>
+    <h3 id="mojo.event.stagedeactivate">
+      Mojo.Event.<strong>stageDeactivate</strong>
+    </h3>
+    <p>
+      A stageDeactivate event is generated when a stage is no longer active and potentially receiving the user's attention. For card stages, this is when the stage is minimized.
+    </p>
+    <p>
+      The event is sent to the top scene, and bubbles up to the stage's document.
+    </p>
+    <h4 id="supported-widgets-31">
+      Supported Widgets
+    </h4>
+    <ul>
+      <li>None.
+      </li>
+    </ul>
+    <hr>
+    <h3 id="mojo.event.tap">
+      Mojo.Event.<strong>tap</strong>
+    </h3>
+    <p>
+      A down-and-up movement within a limited time interval and within a limited radius generates a tap event.
+    </p>
+    <h4 id="supported-widgets-32">
+      Supported Widgets
+    </h4>
+    <ul>
+      <li>None.
+      </li>
+    </ul>
+    <hr>
+    <h3 id="mojo.event.webviewimagesaved">
+      Mojo.Event.<strong>webViewImageSaved</strong>
+    </h3>
+    <p>
+      Sent in response to saving inline images.
+    </p>
+    <h4 id="supported-widgets-33">
+      Supported Widgets
+    </h4>
+    <ul>
+      <li>
+        <a href="/reference/mojo/widgets/web-view.html">Mojo.Widget.WebView</a>
+      </li>
+    </ul>
+    <hr>
+    <h2 id="method-detail">
+      Method Detail
+    </h2>
+    <h3 id="mojo.event.listentarget-typestring-handlerfunction-usecapture">
+      Mojo.Event.<strong>listen</strong>(target, type{string}, handlerFunction, useCapture)
+    </h3>
+    <p>
+      A wrapper around addEventListener that adds some parameter checking.
+    </p>
+    <h4 id="parameters">
+      Parameters
+    </h4>
+    <ul>
+      <li>
+        <strong>target</strong> - target to observe
+      </li>
+      <li>{string} <strong>type</strong> - type of the event to observe
+      </li>
+      <li>{Function} <strong>handlerFunction</strong> - function to call when the event fires
+      </li>
+      <li>{Boolean} <strong>useCapture</strong> - optional parameter that, when true, causes the event to be observed during the capture phase.
+      </li>
+    </ul>
+    <hr>
+    <h3 id="mojo.event.listenforfocuschangesnode-handler">
+      Mojo.Event.<strong>listenForFocusChanges</strong>(node, handler)
+    </h3>
+    <p>
+      This function can be used to listen for changes in the focused element inside the node.
+    </p>
+    <p>
+      A 'listener object' is returned which implements a stopListening() method. This can be called to permanently cancel the listener, removing its event listeners.
+    </p>
+    <h4 id="parameters-1">
+      Parameters
+    </h4>
+    <ul>
+      <li>
+        <strong>node</strong> - the node on which to listen for events.
+      </li>
+      <li>
+        <strong>handler</strong> - Function to be called when focus changes, passing the newly focused element or null.
+      </li>
+    </ul>
+    <hr>
+    <h3 id="mojo.event.listenforholdeventnode-downevent-upevent-handler-timeout">
+      Mojo.Event.<strong>listenForHoldEvent</strong>(node, downEvent, upEvent, handler, timeout)
+    </h3>
+    <p>
+      This function can be used to listen for some kind of 'hold' event on a given node. This works by initiating a 'hold timer' when the appropriate 'down' event is received, and cancelling it if we see the 'up' event before it has expired. If the timer expires, then we call the given handler function with the initial 'down' event as the first argument.
+    </p>
+    <p>
+      A 'listener object' is returned which implements a stopListening() method. This can be called to permanently cancel the listener, removing its event listeners. Alternatively, if the handler function returns true, then the listener will be automatically stopped.
+    </p>
+    <p>
+      The implementation is somewhat tailored for key events:
+    </p>
+    <ul>
+      <li>Successive 'down' events do not reset the hold timer.
+      </li>
+      <li>After calling the handler once, it will not be called again until after an 'up' event is received.
+      </li>
+    </ul>
+    <h4 id="parameters-2">
+      Parameters
+    </h4>
+    <ul>
+      <li>
+        <strong>node</strong> - the node on which to listen for events.
+      </li>
+      <li>{String} <strong>downEvent</strong> - the type of event that should initiate the hold timer.
+      </li>
+      <li>{String} <strong>upEvent</strong> - the type of event that should cancel the hold timer.
+      </li>
+      <li>
+        <strong>handler</strong> - Function to be called when the hold timer expires.
+      </li>
+      <li>
+        <strong>timeout</strong> - Length of hold timer in seconds. Optional, defaults to 1.
+      </li>
+    </ul>
+    <hr>
+    <h3 id="object-mojo.event.makenamestring-details-optionaldocument-optionalbubbles-optionalcancel">
+      {Object} Mojo.Event.<strong>make</strong>(name{string}, details, optionalDocument, optionalBubbles, optionalCancel)
+    </h3>
+    <p>
+      Utility routine used to create custom mojo events.
+    </p>
+    <p>
+      In addition to creating an event with the given name, the event is also extended such that an isDefaultPrevented() method is available.
+    </p>
+    <h4 id="parameters-3">
+      Parameters
+    </h4>
+    <ul>
+      <li>{string} <strong>name</strong> - the name of the event, visible in event.type.
+      </li>
+      <li>{string} <strong>details</strong> - a hash of custom event properties to be copied to the event object.
+      </li>
+      <li>{HTML element} <strong>optionalDocument</strong> - a supplied element to target the event on; if not supplied, defaults to current active document.
+      </li>
+      <li>{Boolean} <strong>optionalBubbles</strong> - flag determining if the event's propagation behavior is to bubble; default is true.
+      </li>
+      <li>{Boolean} <strong>optionalCancel</strong> - flag determining if the event's default action may be prevented via the preventDefault() method; default is true.
+      </li>
+    </ul>
+    <h4 id="returns">
+      Returns
+    </h4>
+    <ul>
+      <li>{Object} This will return 'true' if any handler calls event.preventDefault().
+      </li>
+    </ul>
+    <hr>
+    <h3 id="mojo.event.sendelement-namestring-mojodetails-optionalbubbles-optionalcancel">
+      Mojo.Event.<strong>send</strong>(element, name{string}, mojoDetails, optionalBubbles, optionalCancel)
+    </h3>
+    <p>
+      Like prototype's element.fire(), except that the event type is actually as specified (instead of always dataavailable), and the specified details are placed in the event object directly (instead of a memo subobject). If element is undefined, the new event will just be returned and not actually dispatched.
+    </p>
+    <h4 id="parameters-4">
+      Parameters
+    </h4>
+    <ul>
+      <li>
+        <strong>element</strong> - HTML element to dispatch the event on.
+      </li>
+      <li>{string} <strong>name</strong> - the name of the event, visible in event.type.
+      </li>
+      <li>{string} <strong>mojoDetails</strong> - a hash of custom event properties to be copied to the event object.
+      </li>
+      <li>{Boolean} <strong>optionalBubbles</strong> - flag determining if the event's propagation behavior is to bubble; default is true.
+      </li>
+      <li>{Boolean} <strong>optionalCancel</strong> - flag determining if the event's default action may be prevented via the preventDefault() method; default is true.
+      </li>
+    </ul>
+    <hr>
+    <h3 id="mojo.event.sendkeydownandupeventskeydescription-optionaldocument">
+      Mojo.Event.<strong>sendKeyDownAndUpEvents</strong>(keyDescription, optionalDocument)
+    </h3>
+    <p>
+      Function to create and send a key down and up event.
+    </p>
+    <h4 id="parameters-5">
+      Parameters
+    </h4>
+    <ul>
+      <li>{String} <strong>keyDescription</strong> - key description for key, like &quot;U+0009&quot; for tab.
+      </li>
+      <li>{HTML element} <strong>optionalDocument</strong> - a supplied element to target the event on; if not supplied, defaults to current active document.
+      </li>
+    </ul>
+    <hr>
+    <h3 id="mojo.event.sendkeyeventkeydescription-optionaleventtype-optionaldocument">
+      Mojo.Event.<strong>sendKeyEvent</strong>(keyDescription, optionalEventType, optionalDocument)
+    </h3>
+    <p>
+      Function to create and send a key event.
+    </p>
+    <h4 id="parameters-6">
+      Parameters
+    </h4>
+    <ul>
+      <li>{String} <strong>keyDescription</strong> - key description for key, like &quot;U+0009&quot; for tab.
+      </li>
+      <li>{String} <strong>optionalEventType</strong> - event type; defaults to 'keydown'.
+      </li>
+      <li>{HTML element} <strong>optionalDocument</strong> - a supplied element to target the event on; if not supplied, defaults to current active document.
+      </li>
+    </ul>
+    <hr>
+    <h3 id="mojo.event.stoplisteningtarget-typestring-handlerfunction-usecapture">
+      Mojo.Event.<strong>stopListening</strong>(target, type{string}, handlerFunction, useCapture)
+    </h3>
+    <p>
+      A wrapper around removeEventListener that adds some parameter checking.
+    </p>
+    <h4 id="parameters-7">
+      Parameters
+    </h4>
+    <ul>
+      <li>
+        <strong>target</strong> - target to observe.
+      </li>
+      <li>{string} <strong>type</strong> - type of the event that was being observed.
+      </li>
+      <li>{Function} <strong>handlerFunction</strong> - function that was previously passed to listen.
+      </li>
+      <li>{Boolean} <strong>useCapture</strong> - optional parameter that, when true, causes a capture phase listener to be removed.
+      </li>
+    </ul>
+		</div>
+	</body>
+</html>

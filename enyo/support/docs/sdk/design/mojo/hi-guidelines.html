@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>$if(pagetitle)$$pagetitle$$endif$</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="stylesheet" href="_css/chrome.css" />
+		<link rel="stylesheet" href="../_css/chrome.css" />
+		<link rel="stylesheet" href="../../_css/chrome.css" />
+		<link rel="stylesheet" href="../../../_css/chrome.css" />
+		<script src="_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="_js/doc.js" type="text/javascript"></script>
+		<script src="../_js/doc.js" type="text/javascript"></script>
+		<script src="../../_js/doc.js" type="text/javascript"></script>
+		<script src="../../../_js/doc.js" type="text/javascript"></script>
+	</head>
+	<body>
+		<div id="content">
+    
+    <h1 id="human-interface-guidelines">
+      Human Interface Guidelines
+    </h1>
+    <p>
+      The HP webOS platform is built on webKit, which means that anyone who can design a website using HTML, CSS, and Javascript can create a webOS application. You can also make use of advanced technologies, like AJAX and HTML 5 data storage. And to top it off, your app will be able to connect with and make use of the other applications running on the platform quickly and easily.
+    </p>
+    <h2 id="who-should-read-this-document">
+      Who should read this document?
+    </h2>
+    <p>
+      This document is intended for designers and developers who want to design a webOS application. It contains:
+    </p>
+    <ol style="list-style-type: decimal">
+      <li>
+        <p>
+          An introduction to the webOS platform
+        </p>
+        <p>
+          ...describing what the webOS environment and its applications look like, how they work, and how users can interact with them.
+        </p>
+      </li>
+      <li>
+        <p>
+          HP's webOS Application Design Philosophy &amp; Guidelines
+        </p>
+      </li>
+      <li>
+        <p>
+          Examples of &quot;Good Design&quot;
+        </p>
+      </li>
+      <li>
+        <p>
+          Details about UI Controls you can use in your application
+        </p>
+      </li>
+    </ol>
+    <p>
+      If you need information about the webOS platform, its technologies and architecture, read the HP webOS Overview.
+    </p>
+    <h2 id="get-to-know-the-webos-platform">
+      Get to Know the webOS Platform
+    </h2>
+    <p>
+      The best way to gain an understanding of how webOS applications work (and how they work together) is to <em>use</em> them, but we realize that you may not have a device yet. It's easy (and free) to download the HP webOS SDK, which includes the webOS Emulator, and try the apps and the OS yourself. It runs on Windows, Mac, and Linux platforms. Using the applications will help you understand how the webOS platform delivers an outstanding user experience, and will give you ideas that you can use in your own applications. While using the apps, notice:
+    </p>
+    <ul>
+      <li>
+        <p>
+          How easy it is to interact with the device, using your finger to perform simple, natural gestures
+        </p>
+      </li>
+      <li>
+        <p>
+          How you can run multiple applications at once, and quickly switch between them
+        </p>
+      </li>
+      <li>
+        <p>
+          How applications work together, to simplify your workflow
+        </p>
+      </li>
+      <li>
+        <p>
+          How you can quickly search for any data, on your phone or on the web
+        </p>
+      </li>
+      <li>
+        <p>
+          How applications notify you when important things happen
+        </p>
+      </li>
+    </ul>
+    <h2 id="take-some-apps-for-a-test-drive">
+      Take Some Apps for a Test Drive
+    </h2>
+    <p>
+      Once you've installed the Emulator or have a webOS device, follow the instructions below to try a few of the applications. Screenshots are provided to help you see how the system works.
+    </p>
+    <h3 id="launch-switch-between-applications">
+      Launch &amp; Switch Between Applications
+    </h3>
+    <p>
+      <img src="/images/palm/ui_guideline/IntroAnim3.gif" alt="image"><br>
+    </p>
+    <ul>
+      <li>Tap the <strong>Contacts</strong> icon in the Quick Launch bar.
+        <ul>
+          <li>Use it to create a new Contact.
+          </li>
+          <li>Edit the phone number, address, email address and IM address.
+          </li>
+          <li>Exit the contact using the &quot;Back&quot; gesture (right to left stroke, under the screen, but above the Center button).
+          </li>
+          <li>Then press the Center button. The Contacts app minimizes to a &quot;Card.&quot;
+          </li>
+        </ul>
+      </li>
+      <li>Tap the <strong>Calendar</strong> icon in the Quick Launch bar.
+        <ul>
+          <li>Create a new appointment by tapping on a date and typing the event name.
+          </li>
+          <li>Tap the &quot;i&quot; to set details for the event.
+          </li>
+          <li>Press the Center button again. The Calendar app minimizes to a card.
+          </li>
+        </ul>
+      </li>
+      <li>Tap the <strong>Email</strong> icon in the Quick Launch bar.
+        <ul>
+          <li>Input your account settings and connect to your email service.
+          </li>
+          <li>Setup an account for another service, as well (if you have a second email account).
+          </li>
+          <li>The email app fetches your email, and allows you to browse your mail account-by-account, or all emails together in a single list.
+          </li>
+          <li>Press the Center button again to minimize the application.
+          </li>
+        </ul>
+      </li>
+      <li>Now flick left-to-right over the cards, to scroll through them. Tap the one in the center to bring it forward.
+        <ul>
+          <li>The webOS operating system is a multitasking environment. Even when an app is not maximized (occupying the whole screen), it's still working in a card or in the background.
+          </li>
+        </ul>
+      </li>
+    </ul>
+    <p>
+      <img src="/images/palm/ui_guideline/notificationAnim.gif" alt="image"><br>
+    </p>
+    <h3 id="polite-notifications">
+      Polite Notifications
+    </h3>
+    <p>
+      Imagine that you're browsing a web page, and you get an email or a text message. The webOS platform allows any running application to display a small notification at the bottom of the screen. These notifications politely let you know that what happened, without interrupting your work and insisting that you tap them before you can return to whatever you might have <em>actually</em> been doing.
+    </p>
+    <h3 id="urgent-notifications">
+      Urgent Notifications
+    </h3>
+    <p>
+      Imagine that you're writing an email and you've lost track of time, and it's time to leave for an important meeting. The webOS platform allows any application to display a popup notification, to inform you of the <em>really important thing</em> it needs to tell you. In the example, the Calendar application would have displayed a popup notification to let you know that it's almost time for the meeting. Popup Notifications slide up from the bottom of the screen. As a developer, you can display anything in them. The Calendar app uses them to remind users of upcoming events. Users can &quot;Dismiss&quot; the reminder (which causes it to disappear) or &quot;Snooze&quot; it (to minimizes the notification to a Dashboard Summary icon, so the user can still see the reminder while they continue working with the current application).
+    </p>
+		</div>
+	</body>
+</html>

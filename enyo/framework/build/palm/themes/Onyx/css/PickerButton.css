@@ -1,0 +1,25 @@
+/* Copyright 2009-2011 Hewlett-Packard Development Company, L.P. All rights reserved. */
+.enyo-picker-button {
+	-webkit-border-image: url(../images/picker-pill.png) 10;
+	border-width: 10px;
+	font-size: 16px;
+	line-height: 32px;
+}
+
+.enyo-picker-button-caption {
+	padding: 0 6px;
+	min-width: 24px;
+	text-align: center;
+}
+
+.enyo-picker-button.enyo-button {
+	-webkit-border-image: url(../images/picker-pill.png) 10;
+}
+
+.enyo-picker-button.enyo-button-down {
+	-webkit-border-image: url(../images/picker-pill-downstate.png) 10;
+}
+
+.enyo-picker-button.enyo-button-focus {
+	-webkit-border-image: url(../images/picker-pill-focus.png) 10;
+}

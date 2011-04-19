@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>$if(pagetitle)$$pagetitle$$endif$</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="stylesheet" href="_css/chrome.css" />
+		<link rel="stylesheet" href="../_css/chrome.css" />
+		<link rel="stylesheet" href="../../_css/chrome.css" />
+		<link rel="stylesheet" href="../../../_css/chrome.css" />
+		<script src="_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="_js/doc.js" type="text/javascript"></script>
+		<script src="../_js/doc.js" type="text/javascript"></script>
+		<script src="../../_js/doc.js" type="text/javascript"></script>
+		<script src="../../../_js/doc.js" type="text/javascript"></script>
+	</head>
+	<body>
+		<div id="content">
+    
+    <h1 id="application-interrupt-handling">
+      Application Interrupt Handling
+    </h1>
+    <p>
+      A device application can receive an application interrupt event in the following ways:
+    </p>
+    <ol style="list-style-type: decimal">
+      <li>A user gesture (tap, swipe, drag, etc.) that puts the application into Card mode.
+      </li>
+      <li>An alert pops up on-screen. For example: an incoming phone call.
+      </li>
+    </ol>
+    <p>
+      <strong>Note:</strong>
+    </p>
+    <p>
+      This section and PDL calls do not apply to desktop development.
+    </p>
+    <h2 id="noted-application-interrupt-events">
+      Noted application interrupt events
+    </h2>
+    <p>
+      When an application interrupt occurs, there are two <code>SDL_ACTIVEEVENT</code> events your application needs to handle depending on the value of <code>event.active.gain</code>:
+    </p>
+    <ol style="list-style-type: decimal">
+      <li>
+        <p>
+          <code>SDL_APPACTIVE</code>
+        </p>
+        <ul>
+          <li>
+            <p>
+              <code>event.active.gain == 0</code> -- The application is no longer active and should be considered paused. At this point, your app should suspend play.
+            </p>
+            <p>
+              In pause mode, the application's drawing is capped at 1 FPS (Frames Per Second). While paused, an application does not have to draw, but must do a repaint (update the screen) in response to a <code>SDL_VIDEOEXPOSE</code> event.
+            </p>
+            <p>
+              <strong>When inactive, your app should reduce CPU usage</strong>; this is essential for extended battery life. To do this, your app should wait longer to check for events and stop any complex screen animation. For example, it could switch from using <code>SDL_PollEvent</code>, or other event checking mechanism, to using <code>SDL_WaitEvent</code>. This causes the app to sleep if there are no pending events, though it gets awaken quickly when reactivated. An <code>SDL_ACTIVEEVENT</code> is generated when the user returns.
+            </p>
+            <p>
+              To check your app's CPU use, you can use the &quot;top&quot; command on the device. If usage is above 10% when inactive, your app has a problem that should be fixed before submission to the Palm app catalog.
+            </p>
+          </li>
+          <li>
+            <p>
+              <code>event.active.gain == 1</code> -- The application has just become active.
+            </p>
+          </li>
+        </ul>
+      </li>
+      <li>
+        <p>
+          <code>SDL_APPINPUTFOCUS</code>
+        </p>
+        <ul>
+          <li>
+            <code>event.active.gain == 0</code> -- The application is not fullscreen.
+          </li>
+          <li>
+            <code>event.active.gain == 1</code> -- The application has just become fullscreen.
+          </li>
+        </ul>
+      </li>
+    </ol>
+    <h2 id="palm-development-library-calls-for-handling-application-interrupts">
+      Palm Development Library calls for handling application interrupts
+    </h2>
+    <p>
+      There are three PDL calls your application can use to handle specific interrupt types:
+    </p>
+    <ol style="list-style-type: decimal">
+      <li>
+        <a href="/reference/pdk/pdl/pdl-banner-messages-enable.html">PDL_BannerMessagesEnable</a> -- Enables or disables banner messages.
+      </li>
+      <li>
+        <a href="/reference/pdk/pdl/pdl-custom-pause-ui-enable.html">PDL_CustomPauseUIEnable</a> -- Enables or disables the system UI for handling app reactivation.
+      </li>
+      <li>
+        <a href="/reference/pdk/pdl/pdl-set-orientation.html">PDL_SetOrientation</a> -- Sets the orientation for pop-up alerts and banner messages.
+      </li>
+    </ol>
+		</div>
+	</body>
+</html>

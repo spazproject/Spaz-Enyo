@@ -1,0 +1,1301 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>$if(pagetitle)$$pagetitle$$endif$</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="stylesheet" href="_css/chrome.css" />
+		<link rel="stylesheet" href="../_css/chrome.css" />
+		<link rel="stylesheet" href="../../_css/chrome.css" />
+		<link rel="stylesheet" href="../../../_css/chrome.css" />
+		<script src="_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="_js/doc.js" type="text/javascript"></script>
+		<script src="../_js/doc.js" type="text/javascript"></script>
+		<script src="../../_js/doc.js" type="text/javascript"></script>
+		<script src="../../../_js/doc.js" type="text/javascript"></script>
+	</head>
+	<body>
+		<div id="content">
+    
+    <h1 id="foundations.data.db">
+      Foundations.Data.DB
+    </h1>
+    <p>
+      The JavaScript wrapper to db8 (provided with the Foundation libraries) supports a basic set of database operations.
+    </p>
+    <h2 id="using-foundations.data.db">
+      Using Foundations.Data.DB
+    </h2>
+    <p>
+      To use Foundations.Data.DB:
+    </p>
+    <ol style="list-style-type: decimal">
+      <li>
+        <p>
+          Add the following lines to your app's index.html file:
+        </p>
+        <pre>
+<code>&lt;script src=&quot;/usr/palm/frameworks/mojo/mojo.js&quot; type=&quot;text/javascript&quot; x-mojo-version=&quot;1&quot;&gt;&lt;/script&gt; 
+&lt;script src=&quot;/usr/palm/frameworks/mojoloader.js&quot; type=&quot;text/javascript&quot;&gt;&lt;/script&gt;
+</code>
+</pre>
+      </li>
+      <li>
+        <p>
+          Include the following lines of code in your assistant JS file:
+        </p>
+        <pre>
+<code>try {
+      var libraries = MojoLoader.require({ name: &quot;foundations&quot;, version: &quot;1.0&quot;      });
+      var Future = libraries[&quot;foundations&quot;].Control.Future; // Futures library
+      var DB = libraries[&quot;foundations&quot;].Data.DB;  // db8 wrapper library
+   } catch (Error) {
+   Mojo.Log.error(Error);
+}
+</code>
+</pre>
+        <p>
+          <strong>NOTE</strong>: The example calls in this documentation use a type of asynchronous callback known as a <em>future</em>. See future link for more information.
+        </p>
+      </li>
+      <li>
+        <p>
+          To code your JavaScript API calls, see the examples below.
+        </p>
+      </li>
+    </ol>
+    <h2 id="db-functions">
+      DB Functions
+    </h2>
+    <table cellspacing="5" cellpadding="5" border="1">
+      <tr bgcolor="tan">
+        <th>
+          API
+        </th>
+        <th width="600">
+          Description
+        </th>
+      </tr>
+      <tr>
+        <td>
+          <a href="#del">del</a>
+        </td>
+        <td>
+          Deletes objects from the database. Objects can be specified using a query or array of object IDs.
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <a href="#delKind">delKind</a>
+        </td>
+        <td>
+          Deletes a JSON kind object from the database.
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <a href="#find">find</a>
+        </td>
+        <td>
+          Finds objects matching a query.
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <a href="#get">get</a>
+        </td>
+        <td>
+          Gets objects by ID. Returns array of complete objects. Fastest way to get data from DB.
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <a href="#merge">merge</a>
+        </td>
+        <td>
+          Updates properties in existing objects. Similar to SQL UPDATE. Objects can be specified using a query or array of object IDs.
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <a href="#put">put</a>
+        </td>
+        <td>
+          Writes JSON data objects to db8 storage.
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <a href="#putKind">putKind</a>
+        </td>
+        <td>
+          Puts a JSON kind object into the database. A kind object must be created before objects <em>of that kind</em> are stored.
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <a href="#reserveIds">reserveIds</a>
+        </td>
+        <td>
+          Reserves a block of object IDs.
+        </td>
+      </tr>
+    </table>
+    <p>
+      <a name="del" id="del">&#160;</a>
+    </p>
+    <hr>
+    <h2 id="db.del">
+      DB.del
+    </h2>
+    <p>
+      Deletes JSON data objects from the database.
+    </p>
+    <p>
+      Objects can be specified as a set of IDs (returns PutResponse) or as a db8 Query (returns CountResponse).
+    </p>
+    <h3 id="syntax">
+      Syntax
+    </h3>
+    <pre>
+<code>del(idsOrQuery, purge);
+</code>
+</pre>
+    <h3 id="parameters">
+      Parameters
+    </h3>
+    <table border="1" cellpadding="5" cellspacing="5">
+      <thead>
+        <tr bgcolor="tan">
+          <th>
+            Argument
+          </th>
+          <th>
+            Required
+          </th>
+          <th>
+            Type
+          </th>
+          <th width="500">
+            Description
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            idsOrQuery
+          </td>
+          <td>
+            Yes
+          </td>
+          <td>
+            string array or <a href="/reference/data-types/db8.html#Query">Query</a>
+          </td>
+          <td>
+            Array of JSON data object IDs or query.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            purge
+          </td>
+          <td>
+            No
+          </td>
+          <td>
+            boolean
+          </td>
+          <td>
+            Mark as deleted or purge immediately flag. Default is <span class="inline_code">false</span>. If marked as deleted, records are still retrievable and are not fully deleted until an administrative purge occurs.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="return">
+      Return
+    </h3>
+    <table border="1" cellpadding="5" cellspacing="5">
+      <tr>
+        <td width="100">
+          Response
+        </td>
+        <td>
+          Succcess: <a href="/reference/data-types/db8.html#PutResponse">PutResponse</a> (IDs) or <a href="/reference/data-types/db8.html#CountResponse">CountResponse</a> (query)
+        </td>
+      </tr>
+    </table>
+    <p>
+      <strong>Examples</strong>
+    </p>
+    <p>
+      <strong>Example delete using ID</strong>
+    </p>
+    <pre>
+<code>   var DB = libraries[&quot;foundations&quot;].Data.DB; // Get JS wrapper for DB calls
+
+   var ids = &quot;2+Nd&quot;;  // Assign object ID
+
+   DB.del([ids]).then(function(future) {
+      var result = future.result;
+      if (result.returnValue == true)   
+         Mojo.Log.info(&quot;del success, count=&quot;+result.count);
+      else
+      {  
+         result = future.exception;
+         Mojo.Log.info(&quot;del failure: Err code=&quot; + result.errorCode + &quot;Err message=&quot; + result.message); 
+      }
+   });  
+</code>
+</pre>
+    <p>
+      <strong>Example delete using query</strong>
+    </p>
+    <pre>
+<code>   var DB = libraries[&quot;foundations&quot;].Data.DB;  // Get JS wrapper for DB calls
+
+   //**
+   //** Delete all records whose state value is equal to &quot;OR&quot; (Oregon)
+   //** Note that without state being indexed, this call will fail with a
+   //** &quot;no index for query&quot; message.
+   //**
+   var q = { &quot;from&quot;:&quot;com.mystuff.contacts:1&quot;, &quot;where&quot;:[{&quot;prop&quot;:&quot;state&quot;,&quot;op&quot;:&quot;=&quot;,&quot;val&quot;:&quot;OR&quot;}] };
+
+   DB.del(q).then(function(future) {
+      var result = future.result;
+      if (result.returnValue === true)           
+         Mojo.Log.info(&quot;del success, count=&quot; + result.count);
+      else
+      {  
+         result = future.exception;
+         Mojo.Log.info(&quot;del failure: Err code=&quot; + result.errorCode + &quot;Err message=&quot; + result.message); 
+      }
+   }); 
+</code>
+</pre>
+    <p>
+      <a name="delKind" id="delKind">&#160;</a>
+    </p>
+    <hr>
+    <h2 id="db.delkind">
+      DB.delKind
+    </h2>
+    <p>
+      Deletes a kind object from the database. Deleting a kind deletes <strong>ALL</strong> data objects of that kind.
+    </p>
+    <h3 id="syntax-1">
+      Syntax
+    </h3>
+    <pre>
+<code>delKind(id);
+</code>
+</pre>
+    <h3 id="parameters-1">
+      Parameters
+    </h3>
+    <table border="1" cellpadding="5" cellspacing="5">
+      <thead>
+        <tr bgcolor="tan">
+          <th>
+            Argument
+          </th>
+          <th>
+            Required
+          </th>
+          <th>
+            Type
+          </th>
+          <th width="500">
+            Description
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            id
+          </td>
+          <td>
+            Yes
+          </td>
+          <td>
+            string
+          </td>
+          <td>
+            Name of kind to delete.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="return-1">
+      Return
+    </h3>
+    <table border="1" cellpadding="5" cellspacing="5">
+      <tbody>
+        <tr>
+          <td width="100">
+            Response
+          </td>
+          <td>
+            <a href="/reference/data-types/db8.html#SuccessResponse">SuccessResponse</a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <p>
+      <strong>Example</strong>
+    </p>
+    <pre>
+<code>   var DB = libraries[&quot;foundations&quot;].Data.DB; // Get JS wrapper for DB calls 
+   //...
+   DB.delKind(&quot;com.mystuff.contacts:1&quot;).then(function(future) {
+      var result = future.result;
+      if (result.returnValue === true)           
+         Mojo.Log.info(&quot;delKind success&quot;);
+      else
+      {  
+         result = future.exception;
+         Mojo.Log.info(&quot;delKind failure: Err code=&quot; + result.errorCode + &quot;Err message=&quot; + result.message); 
+      }
+   });
+</code>
+</pre>
+    <p>
+      <a name="find" id="find">&#160;</a>
+    </p>
+    <hr>
+    <h2 id="db.find">
+      DB.find
+    </h2>
+    <p>
+      Returns a set of objects matching a <a href="/reference/data-types/db8.html#Query">query</a>.
+    </p>
+    <p>
+      If your query is limited to a specified number of results, you can set a flag to get the number that would have been returned without a limit. You can also set a flag to request notification if any of the returned results from the query changes in the future.
+    </p>
+    <h3 id="syntax-2">
+      Syntax
+    </h3>
+    <pre>
+<code>find(query, watch, count);
+</code>
+</pre>
+    <h3 id="parameters-2">
+      Parameters
+    </h3>
+    <table border="1" cellpadding="5" cellspacing="5">
+      <thead>
+        <tr bgcolor="tan">
+          <th>
+            Argument
+          </th>
+          <th>
+            Required
+          </th>
+          <th>
+            Type
+          </th>
+          <th width="500">
+            Description
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            query
+          </td>
+          <td>
+            Yes
+          </td>
+          <td>
+            <a href="/reference/data-types/db8.html#Query">Query</a>
+          </td>
+          <td>
+            db8 query for retrieving results.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            watch
+          </td>
+          <td>
+            Yes
+          </td>
+          <td>
+            boolean
+          </td>
+          <td>
+            Notify if change flag.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            count
+          </td>
+          <td>
+            Yes
+          </td>
+          <td>
+            boolean
+          </td>
+          <td>
+            Return number of objects that would have been returned without the limit specified in the query flag.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="return-2">
+      Return
+    </h3>
+    <table border="1" cellpadding="5" cellspacing="5">
+      <tbody>
+        <tr>
+          <td width="100">
+            Response
+          </td>
+          <td>
+            Succcess: <a href="/reference/data-types/db8.html#FindResponse">FindResponse</a> or <a href="/reference/data-types/db8.html#NotificationResponse">NotificationResponse</a> (watch == true)
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <p>
+      <strong>Examples</strong>
+    </p>
+    <p>
+      Note: The examples below require the loading of the DB foundation libarary:
+    </p>
+    <p>
+      <strong>Example 1: Simple find</strong>
+    </p>
+    <p>
+      This query returns all data objects. No notification and no count is requested.
+    </p>
+    <pre>
+<code>   var DB = libraries[&quot;foundations&quot;].Data.DB; // Get JS wrapper for DB calls
+   var fquery = {&quot;from&quot;:&quot;com.mystuff.contacts:1&quot;};
+
+   DB.find(fquery, false, false).then(function(future) {
+      var result = future.result;
+      if (result.returnValue === true)   
+         Mojo.Log.info(&quot;find success, results=&quot;+JSON.stringify(result.results));
+      else
+      {  
+         result = future.exception;
+         Mojo.Log.info(&quot;find failure: Err code=&quot; + result.errorCode + &quot;Err message=&quot; + result.message); 
+      }
+});
+</code>
+</pre>
+    <p>
+      <strong>Example 2: Simple find with where clause</strong>
+    </p>
+    <p>
+      This query searches for objects whose 'displayName' field begins with a 'J'. All fields are returned. No notification and no count is requested.
+    </p>
+    <pre>
+<code>   var DB = libraries[&quot;foundations&quot;].Data.DB; // Get JS wrapper for DB calls
+   var fquery = { &quot;from&quot;:&quot;com.mystuff.contacts:1&quot;,&quot;where&quot;:[{&quot;prop&quot;:&quot;displayName&quot;,&quot;op&quot;:&quot;%&quot;,&quot;val&quot;:&quot;J&quot;}] };
+
+   DB.find(fquery, false, false).then(function(future) {
+      var result = future.result;
+      if (result.returnValue == true)   
+         Mojo.Log.info(&quot;find success, results=&quot;+JSON.stringify(result.results));
+      else
+      {  
+         result = future.exception;
+         Mojo.Log.info(&quot;find failure: Err code=&quot; + result.errorCode + &quot;Err message=&quot; + result.message); 
+      }
+});
+</code>
+</pre>
+    <p>
+      <strong>Example 3: Using select, order by, and desc</strong>
+    </p>
+    <p>
+      This query searches for contacts who live in California (state == 'CA'). The <code>displayName</code> and <code>state</code> fields are returned for each match. Returned objects are sorted on the <code>displayName</code> field in descending order. No notification is requested.
+    </p>
+    <pre>
+<code> //**
+ //** Note: A dual index for the kind was created, allowing this call to work:
+ //**          var indexes = [{&quot;name&quot;:&quot;dNameState&quot;, props:[{&quot;name&quot;: &quot;state&quot;}, {&quot;name&quot;:&quot;displayName&quot;}]} ];
+ //**
+ //**       The query below will not work if 'displayName' is declared as the first 'props' entry and 'state' the second.
+ //**       Results can only be returned for contiguously ordered index entries. If you have the entries [&quot;CA&quot;, &quot;John Doe&quot;], [&quot;CA&quot;,&quot;Mabel Syrup&quot;], etc.,
+ //**       then, all of the entries with the same state are consecutive and only secondarily ordered by display name. Therefore, the index can answer the query.
+ //**       If the index entries were ordered in [&quot;displayName&quot;, &quot;state&quot;] order, the entries for the same state are not consecutive and
+ //**       could not be used to answer the query (the query would fail with a &quot;no index for query&quot; message).
+
+   var fquery = {&quot;select&quot;: [&quot;displayName&quot;, &quot;state&quot;],
+                 &quot;from&quot;:&quot;com.mystuff.contacts:1&quot;,
+                 &quot;where&quot;:[{&quot;prop&quot;:&quot;state&quot;,&quot;op&quot;:&quot;=&quot;,&quot;val&quot;:&quot;CA&quot;}], 
+                 &quot;orderBy&quot;:&quot;displayName&quot;,
+                 &quot;desc&quot;:true };
+
+   DB.find(fquery, false, false).then(function(future) {
+      var result = future.result;
+      if (result.returnValue == true)   
+         Mojo.Log.info(&quot;find success, results=&quot;+JSON.stringify(result.results));
+      else
+      {  
+         result = future.exception;
+         Mojo.Log.info(&quot;find failure: Err code=&quot; + result.errorCode + &quot;Err message=&quot; + result.message); 
+      }
+   });
+</code>
+</pre>
+    <p>
+      <strong>Example 4: Query with change notification</strong>
+    </p>
+    <p>
+      This example shows how change notiification for a find works. Initially, a find with change notification (watch=true) is issued on a non-existent Kind and DB. Empty results are then returned. A number of operations are done that alter the results which fires the find's change notification flag. Each time, the find with a watch is re-issued and the new results are printed out.
+    </p>
+    <pre>
+<code>   //** Create Kind object for test
+   var testKind = {
+   name: &quot;dbtest:1&quot;,
+   owner: &quot;com.palm.dbtest&quot;,
+   indexes: [ 
+      {name:&quot;name&quot;, props: [{name: &quot;name&quot;}]},
+      {name:&quot;profession&quot;, props:[{name: &quot;profession&quot;}]}      
+      ]
+   };
+
+   //** Create 5 test data objects
+   var testData =  [
+   {
+      _kind: testKind.name,
+      name: &quot;Mark&quot;,
+      age: 40,
+      profession: &quot;engineer&quot;
+   },
+   {
+      _kind: testKind.name,
+      name: &quot;Yvette&quot;,
+      age: 36,
+      profession: &quot;trainer&quot;
+   },
+   {
+       _kind: testKind.name,
+      name: &quot;Lenny&quot;,
+      age: 45,
+      profession: &quot;engineer&quot;
+   },
+   {
+      _kind: testKind.name,
+      name: &quot;Homer&quot;,
+      age: 51,
+      profession: &quot;safety inspector&quot;
+   },
+   {
+      _kind: testKind.name,
+      name: &quot;Marge&quot;,
+      age: 48,
+      profession: &quot;homemaker&quot;
+   }
+   ];
+
+   //** Create query object for test
+   var query = {
+      select: [&quot;name&quot;, &quot;age&quot;],
+      from: testKind.name,
+      where: [{prop: &quot;profession&quot;, op: &quot;=&quot;, val: &quot;engineer&quot;}],
+      desc: false,   //** descending
+      incDel: false, //** include deleted
+      limit: 500
+   };
+
+   //** Do find on non-existent Kind with watch. No results initially returned.
+   DB.find({from:testKind.name}, true, 500).then(function print_it(future) {
+
+   //** Notification that results have changed
+   if (future.result.fired) {
+      Mojo.Log.info(&quot;DB.find watch fired, re-issuing 'find'&quot;);
+
+      //** Re-issue find to get changed results
+      return DB.find({from:testKind.name}, true, 500).then(print_it);
+
+   } 
+   else { 
+       //** Log find results
+       Mojo.Log.info(&quot;DB.find Database contents: &quot;+JSON.stringify(future.result));
+   }
+
+      //** Re-establish future
+      future.then(print_it);
+      },
+      function error(future) { //** Log error
+         Mojo.Log.info(&quot;error: &quot;+future.exception);
+   });
+
+   //** Create test Kind in database
+   DB.putKind(testKind.name, testKind.owner, testKind.indexes).then(function(future) {
+      Mojo.Log.info(&quot;putKind returned &quot;+JSON.stringify(future.result));
+
+   return DB.put(testData); //** Put test data into database
+
+   }).then(function(future){ 
+      // Log put results
+      Mojo.Log.info(&quot;put returned &quot;+JSON.stringify(future.result)); 
+      var changes = {
+           profession: &quot;janitor&quot;
+       };
+
+   return DB.merge(query, changes); // Change all professions to janitor
+   }).then(function(future){
+      // Log merge results
+      Mojo.Log.info(&quot;merge returned &quot;+JSON.stringify(future.result));
+      var delQuery = {
+       from: testKind.name        
+   };
+
+   return DB.del(delQuery);  // Delete all records in DB
+   }).then(function(future){
+      //** Log delete results
+      Mojo.Log.info(&quot;delete returned &quot;+JSON.stringify(future.result));
+      return true;
+   }).then(function(future){  
+   return;
+});
+</code>
+</pre>
+    <p>
+      When this code is run, the following results (without comments) are logged, showing the sequence of events:
+    </p>
+    <pre>
+<code>   //** Initial find results on empty DB
+      com.palm.dbtest: Info: DB.find Database contents: {&quot;returnValue&quot;:true,&quot;results&quot;:[],&quot;count&quot;:0}, 
+
+   //** Kind stored in DB
+      com.palm.dbtest: Info: putKind returned {&quot;returnValue&quot;:true}, 
+
+   //** Put fires find watch, find re-issued
+      com.palm.dbtest: Info: DB.find watch fired, re-issuing find, 
+
+   //** Results from put
+      com.palm.dbtest: Info: put returned {&quot;returnValue&quot;:true,&quot;results&quot;:[{&quot;id&quot;:&quot;20RH&quot;,&quot;rev&quot;:5906},{&quot;id&quot;:&quot;20RI&quot;,&quot;rev&quot;:5907},{&quot;id&quot;:&quot;20RJ&quot;,&quot;rev&quot;:5908},{&quot;id&quot;:&quot;20RK&quot;,&quot;rev&quot;:5909},{&quot;id&quot;:&quot;20RL&quot;,&quot;rev&quot;:5910}]}, 
+
+   //** First reissued find results returned
+      com.palm.dbtest: Info: DB.find Database contents: {&quot;returnValue&quot;:true,&quot;results&quot;:[{&quot;_id&quot;:&quot;20RH&quot;,&quot;_kind&quot;:&quot;dbtest:1&quot;,&quot;_rev&quot;:5906,&quot;age&quot;:40,&quot;name&quot;:&quot;Mark&quot;,&quot;profession&quot;:&quot;engineer&quot;},{&quot;_id&quot;:&quot;20RI&quot;,&quot;_kind&quot;:&quot;dbtest:1&quot;,&quot;_rev&quot;:5907,&quot;age&quot;:36,&quot;name&quot;:&quot;Yvette&quot;,&quot;profession&quot;:&quot;trainer&quot;},{&quot;_id&quot;:&quot;20RJ&quot;,&quot;_kind&quot;:&quot;dbtest:1&quot;,&quot;_rev&quot;:5908,&quot;age&quot;:45,&quot;name&quot;:&quot;Lenny&quot;,&quot;profession&quot;:&quot;engineer&quot;},{&quot;_id&quot;:&quot;20RK&quot;,&quot;_kind&quot;:&quot;dbtest:1&quot;,&quot;_rev&quot;:5909,&quot;age&quot;:51,&quot;name&quot;:&quot;Homer&quot;,&quot;profession&quot;:&quot;safety inspector&quot;},{&quot;_id&quot;:&quot;20RL&quot;,&quot;_kind&quot;:&quot;dbtest:1&quot;,&quot;_rev&quot;:5910,&quot;age&quot;:48,&quot;name&quot;:&quot;Marge&quot;,&quot;profession&quot;:&quot;homemaker&quot;}],&quot;count&quot;:5}, 
+
+   //** Merge fires re-issued find
+      com.palm.dbtest: Info: DB.find watch fired, re-issuing find, 
+
+   //** Merge results returned
+      com.palm.dbtest: Info: merge returned {&quot;returnValue&quot;:true,&quot;count&quot;:2}, 
+
+   //** Second re-issued find results returned
+      com.palm.dbtest: Info: DB.find Database contents: {&quot;returnValue&quot;:true,&quot;results&quot;:[{&quot;_id&quot;:&quot;20RH&quot;,&quot;_kind&quot;:&quot;dbtest:1&quot;,&quot;_rev&quot;:5911,&quot;age&quot;:40,&quot;name&quot;:&quot;Mark&quot;,&quot;profession&quot;:&quot;janitor&quot;},{&quot;_id&quot;:&quot;20RI&quot;,&quot;_kind&quot;:&quot;dbtest:1&quot;,&quot;_rev&quot;:5907,&quot;age&quot;:36,&quot;name&quot;:&quot;Yvette&quot;,&quot;profession&quot;:&quot;trainer&quot;},{&quot;_id&quot;:&quot;20RJ&quot;,&quot;_kind&quot;:&quot;dbtest:1&quot;,&quot;_rev&quot;:5912,&quot;age&quot;:45,&quot;name&quot;:&quot;Lenny&quot;,&quot;profession&quot;:&quot;janitor&quot;},{&quot;_id&quot;:&quot;20RK&quot;,&quot;_kind&quot;:&quot;dbtest:1&quot;,&quot;_rev&quot;:5909,&quot;age&quot;:51,&quot;name&quot;:&quot;Homer&quot;,&quot;profession&quot;:&quot;safety inspector&quot;},{&quot;_id&quot;:&quot;20RL&quot;,&quot;_kind&quot;:&quot;dbtest:1&quot;,&quot;_rev&quot;:5910,&quot;age&quot;:48,&quot;name&quot;:&quot;Marge&quot;,&quot;profession&quot;:&quot;homemaker&quot;}],&quot;count&quot;:5}, 
+
+   //** Delete fires re-issued find
+      com.palm.dbtest: Info: DB.find watch fired, re-issuing find, 
+
+   //** Delete results returned
+      com.palm.dbtest: Info: delete returned {&quot;returnValue&quot;:true,&quot;count&quot;:5}, 
+
+   //** Third re-issued find results returned. DB now empty again
+      com.palm.dbtest: Info: DB.find Database contents: {&quot;returnValue&quot;:true,&quot;results&quot;:[],&quot;count&quot;:0}, 
+</code>
+</pre>
+    <p>
+      <strong>Example 4: Query showing use of paging</strong>
+    </p>
+    <p>
+      Query to get 20 contacts, then use page key from first query to get 20 more contacts.
+    </p>
+    <pre>
+<code>   //** Create query to get 20 contacts who live in California
+   var fquery = {&quot;from&quot;:&quot;com.mystuff.contacts:1&quot;,
+                &quot;where&quot;:[{&quot;prop&quot;:&quot;state&quot;,&quot;op&quot;:&quot;=&quot;,&quot;val&quot;:&quot;CA&quot;}],
+                &quot;limit&quot;: 20};  
+
+   DB.find(fquery, false, true).then(function(future) {
+       var result = future.result;
+       if (result.returnValue == true)  
+       {
+          Mojo.Log.info(&quot;First page results, count = &quot;+result.count);
+          var rs = result.results;
+
+          for (var i=0; i &lt; rs.length; i++)
+             Mojo.Log.info(&quot;#&quot;+i+&quot; &quot;+ rs[i].name[0].familyName+&quot;, &quot;+rs[i].name[0].givenName);
+
+    //** ...
+    //** Do something, i.e., wait for user to press next key
+    //** ...
+
+   //**
+   //** Create query to get next 20 contacts. Use next page key returned from previous query
+   //** 
+    fquery = {  &quot;from&quot;:&quot;com.mystuff.contacts:1&quot;,
+                &quot;where&quot;:[{&quot;prop&quot;:&quot;state&quot;,&quot;op&quot;:&quot;=&quot;,&quot;val&quot;:&quot;CA&quot;}],
+                &quot;limit&quot;: 20,
+                &quot;page&quot;:result.next};
+    //**
+    //** Get next page of results
+    //**                 
+    DB.find(fquery, false, true).then(function(future) {
+         var result = future.result;
+         if (result.returnValue === true)        
+         {      
+            Mojo.Log.info(&quot;Next page results, count = &quot;+result.count);
+            var rs = result.results;
+            for (var i=0; i &lt; rs.length; i++)
+               Mojo.Log.info(&quot;#&quot;+i+&quot; &quot;+ rs[i].name[0].familyName+&quot;, &quot;+rs[i].name[0].givenName);
+         }
+         else
+         {  
+            result = future.exception;
+            Mojo.Log.info(&quot;Next find failure: Err code=&quot; + result.errorCode + &quot;Err message=&quot; + result.message); 
+         }
+   });
+
+  }
+  else
+     Mojo.Log.error(&quot;First page failure: Err code=&quot; + result.errorCode + &quot;Err text=&quot; + result.errorText);
+}); 
+</code>
+</pre>
+    <p>
+      <a name="get" id="get">&#160;</a>
+    </p>
+    <hr>
+    <h2 id="db.get">
+      DB.get
+    </h2>
+    <p>
+      Gets JSON data objects by IDs.
+    </p>
+    <h3 id="syntax-3">
+      Syntax
+    </h3>
+    <pre>
+<code>get(ids);
+</code>
+</pre>
+    <h3 id="parameters-3">
+      Parameters
+    </h3>
+    <table border="1" cellpadding="5" cellspacing="5">
+      <thead>
+        <tr bgcolor="tan">
+          <th>
+            Argument
+          </th>
+          <th>
+            Required
+          </th>
+          <th>
+            Type
+          </th>
+          <th width="500">
+            Description
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            ids
+          </td>
+          <td>
+            Yes
+          </td>
+          <td>
+            string array
+          </td>
+          <td>
+            Array of JSON data object IDs.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="return-3">
+      Return
+    </h3>
+    <table border="1" cellpadding="5" cellspacing="5">
+      <tr>
+        <td width="100">
+          Response
+        </td>
+        <td>
+          <a href="/reference/data-types/db8.html#GetResponse">GetResponse</a>
+        </td>
+      </tr>
+    </table>
+    <p>
+      <strong>Example</strong>
+    </p>
+    <pre>
+<code>   //** Get JS wrapper for DB calls
+   var DB = libraries[&quot;foundations&quot;].Data.DB;  
+   //...
+   var ids = [&quot;2+OG&quot;, &quot;2+OK&quot;];    
+   DB.get(ids).then(function(future) {
+      var result = future.result;
+      var rs = future.result.results;
+      if (result.returnValue == true)
+      {
+          for (var i=0; i &lt; result.results.length; i++)
+          {             
+              Mojo.Log.info(&quot;get success, id=&quot;+ rs[i]._id+&quot;, kind=&quot;+rs[i]._kind+&quot;, displayName=&quot;+rs[i].displayName+&quot;, nickname=&quot;+rs[i].nickname+&quot;, familyName=&quot;+rs[i].name[0].familyName);
+          }
+      }
+      else
+      {  
+         result = future.exception;
+         Mojo.Log.info(&quot;get failure: Err code=&quot; + result.errorCode + &quot;Err message=&quot; + result.message); 
+      }
+   }); 
+</code>
+</pre>
+    <p>
+      <a name="merge" id="merge">&#160;</a>
+    </p>
+    <hr>
+    <h2 id="db.merge">
+      DB.merge
+    </h2>
+    <p>
+      Updates properties in existing objects. Objects can be specified using query. (returns CountResponse) or array of IDs.
+    </p>
+    <h3 id="syntax-4">
+      Syntax
+    </h3>
+    <pre>
+<code>merge(objectsOrQuery, properties);
+</code>
+</pre>
+    <h3 id="parameters-4">
+      Parameters
+    </h3>
+    <table border="1" cellpadding="5" cellspacing="5">
+      <thead>
+        <tr bgcolor="tan">
+          <th>
+            Argument
+          </th>
+          <th>
+            Required
+          </th>
+          <th>
+            Type
+          </th>
+          <th width="500">
+            Description
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            objectsOrQuery
+          </td>
+          <td>
+            Yes
+          </td>
+          <td>
+            any
+          </td>
+          <td>
+            array of IDs and properties to update, or db8 Query
+          </td>
+        </tr>
+        <tr>
+          <td>
+            properties
+          </td>
+          <td>
+            No
+          </td>
+          <td>
+            any
+          </td>
+          <td>
+            Array of name/value pairs to update (if using db8 Query).
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="return-4">
+      Return
+    </h3>
+    <table border="1" cellpadding="5" cellspacing="5">
+      <tr>
+        <td>
+          Response
+        </td>
+        <td>
+          Succcess: <a href="/reference/data-types/db8.html#PutResponse">PutResponse</a> (IDs), or <a href="/reference/data-types/db8.html#CountResponse">CountResponse</a> (query)
+        </td>
+      </tr>
+    </table>
+    <p>
+      <strong>Examples</strong>
+    </p>
+    <p>
+      <strong>Example using IDs</strong>
+    </p>
+    <pre>
+<code>   var DB = libraries[&quot;foundations&quot;].Data.DB;  // Get JS wrapper for DB calls 
+
+   //** Create objects to update nickname field
+   var m1 = {  &quot;_id&quot;: &quot;2+SF&quot;, &quot;nickname&quot;: &quot;Spaz&quot; };
+   var m2 = {  &quot;_id&quot;: &quot;2+SJ&quot;,&quot;nickname&quot;: &quot;Sugar&quot; };
+
+   var objs2 = [m1, m2];
+   DB.merge(objs2).then(function(future) {
+      var result = future.result;
+      var rs = result.results;
+      if (result.returnValue === true)   
+      {         
+         Mojo.Log.info(&quot;merge success&quot;);
+         for (var i=0; i &lt; rs.length; i++)
+            Mojo.Log.info(&quot;#&quot;+i+&quot;: r.id=&quot;+rs[i].id+&quot;, r.rev=&quot;+rs[i].rev);
+      }
+      else
+      {  
+         result = future.exception;
+         Mojo.Log.info(&quot;merge failure: Err code=&quot; + result.errorCode + &quot;Err message=&quot; + result.message); 
+      }
+   });
+</code>
+</pre>
+    <p>
+      <strong>Example using query</strong>
+    </p>
+    <pre>
+<code>   //**
+   //** Assign a property to update, and create the query
+   //** Note that indexes must exist for the fields you are querying on
+   //**
+   var mprops = { &quot;nickname&quot;:&quot;Spud&quot;};
+   var mquery = { &quot;from&quot;:&quot;com.mystuff.contacts:1&quot;,&quot;where&quot;:[{&quot;prop&quot;:&quot;displayName&quot;,&quot;op&quot;:&quot;%&quot;,&quot;val&quot;:&quot;J&quot;}] };
+
+   DB.merge(mquery, mprops).then(function(future) {
+      var result = future.result;
+      if (result.returnValue === true)   
+         Mojo.Log.info(&quot;merge success, number updated = &quot;+result.count);
+      else
+      {  
+         result = future.exception;
+         Mojo.Log.info(&quot;merge failure: Err code=&quot; + result.errorCode + &quot;Err message=&quot; + result.message); 
+      }
+   });
+</code>
+</pre>
+    <p>
+      <a name="put" id="put">&#160;</a>
+    </p>
+    <hr>
+    <h2 id="db.put">
+      DB.put
+    </h2>
+    <p>
+      Puts JSON data objects of a particular <em>kind</em> into the database. Assigns id field if not set. Returns id and rev for each object stored.
+    </p>
+    <h3 id="syntax-5">
+      Syntax
+    </h3>
+    <pre>
+<code>put(objs);
+</code>
+</pre>
+    <h3 id="parameters-5">
+      Parameters
+    </h3>
+    <table border="1" cellpadding="5" cellspacing="5">
+      <thead>
+        <tr bgcolor="tan">
+          <th>
+            Argument
+          </th>
+          <th>
+            Required
+          </th>
+          <th>
+            Type
+          </th>
+          <th>
+            Description
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            objs
+          </td>
+          <td>
+            Yes
+          </td>
+          <td>
+            any object array
+          </td>
+          <td>
+            Array of JSON data objects.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="return-5">
+      Return
+    </h3>
+    <table border="1" cellpadding="5" cellspacing="5">
+      <tr>
+        <td>
+          Response
+        </td>
+        <td>
+          <a href="/reference/data-types/db8.html#PutResponse">PutResponse</a><br>
+        </td>
+      </tr>
+    </table>
+    <p>
+      <strong>Example</strong>
+    </p>
+    <pre>
+<code>   var DB = libraries[&quot;foundations&quot;].Data.DB;  // Get JS wrapper for DB calls
+
+   //** Create new JSON data object     
+   var  contact1 = {
+      _kind: &quot;com.mystuff.contacts:1&quot;,
+      displayName: &quot;John Doe&quot;,
+      name: [{&quot;familyName&quot;:&quot;Doe&quot;, &quot;givenName&quot;:&quot;John&quot;}],
+      nickname: &quot;Skippy&quot;,
+      emails:[
+        {&quot;value&quot;:&quot;jdoe@gmail.com&quot;, &quot;type&quot;:&quot;home&quot;},
+        {&quot;value&quot;: &quot;john.doe@palm.com&quot;, &quot;type&quot;:&quot;work&quot;}]};
+
+   //** Create object array
+   var objs = [contact1];
+
+   DB.put(objs).then(function(future) {
+      var result = future.result;
+      if (result.returnValue === true)   
+         Mojo.Log.info(&quot;put success, c.id=&quot;+result.results[0].id+&quot;, c.rev=&quot;+result.results[0].rev);
+      else
+      {  
+         result = future.exception;
+         Mojo.Log.info(&quot;put failure: Err code=&quot; + result.errorCode + &quot;Err message=&quot; + result.message); 
+      }
+   });
+</code>
+</pre>
+    <p>
+      <a name="putKind" id="putKind">&#160;</a>
+    </p>
+    <hr>
+    <h2 id="db.putkind">
+      DB.putKind
+    </h2>
+    <p>
+      Register a <em>kind</em> JSON object with the database.
+    </p>
+    <p>
+      Kind objects define the indexes for a JSON data object.
+    </p>
+    <p>
+      Your index can be composed of multiple fields. When you create your index, be aware that queries can only return results that are contiguously indexed. See <a href="/dev-guide/mojo/db8.html#fastQueries">All Queries Must be on Indexed Fields</a> for more information.
+    </p>
+    <p>
+      If your app or service creates objects that other apps or services need to access, then see Allowing Other Apps or Services to Access Your db8 Data for more information.
+    </p>
+    <h3 id="syntax-6">
+      Syntax
+    </h3>
+    <pre>
+<code>putKind(id, owner, indexes);
+</code>
+</pre>
+    <h3 id="parameters-6">
+      Parameters
+    </h3>
+    <table border="1" cellpadding="5" cellspacing="5">
+      <thead>
+        <tr bgcolor="tan">
+          <th>
+            Argument
+          </th>
+          <th>
+            Required
+          </th>
+          <th>
+            Type
+          </th>
+          <th width="500">
+            Description
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            id
+          </td>
+          <td>
+            Yes
+          </td>
+          <td>
+            string
+          </td>
+          <td>
+            Kind identifier.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            owner
+          </td>
+          <td>
+            Yes
+          </td>
+          <td>
+            string
+          </td>
+          <td>
+            Kind owner - Service's bus address or app's app ID. Only the owner has permission to modify the kind.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            indexes
+          </td>
+          <td>
+            No
+          </td>
+          <td>
+            IndexClause array
+          </td>
+          <td>
+            Kind indexes.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="return-6">
+      Return
+    </h3>
+    <table border="1" cellpadding="5" cellspacing="5">
+      <tr>
+        <td width="100">
+          Response
+        </td>
+        <td>
+          Succcess: <a href="/reference/data-types/db8.html#SuccessResponse">SuccessResponse</a><br>
+          Failure: <a href="/reference/data-types/db8.html#ErrResponse">ErrResponse</a>
+        </td>
+      </tr>
+    </table>
+    <p>
+      <strong>Example</strong>
+    </p>
+    <pre>
+<code>   var DB = libraries[&quot;foundations&quot;].Data.DB;  // Get JS wrapper for DB calls
+   var indexes = [{&quot;name&quot;:&quot;state&quot;, props:[{&quot;name&quot;: &quot;state&quot;}]}];
+   DB.putKind(&quot;com.palm.contacts:1&quot;, &quot;com.palm.contacts&quot;, indexes).then(function(future) {
+      var result = future.result;
+      if (result.returnValue === true)                   
+         Mojo.Log.info(&quot;putKind success&quot;);
+      else
+      {  
+         result = future.exception;
+         Mojo.Log.info(&quot;putKind failure: Err code=&quot; + result.errorCode + &quot;Err message=&quot; + result.message); 
+      }
+   });
+</code>
+</pre>
+    <p>
+      <a name="reserveIds" id="reserveIds">&#160;</a>
+    </p>
+    <hr>
+    <h2 id="db.reserveids">
+      DB.reserveIds
+    </h2>
+    <p>
+      Reserves a block of object ids.
+    </p>
+    <h3 id="syntax-7">
+      Syntax
+    </h3>
+    <pre>
+<code>reserveIds(count);
+</code>
+</pre>
+    <h3 id="parameters-7">
+      Parameters
+    </h3>
+    <table border="1" cellpadding="5" cellspacing="5">
+      <thead>
+        <tr bgcolor="tan">
+          <th>
+            Argument
+          </th>
+          <th>
+            Required
+          </th>
+          <th>
+            Type
+          </th>
+          <th>
+            Description
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            count
+          </td>
+          <td>
+            Yes
+          </td>
+          <td>
+            integer
+          </td>
+          <td>
+            Number of Ids to reserve.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 id="return-7">
+      Return
+    </h3>
+    <table border="1" cellpadding="5" cellspacing="5">
+      <tr>
+        <td width="100">
+          Response
+        </td>
+        <td>
+          Succcess: <a href="/reference/data-types/db8.html#SuccessResponse">SuccessResponse</a><br>
+          Failure: <a href="/reference/data-types/db8.html#ErrResponse">ErrResponse</a>
+        </td>
+      </tr>
+    </table>
+    <p>
+      <strong>Example</strong>
+    </p>
+    <p>
+      Get block of 10 IDs:
+    </p>
+    <pre>
+<code>    var DB = libraries[&quot;foundations&quot;].Data.DB;  //  Get JS wrapper for DB calls
+
+    DB.reserveIds(10).then(function(future) {
+       var result = future.result;
+       if (result.returnValue === true)  
+          Mojo.Log.info(&quot;reserveIds success, results=&quot;+JSON.stringify(result.ids));
+      else
+      {  
+         result = future.exception;
+         Mojo.Log.info(&quot;reserveIds failure: Err code=&quot; + result.errorCode + &quot;Err message=&quot; + result.message); 
+      }
+   });
+</code>
+</pre>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,157 @@
+/* Copyright 2009-2011 Hewlett-Packard Development Company, L.P. All rights reserved. */
+/* heritage theme */
+
+.enyo-button {
+	color: white;
+	font-size: 20px;
+	height: 52px;
+	min-width: 0;
+	line-height: 52px;
+	border-width: 0 17px;
+	padding: 0;
+	margin: 0;
+}
+
+.enyo-button {
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+}
+
+.enyo-button img {
+	padding: 0px 3px;
+}
+
+/* normal button */
+
+.enyo-button {
+	-webkit-border-image: url(../images/palm-button-medium.png) 0 17 104 17 repeat repeat;
+}
+
+.enyo-button.enyo-button-down {
+	-webkit-border-image: url(../images/palm-button-medium.png) 52 17 52 17 repeat repeat;
+}
+
+.enyo-button.enyo-button-depressed {
+	-webkit-border-image: url(../images/palm-button-medium.png) 52 17 52 17 repeat repeat;
+}
+
+.enyo-button.enyo-button-disabled {
+	-webkit-border-image: url(../images/palm-button-medium.png) 104 17 0 17 repeat repeat;
+}
+
+/* light button (often cancel) */
+
+.enyo-button-light {
+	color: #332;
+	-webkit-border-image: url(../images/palm-button-light.png) 0 17 104 17 repeat repeat;
+}
+
+.enyo-button-light.enyo-button-down {
+	-webkit-border-image: url(../images/palm-button-light.png) 52 17 52 17 repeat repeat;
+}
+
+.enyo-button-light.enyo-button-disabled {
+	color: #777;
+	-webkit-border-image: url(../images/palm-button-light.png) 104 17 0 17 repeat repeat;
+}
+
+/* affirmative (green) */
+
+.enyo-button-affirmative {
+	color: #fff;
+	-webkit-border-image: url(../images/palm-button-affirmative.png) 0 17 104 17 repeat repeat;
+}
+
+.enyo-button-affirmative.enyo-button-down {
+	-webkit-border-image: url(../images/palm-button-affirmative.png) 52 17 52 17 repeat repeat;
+}
+
+.enyo-button-affirmative.enyo-button-disabled {
+	-webkit-border-image: url(../images/palm-button-affirmative.png) 104 17 0 17 repeat repeat;
+}
+
+/* negative (red) */
+
+.enyo-button-negative {
+	color: #fff;
+	-webkit-border-image: url(../images/palm-button-negative.png) 0 17 104 17 repeat repeat;
+}
+
+.enyo-button-negative.enyo-button-down {
+	-webkit-border-image: url(../images/palm-button-negative.png) 52 17 52 17 repeat repeat;
+}
+
+.enyo-button-negative.enyo-button-disabled {
+	-webkit-border-image: url(../images/palm-button-negative.png) 104 17 0 17 repeat repeat;
+}
+
+/* dark */
+
+.enyo-button-dark {
+	-webkit-border-image: url(../images/palm-button-dark.png) 0 17 104 17 repeat repeat;
+}
+
+.enyo-button-dark.enyo-button-down {
+	-webkit-border-image: url(../images/palm-button-dark.png) 52 17 52 17 repeat repeat;
+}
+
+.enyo-button-dark.enyo-button-disabled {
+	-webkit-border-image: url(../images/palm-button-dark.png) 104 17 0 17 repeat repeat;
+}
+
+/* notification button */
+
+.enyo-notification-button {
+	-webkit-border-image: url(../images/palm-button-medium.png) 0 17 104 17 repeat repeat;
+}
+
+.enyo-notification-button.enyo-button-down, .enyo-notification-button.enyo-button-depressed {
+	-webkit-border-image: url(../images/palm-button-medium.png) 52 17 52 17 repeat repeat;
+}
+
+.enyo-notification-button.enyo-button-disabled {
+	-webkit-border-image: url(../images/palm-button-medium.png) 104 17 0 17 repeat repeat;
+}
+
+/* notification button (affirmative) */
+
+.enyo-notification-button-affirmative {
+	color: #fff;
+	-webkit-border-image: url(../images/palm-button-affirmative.png) 0 17 104 17 repeat repeat;
+}
+
+.enyo-notification-button-affirmative.enyo-button-down, .enyo-notification-button-affirmative.enyo-button-depressed {
+	-webkit-border-image: url(../images/palm-button-affirmative.png) 52 17 52 17 repeat repeat;
+}
+
+.enyo-notification-button-affirmative.enyo-button-disabled {
+	-webkit-border-image: url(../images/palm-button-affirmative.png) 104 17 0 17 repeat repeat;
+}
+/* notification button (negative) */
+
+.enyo-notification-button-negative {
+	color: #fff;
+	-webkit-border-image: url(../images/palm-button-negative.png) 0 17 104 17 repeat repeat;
+}
+
+.enyo-notification-button-negative.enyo-button-down, .enyo-notification-button-negative.enyo-button-depressed {
+	-webkit-border-image: url(../images/palm-button-negative.png) 52 17 52 17 repeat repeat;
+}
+
+.enyo-notification-button-negative.enyo-button-disabled {
+	-webkit-border-image: url(../images/palm-button-negative.png) 104 17 0 17 repeat repeat;
+}
+
+/* notification button (alternate) */
+
+.enyo-notification-button-alternate {
+	-webkit-border-image: url(../images/palm-button-dark.png) 0 17 104 17 repeat repeat;
+}
+
+.enyo-notification-button-alternate.enyo-button-down, .enyo-notification-button-alternate.enyo-button-depressed {
+	-webkit-border-image: url(../images/palm-button-dark.png) 52 17 52 17 repeat repeat;
+}
+
+.enyo-notification-button-alternate.enyo-button-disabled {
+	-webkit-border-image: url(../images/palm-button-dark.png) 104 17 0 17 repeat repeat;
+}

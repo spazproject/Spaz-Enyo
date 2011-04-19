@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>$if(pagetitle)$$pagetitle$$endif$</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="stylesheet" href="_css/chrome.css" />
+		<link rel="stylesheet" href="../_css/chrome.css" />
+		<link rel="stylesheet" href="../../_css/chrome.css" />
+		<link rel="stylesheet" href="../../../_css/chrome.css" />
+		<script src="_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="../../../_js/jquery-1.4.2.min.js" type="text/javascript"></script>
+		<script src="_js/doc.js" type="text/javascript"></script>
+		<script src="../_js/doc.js" type="text/javascript"></script>
+		<script src="../../_js/doc.js" type="text/javascript"></script>
+		<script src="../../../_js/doc.js" type="text/javascript"></script>
+	</head>
+	<body>
+		<div id="content">
+    
+    <h1 id="the-basics-scenes">
+      The Basics: Scenes
+    </h1>
+    <p>
+      This document contains the following sections:
+    </p>
+    <ul>
+      <li>Recommended Reading
+      </li>
+      <li>Overview
+      </li>
+      <li>Designing Scenes
+      </li>
+      <li>Behind the Scenes
+      </li>
+      <li>Related Topics
+      </li>
+    </ul>
+    <h2 id="recommended-reading">
+      Recommended Reading
+    </h2>
+    <p>
+      We recommend that you read the following documents before going forward:
+    </p>
+    <ul>
+      <li>
+        <a href="/dev-guide/mojo/introduction-to-applications.html">Introduction to Applications</a>
+      </li>
+      <li>
+        <a href="/dev-guide/mojo/application-structure.html">Application Structure</a>
+      </li>
+      <li>
+        <a href="/dev-guide/mojo/basics-stages.html">The Basics: Stages</a>
+      </li>
+      <li>
+        <a href="/dev-guide/mojo/launch-cycle.html">Application Launch Cycle</a>
+      </li>
+    </ul>
+    <p>
+      And of course the O'Reilly® book <em>Palm webOS</em>, by Mitch Allen, is an excellent resource, too! Take a peek at the first chapter, which introduces you to the webOS operating system and the HP webOS Software Developer Kit (SDK), which the SDK documentation commonly refers to as Mojo or the framework.
+    </p>
+    <h2 id="overview">
+      Overview
+    </h2>
+    <p>
+      This document is geared toward the beginning webOS developer. Here we discuss the basic concept of scenes--what they are, what you can do with them, how they work, and how to create them.
+    </p>
+    <p>
+      Let's expand on some of the definitions found in the &quot;Recommended Reading&quot; documents:
+    </p>
+    <p>
+      <strong>Scenes</strong>--It is the scene that the user sees and interacts with to perform a single task or a group of related tasks. Each scene has a scene assistant file and a main HTML view file, and may have optional template HTML view files.
+    </p>
+    <p>
+      <strong>Scene assistants</strong>--An assistant is a set of JavaScript functions that use controllers provided by Mojo to customize behavior. There is one assistant for each scene.
+    </p>
+    <p>
+      <strong>Scene controllers</strong>--There is a scene controller for each scene assistant. Each scene controller manages its scene's objects and elements. It also controls the pushing and popping of scenes.
+    </p>
+    <p>
+      <strong>Push</strong>--Pushing (activating) a scene places it at the top of the stage's scene stack, where it becomes visible to the user. Activation may result from user action on the previous scene or from pre-defined application events (such as notifications).
+    </p>
+    <p>
+      <strong>Pop</strong>--Popping (deactivating) a scene removes it from the stage. Deactivation of a scene typically results from user action on that scene, such as tapping a button.
+    </p>
+    <p>
+      <strong>Scene stacks</strong>--As multiple scenes are pushed onto a stage, a &quot;scene stack&quot; is created. Each stage manages its own scene stack. The last pushed (activated) scene is visible to the user and is, therefore, at the top of the scene stack. Popped scenes do not remain in the scene stack. To reappear on the scene stack, the scene must be pushed again.
+    </p>
+    <p>
+      <strong>Transitions</strong>--There are a few standard transitions, or visual effects, that occur after the user makes a gesture on the touchscreen that moves from one scene to another. For more info, see <a href="/design/mojo/user-interface-summary.html">User Interface Summary</a> and <a href="/reference/mojo/classes/mojo-transition.html">Mojo.Transition</a>.
+    </p>
+    <p>
+      <strong>Gestures</strong>--Gestures are specific finger movements on the device's touchscreen for navigating from one scene to the next, and back. For more info, see <a href="/design/mojo/user-interface-summary.html">User Interface Summary</a>.
+    </p>
+    <p>
+      <strong>Events</strong>--An event is usually an action (gesture) made by the user on the touchscreen, such as tapping a button, that is processed by the application code. The Mojo event model is similar to the World Wide Web Consortium (W3C) HTML event model.
+    </p>
+    <p>
+      <strong>Note:</strong> You can find these and other terms from this document defined in the <a href="http://developer.palm.com/content/resources/footer/glossary.html">Glossary</a>.
+    </p>
+    <h2 id="designing-scenes">
+      Designing Scenes
+    </h2>
+    <p>
+      This section briefly discusses the use of styles and widgets that make an application's scenes both attractive and user-friendly.
+    </p>
+    <h3 id="styles">
+      Styles
+    </h3>
+    <p>
+      Mojo provides base (default) styles for scenes and all of the widgets, which you can play with in the Style Matters application provided with the SDK. Base styles are automatically applied when you provide the Mojo class names in the HTML or use Mojo widgets. If you do not want to use a widget's base style, you can override the style or create a new one in the CSS file. However, the use of base styles makes an application feel like a native webOS application, which speeds up the learning process for users.
+    </p>
+    <p>
+      A full discussion about styles is outside the scope of this document, but some of the important style features include:
+    </p>
+    <ul>
+      <li>
+        <p>
+          <strong>Screen orientation</strong>--With Mojo, you can design applications so they operate in both the portrait (default) and landscape views, where appropriate.<br>
+          <img src="/images/palm/screen-orientations.png" alt="Screen Orientation">
+        </p>
+      </li>
+      <li>
+        <p>
+          <strong>Light and dark styles</strong>--The default is the light style (<code>palm-light</code>), which uses a light background with dark text and controls. The dark style (<code>palm-dark</code>) uses a dark background with light text and controls. To use the dark style, add the <code>palm-dark</code> class name to the <code>&lt;body&gt;</code> element or to the individual elements on a page.<br>
+          <img src="/images/palm/light-and-dark-styles.png" alt="Light and Dark Styles">
+        </p>
+      </li>
+    </ul>
+    <p>
+      For more info, see <a href="/design/style-matters.html">Style Matters</a>. Also, the Palm webOS book has an entire chapter devoted to advanced styles.
+    </p>
+    <h3 id="widgets">
+      Widgets
+    </h3>
+    <p>
+      Mojo widgets contribute greatly to the look and feel of scenes. There is a wide range of these dynamic UI controls, such as various buttons, controls, lists, text fields, and so on. After deciding which widgets to use for a scene, you need to declare, configure, and set up the widgets.
+    </p>
+    <h4 id="declaring-the-widgets">
+      Declaring the Widgets
+    </h4>
+    <p>
+      Declare the widgets in the scene's HTML view file in an empty <code>&lt;div&gt;</code> tag by using the <code>x-mojo-element</code> attribute.
+    </p>
+    <p>
+      Example:
+    </p>
+    <blockquote>
+      <pre>
+<code>&lt;div id = &quot;my-toggle&quot; x-mojo-element = &quot;ToggleButton&quot;&gt;&lt;/div&gt;
+</code>
+</pre>
+    </blockquote>
+    <h4 id="configuring-and-setting-up-widgets">
+      Configuring and Setting Up Widgets
+    </h4>
+    <p>
+      Configure and set up the widget by using the scene assistant's <code>setup</code> method to call the scene controller's method <code>setupWidget()</code>.
+    </p>
+    <p>
+      Example:
+    </p>
+    <blockquote>
+      <pre>
+<code>var toggleAttr = {trueValue: &quot;on&quot;, trueLabel: &quot;On&quot;,
+  falseValue: &quot;off&quot;, falseLabel: &quot;Off&quot;};
+this.toggleModel = {value: &quot;on&quot;, disabled: false};
+this.controller.setupWidget(&quot;my-toggle&quot;, toggleAttr, this.toggleModel);
+</code>
+</pre>
+    </blockquote>
+    <p>
+      The call to <code>setupWidget()</code> requires three arguments:
+    </p>
+    <ul>
+      <li>
+        <p>
+          <strong>Widget ID</strong> or <strong>name</strong>--We recommend using the <code>name</code> attribute instead of <code>id</code> if declaring the widget in a template for a list item, or if the scene might be pushed several times without being popped.
+        </p>
+      </li>
+      <li>
+        <p>
+          <strong>Attributes</strong>--Attributes affect the behavior and display of the widget. You cannot change attributes after instantiating them.
+        </p>
+      </li>
+      <li>
+        <p>
+          <strong>Model</strong>--The data model object is the user data shown by the widget. Changing a widget model outside of the widget does not automatically update the widget. For this to occur, the scene assistant must call the <code>modelChange()</code> method on the widget's scene controller to pass the changed model object.
+        </p>
+      </li>
+    </ul>
+    <p>
+      For more info about widgets, see <a href="/design/mojo/user-interface-summary.html">User Interface Summary</a> and <a href="/reference/mojo/widgets.html">Widgets</a>.
+    </p>
+    <h2 id="behind-the-scenes">
+      Behind the Scenes
+    </h2>
+    <p>
+      This section briefly discusses the required nomenclature, file operating sequence, pushing and popping scenes, and the use of events.
+    </p>
+    <h3 id="nomenclature">
+      Nomenclature
+    </h3>
+    <p>
+      As you learned in <a href="/dev-guide/mojo/application-structure.html">Application Structure</a>, the <code>palm-generate</code> tool gives you a standard application structure with pre-defined directories and files. You can add other directories and files as you build your application.
+    </p>
+    <p>
+      There are a few name requirements for scene files and functions. The scene assistant's name must match the view name, optional template view name, and the function defined for the assistant. And this function name should start with a capital letter. For example, if the scene name is <code>birthday</code>, you should have:
+    </p>
+    <ul>
+      <li>
+        <code>birthday-assistant.js</code>, the scene assistant
+      </li>
+      <li>
+        <code>birthday-scene.html</code>, the scene view file
+      </li>
+      <li>
+        <code>birthdayTemplate.html</code>, an optional template scene view file
+      </li>
+      <li>
+        <code>BirthdayAssistant()</code>, the scene assistant's function name
+      </li>
+    </ul>
+    <h3 id="file-operating-sequence">
+      File Operating Sequence
+    </h3>
+    <p>
+      Applications built with webOS have a specific order for launching their files, as shown in the following figure. The framework uses file naming conventions to know which assistant file and view file specified in <code>sources.json</code> work together to push a scene.
+    </p>
+    <p>
+      In addition to this basic method to push scenes, there is the Commander Chain, which incorporates another type of stage and scene controllers.
+    </p>
+    <p>
+      For more info, see <a href="/dev-guide/mojo/launch-cycle.html">Application Launch Cycle</a> and Commander Chain.
+    </p>
+    <p>
+      <img src="/images/palm/app-file-launch-sequence.png" alt="App File Launch Sequence"><br>
+      File Launch Sequence
+    </p>
+    <h3 id="pushing-and-popping-scenes">
+      Pushing and Popping Scenes
+    </h3>
+    <p>
+      Mojo has several methods available for pushing and popping application scenes. The following table summarizes the more common methods.
+    </p>
+    <table border="1">
+      <tbody>
+        <tr>
+          <th>
+            Method
+          </th>
+          <th>
+            Description
+          </th>
+        </tr>
+        <tr>
+          <td>
+            <code>pushScene(sceneArguments)</code>
+          </td>
+          <td>
+            Pushes a new scene. Passes in the optional <code>sceneArguments</code>.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <code>popScene(returnValue)</code>
+          </td>
+          <td>
+            Removes a scene from the scene stack. Passes <code>returnValue</code> to the next scene's <code>activate</code> method.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <code>popScenesTo(targetScene, returnValue)</code>
+          </td>
+          <td>
+            Removes scenes from the scene stack to reach the targetScene or the stack becomes empty. Passes <code>returnValue</code> to the next scene's <code>activate</code> method.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <code>swapScene(sceneArguments)</code>
+          </td>
+          <td>
+            Pops the active scene and swaps (pushes) it with a new scene that is not in the scene stack. Passes in the optional <code>sceneArguments</code>.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <code>topScene()</code>
+          </td>
+          <td>
+            Returns the top scene from the stage.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <code>getScenes()</code>
+          </td>
+          <td>
+            Returns an array of scene controllers on the stack.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <code>activateScene()</code>
+          </td>
+          <td>
+            Returns the current active scene from the stage, if applicable.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <p>
+      To push a scene, update <code>sources.json</code> with the file path to the scene and the scene name, and update the stage assistant file with a call to one of the StageController push methods.
+    </p>
+    <p>
+      To pop a scene, make calls to the scene controller's and scene assistant's <code>deactivate</code> methods, followed by calls to their <code>cleanup</code> methods. For more info, see <a href="/dev-guide/mojo/launch-cycle.html">Application Launch Cycle</a> and the <a href="/reference/mojo/classes/mojo-controller-stagecontroller.html">Mojo.Controller.StageController</a> API.
+    </p>
+    <h3 id="events">
+      Events
+    </h3>
+    <p>
+      Building a scene to accept events (from the application or user) requires the use of event listeners, event handlers, and the correct scene transitions. These topics are outside the scope of this document. For more info, see <a href="/dev-guide/mojo/events.html">Events</a> and Event Handler Tips.
+    </p>
+    <h2 id="related-topics">
+      Related Topics
+    </h2>
+    <p>
+      Other related topics include:
+    </p>
+    <ul>
+      <li>
+        <a href="/dev-guide/tools/command-line-tools.html">Command Line Tools</a>
+      </li>
+      <li>
+        <a href="/dev-guide/mojo/scene-hierarchies.html">Scene Hierarchies in webOS Applications</a>
+      </li>
+      <li>Build Your First App
+      </li>
+    </ul>
+    <p>
+      The next document in this series is about <a href="basics-tools.html">Tools</a>.
+    </p>
+		</div>
+	</body>
+</html>
