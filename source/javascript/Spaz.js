@@ -5,15 +5,19 @@ enyo.kind({
 		{kind: "SlidingPane", flex: 1, components: [
 			{name: "accounts", kind: "Spaz.Accounts"},
 			{name: "timeline", kind: "Spaz.Timeline", onTweetClick: "tweetClick"},
-			//{name: "tweetview", kind: "Spaz.TweetView"}
+			{name: "tweetview", kind: "Spaz.TweetView"}
 		]}
 	],
 	tweetClick: function(inSender, tweet){
 		//this.$.tweetview.create();
-		this.$.slidingPane.createComponent({name: "tweetview", kind: "Spaz.TweetView"}, {owner: this});
-		this.$.slidingPane.render();
-		this.$.timeline.render();
+		//this.$.slidingPane.createComponent({name: "tweetview", kind: "Spaz.TweetView"}, {owner: this});
+		//this.$.slidingPane.render();
+		
+		this.$.tweetview.open();
 		this.$.tweetview.setTweet(tweet);
+
+		//this.$.timeline.refreshList();
+
 		//this.$.timeline.render();
 		//this.$.tweetview.render();
 		//this.render();
