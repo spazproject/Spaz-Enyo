@@ -45,7 +45,7 @@ enyo.kind({
 	},
 	refreshList: function(){
 		_.each(this.$.snapScroller.components, function(kind){
-			this.$[kind.name].refreshList();
+			//this.$[kind.name].setupHeight();
 		}, this);
 		//this.$.list.refresh();
 	},
