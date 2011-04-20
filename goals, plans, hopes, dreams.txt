@@ -1,0 +1,21 @@
+[] = tentative assigned person.
+
+popout = tweetview/profileview
+column = column with list of tweets
+panel = accounts or timeline
+
+Goals for 3.0
+- Gapless Tweets: always get the # of tweets needed to get up to date. no set limit [Funkatron?]
+- Use Accounts panel to add/remove columns. [Tibfib]
+	- Custom Searches (also, allow more than one search per column!) [Tibfib + Funkatron]
+- Allow users to clear seen tweets
+- tapping search button brings up popout, from there people can decide if they want to save the search as a column [Tibfib]
+- Compose ... what to do, options: 
+	- make long landscape panel below columns.
+	- Have a dialog in middle of screen. scrim over other elements
+	- make popout
+
+
+Later 
+- Themes
+- Syncing with other version of Spaz

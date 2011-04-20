@@ -2,11 +2,12 @@ enyo.kind({
 	name: "Spaz.Timeline",
 	flex: 1,
 	kind: "SlidingView",
+	height: "100%",
 	events: {
 		onTweetClick: ""
 	},
 	components: [
-		{kind: "SnapScroller", flex: 1, style: "background: black", components: [
+		{kind: "SnapScroller", flex: 1, vertical: false, autoVertical: false, style: "background: black", components: [
 			{name: "Home", kind: "Spaz.Column", onTweetClick: "tweetClick"},
 			{name: "Replies", kind: "Spaz.Column", onTweetClick: "tweetClick"},
 			{name: "Direct Messages", kind: "Spaz.Column", onTweetClick: "tweetClick"},

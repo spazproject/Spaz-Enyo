@@ -1,6 +1,7 @@
 enyo.kind({
 	name: "Spaz",
 	kind: enyo.VFlexBox,
+	height: "100%",
 	components: [
 		{kind: "SlidingPane", flex: 1, components: [
 			{name: "accounts", kind: "Spaz.Accounts"},

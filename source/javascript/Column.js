@@ -18,7 +18,7 @@ enyo.kind({
 				{kind: "Spacer"},
 				{kind: "ToolButton", icon: "source/images/icon-close.png"},
 			]},
-			{kind: "Scroller", height: "500px", autoHorizontal: false, horizontal: false, style: "background-color: #D8D8D8; margin: 0px 5px;", className: "timeline", flex: 1, components: [
+			{kind: "Scroller", height: "550px", autoHorizontal: false, horizontal: false, style: "background-color: #D8D8D8; margin: 0px 5px;", className: "timeline", flex: 1, components: [
 				{name: "list", kind: "VirtualRepeater", flex: 1, style: "background-color: #D8D8D8; margin: 0px 5px; min-height: 400px;", className: "timeline list", onGetItem: "setupRow", components: [
 					{kind: "Item", tapHighlight: true, className: "tweet", layoutKind: "HFlexLayout", onclick: "tweetClick", components: [
 						{kind: "Image", width: "50px", height: "50px", className: "avatar"},
@@ -38,7 +38,7 @@ enyo.kind({
 				]},
 			]},	
 			{kind: "Toolbar", style: "color: white; margin: 0px 3px", components: [
-				{kind: "GrabButton"},
+				//{kind: "GrabButton"},
 				{kind: "ToolButton", icon: "source/images/icon-clear.png"},
 				{kind: "ToolButton", icon: "source/images/icon-refresh.png"}
 			]}
@@ -57,6 +57,15 @@ enyo.kind({
 	create: function(){
 		this.inherited(arguments);
 		//this.$.list.refresh();
+	
+     	setTimeout(enyo.bind(this, this.setupHeight), 1);
+	},
+	setupHeight: function(){
+		var height = this.getBounds().height; // - 100; //for chrome, use this.
+		var func = function(){
+			this.resizeHandler(height);
+		};
+     	setTimeout(enyo.bind(this, func), 1);
 	},
 	setupRow: function(inSender, inIndex) {
 		var tweet = this.tweets[inIndex];
@@ -83,7 +92,10 @@ enyo.kind({
 		this.doTweetClick(this.tweets[inRowIndex]);
 		//this.$.list.select(inRowIndex);
 	},
-	resizeHandler: function() {
-		this.$.list.resized();//todo get this to work.
+	resizeHandler: function(inHeight) {
+		var height = inHeight || this.getBounds().height;
+		console.log(height);
+		this.$.scroller.applyStyle("height", height + "px");
+		//this.$.list.resized();//todo get this to work.
 	}
 });
