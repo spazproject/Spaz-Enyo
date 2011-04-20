@@ -3,6 +3,7 @@ enyo.kind({
 	flex: 1,
 	kind: "SlidingView",
 	height: "100%",
+	peekWidth: 50,
 	events: {
 		onTweetClick: ""
 	},

@@ -2,6 +2,9 @@ enyo.kind({
 	name: "Spaz.Accounts",
 	width: "200px",
 	kind: "SlidingView",
+	events: {
+		onToggleSlider: ""
+	},
 	components: [
 		{kind: "Toolbar", content: "Spaz", style: "color: white"},
 		{kind: "Scroller", flex: 1, components: [
@@ -17,6 +20,8 @@ enyo.kind({
 		//	]},//onchange: "inputChange", onfocus: "inputFocus"},
 		//]},
 		{kind: "Toolbar", components: [
+			{name: "toggleSlider", kind: "ToolButton", icon: "source/images/icon-shrink.png", onclick: "toggleSlider"},
+			{kind: "Spacer"},
 			{kind: "ToolButton", icon: "source/images/icon-search.png"},
 			{kind: "ToolButton", icon: "source/images/icon-compose.png"}
 			//{kind: "ToolButton", content: "Compose"}
@@ -36,5 +41,13 @@ enyo.kind({
 			this.$.caption.setContent(this.accounts[inIndex].name);
 			return true;
 		}
+	},
+	"toggleSlider": function(inSender, inEvent){
+		if(_.includes(this.$.toggleSlider.icon, "expand")){
+			this.$.toggleSlider.setIcon("source/images/icon-shrink.png");
+		} else {
+			this.$.toggleSlider.setIcon("source/images/icon-expand.png");	
+		}
+		this.doToggleSlider();
 	}
 });

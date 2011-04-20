@@ -4,7 +4,7 @@ enyo.kind({
 	height: "100%",
 	components: [
 		{kind: "SlidingPane", flex: 1, components: [
-			{name: "accounts", kind: "Spaz.Accounts"},
+			{name: "accounts", kind: "Spaz.Accounts", onToggleSlider: "toggleSlider"},
 			{name: "timeline", kind: "Spaz.Timeline", onTweetClick: "tweetClick"},
 			//{name: "tweetview", kind: "Spaz.TweetView"}
 		]}
@@ -28,6 +28,10 @@ enyo.kind({
 		//this.$.timeline.render();
 		//this.$.tweetview.render();
 		//this.render();
+	},
+	"toggleSlider": function(inSender, inEvent){
+		var focus = this.$.slidingPane.getViewName() === "timeline" ? "accounts" : "timeline";
+		this.$.slidingPane.selectViewByName(focus);
 	},
 	"destroyTweetView": function(inSender, inEvent){
 		this.$.tweetview.destroy();
