@@ -1,5 +1,7 @@
 /* Copyright 2009-2011 Hewlett-Packard Development Company, L.P. All rights reserved. */
 enyo.depends(
+	"vendors/underscore-min.js",
+	"vendors/underscore.string.min.js",
 	"source/javascript/Spaz.js",
 	"source/javascript/Accounts.js",
 	"source/javascript/Timeline.js",

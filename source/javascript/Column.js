@@ -1,19 +1,26 @@
 enyo.kind({
 	name: "Spaz.Column",
 	//flex: 1,
-	kind: "VFlexBox",
-	height: "100%",
+	kind: enyo.VFlexBox,
 	width: "300px",
-	//peekWidth: "50px",
 	events: {
 		onTweetClick: ""
 	},
 	components: [
-		{height: "635px", layoutKind: "VFlexLayout", width: "300px", style: "margin: 10px 5px;", components: [
-			{kind: "Toolbar", content: "Home", style: "color: white; margin: 0px 3px"},
-			{kind: "Scroller", className: "timeline", style: "margin: 0px 5px;", height: "100%", flex: 1, components: [
-				{name: "list", kind: "VirtualList", flex: 1, style: "background-color: #D8D8D8", className: "timeline list", onSetupRow: "setupRow", components: [
-					{kind: "Item", tapHighlight: false, className: "tweet", layoutKind: "HFlexLayout", onclick: "tweetClick", components: [
+		{layoutKind: "VFlexLayout", width: "300px", style: "margin: 10px 5px;", components: [
+			{kind: "Toolbar", defaultKind: "Control", content: "Home", style: "color: white; margin: 0px 3px", components: [
+				//gotta do this crap to get the header title to center and not be a button. "defaultKind" is key.
+				{kind: "Spacer"},
+				{kind: "Spacer"},
+				{kind: "Spacer"},
+				{name: "header", content: "Home", style: "padding-left: 3px"},
+				{kind: "Spacer"},
+				{kind: "Spacer"},
+				{kind: "ToolButton", icon: "source/images/icon-close.png"},
+			]},
+			{kind: "Scroller", height: "500px", autoHorizontal: false, horizontal: false, style: "background-color: #D8D8D8; margin: 0px 5px;", className: "timeline", flex: 1, components: [
+				{name: "list", kind: "VirtualRepeater", flex: 1, style: "background-color: #D8D8D8; margin: 0px 5px; min-height: 400px;", className: "timeline list", onGetItem: "setupRow", components: [
+					{kind: "Item", tapHighlight: true, className: "tweet", layoutKind: "HFlexLayout", onclick: "tweetClick", components: [
 						{kind: "Image", width: "50px", height: "50px", className: "avatar"},
 						{kind: "VFlexBox", flex: 1, components: [
 							{name: "tweet", className: "text"},
@@ -59,20 +66,24 @@ enyo.kind({
 			this.$.timeFrom.setContent(tweet.time + " from <span class='link'>" + tweet.from + "</span>");
 			this.$.image.setSrc(tweet.avatar);
 			
-			this.$.item.applyStyle("background-color", inSender.isSelected(inIndex) ? "rgba(218,235,251,0.4)" : null);
+			//this.$.item.applyStyle("background-color", inSender.isSelected(inIndex) ? "rgba(218,235,251,0.4)" : null);
 
 			return true;
 		} 
 
 	},
 	refreshList: function(){
-		this.$.list.refresh();
+		//setTimeout (enyo.hitch (this.$.list, "refresh"), 100);
+		func = function() { this.$.list.refresh(); };
+     	 enyo.job(false, enyo.bind(this, func), 100);
+
+		//this.$.list.refresh();
 	},
 	tweetClick: function(inSender, inEvent, inRowIndex) {
 		this.doTweetClick(this.tweets[inRowIndex]);
-		this.$.list.select(inRowIndex);
+		//this.$.list.select(inRowIndex);
 	},
 	resizeHandler: function() {
-		this.$.list.refresh();//todo get this to work.
+		this.$.list.resized();//todo get this to work.
 	}
 });

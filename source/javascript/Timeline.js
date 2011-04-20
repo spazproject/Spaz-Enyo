@@ -2,17 +2,16 @@ enyo.kind({
 	name: "Spaz.Timeline",
 	flex: 1,
 	kind: "SlidingView",
-	//peekWidth: "50px",
 	events: {
 		onTweetClick: ""
 	},
 	components: [
 		{kind: "SnapScroller", flex: 1, style: "background: black", components: [
-			{kind: "Spaz.Column", onTweetClick: "tweetClick"},
-			{kind: "Spaz.Column", onTweetClick: "tweetClick"},
-			{kind: "Spaz.Column", onTweetClick: "tweetClick"},
-			{kind: "Spaz.Column", onTweetClick: "tweetClick"},
-			{kind: "Spaz.Column", onTweetClick: "tweetClick"}
+			{name: "Home", kind: "Spaz.Column", onTweetClick: "tweetClick"},
+			{name: "Replies", kind: "Spaz.Column", onTweetClick: "tweetClick"},
+			{name: "Direct Messages", kind: "Spaz.Column", onTweetClick: "tweetClick"},
+			{name: "Search", kind: "Spaz.Column", onTweetClick: "tweetClick"},
+			{name: "Search 2", kind: "Spaz.Column", onTweetClick: "tweetClick"}
 		]},		
 	],
 	tweets: [
@@ -44,13 +43,16 @@ enyo.kind({
 
 	},
 	refreshList: function(){
-		this.$.list.refresh();
+		_.each(this.$.snapScroller.components, function(kind){
+			this.$[kind.name].refreshList();
+		}, this);
+		//this.$.list.refresh();
 	},
-	tweetClick: function(inSender, inEvent, inRowIndex) {
-		this.doTweetClick(this.tweets[inRowIndex]);
-		this.$.list.select(inRowIndex);
+	tweetClick: function(inSender, inTweet) {
+		this.doTweetClick(inTweet);
+		//this.$.list.select(inRowIndex);
 	},
 	resizeHandler: function() {
-		this.$.list.refresh();//todo get this to work.
+	
 	}
 });

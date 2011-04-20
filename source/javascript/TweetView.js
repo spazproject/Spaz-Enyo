@@ -1,14 +1,17 @@
 enyo.kind({
 	name: "Spaz.TweetView",
-	//kind: "SlidingView",
-	kind: "Toaster", 
-	flyInFrom: "right",
+	kind: "VFlexBox",
+	//kind: "Toaster", 
+	//flyInFrom: "right",
 	width: "300px",
-	height: "100%",
-	style: "background-color: #D8D8D8;",
-	flex: 1,
+	//height: "100%",
+	//style: "background-color: #D8D8D8;",
+	//flex: 1,
 	published: {
 		tweet: {}
+	},
+	events: {
+		onDestroy: ""
 	},
 	components: [
 		{className: "tweet-view", height: "100%", layoutKind: "VFlexLayout", components: [
@@ -57,12 +60,13 @@ enyo.kind({
 			this.$.timeFrom.setContent(this.tweet.time + " from <span class='link'>" + this.tweet.from + "</span>");
 			this.$.tweet.setContent(this.tweet.message);
 		} else {
-			this.$.image.applyStyle("display", "none");
-			this.$.realname.setContent("");
-			this.$.username.setContent("");
-			this.$.bio.setContent("");
-			this.$.timeFrom.setContent("");
-			this.$.tweet.setContent("");
+			this.doDestroy();
+			//this.$.image.applyStyle("display", "none");
+			//this.$.realname.setContent("");
+			//this.$.username.setContent("");
+			//this.$.bio.setContent("");
+			//this.$.timeFrom.setContent("");
+			//this.$.tweet.setContent("");
 		}
 	}
 });

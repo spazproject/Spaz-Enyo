@@ -5,20 +5,21 @@ enyo.kind({
 	components: [
 		{kind: "Toolbar", content: "Spaz", style: "color: white"},
 		{kind: "Scroller", flex: 1, components: [
-		  {kind: "VirtualRepeater", onGetItem: "getItem", components: [
-		      {kind: "Item", tapHighlight: true, layoutKind: "HFlexLayout", components: [
-		          {name: "caption", flex: 1, height: "30px"},
-		      ]}
-		  ]}
+			{kind: "VirtualRepeater", onGetItem: "getItem", components: [
+				{kind: "Item", tapHighlight: true, layoutKind: "HFlexLayout", components: [
+					{name: "caption", flex: 1, height: "30px"},
+				]}
+			]}
 		]},
-		{kind: "enyo.HFlexBox", style: "padding-left: 3px", components: [
-			{kind: "BasicInput", value: "", width: "190px", hint: "Search", components: [
-				//{kind: "IconButton", label: "I am a label", icon: "images/foo.png"}
-			]},//onchange: "inputChange", onfocus: "inputFocus"},
-
-		]},
+		//{kind: "enyo.HFlexBox", style: "padding-left: 3px", components: [
+		//	{kind: "BasicInput", value: "", width: "190px", hint: "Search", components: [
+		//		//{kind: "IconButton", label: "I am a label", icon: "images/foo.png"}
+		//	]},//onchange: "inputChange", onfocus: "inputFocus"},
+		//]},
 		{kind: "Toolbar", components: [
-			{kind: "ToolButton", content: "Compose"}
+			{kind: "ToolButton", icon: "source/images/icon-search.png"},
+			{kind: "ToolButton", icon: "source/images/icon-compose.png"}
+			//{kind: "ToolButton", content: "Compose"}
 		]}
 	],
 	accounts: [
