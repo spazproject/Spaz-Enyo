@@ -3,7 +3,7 @@ enyo.depends(
 	"vendors/underscore-min.js",
 	"vendors/underscore.string.min.js",
 	"source/javascript/Spaz.js",
-	"source/javascript/Accounts.js",
+	"source/javascript/Sidebar.js",
 	"source/javascript/Timeline.js",
 	"source/javascript/Column.js",
 	"source/javascript/TweetView.js",

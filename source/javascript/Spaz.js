@@ -1,25 +1,31 @@
 enyo.kind({
 	name: "Spaz",
-	kind: enyo.VFlexBox,
+	kind: enyo.HFlexBox,
 	height: "100%",
 	components: [
-		{kind: "SlidingPane", flex: 1, components: [
-			{name: "accounts", kind: "Spaz.Accounts", onToggleSlider: "toggleSlider"},
+		//{kind: "Pane", dragAnywhere: false, flex: 1, components: [
+			{name: "sidebar", kind: "Spaz.Sidebar"},
 			{name: "timeline", kind: "Spaz.Timeline", onTweetClick: "tweetClick"},
 			//{name: "tweetview", kind: "Spaz.TweetView"}
-		]}
+		//]}
 	],
+	create: function(){
+		this.inherited(arguments);	
+		//this.$.pane.selectViewByName("timeline");
+	},
 	tweetClick: function(inSender, tweet){
 		//this.$.tweetview.create();
 		if(!this.$.tweetview){
-			this.$.slidingPane.createComponent({name: "tweetview", kind: "Spaz.TweetView", onDestroy: "destroyTweetView"}, {owner: this});
+			//this.$.pane.createComponent({name: "tweetview", kind: "Spaz.TweetView", onDestroy: "destroyTweetView"}, {owner: this});
+			this.createComponent({name: "tweetview", kind: "Spaz.TweetView", onDestroy: "destroyTweetView"}, {owner: this});
 
-			this.$.slidingPane.render();
+			this.render();
 			this.$.timeline.refreshList();
 
 		} 
 		this.$.tweetview.setTweet(tweet);
-			//this.$.tweetview.destroy();
+		
+		//this.$.tweetview.destroy();
 		
 		
 		//this.$.tweetview.open();
@@ -29,17 +35,13 @@ enyo.kind({
 		//this.$.tweetview.render();
 		//this.render();
 	},
-	"toggleSlider": function(inSender, inEvent){
-		var focus = this.$.slidingPane.getViewName() === "timeline" ? "accounts" : "timeline";
-		this.$.slidingPane.selectViewByName(focus);
-	},
 	"destroyTweetView": function(inSender, inEvent){
 		this.$.tweetview.destroy();
 
-		this.$.slidingPane.render();
+		this.$.pane.render();
 		this.$.timeline.refreshList();
 	},
 	resizeHandler: function() {
-		this.$.slidingPane.resize();
+		this.$.pane.resize();
 	}
 });

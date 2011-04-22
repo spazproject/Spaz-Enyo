@@ -1,15 +1,14 @@
 enyo.kind({
 	name: "Spaz.Column",
-	//flex: 1,
 	kind: enyo.VFlexBox,
 	width: "300px",
 	events: {
 		onTweetClick: ""
 	},
 	components: [
-		{layoutKind: "VFlexLayout", width: "300px", style: "margin: 10px 5px;", components: [
+		{layoutKind: "VFlexLayout", width: "300px", style: "margin: 5px 5px;", components: [
 			{kind: "Toolbar", defaultKind: "Control", content: "Home", style: "color: white; margin: 0px 3px", components: [
-				//gotta do this crap to get the header title to center and not be a button. "defaultKind" is key.
+				//gotta do this crap to get the header title to center and not be a button. "defaultKind" ^ is key.
 				{kind: "Spacer"},
 				{kind: "Spacer"},
 				{kind: "Spacer"},
@@ -88,7 +87,7 @@ enyo.kind({
 	resizeHandler: function(inHeight) {
 		//var height = inHeight || window.innerHeight - 125;
 		//console.log(height);
-		this.$.scroller.applyStyle("height", window.innerHeight - 125 + "px");
+		this.$.scroller.applyStyle("height", window.innerHeight - 117 + "px");
 		//this.$.list.resized();//todo get this to work.
 	}
 });

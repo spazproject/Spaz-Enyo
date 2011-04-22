@@ -52,3 +52,15 @@ a:active,
 	/*padding-top: 2px;*/
 	font-size: 11px;
 }
+
+
+/* for vertical toolbar */
+.enyo-toolbar-vertical {
+    /* needed to host a GrabButton, which is position: absolute */
+    position: relative;
+    min-height: 54px;
+    -webkit-box-sizing: border-box;
+    -webkit-border-image: url(source/images/toolbar.png) 1 1 repeat stretch;
+    border-width: 1px 1px;
+    background-color: #343434;
+}
