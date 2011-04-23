@@ -1,12 +1,12 @@
 enyo.kind({
 	name: "Spaz.Column",
 	kind: enyo.VFlexBox,
-	width: "300px",
+	width: "322px",
 	events: {
 		onTweetClick: ""
 	},
 	components: [
-		{layoutKind: "VFlexLayout", width: "300px", style: "margin: 5px 5px;", components: [
+		{layoutKind: "VFlexLayout", width: "322px", style: "margin: 5px 5px;", components: [
 			{kind: "Toolbar", defaultKind: "Control", content: "Home", style: "color: white; margin: 0px 3px", components: [
 				//gotta do this crap to get the header title to center and not be a button. "defaultKind" ^ is key.
 				{kind: "Spacer"},
@@ -19,20 +19,23 @@ enyo.kind({
 			]},
 			{kind: "Scroller", autoHorizontal: false, horizontal: false, style: "background-color: #D8D8D8; margin: 0px 5px;", className: "timeline", flex: 1, components: [
 				{name: "list", kind: "VirtualRepeater", flex: 1, style: "background-color: #D8D8D8; margin: 0px 5px; min-height: 400px;", className: "timeline list", onGetItem: "setupRow", components: [
-					{kind: "Item", tapHighlight: true, className: "tweet", layoutKind: "HFlexLayout", onclick: "tweetClick", components: [
-						{kind: "Image", width: "50px", height: "50px", className: "avatar"},
+					{kind: "Item", tapHighlight: true, className: "tweet", style: "padding-right: 0px;", layoutKind: "HFlexLayout", onclick: "tweetClick", components: [
+						{kind: "VFlexBox", components: [
+							{kind: "Image", width: "50px", height: "50px", className: "avatar"},
+							//{kind: "HFlexBox", className: "small", components: [
+							//	{className: "action-separator"},
+							//	{className: "action-separator"},
+							//]}	
+						]},
 						{kind: "VFlexBox", flex: 1, components: [
 							{name: "tweet", className: "text"},
-							{kind: "HFlexBox", className: "small", components: [
-								{name: "timeFrom"},
-								{kind: "Spacer"},
-								{content: "Reply", className: "action"},
-								{className: "action-separator"},
-								{content: "Share", className: "action"},
-								{className: "action-separator"},
-								{content: "Favorite", className: "action", style: "padding-right: 5px"},
-							]}	
-						]},					
+							{name: "timeFrom", className: "small"},
+						]},		
+						{kind: "VFlexBox", width: "24px", components: [
+							{kind: "Image", src: "source/images/action-icon-favorite.png"},
+							{kind: "Image", src: "source/images/action-icon-share.png"},
+							{kind: "Image", src: "source/images/action-icon-reply.png"},
+						]}		
 					]}
 				]},
 			]},	
