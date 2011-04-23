@@ -1,10 +1,13 @@
 {
+	"title": "Spaz",
 	"id": "com.funkatron.app.spaz",
 	"version": "3.0.0",
 	"vendor": "Funkatron Productions",
+	"vendorurl": "http://funkatron.com",
+	"copyright": "© Copyright 2009-2011 Funkatron Productions",
+	"keywords":["Spaz", "spz", "Twitter", "Tweet", "Chat", "statusnet", "identica", "identi.ca", "status"],
 	"type": "web",
 	"main": "index.html",
-	"title": "Spaz",
 	"icon": "icon.png",
 	"uiRevision":2
 }

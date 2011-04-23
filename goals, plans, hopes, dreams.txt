@@ -14,7 +14,17 @@ Goals for 3.0
 	- make long landscape panel below columns.
 	- Have a dialog in middle of screen. scrim over other elements
 	- make popout
+- Tweet Translation
+- Conversation view in tweet view (option to auto load)
+- Embedded images? (could work pretty well with Virtual List and its gradual loading of items... call function, passing callback and row index. callback refreshes row index ..
+- Advanced Gestures
+	- two finger to top/bottom
+- Filter by keyword
+- Timeline marker. 
+	- could go with gapless tweets.
+	- 2fing scroll goes to timeline marker, then top/bottom
 
+- Timed tweets (if there is another service with an api available)
 
 Later 
 - Themes
