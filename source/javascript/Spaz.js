@@ -7,7 +7,7 @@ enyo.kind({
 			{name: "sidebar", kind: "Spaz.Sidebar"},
 			{name: "timeline", kind: "Spaz.Timeline", onTweetClick: "tweetClick"},
 			//{name: "tweetview", kind: "Spaz.TweetView"}
-		//]}
+		//]}		
 	],
 	create: function(){
 		this.inherited(arguments);	
