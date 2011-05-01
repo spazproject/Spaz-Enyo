@@ -38,10 +38,10 @@ enyo.kind({
 	"destroyTweetView": function(inSender, inEvent){
 		this.$.tweetview.destroy();
 
-		this.$.pane.render();
-		this.$.timeline.refreshList();
+		//this.$.timeline.render();
+		//this.$.timeline.refreshList();
 	},
 	resizeHandler: function() {
-		this.$.pane.resize();
+		this.$.timeline.resizeHandler();
 	}
 });

@@ -55,6 +55,8 @@ enyo.kind({
 		//this.$.list.select(inRowIndex);
 	},
 	resizeHandler: function() {
-	
+		_.each(this.$.snapScroller.components, function(kind){
+			this.$[kind.name].resizeHandler();
+		}, this);
 	}
 });

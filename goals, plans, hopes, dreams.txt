@@ -12,7 +12,7 @@ Goals for 3.0
 - tapping search button brings up popout, from there people can decide if they want to save the search as a column [Tibfib]
 - Compose ... what to do, options: 
 	- make long landscape panel below columns.
-	- Have a dialog in middle of screen. scrim over other elements
+	x Have a dialog in middle of screen. scrim over other elements 
 	- make popout
 - Tweet Translation
 - Conversation view in tweet view (option to auto load)

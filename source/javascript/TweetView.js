@@ -14,8 +14,8 @@ enyo.kind({
 		onDestroy: ""
 	},
 	components: [
-		{className: "tweet-view", height: "100%", layoutKind: "VFlexLayout", components: [
-
+		
+		{className: "tweet-view", width: "300px", height: "100%", layoutKind: "VFlexLayout", components: [
 			{kind: "Header", components: [
 				{kind: "VFlexBox", className: "header", components: [
 					{kind: "HFlexBox", components: [

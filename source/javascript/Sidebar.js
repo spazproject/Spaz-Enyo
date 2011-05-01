@@ -4,10 +4,15 @@ enyo.kind({
 	kind: "VFlexBox",
 	className: "enyo-toolbar-vertical",
 	components: [
-		{kind: "ToolButton", icon: "source/images/icon-compose.png"},
+		{name: "composeButton", kind: "ToolButton", icon: "source/images/icon-compose.png", onclick: "compose"},
 		{kind: "ToolButton", icon: "source/images/icon-new-column.png"},
 		{kind: "ToolButton", icon: "source/images/icon-search.png"},
 		{kind: "Spacer"},
-		{kind: "ToolButton", icon: "source/images/icon-settings.png"}
-	]
+		{kind: "ToolButton", icon: "source/images/icon-settings.png"},
+		
+		{name: "composeDialog", kind: "Spaz.ComposeDialog"}
+	],
+	"compose": function(){
+		this.$.composeDialog.showAtCenter();
+	}
 });
