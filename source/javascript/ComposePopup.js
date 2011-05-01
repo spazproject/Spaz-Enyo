@@ -1,7 +1,7 @@
 enyo.kind({
 	name: "Spaz.ComposePopup",
 	kind: "Popup",
-	scrim: "true",
+	scrim: true,
 	modal: true, //yes/no?
 	//width: "400px",
 	events: {
