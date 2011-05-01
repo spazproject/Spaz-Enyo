@@ -9,6 +9,7 @@ enyo.kind({
 		{kind: "ToolButton", icon: "source/images/icon-search.png"},
 		{kind: "Spacer"},
 		{kind: "ToolButton", icon: "source/images/icon-settings.png", onclick: "openPopup", popup:"settingsPopup"},
+		
 		{name: "composePopup", kind: "Spaz.ComposePopup", onClose: "closePopup" },
 		{name: "settingsPopup", kind: "Spaz.SettingsPopup", onClose: "closePopup" }
 	],
@@ -16,7 +17,7 @@ enyo.kind({
 		// inSender is the component that triggers this; .popup is the property in the def above
 		var popup = this.$[inSender.popup]; // find the component with the passed name
 		if (popup) {
-			popup.openAtCenter();
+			popup.showAtCenter(); //custom function so the popup can do stuff on open
 		}	
 	},
 	closePopup: function(inSender) {

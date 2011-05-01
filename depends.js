@@ -11,7 +11,8 @@ enyo.depends(
 	//popouts
 	"source/javascript/TweetView.js",
 	//dialogs
-	"source/javascript/ComposeDialog.js",
+	"source/javascript/ComposePopup.js",
+	"source/javascript/SettingsPopup.js",
 	//custom widgets
 
 	//css
