@@ -52,13 +52,13 @@ enyo.kind({
 	],
 	entryChanged: function(){
 		if(this.$.entry.content !== this.entry.message){
-			this.$.image.setSrc(this.entry.avatar);
+			this.$.image.setSrc(this.entry.user.profile_image_url);
 			this.$.image.applyStyle("display", "");
-			this.$.realname.setContent(this.entry.realname);
-			this.$.username.setContent("@" + this.entry.username);
-			this.$.bio.setContent("Developer of Koto Player and Mojo Messenger for webOS");
-			this.$.timeFrom.setContent(this.entry.time + " from <span class='link'>" + this.entry.from + "</span>");
-			this.$.entry.setContent(this.entry.message);
+			this.$.realname.setContent(this.entry.user.name);
+			this.$.username.setContent("@" + this.entry.user.screen_name);
+			this.$.bio.setContent(this.entry.user.description);
+			this.$.timeFrom.setContent(sch.getRelativeTime(this.entry.created_at) + " from <span class='link'>" + this.entry.source + "</span>");
+			this.$.entry.setContent(this.entry.text);
 		} else {
 			this.doDestroy();
 			//this.$.image.applyStyle("display", "none");

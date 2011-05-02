@@ -52,31 +52,43 @@ enyo.kind({
 		]}
 	],
 	entries: [
-		{username: "Tibfib", realname: "Will Honey", from: "Spaz", avatar: "http://a3.twimg.com/profile_images/1281983040/simpsons_profile.png", time: "9 minutes ago", message: "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et"},
-		{username: "Tibfib", realname: "Will Honey", from: "Spaz", avatar: "http://a3.twimg.com/profile_images/1281983040/simpsons_profile.png", time: "10 minutes ago", message: "dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."},
-		{username: "Funkatron", realname: "Ed Finkler", from: "Spaz", avatar: "http://a2.twimg.com/profile_images/1132376312/TheyLiveObey.jpg", time: "11 minutes ago", message: "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur."},
-		{username: "Funkatron", realname: "Ed Finkler", from: "Spaz", avatar: "http://a2.twimg.com/profile_images/1132376312/TheyLiveObey.jpg", time: "12 minutes ago", message: "Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum"},
-		{username: "Tibfib", realname: "Will Honey", from: "Spaz", avatar: "http://a3.twimg.com/profile_images/1281983040/simpsons_profile.png", time: "15 minutes ago", message: "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et"},
-		{username: "Tibfib", realname: "Will Honey", from: "Spaz", avatar: "http://a3.twimg.com/profile_images/1281983040/simpsons_profile.png", time: "20 minutes ago", message: "dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."},
-		{username: "Funkatron", realname: "Ed Finkler", from: "Spaz",  avatar: "http://a2.twimg.com/profile_images/1132376312/TheyLiveObey.jpg", time: "30 minutes ago", message: "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur."},
-		{username: "Funkatron", realname: "Ed Finkler", from: "Spaz",  avatar: "http://a2.twimg.com/profile_images/1132376312/TheyLiveObey.jpg", time: "1 hour ago", message: "Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum"}
+		// {username: "Tibfib", realname: "Will Honey", from: "Spaz", avatar: "http://a3.twimg.com/profile_images/1281983040/simpsons_profile.png", time: "9 minutes ago", message: "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et"},
+		// {username: "Tibfib", realname: "Will Honey", from: "Spaz", avatar: "http://a3.twimg.com/profile_images/1281983040/simpsons_profile.png", time: "10 minutes ago", message: "dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."},
+		// {username: "Funkatron", realname: "Ed Finkler", from: "Spaz", avatar: "http://a2.twimg.com/profile_images/1132376312/TheyLiveObey.jpg", time: "11 minutes ago", message: "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur."},
+		// {username: "Funkatron", realname: "Ed Finkler", from: "Spaz", avatar: "http://a2.twimg.com/profile_images/1132376312/TheyLiveObey.jpg", time: "12 minutes ago", message: "Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum"},
+		// {username: "Tibfib", realname: "Will Honey", from: "Spaz", avatar: "http://a3.twimg.com/profile_images/1281983040/simpsons_profile.png", time: "15 minutes ago", message: "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et"},
+		// {username: "Tibfib", realname: "Will Honey", from: "Spaz", avatar: "http://a3.twimg.com/profile_images/1281983040/simpsons_profile.png", time: "20 minutes ago", message: "dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."},
+		// {username: "Funkatron", realname: "Ed Finkler", from: "Spaz",  avatar: "http://a2.twimg.com/profile_images/1132376312/TheyLiveObey.jpg", time: "30 minutes ago", message: "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur."},
+		// {username: "Funkatron", realname: "Ed Finkler", from: "Spaz",  avatar: "http://a2.twimg.com/profile_images/1132376312/TheyLiveObey.jpg", time: "1 hour ago", message: "Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum"}
 	],
 	create: function(){
 		this.inherited(arguments);
      	this.infoChanged();
 
      	setTimeout(enyo.bind(this, this.resizeHandler), 1);
+
+     	this.loadData();
 	},
 	infoChanged: function(){
 		this.$.header.setContent(this.info.display);
+	},
+	loadData: function() {
+		var twit = new SpazTwit();
+		var self = this;
+		twit.getPublicTimeline(
+			function(data) {
+				self.entries = data;
+				self.$.list.render();
+			}
+		);	
 	},
 	setupRow: function(inSender, inIndex) {
 		var entry = this.entries[inIndex];
 		if (entry) {
 
-			this.$.entry.setContent("<span class='username'>" + entry.username + "</span> " + entry.message);
-			this.$.timeFrom.setContent(entry.time + " from <span class='link'>" + entry.from + "</span>");
-			this.$.image.setSrc(entry.avatar);
+			this.$.entry.setContent("<span class='username'>" + entry.user.screen_name + "</span> " + entry.text);
+			this.$.timeFrom.setContent(sch.getRelativeTime(entry.created_at) + " from <span class='link'>" + entry.source + "</span>");
+			this.$.image.setSrc(entry.user.profile_image_url);
 			
 			//this.$.item.applyStyle("background-color", inSender.isSelected(inIndex) ? "rgba(218,235,251,0.4)" : null);
 
