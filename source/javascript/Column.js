@@ -28,7 +28,7 @@ enyo.kind({
 				{kind: "ToolButton", icon: "source/images/icon-close.png"},
 			]},
 			{kind: "Scroller", autoHorizontal: false, horizontal: false, style: "background-color: #D8D8D8; margin: 0px 5px;", className: "timeline", flex: 1, components: [
-				{name: "list", kind: "VirtualRepeater", flex: 1, style: "background-color: #D8D8D8; margin: 0px 5px; min-height: 400px;", className: "timeline list", onGetItem: "setupRow", components: [
+				{name: "list", kind: "VirtualRepeater", flex: 1, style: "background-color: #D8D8D8; margin: 0px 0px; min-height: 400px;", className: "timeline list", onGetItem: "setupRow", components: [
 					{kind: "Item", tapHighlight: true, className: "entry", style: "padding-right: 0px;", layoutKind: "HFlexLayout", onclick: "entryClick", components: [
 						{kind: "VFlexBox", components: [
 							{kind: "Image", width: "50px", height: "50px", className: "avatar"},
