@@ -5,29 +5,29 @@ enyo.kind({
 	components: [
 		//{kind: "Pane", dragAnywhere: false, flex: 1, components: [
 			{name: "sidebar", kind: "Spaz.Sidebar"},
-			{name: "container", kind: "Spaz.Container", onTweetClick: "tweetClick"},
-			//{name: "tweetview", kind: "Spaz.TweetView"}
+			{name: "container", kind: "Spaz.Container", onEntryClick: "entryClick"},
+			//{name: "entryview", kind: "Spaz.EntryView"}
 		//]}		
 	],
 	create: function(){
 		this.inherited(arguments);	
 		//this.$.pane.selectViewByName("timeline");
 	},
-	tweetClick: function(inSender, tweet){
-		//this.$.tweetview.create();
-		if(!this.$.tweetview){
-			//this.$.pane.createComponent({name: "tweetview", kind: "Spaz.TweetView", onDestroy: "destroyTweetView"}, {owner: this});
-			this.createComponent({name: "tweetview", kind: "Spaz.TweetView", onDestroy: "destroyTweetView"}, {owner: this});
+	entryClick: function(inSender, entry){
+		//this.$.entryview.create();
+		if(!this.$.entryview){
+			//this.$.pane.createComponent({name: "entryview", kind: "Spaz.EntryView", onDestroy: "destroyEntryView"}, {owner: this});
+			this.createComponent({name: "entryview", kind: "Spaz.EntryView", onDestroy: "destroyEntryView"}, {owner: this});
 
 			this.render();
 			//this.$.container.refreshList();
 
 		} 
-		this.$.tweetview.setTweet(tweet);
+		this.$.entryview.setEntry(entry);
 		
 	},
-	"destroyTweetView": function(inSender, inEvent){
-		this.$.tweetview.destroy();
+	"destroyEntryView": function(inSender, inEvent){
+		this.$.entryview.destroy();
 
 		//this.$.timeline.render();
 		//this.$.timeline.refreshList();

@@ -1,20 +1,20 @@
-/* Tweets */
-.timeline.list .tweet .avatar {
+/* Entries */
+.timeline.list .entry .avatar {
 	padding-right: 10px;
 	/*-webkit-border-radius: 5px;*/
 }
-.timeline.list .tweet .username {
+.timeline.list .entry .username {
 	font-weight: bold;
 }
-.timeline.list .tweet .text {
+.timeline.list .entry .text {
 	font-size: 15px;
 }
 a,
 .link,
-.timeline.list .tweet .action {
+.timeline.list .entry .action {
 	color: #2D76B9;
 }
-.timeline.list .tweet .small {
+.timeline.list .entry .small {
 	color: #969696;
 	padding-top: 2px;
 	font-size: 11px;
@@ -22,33 +22,33 @@ a,
 a:active,
 .link:active,
 .username:active,
-.timeline.list .tweet .time:active,
-.timeline.list .tweet .action:active {
+.timeline.list .entry .time:active,
+.timeline.list .entry .action:active {
 	text-decoration: underline;
 }
-.timeline.list .tweet .action-separator {
+.timeline.list .entry .action-separator {
 	width: 12px;
 }
 
 
 
-.tweet-view {
+.entry-view {
 	
 
 }
-.tweet-view .header {
+.entry-view .header {
 	padding: 10px;
 }
-.tweet-view .username,
-.tweet-view .realname {
+.entry-view .username,
+.entry-view .realname {
 	padding-left: 10px;
 }
-.tweet-view .realname {
+.entry-view .realname {
 	font-weight: bold;
 	font-size: 30px;
 }
 
-.tweet-view .small {
+.entry-view .small {
 	/*padding-top: 2px;*/
 	font-size: 11px;
 }

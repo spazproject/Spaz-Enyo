@@ -1,5 +1,5 @@
 enyo.kind({
-	name: "Spaz.TweetView",
+	name: "Spaz.EntryView",
 	kind: "VFlexBox",
 	//kind: "Toaster", 
 	//flyInFrom: "right",
@@ -8,14 +8,14 @@ enyo.kind({
 	//style: "background-color: #D8D8D8;",
 	//flex: 1,
 	published: {
-		tweet: {}
+		entry: {}
 	},
 	events: {
 		onDestroy: ""
 	},
 	components: [
 		
-		{className: "tweet-view", width: "300px", height: "100%", layoutKind: "VFlexLayout", components: [
+		{className: "entry-view", width: "300px", height: "100%", layoutKind: "VFlexLayout", components: [
 			{kind: "Header", components: [
 				{kind: "VFlexBox", className: "header", components: [
 					{kind: "HFlexBox", components: [
@@ -31,10 +31,10 @@ enyo.kind({
 				]},
 			]},
 			//{layoutKind: "HFlexLayout", pack: "center", components: [
-		    {kind: "Scroller", flex: 1, className: "tweet-view", components: [
+		    {kind: "Scroller", flex: 1, className: "entry-view", components: [
 				{kind: "VFlexBox", className: "header", style: "", components: [
 						//{kind: "Divider", className: "divider", style: "display: none", caption: ""},
-						{name: "tweet", className: "tweet"},
+						{name: "entry", className: "entry"},
 						{name: "timeFrom", className: "small", style: "padding-top: 10px"}
 				]},
 				//]},
@@ -50,15 +50,15 @@ enyo.kind({
 			]}
 		]}
 	],
-	tweetChanged: function(){
-		if(this.$.tweet.content !== this.tweet.message){
-			this.$.image.setSrc(this.tweet.avatar);
+	entryChanged: function(){
+		if(this.$.entry.content !== this.entry.message){
+			this.$.image.setSrc(this.entry.avatar);
 			this.$.image.applyStyle("display", "");
-			this.$.realname.setContent(this.tweet.realname);
-			this.$.username.setContent("@" + this.tweet.username);
+			this.$.realname.setContent(this.entry.realname);
+			this.$.username.setContent("@" + this.entry.username);
 			this.$.bio.setContent("Developer of Koto Player and Mojo Messenger for webOS");
-			this.$.timeFrom.setContent(this.tweet.time + " from <span class='link'>" + this.tweet.from + "</span>");
-			this.$.tweet.setContent(this.tweet.message);
+			this.$.timeFrom.setContent(this.entry.time + " from <span class='link'>" + this.entry.from + "</span>");
+			this.$.entry.setContent(this.entry.message);
 		} else {
 			this.doDestroy();
 			//this.$.image.applyStyle("display", "none");
@@ -66,7 +66,7 @@ enyo.kind({
 			//this.$.username.setContent("");
 			//this.$.bio.setContent("");
 			//this.$.timeFrom.setContent("");
-			//this.$.tweet.setContent("");
+			//this.$.entry.setContent("");
 		}
 	}
 });

@@ -3,7 +3,7 @@ enyo.kind({
 	kind: enyo.VFlexBox,
 	width: "322px",
 	events: {
-		onTweetClick: ""
+		onEntryClick: ""
 	},
 	published: {
 		info: {
@@ -29,12 +29,12 @@ enyo.kind({
 			]},
 			{kind: "Scroller", autoHorizontal: false, horizontal: false, style: "background-color: #D8D8D8; margin: 0px 5px;", className: "timeline", flex: 1, components: [
 				{name: "list", kind: "VirtualRepeater", flex: 1, style: "background-color: #D8D8D8; margin: 0px 5px; min-height: 400px;", className: "timeline list", onGetItem: "setupRow", components: [
-					{kind: "Item", tapHighlight: true, className: "tweet", style: "padding-right: 0px;", layoutKind: "HFlexLayout", onclick: "tweetClick", components: [
+					{kind: "Item", tapHighlight: true, className: "entry", style: "padding-right: 0px;", layoutKind: "HFlexLayout", onclick: "entryClick", components: [
 						{kind: "VFlexBox", components: [
 							{kind: "Image", width: "50px", height: "50px", className: "avatar"},
 						]},
 						{kind: "VFlexBox", flex: 1, components: [
-							{name: "tweet", className: "text"},
+							{name: "entry", className: "text"},
 							{name: "timeFrom", className: "small"},
 						]},		
 						{kind: "VFlexBox", width: "24px", components: [
@@ -51,7 +51,7 @@ enyo.kind({
 			]}
 		]}
 	],
-	tweets: [
+	entries: [
 		{username: "Tibfib", realname: "Will Honey", from: "Spaz", avatar: "http://a3.twimg.com/profile_images/1281983040/simpsons_profile.png", time: "9 minutes ago", message: "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et"},
 		{username: "Tibfib", realname: "Will Honey", from: "Spaz", avatar: "http://a3.twimg.com/profile_images/1281983040/simpsons_profile.png", time: "10 minutes ago", message: "dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."},
 		{username: "Funkatron", realname: "Ed Finkler", from: "Spaz", avatar: "http://a2.twimg.com/profile_images/1132376312/TheyLiveObey.jpg", time: "11 minutes ago", message: "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur."},
@@ -71,12 +71,12 @@ enyo.kind({
 		this.$.header.setContent(this.info.display);
 	},
 	setupRow: function(inSender, inIndex) {
-		var tweet = this.tweets[inIndex];
-		if (tweet) {
+		var entry = this.entries[inIndex];
+		if (entry) {
 
-			this.$.tweet.setContent("<span class='username'>" + tweet.username + "</span> " + tweet.message);
-			this.$.timeFrom.setContent(tweet.time + " from <span class='link'>" + tweet.from + "</span>");
-			this.$.image.setSrc(tweet.avatar);
+			this.$.entry.setContent("<span class='username'>" + entry.username + "</span> " + entry.message);
+			this.$.timeFrom.setContent(entry.time + " from <span class='link'>" + entry.from + "</span>");
+			this.$.image.setSrc(entry.avatar);
 			
 			//this.$.item.applyStyle("background-color", inSender.isSelected(inIndex) ? "rgba(218,235,251,0.4)" : null);
 
@@ -84,8 +84,8 @@ enyo.kind({
 		} 
 
 	},
-	tweetClick: function(inSender, inEvent, inRowIndex) {
-		this.doTweetClick(this.tweets[inRowIndex]);
+	entryClick: function(inSender, inEvent, inRowIndex) {
+		this.doEntryClick(this.entries[inRowIndex]);
 		//this.$.list.select(inRowIndex);
 	},
 	resizeHandler: function(inHeight) {

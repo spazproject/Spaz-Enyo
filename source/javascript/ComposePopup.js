@@ -10,12 +10,12 @@ enyo.kind({
 	style: "min-width: 400px;",
 	components: [
 		{layoutKind: "HFlexLayout", components: [
-			{content: "New Tweet", style: "padding-bottom: 0px"},
+			{content: "New Entry", style: "padding-bottom: 0px"},
 			{kind: "Spacer"},
 			{kind: "ToolButton", icon: "source/images/icon-close.png", style: "position: relative; bottom: 7px;", onclick: "doClose"},
 		]},
 		{kind: "InputBox", style: "min-height: 50px", components: [
-		    //{kind: "Input", hint: "tweet...", className: "enyo-input-inner", onchange: "inputChange", onfocus: "inputFocus"},
+		    //{kind: "Input", hint: "entry...", className: "enyo-input-inner", onchange: "inputChange", onfocus: "inputFocus"},
 		    {kind: "BasicRichText", richContent: false, multiline: true, flex: 1, className: "enyo-input-inner"},
 		    {content: "140"},
 		]},
