@@ -5,6 +5,16 @@ enyo.kind({
 	events: {
 		onTweetClick: ""
 	},
+	published: {
+		info: {
+			//type: home/direct/search/replies
+			//display: what is in the header
+			//accounts: object array of accounts 
+			//		{"type": "twitter", "username": "@Tibfib" etc
+			//
+
+		}
+	},
 	components: [
 		{layoutKind: "VFlexLayout", width: "322px", style: "margin: 5px 5px;", components: [
 			{kind: "Toolbar", defaultKind: "Control", content: "Home", style: "color: white; margin: 0px 3px", components: [
@@ -12,7 +22,7 @@ enyo.kind({
 				{kind: "Spacer"},
 				{kind: "Spacer"},
 				{kind: "Spacer"},
-				{name: "header", content: "Home", style: "padding-left: 3px"},
+				{name: "header", content: "", style: "padding-left: 3px"},
 				{kind: "Spacer"},
 				{kind: "Spacer"},
 				{kind: "ToolButton", icon: "source/images/icon-close.png"},
@@ -53,8 +63,12 @@ enyo.kind({
 	],
 	create: function(){
 		this.inherited(arguments);
-	
+     	this.infoChanged();
+
      	setTimeout(enyo.bind(this, this.resizeHandler), 1);
+	},
+	infoChanged: function(){
+		this.$.header.setContent(this.info.display);
 	},
 	setupRow: function(inSender, inIndex) {
 		var tweet = this.tweets[inIndex];
@@ -76,6 +90,5 @@ enyo.kind({
 	},
 	resizeHandler: function(inHeight) {
 		this.$.scroller.applyStyle("height", window.innerHeight - 117 + "px");
-		//this.$.list.resized();//todo get this to work.
 	}
 });
