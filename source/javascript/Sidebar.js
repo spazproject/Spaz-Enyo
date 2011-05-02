@@ -8,10 +8,12 @@ enyo.kind({
 		{kind: "ToolButton", icon: "source/images/icon-new-column.png"},
 		{kind: "ToolButton", icon: "source/images/icon-search.png"},
 		{kind: "Spacer"},
+		{kind: "ToolButton", icon: "source/images/icon-new-account.png", onclick: "openPopup", popup:"accountsPopup"},
 		{kind: "ToolButton", icon: "source/images/icon-settings.png", onclick: "openPopup", popup:"settingsPopup"},
 		
 		{name: "composePopup", kind: "Spaz.ComposePopup", onClose: "closePopup" },
-		{name: "settingsPopup", kind: "Spaz.SettingsPopup", onClose: "closePopup" }
+		{name: "settingsPopup", kind: "Spaz.SettingsPopup", onClose: "closePopup" },
+		{name: "accountsPopup", kind: "Spaz.AccountsPopup", onClose: "closePopup" }
 	],
 	openPopup: function(inSender) {
 		// inSender is the component that triggers this; .popup is the property in the def above

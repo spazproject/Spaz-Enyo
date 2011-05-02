@@ -10,9 +10,10 @@ enyo.depends(
 		"source/javascript/Column.js",
 	//popouts
 	"source/javascript/TweetView.js",
-	//dialogs
+	//popups
 	"source/javascript/ComposePopup.js",
 	"source/javascript/SettingsPopup.js",
+	"source/javascript/AccountsPopup.js",
 	//custom widgets
 
 	//css
