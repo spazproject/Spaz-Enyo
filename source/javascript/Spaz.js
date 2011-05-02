@@ -33,6 +33,6 @@ enyo.kind({
 		//this.$.timeline.refreshList();
 	},
 	resizeHandler: function() {
-		this.$.timeline.resizeHandler();
+		this.$.container.resizeHandler();
 	}
 });

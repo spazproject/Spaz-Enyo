@@ -1,7 +1,7 @@
 enyo.kind({
 	name: "Spaz.Container",
 	flex: 1,
-	kind: "SlidingView",
+	kind: "Control",
 	height: "100%",
 	peekWidth: 50,
 	events: {
