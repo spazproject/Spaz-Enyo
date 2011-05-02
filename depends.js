@@ -6,7 +6,7 @@ enyo.depends(
 	"source/javascript/Spaz.js",
 	//views
 	"source/javascript/Sidebar.js",
-	"source/javascript/Timeline.js", //container for columns
+	"source/javascript/Container.js", //container for columns
 		"source/javascript/Column.js",
 	//popouts
 	"source/javascript/TweetView.js",

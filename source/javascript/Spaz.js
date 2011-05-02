@@ -5,7 +5,7 @@ enyo.kind({
 	components: [
 		//{kind: "Pane", dragAnywhere: false, flex: 1, components: [
 			{name: "sidebar", kind: "Spaz.Sidebar"},
-			{name: "timeline", kind: "Spaz.Timeline", onTweetClick: "tweetClick"},
+			{name: "container", kind: "Spaz.Container", onTweetClick: "tweetClick"},
 			//{name: "tweetview", kind: "Spaz.TweetView"}
 		//]}		
 	],
@@ -20,20 +20,11 @@ enyo.kind({
 			this.createComponent({name: "tweetview", kind: "Spaz.TweetView", onDestroy: "destroyTweetView"}, {owner: this});
 
 			this.render();
-			this.$.timeline.refreshList();
+			//this.$.container.refreshList();
 
 		} 
 		this.$.tweetview.setTweet(tweet);
 		
-		//this.$.tweetview.destroy();
-		
-		
-		//this.$.tweetview.open();
-
-
-		//this.$.timeline.render();
-		//this.$.tweetview.render();
-		//this.render();
 	},
 	"destroyTweetView": function(inSender, inEvent){
 		this.$.tweetview.destroy();

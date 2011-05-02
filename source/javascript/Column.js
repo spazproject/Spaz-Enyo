@@ -8,7 +8,7 @@ enyo.kind({
 	components: [
 		{layoutKind: "VFlexLayout", width: "322px", style: "margin: 5px 5px;", components: [
 			{kind: "Toolbar", defaultKind: "Control", content: "Home", style: "color: white; margin: 0px 3px", components: [
-				//gotta do this crap to get the header title to center and not be a button. "defaultKind" ^ is key.
+				//gotta do this crap to get the header title to center and not be a button. "defaultKind" in Toolbar is key.
 				{kind: "Spacer"},
 				{kind: "Spacer"},
 				{kind: "Spacer"},
@@ -22,10 +22,6 @@ enyo.kind({
 					{kind: "Item", tapHighlight: true, className: "tweet", style: "padding-right: 0px;", layoutKind: "HFlexLayout", onclick: "tweetClick", components: [
 						{kind: "VFlexBox", components: [
 							{kind: "Image", width: "50px", height: "50px", className: "avatar"},
-							//{kind: "HFlexBox", className: "small", components: [
-							//	{className: "action-separator"},
-							//	{className: "action-separator"},
-							//]}	
 						]},
 						{kind: "VFlexBox", flex: 1, components: [
 							{name: "tweet", className: "text"},
@@ -40,7 +36,6 @@ enyo.kind({
 				]},
 			]},	
 			{kind: "Toolbar", style: "color: white; margin: 0px 3px", components: [
-				//{kind: "GrabButton"},
 				{kind: "ToolButton", icon: "source/images/icon-clear.png"},
 				{kind: "ToolButton", icon: "source/images/icon-refresh.png"}
 			]}
@@ -58,7 +53,6 @@ enyo.kind({
 	],
 	create: function(){
 		this.inherited(arguments);
-		//this.$.list.refresh();
 	
      	setTimeout(enyo.bind(this, this.resizeHandler), 1);
 	},
@@ -76,20 +70,11 @@ enyo.kind({
 		} 
 
 	},
-	refreshList: function(){
-		//setTimeout (enyo.hitch (this.$.list, "refresh"), 100);
-		func = function() { this.$.list.refresh(); };
-     	 enyo.job(false, enyo.bind(this, func), 100);
-
-		//this.$.list.refresh();
-	},
 	tweetClick: function(inSender, inEvent, inRowIndex) {
 		this.doTweetClick(this.tweets[inRowIndex]);
 		//this.$.list.select(inRowIndex);
 	},
 	resizeHandler: function(inHeight) {
-		//var height = inHeight || window.innerHeight - 125;
-		//console.log(height);
 		this.$.scroller.applyStyle("height", window.innerHeight - 117 + "px");
 		//this.$.list.resized();//todo get this to work.
 	}
