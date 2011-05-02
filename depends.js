@@ -1,7 +1,9 @@
 enyo.depends(
 	//vendors
+	"vendors/jquery.min.js",
 	"vendors/underscore-min.js",
 	"vendors/underscore.string.min.js",
+	"vendors/spazcore-standard.js",
 	//core
 	"source/javascript/Spaz.js",
 	//views
