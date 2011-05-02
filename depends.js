@@ -11,7 +11,7 @@ enyo.depends(
 	"source/javascript/Container.js", //container for columns
 		"source/javascript/Column.js",
 	//popouts
-	"source/javascript/TweetView.js",
+	"source/javascript/EntryView.js",
 	//popups
 	"source/javascript/ComposePopup.js",
 	"source/javascript/SettingsPopup.js",
