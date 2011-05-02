@@ -11,9 +11,7 @@ Goals for 3.0
 - Allow users to clear seen tweets
 - tapping search button brings up popout, from there people can decide if they want to save the search as a column [Tibfib]
 - Compose ... what to do, options: 
-	- make long landscape panel below columns.
-	x Have a dialog in middle of screen. scrim over other elements 
-	- make popout
+	- Have a dialog in middle of screen. scrim over other elements 
 - Tweet Translation
 - Conversation view in tweet view (option to auto load)
 - Embedded images? (could work pretty well with Virtual List and its gradual loading of items... call function, passing callback and row index. callback refreshes row index ..

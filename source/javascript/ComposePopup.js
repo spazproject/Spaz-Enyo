@@ -32,6 +32,6 @@ enyo.kind({
 	"showAtCenter": function(){
 		 this.$.basicRichText.forceFocus();
 		 this.openAtCenter();
-		 this.applyStyle("width", this.getBounds().width +"px");
+		 this.applyStyle("width", this.getBounds().width + "px");
 	}
 });
