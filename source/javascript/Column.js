@@ -73,28 +73,63 @@ enyo.kind({
 		this.$.header.setContent(this.info.display);
 	},
 	loadData: function() {
-		var twit = new SpazTwit();
+
 		var self = this;
-		twit.getPublicTimeline(
-			function(data) {
-				self.entries = data;
-				self.$.list.render();
+
+		// embedding for now for the sake of testing
+		var username = 'spaztest';
+		var password = 'poop6000';
+
+		var twit = new SpazTwit();
+		twit.setBaseURLByService(SPAZCORE_SERVICE_TWITTER);
+		twit.setSource(App.prefs.get('twitter-source'));
+		
+		
+		var auth  = new SpazAuth(SPAZCORE_SERVICE_TWITTER);
+		
+		console.log('authorizing…');
+		
+		// doing this each time is extemely inefficient. Should do this on account creation and store token
+		auth.authorize(
+			username,
+			password,
+			function(result) {
+				if (result) {
+
+					var auth_pickle = auth.save();
+
+					console.log('auth_pickle:');
+					console.log(auth_pickle);
+
+					// var newaccid = App.Users.generateID(username, SPAZCORE_SERVICE_TWITTER);
+					// console.log(newaccid);
+
+					twit.setCredentials(auth);
+
+					twit.getHomeTimeline(null, null, null, null,
+						function(data) {
+							self.entries = data;
+							self.$.list.render();
+						}
+					);	
+
+				} else {					
+					alert($L('Verification failed!'));
+				}
 			}
-		);	
+		);
 	},
 	setupRow: function(inSender, inIndex) {
-		var entry = this.entries[inIndex];
-		if (entry) {
-
+		if (this.entries[inIndex]) {
+			var entry = this.entries[inIndex];
 			this.$.entry.setContent("<span class='username'>" + entry.user.screen_name + "</span> " + entry.text);
 			this.$.timeFrom.setContent(sch.getRelativeTime(entry.created_at) + " from <span class='link'>" + entry.source + "</span>");
 			this.$.image.setSrc(entry.user.profile_image_url);
 			
 			//this.$.item.applyStyle("background-color", inSender.isSelected(inIndex) ? "rgba(218,235,251,0.4)" : null);
 
-			return true;
-		} 
-
+			return true;			
+		}
 	},
 	entryClick: function(inSender, inEvent, inRowIndex) {
 		this.doEntryClick(this.entries[inRowIndex]);
