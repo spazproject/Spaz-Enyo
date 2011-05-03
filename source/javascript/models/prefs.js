@@ -52,12 +52,12 @@ Spaz.Prefs.getAuthKey = function(acc_id) {
  */
 Spaz.Prefs.getAuthObject = function(acc_id) {
 	var authkey = Spaz.Prefs.getAuthKey(acc_id);
-	Mojo.Log.error('getAuthObject authkey: %s', authkey);
+	console.error('getAuthObject authkey: %s', authkey);
 	
 	if (authkey) {
 		var auth = new SpazAuth(Spaz.Prefs.getAccountType(acc_id));
-		Mojo.Log.error('Spaz.Prefs.getAccountType(): %s', Spaz.Prefs.getAccountType(acc_id));
-		Mojo.Log.error('auth: %j', auth);
+		console.error('Spaz.Prefs.getAccountType(): %s', Spaz.Prefs.getAccountType(acc_id));
+		console.error('auth: %j', auth);
 		auth.load(authkey);
 		return auth;
 	} else {
