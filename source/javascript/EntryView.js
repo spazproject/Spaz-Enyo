@@ -3,7 +3,7 @@ enyo.kind({
 	kind: "VFlexBox",
 	//kind: "Toaster", 
 	//flyInFrom: "right",
-	width: "300px",
+	width: "322px",
 	//height: "100%",
 	//style: "background-color: #D8D8D8;",
 	//flex: 1,
@@ -14,19 +14,21 @@ enyo.kind({
 		onDestroy: ""
 	},
 	components: [
-		
-		{className: "entry-view", width: "300px", height: "100%", layoutKind: "VFlexLayout", components: [
-			{kind: "Header", components: [
+		{className: "entry-view", width: "322px", height: "100%", layoutKind: "VFlexLayout", components: [
+			{kind: "Header", width: "322px", components: [
 				{kind: "VFlexBox", className: "header", components: [
-					{kind: "HFlexBox", components: [
+					{kind: "HFlexBox", width: "322px", components: [
 						{kind: "Image", width: "75px",  height: "75px", className: "avatar"},
-						{kind: "VFlexBox", flex: 1, components: [
-							{name: "realname", className: "realname"},
-							{name: "username", className: "link username"},
+						{kind: "VFlexBox", height: "75px", flex: 1, components: [
+							{kind: "Spacer"},
+							{name: "realname", flex: 3, className: "realname truncating-text"},
+							{name: "username", flex: 3, className: "link username"},
+							{kind: "Spacer"}
 
-						]},		
+						]},	
+						{kind: "ToolButton", icon: "source/images/icon-close.png", style: "position: relative; bottom: 10px; right: 10px; float: right;", onclick: "doDestroy"}	
 					]},
-					{name: "bio", className: "small"},
+					{name: "bio", width: "305px", style: "padding-right: 10px", className: "small"},
 
 				]},
 			]},

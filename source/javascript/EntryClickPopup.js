@@ -4,17 +4,23 @@ enyo.kind({
 	scrim: true,
 	//modal: true,
 	events: {
-		onClose: ""
+		onClose: "",
+		onShowEntryView: ""
 	},
 	components: [
+	 	{kind: "Item", content: "Details", onclick: "showEntryView"},
 	 	{kind: "Item", content: "Reply"},
-		{kind: "Item", content: "Share"},
-		{kind: "Item", content: "View"},
+		{kind: "Item", content: "Share"}
 	],
 	create: function(){
 		this.inherited(arguments);
 	},
-	"showAtCenter": function(entry){
-		 this.openAtCenter();
+	"showEntryView": function(){
+		this.doShowEntryView(this.entry);
+		this.close();
+	},
+	"showAtEvent": function(inEntry, inEvent){
+		this.entry = inEntry;
+		this.openAtEvent(inEvent);
 	}
 });

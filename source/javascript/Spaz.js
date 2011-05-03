@@ -5,7 +5,7 @@ enyo.kind({
 	components: [
 		//{kind: "Pane", dragAnywhere: false, flex: 1, components: [
 			{name: "sidebar", kind: "Spaz.Sidebar"},
-			{name: "container", kind: "Spaz.Container", onEntryClick: "entryClick"},
+			{name: "container", kind: "Spaz.Container", onShowEntryView: "showEntryView"},
 			//{name: "entryview", kind: "Spaz.EntryView"}
 		//]}		
 	],
@@ -156,14 +156,13 @@ enyo.kind({
 
 		
 	},
-
-	entryClick: function(inSender, entry){
+	showEntryView: function(inSender, inEntry){
 		//if pref
 
 
 		// else 
 		//this.$.entryview.create();
-		/*if(!this.$.entryview){
+		if(!this.$.entryview){
 			//this.$.pane.createComponent({name: "entryview", kind: "Spaz.EntryView", onDestroy: "destroyEntryView"}, {owner: this});
 			this.createComponent({name: "entryview", kind: "Spaz.EntryView", onDestroy: "destroyEntryView"}, {owner: this});
 
@@ -171,7 +170,7 @@ enyo.kind({
 			//this.$.container.refreshList();
 
 		} 
-		this.$.entryview.setEntry(entry);*/
+		this.$.entryview.setEntry(inEntry);
 		
 	},
 	"destroyEntryView": function(inSender, inEvent){

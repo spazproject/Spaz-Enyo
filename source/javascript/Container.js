@@ -5,11 +5,11 @@ enyo.kind({
 	height: "100%",
 	peekWidth: 50,
 	events: {
-		onEntryClick: ""
+		onShowEntryView: ""
 	},
 	components: [
 		{kind: "SnapScroller", flex: 1, vertical: false, autoVertical: false, style: "background: black", components: [
-			{name: "Home", info: {type: "home", display: "Home", accounts: ["@Tibfib", "@Spaz"]}, kind: "Spaz.Column", onEntryClick: "entryClick"},
+			{name: "Home", info: {type: "home", display: "Home", accounts: ["@Tibfib", "@Spaz"]}, kind: "Spaz.Column", onShowEntryView: "doShowEntryView"},
 			//{name: "Replies", info: {type: "replies", display: "Replies", accounts: ["@Tibfib", "@Spaz"]}, kind: "Spaz.Column", onEntryClick: "entryClick"},
 			//{name: "Direct Messages", info: {type: "direct", display: "Direct Messages", accounts: ["@Tibfib", "@Spaz"]}, kind: "Spaz.Column", onEntryClick: "entryClick"},
 			//{name: "Search", info: {type: "search", search: "#webOS"}, kind: "Spaz.Column", onEntryClick: "entryClick"},
@@ -20,8 +20,8 @@ enyo.kind({
 		this.inherited(arguments);
 		//this.$.list.refresh();
 	},
-	entryClick: function(inSender, inEntry) {
-		this.doEntryClick(inEntry);
+	showEntryView: function(inSender, inEntry) {
+		//this.doShowEntryView(inEntry);
 	},
 	resizeHandler: function() {
 		_.each(this.$.snapScroller.components, function(kind){
