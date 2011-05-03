@@ -10,10 +10,10 @@ enyo.kind({
 	components: [
 		{kind: "SnapScroller", flex: 1, vertical: false, autoVertical: false, style: "background: black", components: [
 			{name: "Home", info: {type: "home", display: "Home", accounts: ["@Tibfib", "@Spaz"]}, kind: "Spaz.Column", onEntryClick: "entryClick"},
-			{name: "Replies", info: {type: "replies", display: "Replies", accounts: ["@Tibfib", "@Spaz"]}, kind: "Spaz.Column", onEntryClick: "entryClick"},
-			{name: "Direct Messages", info: {type: "direct", display: "Direct Messages", accounts: ["@Tibfib", "@Spaz"]}, kind: "Spaz.Column", onEntryClick: "entryClick"},
-			{name: "Search", info: {type: "search", search: "#webOS"}, kind: "Spaz.Column", onEntryClick: "entryClick"},
-			{name: "Search 2", kind: "Spaz.Column", onEntryClick: "entryClick"}
+			//{name: "Replies", info: {type: "replies", display: "Replies", accounts: ["@Tibfib", "@Spaz"]}, kind: "Spaz.Column", onEntryClick: "entryClick"},
+			//{name: "Direct Messages", info: {type: "direct", display: "Direct Messages", accounts: ["@Tibfib", "@Spaz"]}, kind: "Spaz.Column", onEntryClick: "entryClick"},
+			//{name: "Search", info: {type: "search", search: "#webOS"}, kind: "Spaz.Column", onEntryClick: "entryClick"},
+			//{name: "Search 2", kind: "Spaz.Column", onEntryClick: "entryClick"}
 		]}
 	],
 	create: function(){
