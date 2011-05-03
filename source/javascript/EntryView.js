@@ -14,7 +14,6 @@ enyo.kind({
 		onDestroy: ""
 	},
 	components: [
-		
 		{className: "entry-view", width: "300px", height: "100%", layoutKind: "VFlexLayout", components: [
 			{kind: "Header", components: [
 				{kind: "VFlexBox", className: "header", components: [
@@ -24,7 +23,8 @@ enyo.kind({
 							{name: "realname", className: "realname"},
 							{name: "username", className: "link username"},
 
-						]},		
+						]},	
+						{kind: "ToolButton", icon: "source/images/icon-close.png", style: "position: relative; bottom: 7px;", onclick: "doDestroy"}	
 					]},
 					{name: "bio", className: "small"},
 
