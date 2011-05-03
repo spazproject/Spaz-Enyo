@@ -108,21 +108,21 @@ enyo.setCookie = function(inName, inValue, inProps) {
 
 //* @public
 enyo.dom = {
-	fetchBorderExtents: function(inNode) {
-		var s = this.getComputedStyle(inNode,null);
-		return {
-			t: parseInt(this.getComputedStyleValue(inNode, "border-top-width", s)),
-			r: parseInt(this.getComputedStyleValue(inNode, "border-right-width", s)),
-			b: parseInt(this.getComputedStyleValue(inNode, "border-bottom-width", s)),
-			l: parseInt(this.getComputedStyleValue(inNode, "border-left-width", s))
-		}
-	},
 	getComputedStyle: function(inNode) {
 		return window.getComputedStyle(inNode, null);
 	},
 	getComputedStyleValue: function(inNode, inProperty, inComputedStyle) {
 		var s = inComputedStyle || this.getComputedStyle(inNode);
 		return s.getPropertyValue(inProperty);
+	},
+	fetchBorderExtents: function(inNode) {
+		var s = this.getComputedStyle(inNode, null);
+		return s && {
+			t: parseInt(s.getPropertyValue("border-top-width")),
+			r: parseInt(s.getPropertyValue("border-right-width")),
+			b: parseInt(s.getPropertyValue("border-bottom-width")),
+			l: parseInt(s.getPropertyValue("border-left-width"))
+		};
 	},
 	/*
 	calcNodeOffset: function(inNode, inParentNode) {
@@ -145,7 +145,7 @@ enyo.dom = {
 		return o;
 	},
 	*/
-	// FIXME: experimental code need improvment
+	// FIXME: experimental code needs improvment
 	// handles inNode and inParentNode potentially sharing an offsetParent
 	calcNodeOffset: function(inNode, inParentNode) {
 		var n = inNode, op, b, pb;
@@ -159,7 +159,7 @@ enyo.dom = {
 			op = n.offsetParent;
 			// add border of offsetParent
 			if (op) {
-				var b = enyo.dom.fetchBorderExtents(op);
+				b = enyo.dom.fetchBorderExtents(op);
 				o.top += b.t;
 				o.left += b.l;
 			}
@@ -168,17 +168,17 @@ enyo.dom = {
 			// if we share an offset parent with inParentNode, subtract
 			// its position within our common offset parent
 			if (n && p && (op == pop)) {
-				pb = enyo.dom.fetchBorderExtents(p);
-				o.top -= p.offsetTop || 0;
-				o.left -= p.offsetLeft || 0;
+				pb = enyo.dom.fetchBorderExtents(pop);
+				o.top -= (p.offsetTop + pb.t) || 0;
+				o.left -= (p.offsetLeft + pb.l) || 0;
 			}
 		// stop if we are the same node as inParentNode or its offsetParent.
 		} while (n && n != pop && n != p);
 		return o;
 	},
-/**
-	Copies a string to the system clipboard
-*/
+	/**
+		Copies a string to the system clipboard
+	*/
 	setClipboard: function(inText) {
 		if (!this._clipboardTextArea) {
 			this._clipboardTextArea = document.createElement("textarea");

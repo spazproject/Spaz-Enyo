@@ -8,94 +8,94 @@ enyo.addressing.fetchLabelFromType = function(inContactType, inAddressType) {
 // Directory of address labels needed for addressing
 enyo.addressing.labels = {
 	emails: {
-		type_home: {displayValue: $L('Home')},
-		type_work: {displayValue: $L('Work')},
-		type_other: {displayValue: $L('Other')}
+		type_home: {displayValue: enyo.addressing._$L('Home')},
+		type_work: {displayValue: enyo.addressing._$L('Work')},
+		type_other: {displayValue: enyo.addressing._$L('Other')}
 	},
 	//
 	ims: {
-		type_aim: {displayValue: $L('AIM')},
-		type_yahoo: {displayValue: $L('Yahoo!')},
-		type_gtalk: {displayValue: $L('GTalk')},
-		type_msn: {displayValue: $L('Messenger')},
-		type_jabber: {displayValue: $L('Jabber')},
-		type_icq: {displayValue: $L('ICQ')},
-		type_irc: {displayValue: $L('IRC')},
-		type_qq: {displayValue: $L('QQ')},
-		type_skype: {displayValue: $L('Skype')},
-		type_yjp: {displayValue: $L('Y! Japan')},
-		type_lcs: {displayValue: $L('LCS')},
-		type_dotmac: {displayValue: $L('.Mac')},
-		type_facebook: {displayValue: $L('Facebook')},
-		type_myspace: {displayValue: $L('MySpace')},
-		type_gadugadu: {displayValue: $L('GaduGadu')},
-		type_default: {displayValue: $L('IM')}
+		type_aim: {displayValue: enyo.addressing._$L('AIM')},
+		type_yahoo: {displayValue: enyo.addressing._$L('Yahoo!')},
+		type_gtalk: {displayValue: enyo.addressing._$L('GTalk')},
+		type_msn: {displayValue: enyo.addressing._$L('Messenger')},
+		type_jabber: {displayValue: enyo.addressing._$L('Jabber')},
+		type_icq: {displayValue: enyo.addressing._$L('ICQ')},
+		type_irc: {displayValue: enyo.addressing._$L('IRC')},
+		type_qq: {displayValue: enyo.addressing._$L('QQ')},
+		type_skype: {displayValue: enyo.addressing._$L('Skype')},
+		type_yjp: {displayValue: enyo.addressing._$L('Y! Japan')},
+		type_lcs: {displayValue: enyo.addressing._$L('LCS')},
+		type_dotmac: {displayValue: enyo.addressing._$L('.Mac')},
+		type_facebook: {displayValue: enyo.addressing._$L('Facebook')},
+		type_myspace: {displayValue: enyo.addressing._$L('MySpace')},
+		type_gadugadu: {displayValue: enyo.addressing._$L('GaduGadu')},
+		type_default: {displayValue: enyo.addressing._$L('IM')}
 	},
 	//
 	phoneNumbers: {
 		type_mobile: {
-			displayValue: $L('Mobile'),
-			shortDisplayValue: $L('M')
+			displayValue: enyo.addressing._$L('Mobile'),
+			shortDisplayValue: enyo.addressing._$L('M')
 		},
 		type_home: {
-			displayValue: $L('Home'),
-			shortDisplayValue: $L('H')
+			displayValue: enyo.addressing._$L('Home'),
+			shortDisplayValue: enyo.addressing._$L('H')
 		},
 		type_home2: {
-			displayValue: $L('Home 2'),
-			shortDisplayValue: $L('H2')
+			displayValue: enyo.addressing._$L('Home 2'),
+			shortDisplayValue: enyo.addressing._$L('H2')
 		},
 		type_work: {
-			displayValue: $L('Work'),
-			shortDisplayValue: $L('W')
+			displayValue: enyo.addressing._$L('Work'),
+			shortDisplayValue: enyo.addressing._$L('W')
 		},
 		type_work2: {
-			displayValue: $L('Work 2'),
-			shortDisplayValue: $L('W2')
+			displayValue: enyo.addressing._$L('Work 2'),
+			shortDisplayValue: enyo.addressing._$L('W2')
 		},
 		type_main: {
-			displayValue: $L('Main'),
-			shortDisplayValue: $L('Ma')
+			displayValue: enyo.addressing._$L('Main'),
+			shortDisplayValue: enyo.addressing._$L('Ma')
 		},
 		type_personal_fax: {
-			displayValue: $L('Fax'),
-			shortDisplayValue: $L('P')
+			displayValue: enyo.addressing._$L('Fax'),
+			shortDisplayValue: enyo.addressing._$L('P')
 		},
 		type_work_fax: {
-			displayValue: $L('Fax'),
-			shortDisplayValue: $L('F')
+			displayValue: enyo.addressing._$L('Fax'),
+			shortDisplayValue: enyo.addressing._$L('F')
 		},
 		type_pager: {
-			displayValue: $L('Pager'),
-			shortDisplayValue: $L('P')
+			displayValue: enyo.addressing._$L('Pager'),
+			shortDisplayValue: enyo.addressing._$L('P')
 		},
 		type_personal: {
-			displayValue: $L('Personal'),
-			shortDisplayValue: $L('Pe')
+			displayValue: enyo.addressing._$L('Personal'),
+			shortDisplayValue: enyo.addressing._$L('Pe')
 		},
 		type_sim: {
-			displayValue: $L('SIM'),
-			shortDisplayValue: $L('S')
+			displayValue: enyo.addressing._$L('SIM'),
+			shortDisplayValue: enyo.addressing._$L('S')
 		},
 		type_assistant: {
-			displayValue: $L('Assistant'),
-			shortDisplayValue: $L('A')
+			displayValue: enyo.addressing._$L('Assistant'),
+			shortDisplayValue: enyo.addressing._$L('A')
 		},
 		type_car: {
-			displayValue: $L('Car'),
-			shortDisplayValue: $L('Ca')
+			displayValue: enyo.addressing._$L('Car'),
+			shortDisplayValue: enyo.addressing._$L('Ca')
 		},
 		type_radio: {
-			displayValue: $L('Radio'),
-			shortDisplayValue: $L('R')
+			displayValue: enyo.addressing._$L('Radio'),
+			shortDisplayValue: enyo.addressing._$L('R')
 		},
 		type_company: {
-			displayValue: $L('Company'),
-			shortDisplayValue: $L('C')
+			displayValue: enyo.addressing._$L('Company'),
+			shortDisplayValue: enyo.addressing._$L('C')
 		},
 		type_other: {
-			displayValue: $L('Other'),
-			shortDisplayValue: $L('O')
+			displayValue: enyo.addressing._$L('Other'),
+			shortDisplayValue: enyo.addressing._$L('O')
 		}
 	}
 }

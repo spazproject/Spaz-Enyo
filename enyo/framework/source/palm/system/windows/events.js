@@ -28,6 +28,12 @@ enyo.windows.events = {
 		enyo.appMenu.close();
 		this.dispatchEvent(window, {type: "windowDeactivated"});
 	},
+	handleWindowHidden: function() {
+		this.dispatchEvent(window, {type: "windowHidden"});
+	},
+	handleWindowShown: function() {
+		this.dispatchEvent(window, {type: "windowShown"});
+	},
 	handleRelaunch: function() {
 		var root = enyo.windows.getRootWindow();
 		var lp = PalmSystem.launchParams;
@@ -72,6 +78,16 @@ Mojo.stageActivated = function() {
 // LunaSysMgr calls this when the windows is minimized or closed.
 Mojo.stageDeactivated = function() {
 	enyo.windows.events.handleDeactivated();
+};
+
+// LunaSysMgr calls this when a KeepAlive app's window is hidden
+Mojo.hide = function() {
+	enyo.windows.events.handleWindowHidden();
+};
+
+// LunaSysMgr calls this when a KeepAlive app's window is shown
+Mojo.show = function() {
+	enyo.windows.events.handleWindowShown();
 };
 
 // LunaSysMgr calls this whenever an app is "launched;" 

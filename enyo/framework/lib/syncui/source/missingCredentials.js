@@ -9,31 +9,24 @@ enyo.kind({
 	components: [
 		{name: "accounts", kind: "Accounts.getAccounts", onGetAccounts_AccountsAvailable: "onAccountsAvailable"},
 		{name: "getCredentials", kind: "PalmService", service: enyo.palmServices.accounts, method: "hasCredentials", onResponse: "hasCredentialsResponse"},
-		{name: "openAccountsApp", kind: "PalmService", service: "palm://com.palm.applicationManager/", method: "open"}
+		{name: "openAccountsApp", kind: "PalmService", service: "palm://com.palm.applicationManager/", method: "open"},
+		{name: "addSyncStatus", kind: "TempDbService", dbKind: "com.palm.account.syncstate:1", method: "put"}
 	],
 	
 	// Generate the list of accounts
 	verifyAllAccountsHaveCredentials: function () {
-		console.log("verifyAllAccountsHaveCredentials called");
+		console.log("Missing creds: start");
 		this.$.accounts.getAccounts();
 	},
 	
 	// The list of accounts has been obtained
 	onAccountsAvailable: function(inSender, inResponse) {
-		console.log("onAccountsAvailable: Received account list. len=" + inResponse.accounts.length);
-		
 		// If there is already a list of accounts then ignore this; the credentials check has been made already
 		if (this.accounts)
 			return;
 
-		// Remove any accounts without validators
-		this.accounts = inResponse.accounts.filter(function(account) {
-			if (account.validator)
-				return true;
-			return false;
-		});
-		
-		console.log("onAccountsAvailable: Removed accounts without validators. len=" + this.accounts.length);
+		console.log("Missing creds: Received account list. len=" + inResponse.accounts.length);
+		this.accounts = inResponse.accounts;
 		
 		// See if the accounts have credentials (serially to lower CPU demands)
 		this.currentAccount = 0;
@@ -44,32 +37,46 @@ enyo.kind({
 	getAccountCredentials: function() {
 		if (this.accounts.length > this.currentAccount) {
 			// See if this account has credentials
-			console.log("getAccountCredentials: account = " + this.accounts[this.currentAccount]._id)
-			this.$.getCredentials.call({"accountId":this.accounts[this.currentAccount]._id});
+			if (this.accounts[this.currentAccount].validator)
+				this.$.getCredentials.call({"accountId":this.accounts[this.currentAccount]._id});
+			else {
+				console.log("Missing creds: Skipping account without validator: " +  this.accounts[this.currentAccount].templateId);
+				this.currentAccount++;
+				this.getAccountCredentials();
+			}
 		}
 	},
 	
 	hasCredentialsResponse: function(inSender, inResponse) {
-		console.log("hasCredentialsResponse: response = " + enyo.json.stringify(inResponse));
 		if (inResponse.returnValue && !inResponse.value) {
 			// Credentials are missing
-			console.log("hasCredentialsResponse: Account is missing credentials:" + this.accounts[this.currentAccount].templateId + " id=" + this.accounts[this.currentAccount]._id);
+			console.log("Missing creds: Account is missing credentials:" + this.accounts[this.currentAccount].templateId + this.accounts[this.currentAccount]._id);
 			// Show the dashboard
-			this.missingCredDashboard = this.createComponent({
-				kind:"Dashboard",
-				name:"missingCredentials",
-				onMessageTap: "dashboardTap",
-				onIconTap: "dashboardTap",
-				smallIcon: this.smallIcon
-			});
+			if (!this.missingCredDashboard) {
+				this.missingCredDashboard = this.createComponent({
+					kind: "Dashboard",
+					name: "missingCredentials",
+					onMessageTap: "dashboardTap",
+					onIconTap: "dashboardTap",
+					smallIcon: this.smallIcon
+				});
+				this.missingCredDashboard.push({icon:this.largeIcon, title: SyncUIUtil.NO_CREDS_TITLE, text: SyncUIUtil.NO_CREDS_TEXT});
+			}
 			
-			this.missingCredDashboard.push({icon:this.largeIcon, title: SyncUIUtil.NO_CREDS_TITLE, text: SyncUIUtil.NO_CREDS_TEXT});
+			// Add the status in tempdb too (so that the Accounts app can show the accounts with errors)
+			var params = [{
+				_kind: "com.palm.account.syncstate:1",
+				accountId: this.accounts[this.currentAccount]._id,
+				syncState:"ERROR",
+				errorCode: "CREDENTIALS_NOT_FOUND",
+				capabilityProvider: "com.palm.app.accounts"
+			}];
+			this.$.addSyncStatus.call({objects: params});
 		}
-		else {
-			// See if the next account is missing credentials
-			this.currentAccount++;
-			this.getAccountCredentials();
-		}
+		
+		// See if the next account is missing credentials
+		this.currentAccount++;
+		this.getAccountCredentials();
 	},
 	
 	dashboardTap: function() {
@@ -79,4 +86,5 @@ enyo.kind({
 		// Launch the accounts app
 		this.$.openAccountsApp.call({"id": "com.palm.app.accounts"});
 	}
+
 });

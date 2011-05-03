@@ -21,9 +21,9 @@ enyo.kind({
 	name: "enyo.BasicCarousel",
 	kind: enyo.SnapScroller,
 	published: {
-		views: []
+		views: [],
+		dragSnapThreshold: 0.01
 	},
-	dragSnapThreshold: 0.0,
 	// experimental
 	revealRatio: 0.0,
 	//
@@ -41,6 +41,7 @@ enyo.kind({
 		this.inherited(arguments);
 		this.$.scroll.kFrictionDamping = 0.75;
 		this.$.scroll.kSpringDamping = 0.8;
+		this.$.scroll.kFrictionEpsilon = 0.1;
 		this.views = this.views.length ? this.views : components;
 		this.viewsChanged();
 	},
@@ -48,7 +49,7 @@ enyo.kind({
 		this.inherited(arguments);
 		this.resize();
 		this.indexChanged();
-		this.dragSnapWidth = (this.scrollH ? this._controlSize.w : this._controlSize.h) * this.dragSnapThreshold;
+		this.dragSnapThresholdChanged();
 		this.revealAmount = (this.scrollH ? this._controlSize.w : this._controlSize.h) * this.revealRatio;
 	},
 	layoutKindChanged: function() {
@@ -56,6 +57,21 @@ enyo.kind({
 		this.setVertical(!this.scrollH);
 		this.setHorizontal(this.scrollH);
 		//this.$.client.applyStyle(this.scrollH ? "height" : "width", "100%");
+	},
+	dragSnapThresholdChanged: function() {
+		this.dragSnapWidth = (this.scrollH ? this._controlSize.w : this._controlSize.h) * this.dragSnapThreshold;
+	},
+	dragstartHandler: function() {
+		if (this.snapping || this.dragging) {
+			return this.preventDragPropagation;
+		}
+		return this.inherited(arguments);
+	},
+	flickHandler: function(inSender, e) {
+		if (this.snapping) {
+			return this.preventDragPropagation;
+		}
+		return this.inherited(arguments);
 	},
 	viewsChanged: function() {
 		this.destroyControls();
@@ -91,6 +107,7 @@ enyo.kind({
 	 */
 	resizeHandler: function() {
 		this.resize();
+		this.inherited(arguments);
 	},
 	/**
 	 Handles size changes.  This method can be hooked up to a resizeHandler.
@@ -139,11 +156,13 @@ enyo.kind({
 		return inControl;
 	},
 	applyToView: function(inControl, inMethod, inArgs) {
-		var v = inControl[inMethod] ? inControl : this.findView(inControl);;
+		var v = inControl[inMethod] ? inControl : this.findView(inControl);
 		enyo.call(v, inMethod, inArgs);
 	},
 	resetView: function(inIndex) {
 		var c = this.getControls()[inIndex];
-		this.applyToView(c, "reset", []);
+		if (c) {
+			this.applyToView(c, "reset", []);
+		}
 	}
 });

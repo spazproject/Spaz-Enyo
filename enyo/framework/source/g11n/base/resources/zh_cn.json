@@ -1,3 +1,8 @@
 {
-	"indexChars": "ABCDEFGHIJKLMNOPQRSTUVWXYZ#"
+	"hoursFormatFull": "##{num}时",
+	"hoursFormatLong": "##{num}时",
+	"weeksFormatFull": "##{num}周",
+	"weeksFormatLong": "##{num}周",
+	"weeksFormatMedium": "##{num}周",
+	"weeksFormatShort": "##{num}周"
 }

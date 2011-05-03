@@ -14,7 +14,7 @@ enyo.kind({
 	components: [
 		{kind: "Pane", flex: 1, transitionKind: "enyo.transitions.Simple", onSelectView: "viewSelected", className: "group-inner", components: [
 			{name: "searching", kind: "VFlexBox", pack: "center", align: "center", components: [
-				{name: "searchMessage", content: ""},
+				{name: "searchMessage", content: "", className: "search-message"},
 				{kind: "Control", height: "10px"},
 				{name: "searchSpinner", kind: "Spinner", showing: false },
 			]},

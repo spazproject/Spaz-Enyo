@@ -50,11 +50,8 @@ enyo.kind({
 		return this.$.list.fetchRowNode(inIndex);
 	},
 	scrollToSelected: function() {
-		var n = this.fetchRowNode(this.selected), pn = this.$.list.hasNode(), offset = 0;
-		while (n && n != pn) {
-			offset += n.offsetTop;
-			n = n.offsetParent;
-		}
-		this.scrollIntoView(offset);
+		var n = this.fetchRowNode(this.selected), pn = this.$.list.hasNode();
+		var offset = enyo.dom.calcNodeOffset(n, pn);
+		this.scrollIntoView(offset.top);
 	}
 });

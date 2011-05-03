@@ -75,7 +75,7 @@ enyo.kind({
 		console.log(this.results[inRowIndex].url)
 		this.$.openBrowser.call(
 			{
-		       id:     'com.palm.app.enyo-browser',
+		       id:     'com.palm.app.browser',
                params: {
 	                     target: this.results[inRowIndex].url
                        }           

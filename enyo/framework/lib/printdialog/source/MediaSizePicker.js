@@ -1,7 +1,7 @@
 /* Copyright 2009-2011 Hewlett-Packard Development Company, L.P. All rights reserved. */
 enyo.kind({
 	name: "MediaSizePicker",
-	kind: enyo.Picker,
+	kind: enyo.ListSelector,
 	label: "",
 	
 	itemsChanged: function() {
@@ -23,7 +23,7 @@ enyo.kind({
 	},
 	
 	setDefaultMediaSize: function() {
-		if (this.items.length > 0 && this.fetchIndexByValue(this.value) === undefined) {
+		if (this.items.length > 0) {
 			var region = enyo.g11n.formatLocale().getRegion();			
 			if (region === "jp") {
 				this.setValue("Photo_L");

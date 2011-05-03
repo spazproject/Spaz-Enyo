@@ -10,11 +10,15 @@ enyo.kind({
 	kind: enyo.CustomButton,
 	className: "enyo-button",
 	published: {
-		icon: ""
+		icon: "",
+		/**
+		If false then the icon property specifies an image file path; if true, it is a css className.
+		*/
+		iconIsClassName: false
 	},
 	components: [
 		{name: "icon", className: "enyo-button-icon", showing: false},
-		{name: "caption"}
+		{name: "caption", className: "enyo-button-icon-text"}
 	],
 	//* @protected
 	create: function() {
@@ -22,10 +26,23 @@ enyo.kind({
 		this.captionChanged();
 		this.iconChanged();
 	},
-	iconChanged: function() {
+	iconChanged: function(inOldValue) {
 		this.$.icon.setShowing(Boolean(this.icon));
+		if (this.iconIsClassName) {
+			this.applyIconClassName(inOldValue);
+		} else {
+			this.applyIconImage(inOldValue);
+		}
+	},
+	applyIconImage: function() {
 		this.$.icon.applyStyle("background-image", "url(" + enyo.path.rewrite(this.icon) + ")");
 		this.$.icon.applyStyle("background-repeat", "no-repeat");
+	},
+	applyIconClassName: function(inOldValue) {
+		if (inOldValue) {
+			this.$.icon.removeClass(inOldValue);
+		}
+		this.$.icon.addClass(this.icon);
 	},
 	captionChanged: function() {
 		this.$.caption.setContent(this.caption);

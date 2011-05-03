@@ -1,0 +1,10 @@
+{
+	"id": "com.palmdts.app.enyokeymanager",
+	"version": "1.0.0",
+	"vendor": "My Company",
+	"type": "web",
+	"main": "index.html",
+	"title": "EnyoKeyManager",
+	"icon": "icon.png",
+	"uiRevision": 2
+}

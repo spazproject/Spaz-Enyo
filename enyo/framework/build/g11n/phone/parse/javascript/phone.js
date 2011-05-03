@@ -42,18 +42,18 @@ digits, an empty object is returned.
 
 The output json has the following fields:
 
-* *vsc* - if this number starts with a VSC (Vertical Service Code, or "star code"), this field will contain the star and the code together
-* *iddPrefix* - the prefix for international direct dialing. This can either be in the form of a plus character or the IDD access code for the given locale
-* *countryCode* - if this number is an international direct dial number, this is the country code
-* *cic* - for "dial-around" services (access to other carriers), this is the prefix used as the carrier identification code
-* *emergency* - an emergency services number
-* *mobilePrefix* - prefix that introduces a mobile phone number
-* *trunkAccess* - trunk access code (long-distance access)
-* *serviceCode* - like a geographic area code, but it is a required prefix for various services
-* *areaCode* - geographic area codes
-* *subscriberNumber* - the unique number of the person or company that pays for this phone line
-* *extension* - in some countries, extensions are dialed directly without going through an operator or a voice prompt system. If the number includes an extension, it is given in this field.
-* *invalid* - this property is added and set to true if the parser found that the number is invalid in the numbering plan for the country. This method will make its best effort at parsing, but any digits after the error will go into the subscriberNumber field
+* vsc - if this number starts with a VSC (Vertical Service Code, or "star code"), this field will contain the star and the code together
+* iddPrefix - the prefix for international direct dialing. This can either be in the form of a plus character or the IDD access code for the given locale
+* countryCode - if this number is an international direct dial number, this is the country code
+* cic - for "dial-around" services (access to other carriers), this is the prefix used as the carrier identification code
+* emergency - an emergency services number
+* mobilePrefix - prefix that introduces a mobile phone number
+* trunkAccess - trunk access code (long-distance access)
+* serviceCode - like a geographic area code, but it is a required prefix for various services
+* areaCode - geographic area codes
+* subscriberNumber - the unique number of the person or company that pays for this phone line
+* extension - in some countries, extensions are dialed directly without going through an operator or a voice prompt system. If the number includes an extension, it is given in this field.
+* invalid - this property is added and set to true if the parser found that the number is invalid in the numbering plan for the country. This method will make its best effort at parsing, but any digits after the error will go into the subscriberNumber field
  
 The following rules determine how the number is parsed:
 
@@ -143,7 +143,7 @@ enyo.g11n.PhoneNumber = function(number, params) {
 	regionSettings = {
 		stateTable: stateTable,
 		plan: plan,
-		handler: (typeof(plan.contextFree) === 'boolean' && plan.contextFree === false) ? new enyo.g11n.GBStateHandler() : new enyo.g11n.StateHandler() 
+		handler: enyo.g11n._handlerFactory(this.locale, plan)
 	};
 	
 	number = this._stripFormatting(number);
@@ -204,7 +204,7 @@ enyo.g11n.PhoneNumber = function(number, params) {
 					regionSettings = {
 						stateTable: stateTable,
 						plan: plan,
-						handler: (typeof(plan.contextFree) === 'boolean' && plan.contextFree === false) ? new enyo.g11n.GBStateHandler() : new enyo.g11n.StateHandler() 
+						handler: enyo.g11n._handlerFactory(locale, plan)
 					};
 
 					//console.log("push complete, now continuing parse.");
@@ -282,6 +282,28 @@ enyo.g11n.PhoneNumber.prototype = {
 			return true;
 		}
 	},
+	
+	/* return a version of the phone number that contains only the dialable digits in the correct order */
+	_join: function () {
+		var field, fieldName, formatted = "";
+		
+		try {
+			for (field in enyo.g11n.PhoneUtils.fieldOrder) {
+				if (typeof field === 'string' && typeof enyo.g11n.PhoneUtils.fieldOrder[field] === 'string') {
+					fieldName = enyo.g11n.PhoneUtils.fieldOrder[field];
+					// console.info("normalize: formatting field " + fieldName);
+					if (this[fieldName] !== undefined) {
+						formatted += this[fieldName];
+					}
+				}
+			}
+		} catch ( e ) {
+			console.warn("caught exception in _join: " + e);
+			throw e;
+		}
+
+		return formatted;
+	},
 
 	//* @public
 	/**
@@ -328,14 +350,14 @@ enyo.g11n.PhoneNumber.prototype = {
 	 
 	 The values of the following fields matter if they do not match:
 	   
-	 * *countryCode* - A difference causes a moderately strong problem except for 
+	 * countryCode - A difference causes a moderately strong problem except for 
 	 certain countries where there is a way to access the same subscriber via IDD 
 	 and via intranetwork dialling
-	 * *mobilePrefix* - A difference causes a possible non-match
-	 * *serviceCode* - A difference causes a possible non-match
-	 * *areaCode* - A difference causes a possible non-match
-	 * *subscriberNumber* - A difference causes a very strong non-match
-	 * *extension* - A difference causes a minor non-match
+	 * mobilePrefix - A difference causes a possible non-match
+	 * serviceCode - A difference causes a possible non-match
+	 * areaCode - A difference causes a possible non-match
+	 * subscriberNumber - A difference causes a very strong non-match
+	 * extension - A difference causes a minor non-match
 	  
 	 Returns non-negative integer describing the percentage quality of the match. 100 means 
 	 a very strong match (100%), and lower numbers are less and less strong, down to 0 
@@ -519,25 +541,25 @@ enyo.g11n.PhoneNumber.prototype = {
 	The following is a list of hints that the algorithm will look for in the options
 	object:
 	
-	* *mcc*: the mobile carrier code of the current network upon which this 
+	* mcc: the mobile carrier code of the current network upon which this 
 	phone is operating. This is translated into an IDD country code. This is 
 	useful if the number being normalized comes from CNAP (callerid) and the
 	MCC is known.
-	* *defaultAreaCode*: the area code of the phone number of the current
+	* defaultAreaCode: the area code of the phone number of the current
 	device, if available. Local numbers in a person's contact list are most 
 	probably in this same area code.
-	* *country*: the name or 2 letter ISO 3166 code of the country if it is
+	* country: the name or 2 letter ISO 3166 code of the country if it is
 	known from some other means such as parsing the physical address of the
 	person associated with the phone number, or the from the domain name 
 	of the person's email address
-	* *networkType*: specifies whether the phone is currently connected to a
+	* networkType: specifies whether the phone is currently connected to a
 	CDMA network or a UMTS network. Valid values are the strings "cdma" and "umts".
 	If one of those two strings are not specified, or if this property is left off
 	completely, this method will assume UMTS.
 	
 	The following are a list of options that control the behaviour of the normalization:
 	
-	* *assistedDialing*: if this is set to true, the number will be normalized
+	* assistedDialing: if this is set to true, the number will be normalized
 	so that it can dialled directly on the type of network this phone is 
 	currently connected to. This allows customers to dial numbers or use numbers 
 	in their contact list that are specific to their "home" region when they are 
@@ -554,7 +576,7 @@ enyo.g11n.PhoneNumber.prototype = {
 	to add all the information it can to the number so that it is as fully
 	specified as possible. This allows two numbers to be compared more easily when
 	those two numbers were otherwise only partially specified.
-	* *sms*: set this option to true for the following conditions: 
+	* sms: set this option to true for the following conditions: 
 	  * assisted dialing is turned on
 	  * the phone number represents the destination of an SMS message
 	  * the phone is UMTS 
@@ -562,6 +584,12 @@ enyo.g11n.PhoneNumber.prototype = {
 	This enables special international direct dialling codes to route the SMS message to
 	the correct carrier. If assisted dialling is not turned on, this option has no
 	affect.
+	* manualDialing: set this option to true if the user is entering this number on
+	the keypad directly, and false when the number comes from a stored location like a 
+	contact entry or a call log entry. When true, this option causes the normalizer to 
+	not perform any normalization on numbers that look like local numbers in the home 
+	country. If false, all numbers go through normalization. This option only has an effect
+	when the assistedDialing option is true as well, otherwise it is ignored. 
 	
 	If both a set of options and a locale are given, and they offer conflicting
 	information, the options will take precedence. The idea is that the locale
@@ -627,6 +655,7 @@ enyo.g11n.PhoneNumber.prototype = {
 			fieldName,
 			field,
 			norm,
+			temp,
 			homeLocale,
 			currentLocale,
 			destinationLocale;
@@ -645,78 +674,107 @@ enyo.g11n.PhoneNumber.prototype = {
 		currentPlan = new enyo.g11n.NumPlan({locale: currentLocale});
 		destinationPlan = new enyo.g11n.NumPlan({locale: destinationLocale});
 		
-		if (options && options.assistedDialing) {
-			// console.log("normalize: assisted dialling normalization of " + JSON.stringify(norm));
-			if (!currentLocale.equals(destinationLocale) ) {
-				// we are currently calling internationally
-				if (!norm.areaCode && !options.defaultAreaCode) {
-					// don't have enough info to construct a full dialling string from international
-					enyo.g11n.Utils.releaseAllJsonFiles();
-					return undefined;
-				}
-				
-				// for CDMA, make sure to get the international dialling access code for the current region, not the destination region
-				if (options.networkType && options.networkType === "cdma") {
-					norm.iddPrefix = currentPlan.iddCode;
-				} else {
-					// all umts carriers support plus dialing
-					norm.iddPrefix = "+";
-				}
-				
-				// make sure to get the country code for the destination region, not the current region!
-				if (options.sms) {
-					norm.countryCode = "011";
-				} else {
-					norm.countryCode = enyo.g11n.PhoneUtils.mapRegiontoCC(destinationLocale.region);
-				}
-				
-				if (norm.trunkAccess && destinationPlan.skipTrunk) {
-					// on some phone systems, the trunk access code is dropped when dialling from international
-					delete norm.trunkAccess;
-				}
-				
-				if (!norm.areaCode && options.defaultAreaCode) {
-					// area code is required when dialling from international
-					norm.areaCode = options.defaultAreaCode;
-					if (!destinationPlan.skipTrunk) {
-						// some phone systems require the trunk access code, even when dialling from international
-						norm.trunkAccess = destinationPlan.trunkCode;
-					}
-				}
-			} else {
-				// console.log("normalize: dialing within the country");
-				// we are in our home country, so strip the international dialling prefixes
-				if (norm.iddPrefix || norm.countryCode) {
-					delete norm.iddPrefix;
-					delete norm.countryCode;
-					
-					if (destinationPlan.skipTrunk && destinationPlan.trunkCode) {
-						norm.trunkAccess = destinationPlan.trunkCode;
-					}
-				}
-				
-				if (options.defaultAreaCode) {
-					if (destinationPlan.dialingPlan === "open") {
-						if (options.defaultAreaCode === norm.areaCode) {
-							// call is local to this area code, so in open dialling plans, we don't need it. 
-							delete norm.trunkAccess;
-							delete norm.areaCode;
-						} else if (norm.areaCode && destinationPlan.trunkCode) {
-							// call is not local to this area code, so you have to dial the area code
+		if (options &&
+				options.assistedDialing &&
+				options.networkType === "cdma" && 
+				destinationPlan.fieldLengths && 
+				!norm.trunkAccess && 
+				!norm.iddPrefix &&
+				norm.subscriberNumber && 
+				norm.subscriberNumber.length > destinationPlan.fieldLengths.maxLocalLength) {
+			// not a valid number, so attempt to reparse with a + in the front to see if we get a valid international number
+			// console.log("Attempting to reparse with +" + this._join());
+			temp = new enyo.g11n.PhoneNumber("+" + this._join(), {locale: this.locale});
+			if (temp.countryCode && enyo.g11n.PhoneUtils.mapCCtoRegion(temp.countryCode) !== "unknown") {
+				// only use it if it is a recognized country code
+				norm = temp;
+				destinationLocale = (norm.countryCode && new enyo.g11n.PhoneLoc({countryCode: norm.countryCode})) || norm.locale || currentLocale;
+				destinationPlan = new enyo.g11n.NumPlan({locale: destinationLocale});
+			}
+		}
+		
+		if (!norm.invalid && options && options.assistedDialing) {
+			// don't normalize things that don't have subscriber numbers. Also, don't normalize
+			// manually dialed local numbers. Do normalize local numbers in contact entries.
+			if (norm.subscriberNumber && 
+					(!options.manualDialing ||
+					 norm.iddPrefix ||
+					 norm.countryCode ||
+					 norm.trunkAccess)) {
+				// console.log("normalize: assisted dialling normalization of " + JSON.stringify(norm));
+				if (!currentLocale.equals(destinationLocale) ) {
+					// we are currently calling internationally
+					if (!norm._hasPrefix() && options.defaultAreaCode && destinationLocale.equals(homeLocale)) {
+						// area code is required when dialling from international, but only add it if we are dialing
+						// to our home area. Otherwise, the default area code is not valid!
+						norm.areaCode = options.defaultAreaCode;
+						if (!destinationPlan.skipTrunk) {
+							// some phone systems require the trunk access code, even when dialling from international
 							norm.trunkAccess = destinationPlan.trunkCode;
 						}
+					}
+					
+					if (norm.trunkAccess && destinationPlan.skipTrunk) {
+						// on some phone systems, the trunk access code is dropped when dialling from international
+						delete norm.trunkAccess;
+					}
+					
+					// for CDMA, make sure to get the international dialling access code for the current region, not the destination region
+					if (options.networkType && options.networkType === "cdma") {
+						norm.iddPrefix = currentPlan.iddCode;
 					} else {
-						// In closed plans, you always have to dial the area code, even if the call is local.
-						norm.areaCode = norm.areaCode || options.defaultAreaCode;
-						if (destinationPlan.trunkCode) {
-							norm.trunkAccess = norm.trunkAccess || destinationPlan.trunkCode;
+						// all umts carriers support plus dialing
+						norm.iddPrefix = "+";
+					}
+	
+					// make sure to get the country code for the destination region, not the current region!
+					if (options.sms) {
+						if (homeLocale.region === "us" && 
+								currentLocale.region !== "us" &&
+								destinationLocale.region !== "us") {
+							norm.iddPrefix = "+011"; // make it go through the US first
+						}
+						norm.countryCode = norm.countryCode || enyo.g11n.PhoneUtils.mapRegiontoCC(destinationLocale.region);
+					} else if (norm._hasPrefix() && !norm.countryCode) {
+						norm.countryCode = enyo.g11n.PhoneUtils.mapRegiontoCC(destinationLocale.region);
+					}
+				} else {
+					// console.log("normalize: dialing within the country");
+					// we are in our destination country, so strip the international dialling prefixes
+					if (norm.iddPrefix || norm.countryCode) {
+						delete norm.iddPrefix;
+						delete norm.countryCode;
+						
+						if (destinationPlan.skipTrunk && destinationPlan.trunkCode) {
+							norm.trunkAccess = destinationPlan.trunkCode;
+						}
+					}
+					
+					if (options.defaultAreaCode) {
+						if (destinationPlan.dialingPlan === "open") {
+							if (!norm.trunkAccess && norm._hasPrefix() && destinationPlan.trunkCode) {
+								// call is not local to this area code, so you have to dial the trunk code and the area code
+								norm.trunkAccess = destinationPlan.trunkCode;
+							}
+						} else {
+							// In closed plans, you always have to dial the area code, even if the call is local.
+							if (!norm._hasPrefix()) {
+								if (destinationLocale.equals(homeLocale)) {
+									norm.areaCode = options.defaultAreaCode;
+									if (destinationPlan.trunkCode) {
+										norm.trunkAccess = norm.trunkAccess || destinationPlan.trunkCode;
+									}
+								}
+							} else {
+								norm.trunkAccess = norm.trunkAccess || destinationPlan.trunkCode;
+							}
 						}
 					}
 				}
 			}
-		} else {
+		} else if (!norm.invalid) {
 			// console.log("normalize: non-assisted normalization");
-			if (!norm._hasPrefix() && options && options.defaultAreaCode) {
+			if (!norm._hasPrefix() && options && options.defaultAreaCode && destinationLocale.equals(homeLocale)) {
 				norm.areaCode = options.defaultAreaCode;
 			}
 			
@@ -741,21 +799,7 @@ enyo.g11n.PhoneNumber.prototype = {
 		}
 		
 		// console.info("normalize: after normalization, the normalized phone number is: " + JSON.stringify(norm));
-		
-		try {
-			for (field in enyo.g11n.PhoneUtils.fieldOrder) {
-				if (typeof field === 'string' && typeof enyo.g11n.PhoneUtils.fieldOrder[field] === 'string') {
-					fieldName = enyo.g11n.PhoneUtils.fieldOrder[field];
-					// console.info("normalize: formatting field " + fieldName);
-					if (norm[fieldName] !== undefined) {
-						formatted += norm[fieldName];
-					}
-				}
-			}
-		} catch ( e ) {
-			console.warn("caught exception: " + e);
-			throw e;
-		}
+		formatted = norm._join();
 		
 		enyo.g11n.Utils.releaseAllJsonFiles();
 		

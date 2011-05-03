@@ -32,8 +32,8 @@ enyo.kind({
 		*/
 		service: "",
 		/**
-		The timeout after which the service should return a failure condition. If a request
-		times out, the request object will have its didTimeout property set to true.
+		The timeout, specified in milliseconds, after which the service should return a failure condition. 
+		If a request times out, the request object will have its didTimeout property set to true.
 		*/
 		timeout: 0
 	},

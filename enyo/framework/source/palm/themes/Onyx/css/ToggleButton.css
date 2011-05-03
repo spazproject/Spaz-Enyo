@@ -29,7 +29,6 @@
 }
 
 .enyo-toggle-label-off, .enyo-toggle-label-on {
-	text-transform: uppercase;
 	color: white;
 	font-size: 14px;
 	font-weight: bold;

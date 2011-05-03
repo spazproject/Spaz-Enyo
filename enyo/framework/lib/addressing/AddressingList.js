@@ -38,6 +38,7 @@ enyo.kind({
 		{kind: "GalService", onSuccess: "gotGalResults", onFailure: "gotFailure"},
 		{name: "list", flex: 1, kind: "VirtualList", className: "enyo-addressing-list", 
 			onAcquirePage: "listAcquirePage", onDiscardPage: "listDiscardPage", onSetupRow: "listSetupRow", components: [
+			{name: "client", canGenerate: false},
 			{kind: "Divider", className: "enyo-addressing-item-divider"},
 			{name: "addressList", kind: "VirtualRepeater", className: "enyo-addressing-item-addresses", onGetItem: "addressGetItem", components: [
 				{kind: "Item", tapHighlight: true, onclick: "selectItem", components: [
@@ -160,7 +161,7 @@ enyo.kind({
 	},
 	gotFailure: function(inSender, inResponse) {
 		this.$.spinner.hide();
-		console.log("Contact lookup failed: " + inResponse);
+		//console.log("Contact lookup failed: " + (inResponse && inResponse.errorText));
 	},
 	// list paging query/response
 	dbPagesQuery: function(inSender, inQuery) {
@@ -203,6 +204,9 @@ enyo.kind({
 	listSetupRow: function(inSender, inIndex) {
 		var d = this.fetchRow(inIndex);
 		if (d) {
+			// Show controls only on first row when filtering.
+			this.$.client.canGenerate = Boolean(this.isFiltering && inIndex == 0);
+			//
 			enyo.addressing.appendContactDisplayAddresses(d, this.addressTypes, this.imTypes);
 			this.repeaterPerson = d;
 			// if there's more than one address, show a divider
@@ -236,7 +240,7 @@ enyo.kind({
 		if (address) {
 			var s = inIndex == 0 ? "border-top: 0;" : ""
 			s += (inIndex == displayAddresses.length-1 ? "border-bottom: 0;" : "");
-			this.$.item.setStyle(s);
+			this.$.item.addStyles(s);
 			this.$.item.addRemoveClass("enyo-addressing-item-selected", 
 				this.selected && (this.repeaterPerson == this.selected.person) && (address == this.selected.address));
 			this.$.address.setContent(address.formattedValue);

@@ -19,6 +19,7 @@ enyo.kind({
 		onBeginAnimation: "",
 		onEndAnimation: ""
 	},
+	//* @protected
 	chrome: [
 		{name: "animator", kind: enyo.Animator, onBegin: "beginAnimation", onAnimate: "stepAnimation", onEnd: "endAnimation", onStop: "stopAnimation"},
 		{name: "bar", className: "enyo-progress-bar-inner"},
@@ -31,16 +32,27 @@ enyo.kind({
 	contentChanged: function() {
 		this.$.client.setContent(this.content);
 	},
-	//* @protected
+	//* @public
+	/**
+	Set position immediately to the given position, bypassing animation.
+	*/
 	setPositionImmediate: function(inPosition) {
 		var ap = this.animatePosition;
 		this.animatePosition = false;
 		this.setPosition(inPosition);
 		this.animatePosition = ap;
 	},
+	//* @protected
+	setPosition: function(inPosition) {
+		// complete any animation before next change.
+		this.$.animator.stop();
+		var l = this.position;
+		this.position = inPosition;
+		this.positionChanged(l);
+	},
 	applyPosition: function() {
 		var p = this.calcPercent(this.position);
-		if ((this.lastPosition >= 0) && this.animatePosition && !this.$.animator.isAnimating() && this.canAnimate()) {
+		if ((this.lastPosition >= 0) && this.animatePosition /*&& !this.$.animator.isAnimating()*/ && this.canAnimate()) {
 			this.$.animator.play(this.calcPercent(this.lastPosition), p);
 		} else {
 			this.renderPosition(p);

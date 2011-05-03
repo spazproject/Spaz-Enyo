@@ -1,6 +1,6 @@
 /* Copyright 2009-2011 Hewlett-Packard Development Company, L.P. All rights reserved. */
 .enyo-swipeableitem {
-	position: relative;
+	/*position: relative;*/
 	min-height: 44px;
 	padding: 8px 14px;
 }

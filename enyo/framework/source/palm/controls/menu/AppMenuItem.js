@@ -2,6 +2,7 @@
 enyo.kind({
 	name: "enyo.AppMenuItem",
 	kind: enyo.MenuItem,
+	defaultKind: "AppMenuItem",
 	create: function() {
 		this.inherited(arguments);
 		this.$.item.addClass("enyo-appmenu-item");

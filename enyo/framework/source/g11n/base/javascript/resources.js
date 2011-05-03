@@ -160,7 +160,10 @@ enyo.g11n.Resources.prototype.$L = function(stringToLocalize){
 		value = stringToLocalize.value;
 	}
 
-	return (this.strings && this.strings[key]) || value;
+	if (this.strings && typeof(this.strings[key]) !== 'undefined') {
+		return this.strings[key];
+	}
+	return value;
 };
 
 //* @protected

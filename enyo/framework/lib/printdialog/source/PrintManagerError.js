@@ -11,8 +11,9 @@ var PrintManagerError = (function() {
 					case -205:	// PM_ERR_PRINTER_DUPLICATE_IP
 						return PrintDialogString.load("PRINTER_ALREADY_EXISTS");
 					case -206:	// PM_ERR_PRINTER_IP_NOT_VALID
-						return PrintDialogString.load("PRINTER_NOT_FOUND");
+						return PrintDialogString.load("PRINTER_IP_NOT_VALID");
 					case -233:	// PM_ERR_JOB_TEMP_FILE_NO_ROOM
+						return PrintDialogString.load("PRINTING_ERROR_TEMP_FILE_NO_ROOM", {error: inErrorCode});
 					case -243:	// PM_ERR_JOB_NO_JOB_HANDLES
 						return PrintDialogString.load("PRINTING_ERROR_TRY_AGAIN", {error: inErrorCode});
 					case -238:	// PM_ERR_PRINTER_NOT_SUPPORTED

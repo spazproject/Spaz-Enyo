@@ -33,7 +33,7 @@ enyo.kind({
 	//
 	top: 0,
 	bottom: -1,
-	pageTop: -1,
+	pageTop: 0,
 	pageOffset: 0,
 	contentHeight: 0,
 	//* @protected

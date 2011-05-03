@@ -1,7 +1,9 @@
 {
-	"numberTripleDivider": " ",
+    "is12HourDefault": false,
+    
+	"numberDivider": " ",
 	"numberDecimal": ",",
-	"currencyPrepend": "KR",
+	"currencyPrepend": "€",
 	"currencyAppend": "",
 	"percentageSpace": false,
 	"localeName": "Estonia",
@@ -27,7 +29,6 @@
 	"shortTime12": "h:mm a",
 	"dateTimeFormat": "DATE TIME",
 
-	"is12HourDefault": true,
 	"firstDayOfWeek": 1,
 	
 	"isMetric": true,

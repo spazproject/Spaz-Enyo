@@ -89,6 +89,7 @@ enyo.kind({
 	kind: enyo.Popup,
 	scrim: true,
 	modal: true,
+	width: "351px",
 	layoutKind: "VFlexLayout",
 	published: {
 		copiesRange: {min:1, max:25},
@@ -133,8 +134,8 @@ enyo.kind({
 				onAddFailure: "addPrinterFailure"}
 		]},
 		{kind: "HFlexBox", pack: "justify", align: "center", defaultKind: "Button", components: [
-			{name: "cancelButton", onclick: "clickCancel"},
-			{name: "printButton", disabled: true, onclick: "clickPrint"}
+			{name: "cancelButton", flex: 1, onclick: "clickCancel"},
+			{name: "printButton", flex: 1, disabled: true, onclick: "clickPrint"}
 		]}
 	],
 
@@ -294,39 +295,46 @@ enyo.kind({
 		case "printerOptions":
 			var selectedPrinter = this.$.printerOptions.getPrinter();
 			if (selectedPrinter && selectedPrinter.id) {
-				var renderingFunction = this.getRenderingFunction();
-				this.close();
-				if (renderingFunction !== undefined) {
-					this.createComponent({
-						name: "printJob",
-						kind: "DocumentPrintJob",
-						printerID: selectedPrinter.id,
-						appName: this.appName,
-						description: this.description,
-						printerSettings: this.getPrinterSettings(),
-						onSuccess: "printJobSuccess",
-						onFailure: "printJobFailure",
-						onCancel: "printJobCanceled",
-						renderDocumentFunction: renderingFunction
-					});
+				try {
+					var renderingFunction = this.getRenderingFunction();
+					var printerSettings = this.getPrinterSettings();
+					this.close();
+					if (renderingFunction !== undefined) {
+						this.createComponent({
+							name: "printJob",
+							kind: "DocumentPrintJob",
+							printerID: selectedPrinter.id,
+							appName: this.appName,
+							description: this.description,
+							printerSettings: printerSettings,
+							onSuccess: "printJobSuccess",
+							onFailure: "printJobFailure",
+							onCancel: "printJobCanceled",
+							renderDocumentFunction: renderingFunction
+						});
+					}
+					else if (this.imagesToPrint.length > 0) {
+						this.createComponent({
+							name: "printJob",
+							kind: "ImagePrintJob",
+							printerID: selectedPrinter.id,
+							appName: this.appName,
+							description: this.description,
+							printerSettings: printerSettings,
+							onSuccess: "printJobSuccess",
+							onFailure: "printJobFailure",
+							onCancel: "printJobCanceled",
+							imagesToPrint: this.imagesToPrint,
+							imagePath: this.imagePath
+						});
+					}
+					else {
+						this.warn("Nothing to print. onRenderDocument is \"\", frameToPrint is not set, and imagesToPrint is empty.");
+					}
 				}
-				else if (this.imagesToPrint.length > 0) {
-					this.createComponent({
-						name: "printJob",
-						kind: "ImagePrintJob",
-						printerID: selectedPrinter.id,
-						appName: this.appName,
-						description: this.description,
-						printerSettings: this.getPrinterSettings(),
-						onSuccess: "printJobSuccess",
-						onFailure: "printJobFailure",
-						onCancel: "printJobCanceled",
-						imagesToPrint: this.imagesToPrint,
-						imagePath: this.imagePath
-					});
-				}
-				else {
-					this.log("Nothing to print. onRenderDocument is \"\", frameToPrint is not set, and imagesToPrint is empty.");
+				catch (error) {
+					this.warn(error);
+					this.showMessage(error);
 				}
 			}
 			break;

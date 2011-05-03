@@ -34,7 +34,7 @@ enyo.sizeableMixin = {
 	// note: we assume minZoom and maxZoom are defined
 	centeredZoomStart: function(e) {
 		// FIXME: this should be offset in the current scroller only.
-		var n = enyo.dom.calcNodeOffset(this.hasNode());
+		var o = this.getOffset();
 		var s = this.fetchScrollPosition();
 		this._zoomStart = {
 			scale: e.scale,
@@ -42,8 +42,6 @@ enyo.sizeableMixin = {
 			centerY: e.centerY,
 			scrollX: s.l,
 			scrollY: s.t,
-			offsetTop: n.top,
-			offsetLeft: n.left,
 			zoom: this.zoom
 		}
 	},
@@ -129,6 +127,11 @@ enyo.sizeableMixin = {
 		if (s) {
 			s.setScrollPositionDirect(inX, inY);
 		}
+	},
+	toContentOffset: function(inLeft, inTop) {
+		var o = this.getOffset();
+		var s = this.fetchScrollPosition();
+		return {left: inLeft - o.left - s.l, top: inTop - o.top - s.t};
 	}
 }
 
@@ -179,7 +182,10 @@ enyo.kind({
 		onUserPasswordDialog: "",
 		onOpenSelect: "",
 		onNewPage: "",
+		onPrint: "",
 		onEditorFocusChanged: "",
+		onConnected: "",
+		onDisconnected: "",
 		onError: ""
 	},
 	//* @protected
@@ -225,9 +231,7 @@ enyo.kind({
 			this.history = [];
 			this.lastUrl = "";
 			this._viewInited = false;
-			// NOTE: this will fail if node is hidden; in which case
-			// we rely on the adapterInitialized adapter callback
-			this.initView();
+			this.connect();
 		}
 	},
 	// FIXME: we cannot rely on adapterInitialized 
@@ -238,12 +242,35 @@ enyo.kind({
 	// (browser adapter callback) we only get this if the view is initially hidden
 	adapterInitialized: function() {
 		this.log("adapterInitialized");
+		this.connect();
+	},
+	// (browser adapter callback) called when the server is connected
+	serverConnected: function() {
+		this.log();
+		this._serverConnected = true;
 		this._viewInited = false;
 		this.initView();
 		this.flushCallQueue();
+		this.doConnected();
+	},
+	connect: function() {
+		if (this.hasView() && !this._viewInited && !this._serverConnected) {
+			this._connect();
+			this._connectJob = enyo.job("browserserver-connect", enyo.hitch(this, "connect"), 500);
+		} else {
+			this._connectJob = null;
+		}
+	},
+	_connect: function() {
+		try {
+			this.node.connectBrowserServer();
+		} catch (e) {
+			// eat the exception, this is expected while browserserver
+			// is starting up
+		}
 	},
 	initView: function() {
-		if (this.hasView() && !this._viewInited) {
+		if (this.hasView() && !this._viewInited && this._serverConnected) {
 			this.cacheBoxSize();
 			this.node.setPageIdentifier(this.identifier || this.id);
 			this.node.interrogateClicks(false);
@@ -337,10 +364,14 @@ enyo.kind({
 		return r;
 	},
 	clickHandler: function(inSender, inEvent) {
-		var o = enyo.dom.calcNodeOffset(this.hasNode());
+		enyo.job(this.id + "-webviewClick", enyo.bind(this, "_click", inEvent), 400);
+		return true;
+	},
+	_click: function(inEvent) {
 		var left = inEvent.centerX || inEvent.clientX || inEvent.pageX;
 		var top = inEvent.centerY || inEvent.clientY || inEvent.pageY;
-		this.callBrowserAdapter("clickAt", [left - o.left, top - o.top, 1]);
+		var o = this.toContentOffset(left, top);
+		this.callBrowserAdapter("clickAt", [o.left, o.top, 1]);
 	},
 	gesturestartHandler: function(inSender, inEvent) {
 		if (!this._metaViewport || this._metaViewport.userScalable) {
@@ -378,8 +409,12 @@ enyo.kind({
 		if (!(this._pageWidth && this._pageHeight)) {
 			return;
 		}
-		var max = this._metaViewport ? this._metaViewport.maximumScale : this.maxZoom;
-		var min = this._metaViewport ? this._metaViewport.minimumScale : this.minZoom;
+		var max = this.maxZoom;
+		var min = this.minZoom;
+		if (this._metaViewport) {
+			max = this.maxZoom > this._metaViewport.maximumScale ? this._metaViewport.maximumScale : this.maxZoom;
+			min = this.minZoom < this._metaViewport.minimumScale ? this._metaViewport.minimumScale : this.minZoom;
+		}
 		this.zoom = Math.max(min, Math.min(this.zoom, max));
 		var w = Math.round(this.zoom * this._pageWidth);
 		var h = Math.round(this.zoom * this._pageHeight);
@@ -402,11 +437,12 @@ enyo.kind({
 	// NOTE: double click causes browser to animate zooming in to a specific page location or 
 	// back out to default
 	// browser adapter tells us a rect into which to zoom, but the animated zooming is handled here.
-	dblclickHandler: function(inSender, e) {
-		var o = enyo.dom.calcNodeOffset(this.hasNode());
-		var x = e.clientX - o.left;
-		var y = e.clientY - o.top;
-		this.callBrowserAdapter("smartZoom", [x, y]);
+	dblclickHandler: function(inSender, inEvent) {
+		enyo.job.stop(this.id + "-webviewClick");
+		var left = inEvent.centerX || inEvent.clientX || inEvent.pageX;
+		var top = inEvent.centerY || inEvent.clientY || inEvent.pageY;
+		var o = this.toContentOffset(left, top);
+		this.callBrowserAdapter("smartZoom", [o.left, o.top]);
 	},
 	// (browser adapter callback) after smartZoom is called
 	// FIXME smart zoom doesn't look good because we're animating the scale,
@@ -446,8 +482,9 @@ enyo.kind({
 				}
 			} // else use width-based zoom
 
-			left = (inLeft - 10) * zoom;
-			top = (inTop - 10) * zoom;
+			// center
+			left = inLeft * zoom - (this._boxSize.w - zoom * targetWidth) / 2;
+			top = inTop * zoom - (this._boxSize.h - zoom * targetHeight) / 2;
 		}
 
 		if (top < 0) {
@@ -465,9 +502,9 @@ enyo.kind({
 	},
 	smartZoomAreaFoundUnaccelerated: function(inZoom, inLeft, inTop) {
 		var s = this.fetchScrollPosition();
-		this.$.animator.setDuration(200);
+		this.$.animator.setDuration(500);
 		this.$.animator.setTick(15);
-		var steps = 200 / 15;
+		var steps = 500 / 15;
 		this._f = {
 			zoom: inZoom,
 		},
@@ -562,7 +599,9 @@ enyo.kind({
 		}
 	},
 	networkInterfaceChanged: function() {
-		this.callBrowserAdapter("setNetworkInterface", [this.networkInterface]);
+		if (this.networkInterface) {
+			this.callBrowserAdapter("setNetworkInterface", [this.networkInterface]);
+		}
 	},
 	//* @public
 	clearHistory: function() {
@@ -604,17 +643,26 @@ enyo.kind({
 			this._scroller.setScrollTop(history.t);
 		}
 	},
+	getTextCaret: function() {
+		this.callBrowserAdapter("getTextCaret", [enyo.hitch(this, "getTextCaretResponse")]);
+	},
+	getTextCaretResponse: function(inLeft, inTop, inRight, inBottom) {
+		this.log(inLeft, inTop, inRight, inBottom);
+	},
 	// attempt to call a method on the browser adapter; if the adapter is not
 	// ready the call will be added to the callQueue, and start polling for
 	// adapter ready.
 	//* @public
 	callBrowserAdapter: function(inFuncName, inArgs) {
-		if (this.hasNode() && this.node[inFuncName]) {
+		if (this.hasNode() && this.node[inFuncName] && this._serverConnected) {
 			this.log(inFuncName, inArgs);
 			this.node[inFuncName].apply(this.node, inArgs);
 		} else {
 			this.log("queued!", inFuncName, inArgs);
 			this.callQueue.push({name: inFuncName, args: inArgs});
+			if (!this._connectJob) {
+				this.connect();
+			}
 		}
 	},
 	//* @protected
@@ -711,9 +759,6 @@ enyo.kind({
 	loadStopped: function() {
 		this.log();
 		var s = this.fetchScrollPosition();
-		if (s.l == 0 && s.t == 0) {
-			this.restoreFromHistory();
-		}
 		this.doLoadStopped();
 	},
 	// (browser adapter callback) generates event
@@ -833,6 +878,21 @@ enyo.kind({
 	**/
 	metaViewportSet: function(inInitialScale, inMinimumScale, inMaximumScale, inWidth, inHeight, inUserScalable) {
 		this._metaViewport = {initialScale: inInitialScale, minimumScale: inMinimumScale, maximumScale: inMaximumScale, userScalable: inUserScalable};
+	},
+	/**
+	(browser adapter callback) called when browser server disconnected
+	**/
+	browserServerDisconnected: function() {
+		this.log();
+		this._serverConnected = false;
+		this._viewInited = false;
+		this.doDisconnected();
+	},
+	/**
+	(browser adapter callback) called when web page  requests print
+	**/
+	showPrintDialog: function() {
+		this.doPrint();
 	},
 	// renamed browser adapter callbacks:
 	// (browser adapter callback) renamed to showListSelector

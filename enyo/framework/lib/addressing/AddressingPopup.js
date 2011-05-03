@@ -56,6 +56,9 @@ enyo.kind({
 		this.inputTypeChanged();
 		this.popupClassNameChanged();
 	},
+	setOrderStyle: function(inClassName) {
+		this.$.input.setOrderStyle(inClassName);
+	},
 	popupClassNameChanged: function(inOldValue) {
 		if (inOldValue) {
 			this.$.popup.removeClass(inOldValue);

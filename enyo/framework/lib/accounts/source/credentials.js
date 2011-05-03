@@ -29,20 +29,21 @@ enyo.kind({
 		onCredentials_ValidationSuccess: "",
 	},
 	components: [
-		{kind: "enyo.VFlexBox", className:"box-center", components: [
-			{name: "usernameTitle", kind: "RowGroup", components: [
-				{kind: "Input", name: "username", spellcheck: false, autocorrect:false, autoCapitalize: "lowercase", inputType:"email", changeOnInput: true, onchange: "keyTapped"}
-			]},
-			{name: "passwordTitle", kind: "RowGroup", components: [
-				{kind: "PasswordInput", name: "password", changeOnInput: true, onchange: "keyTapped"}
-			]},
-			{name: "errorBox", kind: "enyo.HFlexBox", className:"error-box", showing:false, components: [
-				{name: "errorImage", kind: "Image", src: AccountsUtil.libPath + "images/warning-icon.png"},
-				{name: "errorMessage", className: "error-text"}
-			]},
-			{name:"signInButton", kind: "ActivityButton", className:"enyo-button-light accounts-btn", onclick: "signInTapped"}
+		{name: "usernameTitle", kind: "RowGroup", components: [
+			{kind: "Input", name: "username", spellcheck: false, autocorrect:false, autoCapitalize: "lowercase", inputType:"email", changeOnInput: true, onchange: "keyTapped"}
 		]},
-		{name: "callValidators", kind: "PalmService", onResponse: "validationResponse"}
+		{name: "passwordTitle", kind: "RowGroup", components: [
+			{kind: "PasswordInput", name: "password", changeOnInput: true, onchange: "keyTapped"}
+		]},
+		{name: "errorBox", kind: "enyo.HFlexBox", className:"error-box", showing:false, components: [
+			{name: "errorImage", kind: "Image", src: AccountsUtil.libPath + "images/warning-icon.png"},
+			{name: "errorMessage", className: "error-text"}
+		]},
+		{name:"signInButton", kind: "ActivityButton", className:"enyo-button-affirmative accounts-btn", onclick: "signInTapped"},
+		{name: "callValidators", kind: "PalmService", onResponse: "validationResponse"},
+		
+		{name: "accounts", kind: "Accounts.getAccounts", onGetAccounts_AccountsAvailable: "onAccountsAvailable"},
+		{name: "modifyAccount", kind: "PalmService", service: enyo.palmServices.accounts, method: "modifyAccount", onResponse: "doModifyView_Success"},
 	],
 	
 	// Show the credentials
@@ -68,20 +69,9 @@ enyo.kind({
 		this.$.password.valueChanged();
 		this.$.username.value = this.account.username || "";
 		this.$.username.valueChanged();
-
-		// Disable the username field if one was provided
-		if (this.account.username)
-			AccountsUtil.disableControl(this.$.username, true);
-		else
-			enyo.asyncMethod(this.$.username, "forceFocus");
-
-		// Stop the spinner on the button and disable it
-		this.$.signInButton.active = false;
-		this.$.signInButton.activeChanged();
-		AccountsUtil.disableControl(this.$.signInButton, true);
-
-		// Hide the error message box
-		this.$.errorBox.hide();
+		
+		// Reset the form fields
+		this.resetForm();
 	},
 	
 	// If both the username and password fields have data in them then enable the "Sign In" button
@@ -198,44 +188,123 @@ enyo.kind({
 		// All of the validation requests have returned
 		console.log("validationResponse: All requests are in!! Error=" + this.validationError);
 
-		// Enable the Sign In button
-		AccountsUtil.disableControl(this.$.signInButton, false);
-		// Change the text to Sign In
-		AccountsUtil.changeCaption(this.$.signInButton, AccountsUtil.BUTTON_SIGN_IN);
-		// Stop the spinner on the button
-		this.$.signInButton.active = false;
-		this.$.signInButton.activeChanged();
-		// Enable the username and password fields
-		AccountsUtil.disableControl(this.$.password, false);
-		if (!this.account.username)
-			AccountsUtil.disableControl(this.$.username, false);
-
 		// If there is an error then display it and re-enable the Sign In button
 		if (this.validationError) {
-			this.$.errorMessage.content = AccountError.getErrorText(this.validationError);
-			this.$.errorMessage.contentChanged();
-			this.$.errorBox.show();
-
-			if (this.account.username) {
-				this.$.password.setSelection({start: 0, end: this.password.length});
-				enyo.asyncMethod(this.$.password, "forceFocus");
-			}
-			else {
-				AccountsUtil.disableControl(this.$.username, false);
-				enyo.asyncMethod(this.$.username, "forceFocus");
-			}
+			this.resetForm(this.validationError);
 			return;
 		}
 		
-		// The validators returned success, so the account can be created now
-		this.doCredentials_ValidationSuccess(this.results);
+		// If modifying an existing account then return the successful result now
+		if (this.account.username)
+			this.doCredentials_ValidationSuccess(this.results);
+		else {
+			// Make sure this account isn't a duplicate before it can be saved
+			this.$.accounts.getAccounts({templateId: this.account.templateId});
+		}
 	},
 
+	// The account list has been returned.  See if the account being added currently exists
+	onAccountsAvailable: function(inSender, inResponse) {
+		var account = inResponse.accounts;
+		if (!this.results)
+			return;
+		if (account && account.length) {
+			for (i in account) {
+				if (account[i].username !== this.results.username)
+					continue;
+
+				// If there are no capabilities then the account was created from the Accounts app
+				// In this case display a "duplicate account" error message
+				if (!this.capability) {
+					this.resetForm("DUPLICATE_ACCOUNT");	// Do not localize!  It will be localized by getErrorText
+					return;
+				}
+				
+				// The account is being created from a PIM app.  If the capability is enabled already
+				// then this is an attempt to create a duplicate account
+				for (cp in account[i].capabilityProviders) {
+					var c = account[i].capabilityProviders[cp];
+					// Find the capability
+					if (c.capability !== this.capability)
+						continue;
+					// Now see if the capability is already enabled
+					if (c._id) {
+						// The capability is already enabled. User is trying to create a duplicate account
+						this.resetForm("DUPLICATE_ACCOUNT");	// Do not localize!  It will be localized by getErrorText
+						return;
+					}
+					
+					// The capability is currently disabled, but the user would like it enabled - so enable it!
+					// Create an array of currently enabled capabilities, starting with this capability
+					var enabledCapabilities = [{"id":c.id}];
+					console.log("Enabling capability " + c.id + " for account " +  account[i]._id);
+					for (cap in account[i].capabilityProviders) {
+						var c = account[i].capabilityProviders[cap];
+						if (c._id)
+							enabledCapabilities.push({"id":c.id});
+					}
+
+					// Modify the account
+					var params = {
+						"accountId":account[i]._id,
+						"object": {
+							config: this.results.config,
+							credentials: this.results.credentials,
+							capabilityProviders: enabledCapabilities
+						}
+					};
+					this.$.modifyAccount.call(params);
+					
+					// Modify the result to let the caller know the capability was enabled
+					this.results.capabilityWasEnabled = true;
+					break;
+				}
+			}
+		}
+		this.doCredentials_ValidationSuccess(this.results);
+		
+		// Shouldn't need to delete the results, but the getAccounts is a subscription
+		delete this.results;
+	},
+	
+	// Reset all the fields on the form
+	resetForm: function(error) {
+		// Show an error if one was provided
+		if (error) {
+			this.$.errorMessage.content = AccountError.getErrorText(error);
+			this.$.errorMessage.contentChanged();
+			this.$.errorBox.show();
+		}
+		else {
+			this.$.errorBox.hide();
+		}
+		
+		// Enable the username and password fields
+		if (this.account.username) {
+			AccountsUtil.disableControl(this.$.username, true);
+			if (error)
+				this.$.password.setSelection({start: 0, end: this.password.length});
+			if (this.account.allowPasswordFocus)
+				enyo.asyncMethod(this.$.password, "forceFocus");
+		}
+		else {
+			AccountsUtil.disableControl(this.$.username, false);
+			enyo.asyncMethod(this.$.username, "forceFocus");
+		}
+		AccountsUtil.disableControl(this.$.password, false);
+		
+		// Reset the "Sign In" button
+		AccountsUtil.disableControl(this.$.signInButton, false);
+		AccountsUtil.changeCaption(this.$.signInButton, AccountsUtil.BUTTON_SIGN_IN);
+		this.$.signInButton.active = false;
+		this.$.signInButton.activeChanged();
+	}
 });
 
 enyo.kind({
 	name: "Accounts.credentialView",
 	kind: "enyo.VFlexBox",
+	className:"enyo-bg",
 	events: {
 		onCredentials_Cancel: "",
 		onCredentials_ValidationSuccess: ""
@@ -245,9 +314,13 @@ enyo.kind({
 			{kind: "Image", name:"titleIcon"},
 	        {content: AccountsUtil.PAGE_TITLE_SIGN_IN}
 		]},
-		{className:"box-center accounts-body", components: [
-			{kind: "Accounts.credentials", name: "credentials", onCredentials_ValidationSuccess: "doCredentials_ValidationSuccess"},
-			{kind: "Button", label: AccountsUtil.BUTTON_CANCEL, onclick: "doCredentials_Cancel", className:"accounts-btn-bottom"}
+		{kind: "Scroller", flex: 1, components: [
+			{kind: "VFlexBox", className:"box-center accounts-body", components: [
+				{kind: "Accounts.credentials", name: "credentials", onCredentials_ValidationSuccess: "doCredentials_ValidationSuccess"},
+			]}
+		]},
+		{kind:"Toolbar", components:[
+			{kind: "Button", label: AccountsUtil.BUTTON_CANCEL, className:"enyo-button-dark accounts-toolbar-btn", onclick: "doCredentials_Cancel"}
 		]},
 	],
 	
@@ -259,6 +332,7 @@ enyo.kind({
 			this.$.titleIcon.src = AccountsUtil.libPath + "images/acounts-48x48.png"
 		this.$.titleIcon.srcChanged();
 
+		account.allowPasswordFocus = true;
 		this.$.credentials.displayCredentialsView(account, capability);
 	}
 })

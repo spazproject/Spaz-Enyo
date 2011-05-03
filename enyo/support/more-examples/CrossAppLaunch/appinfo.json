@@ -1,0 +1,9 @@
+{
+    "id": "com.palmdts.crossapplaunch",
+    "version": "1.0.0",
+    "vendor": "HP",
+    "type": "web",
+    "main": "index.html",
+    "title": "Enyo Cross App Launch",
+    "uiRevision": 2
+}

@@ -11,6 +11,11 @@
 	-webkit-border-image: url(../images/input-tool-focus.png) 6 6 7 6;
 }
 
+.enyo-tool-input-input {
+	font-size: 16px;
+	padding: 2px 0 1px 0;
+}
+
 .enyo-tool-input-input::-webkit-input-placeholder {
 	color: #ddd;
 }

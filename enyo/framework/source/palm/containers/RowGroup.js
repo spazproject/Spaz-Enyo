@@ -59,7 +59,11 @@ enyo.kind({
 		this.addRemoveClass(inClass, !this.hasClass(inClass));
 		var c = this.children[0];
 		if (c) {
-			c.addRemoveClass(inClass, !c.hasClass(inClass));
+			if (c.setOrderStyle) {
+				c.setOrderStyle(inClass);
+			} else {
+				c.addRemoveClass(inClass, !c.hasClass(inClass));
+			}
 		}
 	}
 });

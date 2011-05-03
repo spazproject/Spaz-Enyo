@@ -1,7 +1,7 @@
 {
-	"numberTripleDivider": "'",
+	"numberDivider": "'",
 	"numberDecimal": ".",
-	"currencyPrepend": "Fr ",
+	"currencyPrepend": "CHF ",
 	"currencyAppend": "",
 	"percentageSpace": true,
 	"localeName": "Switzerland",

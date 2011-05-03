@@ -3,8 +3,7 @@
 enyo.kind({
 	name: "enyo.AtomizingInput",
 	kind: enyo.Control,
-	className: "atomizing-input-container",
-	focusedClassName: "enyo-flat-shadow",
+	className: "enyo-atomizing-input-container",
 	events: {
 		onFilterStringChanged: "",
 		onAtomize: "",
@@ -15,31 +14,30 @@ enyo.kind({
 	},
 	published: {
 		contacts: null,
-		expandButtonCaption: $L("TO"),
-		hint: $L("Name or email address"),
+		expandButtonCaption: enyo.addressing._$L("TO"),
+		hint: enyo.addressing._$L("Name or email address"),
 		inputType: "",
 		filterDelay: 200,
-		inputValue: ""
+		inputValue: "",
+		inputClassName: "enyo-middle"
 	},
 	//* @protected
 	components: [
-		{kind: "InputBox", className: "enyo-middle", layoutKind: null, components: [
+		{kind: "InputBox", className: "enyo-atomizing-input-box", layoutKind: null, components: [
 			{name: "client", className: "enyo-atomizing-input-wrapper", components: [
-				{name: "expandButton", kind: "CustomButton", className: "enyo-contact-atom enyo-addressing-expand-button enyo-contact-atom-flat", onclick: "doExpandButtonClick"},
-				{name: "showallButton", showing: false, kind: "CustomButton", className: "enyo-addressing-showall-button", onclick: "doShowAllButtonClick"},
+				{name: "expandButton", kind: "Button", className: "enyo-contact-atom enyo-addressing-expand-button", onclick: "doExpandButtonClick"},
+				{name: "showallButton", showing: false, kind: "IconButton", className: "enyo-addressing-showall-button",  icon: "enyo-addressing-showall-icon", iconIsClassName: true, onclick: "doShowAllButtonClick"},
 				// FIXME: RichText is a BasicInput, so it does not have changeOnKeypress
 				{
 					name: "input",
 					kind: "RichText",
 					className: "enyo-atomizing-input",
-					//spellcheck: false,
-					//autoCapitalize: false,
+					autocorrect: false,
+					autoWordComplete: false,
+					spellcheck: false,
+					autoCapitalize: "lowercase",
 					styled: false,
 					richContent: false,
-					domAttributes: {
-						"x-palm-disable-auto-cap": "true",
-						"spellcheck": "false"
-					}, 
 					onkeydown: "inputKeydown",
 					onkeypress: "inputKeypress",
 					oninput: "inputInputEvent"
@@ -64,8 +62,18 @@ enyo.kind({
 		this.contactsChanged();
 		this.expandButtonCaptionChanged();
 		this.inputTypeChanged();
+		this.inputClassNameChanged();
 		this.inputValueChanged();
 		this.hintChanged();
+	},
+	inputClassNameChanged: function(inOldValue) {
+		if (inOldValue) {
+			this.$.inputBox.removeClass(inOldValue);
+		}
+		this.$.inputBox.addClass(this.inputClassName);
+	},
+	setOrderStyle: function(inClass) {
+		this.setInputClassName(inClass);
 	},
 	expandButtonCaptionChanged: function() {
 		this.$.expandButton.setContent(this.expandButtonCaption);
@@ -189,16 +197,16 @@ enyo.kind({
 		for (var i = 0, a; a=this.atoms[i]; i++) {
 			a.setIsButtony(true);
 		}
-		this.$.showallButton.addClass("enyo-addressing-buttony");
-		this.$.expandButton.addClass("enyo-contact-atom-buttony");
+		this.$.showallButton.addClass("enyo-button");
+		this.$.expandButton.addClass("enyo-button");
 	},
 	unbuttonize: function(inSender, inEvent) {
 		for (var i = 0, a; a=this.atoms[i]; i++) {
 			a.setIsButtony(false);
 			a.setSeparator(i < this.atoms.length-1 ? ", " : "");
 		}
-		this.$.showallButton.removeClass("enyo-addressing-buttony");
-		this.$.expandButton.removeClass("enyo-contact-atom-buttony");
+		this.$.showallButton.removeClass("enyo-button");
+		this.$.expandButton.removeClass("enyo-button");
 	},
 	editAtom: function(inSender, inEvent) {
 		if (!this.$.input.hasFocus()) {

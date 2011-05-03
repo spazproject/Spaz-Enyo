@@ -214,6 +214,7 @@ enyo.kind({
 	// event handler for resize; if we're the root component, we'll automatically resize
 	resizeHandler: function() {
 		this.resize();
+		this.inherited(arguments);
 	},
 	// if we're not the root component, this method can be hooked to a resizeHandler
 	resize: function() {

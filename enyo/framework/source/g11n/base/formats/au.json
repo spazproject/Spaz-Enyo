@@ -1,6 +1,13 @@
 {
 	"localeName": "Australia",
 
+	"numberDivider": ",",
+	"numberDecimal": ".",
+	"currencyPrepend": "$",
+	"currencyAppend": "",
+	"percentageSpace": false,
+	"titleCase": true,
+
 	"fullDate": "EEEE, d MMMM yyyy",
 	"longDate": "d MMMM yyyy",
 	"mediumDate": "dd/MM/yyyy",

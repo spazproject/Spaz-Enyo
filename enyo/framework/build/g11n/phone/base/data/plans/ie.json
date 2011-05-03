@@ -9,6 +9,7 @@
 		"areaCode": 0,
 		"cic": 0,
 		"mobilePrefix": 0,
+		"emergency": 0,
 		"serviceCode": 0,
 		"minLocalLength": 5,
 		"premium": 0

@@ -1,7 +1,7 @@
 {
 	"id": "com.palmdts.inputsample",
 	"version": "1.0.0",
-	"vendor": "HP",
+	"vendor": "PalmDTS",
 	"type": "web",
 	"main": "index.html",
 	"title": "Enyo Input Sample",

@@ -123,14 +123,32 @@ enyo.kind({
 	],
 	create: function() {
 		this.inherited(arguments);
+		enyo.mixin(this.domAttributes, {
+			onscroll: enyo.bubbler
+		});
 		this.fpsShowingChanged();
 		this.acceleratedChanged();
 	},
 	rendered: function() {
 		this.inherited(arguments);
-		if (this.hasNode()) {
+		// FIXME: use preventScrollAtRendered to bypass scroll simulation.
+		// There are times that we just want to update the content by calling contentChanged() or render() but don't
+		// want to get scroll events.
+		// In general, we should fire scroll events only when user drags the scroll region, e.g. scroll start via drag.
+		if (this.hasNode()/* && !this.preventScrollAtRendered*/) {
 			enyo.asyncMethod(this.$.scroll, "start");
 		}
+	},
+	scrollHandler: function(inSender, e) {
+		// defeat dom scrolling
+		if (this.hasNode()) {
+			this.node.scrollTop = 0;
+			this.node.scrollLeft = 0;
+		}
+	},
+	resizeHandler: function() {
+		this.start();
+		this.inherited(arguments);
 	},
 	// Add scroll position to control offset calculation
 	calcControlOffset: function(inControl) {
@@ -196,15 +214,18 @@ enyo.kind({
 	start: function() {
 		this.$.scroll.start();
 	},
-	// this event comes from the 'scroll' object, it is fired
-	// by start() call above, and also when user starts a drag interaction
+	stop: function() {
+		this.$.scroll.stop();
+	},
 	dragstartHandler: function(inSender, inEvent) {
 		this.calcBoundaries();
 		this.calcAutoScrolling();
 		return this.inherited(arguments);
 	},
-	
+	// this event comes from the 'scroll' object, it is fired
+	// by start() call above, and also when user starts a drag interaction
 	scrollStart: function(inSender) {
+		this.calcBoundaries();
 		this.doScrollStart();
 	},
 	scroll: function(inSender) {
@@ -217,6 +238,9 @@ enyo.kind({
 		if (this.fpsShowing) {
 			this.$.fps.setContent(inSender.fps);
 		}
+		// FIXME: after a scroller stops some controls may need to resize
+		// e.g. popups
+		this.broadcastToChildren("resize");
 		this.doScrollStop();
 	},
 	effectScrollAccelerated: function() {
@@ -227,7 +251,7 @@ enyo.kind({
 			// Scroll via transform: fastest when accelerated, slowest when not
 			var m = -this.scrollLeft + "px, " + -this.scrollTop + "px";
 			// NOTE: translate3d prompts acceleration witout need for -webkit-transform-style: preserve-3d; style
-			ds.webkitTransform = s.webkitTransform = "translate3d(" + m + ",0)";
+			ds["-webkit-transform"] = s.webkitTransform = "translate3d(" + m + ",0)";
 		}
 	},
 	effectScrollNonAccelerated: function() {
@@ -249,15 +273,21 @@ enyo.kind({
 			// we use scrollee's scroll h/w. This is off by scrollee's border and we add that in via offsetHeight - clientHeight.
 			this.$.scroll.bottomBoundary = Math.min(0, this.node.clientHeight - (sn.scrollHeight + sn.offsetHeight - sn.clientHeight));
 			this.$.scroll.rightBoundary = Math.min(0, this.node.clientWidth - (sn.scrollWidth + sn.offsetWidth - sn.clientWidth));
+			//
+			// allow content to be visible when underneath a region floating over it
+			// by adjusting bottom boundary by amount of scroller region that's not visible.
+			var vb = enyo.getVisibleControlBounds(this);
+			var b = this.getBounds();
+			this.$.scroll.bottomBoundary -= Math.max(0, b.height - vb.height);
 		}
 	},
 	calcAutoScrolling: function() {
 		// auto-detect if we should scroll
 		if (this.autoHorizontal) {
-			this.setHorizontal(this.$.scroll.rightBoundary != 0);
+			this.setHorizontal(this.$.scroll.rightBoundary !== 0);
 		}
 		if (this.autoVertical) {
-			this.setVertical(this.$.scroll.bottomBoundary != 0);
+			this.setVertical(this.$.scroll.bottomBoundary !== 0);
 		}
 	},
 	scrollLeftChanged: function() {
@@ -306,10 +336,10 @@ enyo.kind({
 	*/
 	scrollTo: function(inY, inX) {
 		var s = this.$.scroll;
-		if (inY != null) {
+		if (inY !== null) {
 			s.y = s.y0 - (inY + s.y0) * (1 - s.kFrictionDamping);
 		}
-		if (inX != null) {
+		if (inX !== null) {
 			s.x = s.x0 - (inX + s.x0) * (1 - s.kFrictionDamping);
 		}
 		s.start();
@@ -321,6 +351,7 @@ enyo.kind({
 	*/
 	scrollIntoView: function(inY, inX) {
 		if (this.hasNode()) {
+			this.stop();
 			var b = this.getBoundaries();
 			var h = this.node.clientHeight;
 			var w = this.node.clientWidth;
@@ -330,6 +361,34 @@ enyo.kind({
 			if ((inX < this.scrollLeft) || (inX > this.scrollLeft + w)) {
 				this.setScrollLeft(Math.max(b.left, Math.min(b.right, inY)));
 			}
+		}
+		this.start();
+	},
+	scrollOffsetIntoView: function(inY, inX, inHeight) {
+		if (this.hasNode()) {
+			this.stop();
+			var b = enyo.getVisibleControlBounds(this);
+			b.bottom = b.top + b.height;
+			b.right = b.left + b.width;
+			if (inY != undefined) {
+				// add some sluff!!
+				var sluff = 10;
+				b.top += sluff;
+				b.bottom -= (inHeight || 0) + sluff;
+				if (inY < b.top) {
+					this.setScrollTop(this.scrollTop + inY - b.top);
+				} else if (inY > b.bottom) {
+					this.setScrollTop(this.scrollTop + inY - b.bottom);
+				}
+			}
+			if (inX != undefined) {
+				if (inX < b.left) {
+					this.setScrollLeft(this.scrollLeft + inX - b.left);
+				} else if (inX > b.right) {
+					this.setScrollLeft(this.scrollLeft + inX - b.right);
+				}
+			}
+			this.start();
 		}
 	},
 	/**

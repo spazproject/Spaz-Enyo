@@ -70,7 +70,7 @@ enyo.g11n._init = function _init(){
 			/* Old browsers might not have a navigator object */
 			if (navigator) {
 				/* Everyone uses navigator.language, except for IE which uses navigator.userLanguage. Of course they do. */
-				var locale = (navigator.language || navigator.userLanguage).replace(/-/g,'_');
+				var locale = (navigator.language || navigator.userLanguage).replace(/-/g,'_').toLowerCase();
 				enyo.g11n._locale = new enyo.g11n.Locale(locale);
 				enyo.g11n._formatLocale = enyo.g11n._locale;
 				enyo.g11n._phoneLocale = enyo.g11n._locale;
@@ -177,6 +177,7 @@ Each property should be set to a string that is the specifier for that locale.
 */
 enyo.g11n.setLocale = function setLocale(params) {
 	if (params) {
+		enyo.g11n._init();
 		if (params.uiLocale) {
 			enyo.g11n._locale = new enyo.g11n.Locale(params.uiLocale);
 		}

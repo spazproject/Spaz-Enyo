@@ -15,10 +15,10 @@ enyo.kind({
 	chrome: [
 		{name: "client", align: "center"}
 	],
-	calcAutoScrolling: function() {
+	/*calcAutoScrolling: function() {
 		// FIXME: bypass autoHorizontal/Vertical check
-		this.setHorizontal(this.$.scroll.rightBoundary != 0);
-		this.setVertical(this.$.scroll.bottomBoundary != 0);
+		this.setHorizontal(this.$.scroll.rightBoundary !== 0);
+		this.setVertical(this.$.scroll.bottomBoundary !== 0);
 	},
 	start: function() {
 		if (this.$.scroll) {
@@ -28,7 +28,7 @@ enyo.kind({
 	destroy: function() {
 		this.$.scroll && this.$.scroll.stop();
 		this.inherited(arguments);
-	},
+	},*/
 	scroll: function(inSender) {
 		var bs = this.getBoundaries(), lb = bs.left-1, rb = bs.right+1, tb = bs.top-1, bb = bs.bottom+1;
 		var x = -inSender.x, y = -inSender.y;
@@ -65,10 +65,6 @@ enyo.kind({
 	published: {
 		accelerated: true
 	},
-	forward: {
-		overscrollH: "scroller",
-		overscrollV: "scroller"
-	},
 	events: {
 		onImageLoaded: "imageLoaded"
 	},
@@ -98,19 +94,27 @@ enyo.kind({
 			return true;
 		}
 	},
+	flickHandler: function() {
+		// only bubble flick if it is not zoom-in
+		return this.isZoomIn();
+	},
+	zoomChanged: function() {
+		this.inherited(arguments);
+		if (this.outerScroller) {
+			// more resistent to snap to the next image when it is zoom-in
+			this.outerScroller.setDragSnapThreshold(this.isZoomIn() ? 0.1 : 0.01);
+		}
+	},
 	setOuterScroller: function(inScroller) {
 		this.outerScroller = inScroller;
-		this.setOverscrollH(!inScroller.scrollH);
-		this.setOverscrollV(inScroller.scrollH);
+		this.$.scroller.setOverscrollH(!inScroller.scrollH);
+		this.$.scroller.setOverscrollV(inScroller.scrollH);
 	},
 	reset: function() {
 		this.adjustSize();
-		this.resetZoom();
 		var s = this.$.scroller;
-		s.scrollLeft = 0;
-		s.scrollTop = 0;
-		s.effectScroll();
-		s.setScrollTop(0);
-		s.setScrollLeft(0);
+		// FIXME: why dragging was not reset to false?
+		s.$.scroll.dragging = false;
+		s.setScrollPositionDirect(0, 0);
 	}
 });

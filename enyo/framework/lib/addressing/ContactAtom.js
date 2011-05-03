@@ -1,11 +1,11 @@
 /* Copyright 2009-2011 Hewlett-Packard Development Company, L.P. All rights reserved. */
 enyo.kind({
 	name: "enyo.ContactAtom",
-	kind: "CustomButton",
+	kind: "Button",
 	layoutKind: "HFlexLayout",
 	align: "center",
 	pack: "center",
-	className: "enyo-contact-atom",
+	className: "enyo-button enyo-contact-atom",
 	published: {
 		contact: null,
 		isButtony: false,
@@ -30,7 +30,7 @@ enyo.kind({
 		this.spinnerShowingChanged();
 	},
 	isButtonyChanged: function() {
-		this.addRemoveClass("enyo-contact-atom-buttony", this.isButtony);
+		this.addRemoveClass("enyo-button", this.isButtony);
 		if (!this.isButtony) {
 			this.setSpinnerShowing(false);
 		}

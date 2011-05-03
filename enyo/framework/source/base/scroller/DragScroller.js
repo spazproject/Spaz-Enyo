@@ -71,9 +71,11 @@ enyo.kind({
 	// special synthetic DOM events served up by the Gesture system
 	dragstartHandler: function(inSender, inEvent) {
 		this.dragging = this.shouldDrag(inEvent);
-		this.$.scroll.startDrag(inEvent);
-		if (this.dragging && this.preventDragPropagation) {
-			return true;
+		if (this.dragging) {
+			this.$.scroll.startDrag(inEvent);
+			if (this.preventDragPropagation) {
+				return true;
+			}
 		}
 	},
 	dragHandler: function(inSender, inEvent) {

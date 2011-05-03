@@ -1,6 +1,6 @@
 {
 	"region": "es",
-	"skipTrunk": false,
+	"skipTrunk": true,
 	"trunkCode": "0",
 	"iddCode": "00",
 	"dialingPlan": "closed",

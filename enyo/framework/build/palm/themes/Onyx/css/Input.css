@@ -4,6 +4,7 @@
 	border-style: solid;
 	border-color: transparent;
 	-webkit-box-sizing: border-box;
+	font-size: 18px;
 }
 
 .enyo-input-focus {
@@ -23,6 +24,7 @@
 	width: 100%;
 	-webkit-box-sizing: border-box;
 	cursor: pointer;
+	font-size: 18px;
 }
 
 .enyo-input-input:focus {
@@ -34,7 +36,7 @@ FIXME: we almost always want some padding on a enyo-item, except when it's surro
 		a fancy-input.... so we special case that here, non-ideal 
 */
 
-.enyo-item > .enyo-input {
+.enyo-item .enyo-input {
 	margin: -11px -10px;
 }
 

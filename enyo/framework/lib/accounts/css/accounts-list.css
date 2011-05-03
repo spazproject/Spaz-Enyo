@@ -1,300 +1,77 @@
 /* Copyright 2009-2011 Hewlett-Packard Development Company, L.P. All rights reserved. */
-.error-text {
-	color: #d70000;
-}
-
-.palm-button {
-	text-transform: none;
-}
-
-/* Account Icons */
-
-.account-wrapper, 
-.first-launch-account-list .palm-button-wrapper,
-#findmore .palm-button-wrapper {
-	display: -webkit-box;
-	-webkit-box-orient: horizontal;	
-	height: 50px;
-}
-.account-wrapper .account-template-icon {
-	width: 32px;
-	height: 50px;
-	margin-left: 10px;
-	margin-right: 10px;
-	background: url(../images/icon-accounts.png) center center no-repeat; 
-}
-
-/* List */
-
-.no-account {
-	padding: 15px 0 15px 15px;
-}
-
-.account-label-wrapper .account-label-title {
-	font-size: 18px;
-	padding-right: 14px;
-}
-.account-label-wrapper .account-label-subtitle {
-  	font-size: 14px;
-	color: #888;
-	padding-right: 14px;
-}
-.account-label-wrapper, .first-launch-account-header-title {
-	display: -webkit-box;
-	-webkit-box-orient: vertical;
-	-webkit-box-pack: center;
-	-webkit-box-flex: 1;
-}
-
-/* First Use - List & Buttons */
-.first-launch-account-header {
-	display: -webkit-box;
-	-webkit-box-orient: horizontal;
-	min-height: 74px;
-}
-.first-launch-account-header-icon {  
-  	width: 74px;
-  	background: url(../images/icon-accounts.png) center center no-repeat;
-}
-.first-launch-account-header-title .title {
-	color: #444;
-	text-shadow: #fff 0px 1px 0px;	
-}
-.palm-button-wrapper {
-	min-height: 50px;
-}
-.palm-button-wrapper .account-template-icon {
-	width: 42px;
-	background: url(../images/icon-accounts.png) center center no-repeat; 
-}
-.palm-button-wrapper .account-label-title {
-	margin-left: 6px;
-}
-
-.account-scroller {
-  	position: fixed !important; 
-  	top: 0; 
-  	bottom: 65px; 
-  	width: 100%;
-}
-
-.account-scroller.first-launch {
-	top: 74px; 
-  	background-color: #b5b5b5;
-}
-
-.account-scroller-shadow {
-	 border-width: 30px 1px 30px 1px;
-	 -webkit-border-image: url(../images/drawer-shadow.png) 30 1 30 1 repeat repeat;
-	 -webkit-box-sizing: border-box;
-	 position: fixed; 
-	 width: 100%; 
-	 top: 74px; 
-	 bottom: 65px;
-	 pointer-events: none;
-}
-
-.modify-account-scroller-shadow { 
-	height: 50px;
-	background: url(../images/drawer-shadow-bottom.png) bottom left repeat-x;
-  	width: 100%; 
-	position: fixed;
-  	bottom: 65px;
-  	pointer-events: none;
-}
-
-.account-scroller.with-2-buttons,
-.account-scroller-shadow.with-2-buttons,
-.modify-account-scroller-shadow.with-2-buttons {
-  	bottom: 120px; 
-}
-
-#templates-container.no-button .account-scroller, 
-#templates-container.no-button .account-scroller-shadow {
-  	bottom: -10px; 
-}
-
-.account-scroller .account-label-subtitle {
-	color: #666;
-}
-
-/* Remove non-link list borders */
-.account-scroller.first-launch .palm-row {
-	background-image: none;
-}
-
-/* Removing visible "selected state" - ideally this list should not be tappable */
-.account-scroller .palm-row.selected { 
-	-webkit-border-image: none !important;
-	border-width: 0;
-}
-.account-scroller .palm-row.selected > .palm-row-wrapper {
-	margin: 0;
-}
-
-.synergy-accounts-footer {
-  position:fixed; 
-  bottom:0px; 
-  left:0px; 
-  right:0px;
-  -webkit-palm-mouse-target: ignore;
-}
-
-.synergy-accounts-footer-wrapper {
-  margin-top: -10px;
-}
-
-/* selected row */
-.selected .account-name,
-.selected .account-username,
-.selected .account-label-title,
-.selected .account-label-subtitle {
-	color: #fff;
-}
-
-.account-template-icon.appcatalog {
-	background-image: url(../images/appcatalog-32x32.png);
-}
-
-/* Scroll Fades */
-
-.scroll-fade-bottom {
-	position: fixed;
-	z-index: 10;
-	bottom: 0;
-	width: 100%;
-  	height: 54px;
-	background: transparent url(../images/scene-fade-bottom.png) left bottom repeat-x;
-  	pointer-events: none;
-}
-/*
-.enyo-button.accounts-btn{
-	margin-top:8px;
-	font-size:19px;
-	line-height:48px;
-	padding:0;
-}
-.enyo-button.accounts-btn {
-	border-width:0 10px;
-	height:48px;
-	-webkit-border-image:url(../images/bg_button_dark.png) 0 10 96 10 repeat;
-}
-.enyo-button.enyo-button-disabled.accounts-btn{
-	-webkit-border-image:url(../images/bg_button_dark.png) 96 10 0 10 repeat;
- }
-.enyo-button-affirmative.accounts-btn{
-	-webkit-border-image:url(../images/bg_button_affirmative.png) 0 10 96 10 repeat;
-}
-.enyo-button-negative.accounts-btn{
-	-webkit-border-image:url(../images/bg_button_negative.png) 0 10 96 10 repeat;
-}
-.enyo-button-light.accounts-btn{
-	-webkit-border-image:url(../images/bg_button_light.png) 0 10 96 10 repeat;
-}
-.enyo-button.enyo-button-down.accounts-btn{
-	-webkit-border-image:url(../images/bg_button_dark.png) 48 10 48 10 repeat;
-}
-.enyo-button-affirmative.enyo-button-down.accounts-btn{
-	-webkit-border-image:url(../images/bg_button_affirmative.png) 48 10 48 10 repeat;
-}
-.enyo-button-negative.enyo-button-down.accounts-btn{
-	-webkit-border-image:url(../images/bg_button_negative.png) 48 10 48 10 repeat;
-}
-.enyo-button-light.enyo-button-down.accounts-btn{
-	-webkit-border-image:url(../images/bg_button_light.png) 48 10 48 10 repeat;
-}
-.enyo-button.enyo-button-down .enyo-button-icon .accounts-btn{
- 	background-position:0 0;
-}
-*/
-
 .box-center {
 	width:500px;
 	margin-left: auto;
 	margin-right: auto;
 }
+.box-center .enyo-spinner{
+	margin-right:8px;
+}
 .accounts-header img {
 	margin-right: 13px;
-}
-.error-box img {
-	margin-right:7px;
 }
 .accounts-header .enyo-header-inner {
 	padding: 2px 16px 1px;
 }
+.error-box img {
+	margin-right:7px;
+}
 .accounts-body {
 	margin-top:14px;
 }
+.accounts-body-text {
+	font-size:16px;
+	color:#667;
+	margin:0 5px;
+}
+.enyo-button + .accounts-body-text {
+	margin-top:6px;
+}
+.accounts-body-title {
+	font-size:0.9em;
+	color:#667;
+	margin:2px 5px 5px;
+}
+.enyo-button + .accounts-body-title {
+	margin-top:9px;
+}
 .icon-image {
+	display:block;
 	margin-right:10px;
 }
-.account-name {
-}
 .email-address {
-	font-size:18px;
+	font-size:0.9em;
 	color:#666666;
 	margin-left:10px
 }
-/*
-.firstlaunch-header {
-	min-height: 74px;
-	width:100%;
-	margin-bottom:20px;
-	display: -webkit-box;
-	-webkit-box-align: center;
-	-webkit-box-pack: center;
-	border-top: 1px solid #c5c5c5;
-	border-bottom: 1px solid #c5c5c5;
-	background-color:#dededd;
-}
-.accounts-header-text {
-	margin-left: 13px;
-	color:#222222;
-	font-size:24px;
-}
-.accounts-body-text {
-}
-*/
-.accounts-header-text,
-.account-name,
-.email-address {
-	display: -webkit-box;
-	-webkit-box-align: center;
-}
-/*
-.box {
-	-webkit-border-image: url(../images/bg_box.png) 12 repeat;
-	padding:0 10px;
-	margin:0 auto 7px;
-	border-width:12px;
-}
-*/
 .accounts-btn {
+	line-height:32px;
+	min-height:32px;
 	margin-top:8px;
 	margin-bottom: 8px;
 }
+.accounts-btn-icon {
+	line-height:inherit;
+}
 .accounts-btn+.accounts-btn {
-	margin-top:0;
+	margin-top:5px;
 }
-.accounts-btn-bottom {
-	margin-top:0;
-}
-.accoutns-popup-btn-bottom {
-	margin-top:8px;
-	margin-bottom:0;
+div:first-child > .accounts-list-item {
+	border-top:none;
 }
 div:last-child > .accounts-list-item {
-	border:none;
+	border-bottom:none;
 }
-.popup-title {
-	color: #4c4c4c;
-	text-shadow: #f2f2f2 0px 0px 1px;
-	font-size: 21px;
-	padding: 0 0 10px 10px;
-	word-wrap: break-word;
+.accounts-toolbar-btn {
+	width:314px;
+	-webkit-box-sizing:border-box;
 }
-.popup-message {
-	color: #222;
-	font-size: 16px;
-	padding: 0 10px 10px;
+.accounts-rowgroup-item {
+	margin: -10px;
+}
+.error-text {
+	color: #d70000;
+}
+.accounts-dialog-width { 
+	width: 320px;
 }

@@ -4,14 +4,13 @@ enyo.kind({
 	name: "enyo.RowServer",
 	kind: enyo.Control,
 	events: {
-		onSetupRow: "",
-		onRowIndexChanged: ""
+		onSetupRow: ""
 	},
 	chrome: [
 		{name: "client", kind: "Flyweight", onNodeChange: "clientNodeChanged", onDecorateEvent: "clientDecorateEvent"},
 		{name: "state", kind: "StateManager"}
 	],
-	lastIndex: -1,
+	lastIndex: null,
 	//* @protected
 	create: function() {
 		this.inherited(arguments);
@@ -27,7 +26,7 @@ enyo.kind({
 		this.transitionRow(inIndex);
 		// if we cannot set controls to the row, it's unavailable
 		// so we disableNodeAccess to it.
-		var r = this.controlsToRow(inIndex)
+		var r = this.controlsToRow(inIndex);
 		if (!r) {
 			this.disableNodeAccess();
 		}
@@ -48,11 +47,15 @@ enyo.kind({
 	// can be incorrectly rendered true (i.e. when a list is scrolled and the mouse is kept down)
 	generateRow: function(inIndex) {
 		var r;
-		// FIXME: without resetting lastIndex here, after generating rows,
-		// we'll save an incorrect state when we transitionRow.
-		// ... should we optimize to set this less often than whenever a row is generated?
-		//
-		this.lastIndex = -1;
+		// NOTE: when generating, must save current state because it is not guaranteed
+		// to be saved before generating.
+		// NOTE: set lastIndex to null since we are altering state index here (ensures we do not save 
+		// a bad state during transitionRow)
+		//this.log(inIndex);
+		if (this.lastIndex != null) {
+			this.saveCurrentState();
+			this.lastIndex = null;
+		}
 		//
 		if (!this._nodesDisabled) {
 			this.disableNodeAccess();
@@ -73,14 +76,21 @@ enyo.kind({
 				this.$.state.save(inIndex);
 			}
 		}
+		// NOTE: due to rendering we have switched state and therefore are our flyweight is 
+		// out of sync: node points to old lastIndex and state points to inIndex.
+		// we could switch back to lastIndex here (if we saved it above), but this would be too $.
+		// Instead inform our flyweight that it should update on the next event
+		// via needsNode flag.
+		this.$.client.needsNode = true;
 		//this.enableNodeAccess();
 		return r;
 	},
 	clearState: function() {
+		this.lastIndex = null;
 		this.$.state.clear();
 	},
 	saveCurrentState: function() {
-		if (this.lastIndex > -1) {
+		if (this.lastIndex != null) {
 			this.$.state.save(this.lastIndex);
 		}
 	},
@@ -90,15 +100,13 @@ enyo.kind({
 	},
 	// for convenience decorate all events that go through flyweight with the list rowIndex
 	clientDecorateEvent: function(inSender, inEvent) {
-		inEvent.rowIndex = this.fetchRowIndex(inSender);
+		inEvent.rowIndex = this.rowIndex;
 	},
 	// when our flyweight receives a new node via an event trigger, we must restore state for this row
 	clientNodeChanged: function(inSender, inNode) {
 		var i = this.fetchRowIndex();
+		//this.log(i);
 		this.transitionRow(i);
-		if (i !== undefined) {
-			this.doRowIndexChanged(i);
-		}
 	},
 	disableNodeAccess: function() {
 		this.$.client.disableNodeAccess();
@@ -111,11 +119,15 @@ enyo.kind({
 	// save the state of the current row, restore state on new row
 	transitionRow: function(inIndex) {
 		//this.log(inIndex);
-		if (this.lastIndex > -1) {
-			this.$.state.save(this.lastIndex);
+		this.rowIndex = inIndex;
+		if (inIndex != this.lastIndex) {
+			//this.log(inIndex);
+			if (this.lastIndex != null) {
+				this.$.state.save(this.lastIndex);
+			}
+			this.lastIndex = inIndex;
+			this.$.state.restore(inIndex);
 		}
-		this.lastIndex = inIndex;
-		this.$.state.restore(inIndex);
 		this.enableNodeAccess();
 	},
 	/**
@@ -171,7 +183,7 @@ enyo.kind({
 		var i, n = inNode, p = this.getParentNode();
 		while (n && n.getAttribute && n != p) {
 			i = n.getAttribute("rowIndex");
-			if (i != null) {
+			if (i !== null) {
 				return Number(i);
 			}
 			n = n.parentNode;

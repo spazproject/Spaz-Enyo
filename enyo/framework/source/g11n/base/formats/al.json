@@ -1,6 +1,13 @@
 {
 	"localeName": "Albania",
 
+	"numberDivider": ".",
+	"numberDecimal": ",",
+	"currencyPrepend": "L",
+	"currencyAppend": "",
+	"percentageSpace": false,
+	"titleCase": false,
+
 	"fullDate": "EEEE, dd MMMM yyyy",
 	"longDate": "dd MMMM yyyy",
 	"mediumDate": "yyyy-MM-dd",

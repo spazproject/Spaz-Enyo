@@ -14,7 +14,6 @@ enyo.kind({
 				description: "You can use the built in video app to display videos or embed them yourself in a view.",
 				components: [
 					{kind: "HtmlContent", content: "The emulator does not support video playback.  Also there is not a video app included with the emulator currently so the video app will not launch."},
-					{kind: "Button", caption: "Open Video App", onclick: "open"},
 					{kind: "Button", caption: "Launch Video App", onclick: "launch"},
 					{kind: "Button", caption: "Video Object", onclick: "object"}
 			]},
@@ -30,20 +29,11 @@ enyo.kind({
 	],
 	create: function() {
 		this.inherited(arguments);
-	},
-	open: function(inSender) {
-		this.$.videoApp.call(
-			{
-				target : "http://cdn.kaltura.org/apis/html5lib/kplayer-examples/media/bbb_trailer_iphone270P.m4v"
-			},
-			{
-		    	method: "open"
-			});
 	},	
 	launch: function(){
 		this.$.videoApp.call(
 			{
-				id : 'com.palm.app.videoplayer',
+				id : 'com.palm.app.photos',
 				params: {
 					target : 'http://cdn.kaltura.org/apis/html5lib/kplayer-examples/media/bbb_trailer_iphone270P.m4v'
 				}
@@ -53,6 +43,9 @@ enyo.kind({
 			});
 	},	
 	object: function(){
+		//set the orientation for landscape
+		var orientation = "left";
+        enyo.setAllowedOrientation(orientation);
 		this.$.videoPane.next()
 	},
 	openSuccess: function(inSender, inResponse) {
@@ -63,6 +56,8 @@ enyo.kind({
 	},
 	backHandler: function(inSender, e) {
 		if (inSender.kind == "VideoObjectView"){
+			 //allow free orientation
+			 enyo.setAllowedOrientation("free");
 			this.$.videoPane.back();
 		} else
 		{

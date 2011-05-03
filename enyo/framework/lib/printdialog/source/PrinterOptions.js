@@ -14,9 +14,9 @@ enyo.kind({
 	published: {
 		printer: undefined,
 		copies: {min:0, max:0},
-		duplex: false,		// None, Book, Tablet
-		mediaSize: false,	// US_Letter, US_Legal, ISO_A4, Photo_4x6
 		mediaType: false,	// Plain, Special, Photo
+		mediaSize: false,	// US_Letter, US_Legal, ISO_A4, Photo_4x6
+		duplex: false,		// None, Book, Tablet
 		color: false,		// Mono, Color
 		pages: {min:0, max:0},
 		quality: false		// Fast, Normal, Best
@@ -34,6 +34,10 @@ enyo.kind({
 				{content: PrintDialogString.load("NUMBER_OF_COPIES"), flex: 1, className: "label"},
 				{name: "copiesPicker", kind: "IntegerPicker", label: ""},
 			]},
+			{name: "mediaTypeOption", kind: "PrinterOptionItem", components: [
+				{content: PrintDialogString.load("PAPER_TYPE"), flex: 1, className: "label"},
+				{name: "mediaTypePicker", kind: "MediaTypePicker"}
+			]},
 			{name: "mediaSizeOption", kind: "PrinterOptionItem", components: [
 				{content: PrintDialogString.load("PAPER_SIZE"), flex: 1, className: "label"},
 				{name: "mediaSizePicker", kind: "MediaSizePicker"} //this needs to be a ListSelector
@@ -41,10 +45,6 @@ enyo.kind({
 			{name: "duplexOption", kind: "PrinterOptionItem", components: [
 				{content: PrintDialogString.load("TWO_SIDED_PRINTING"), flex: 1, className: "label"},
 				{name: "duplexButton", kind: "ToggleButton", state: false}
-			]},
-			{name: "mediaTypeOption", kind: "PrinterOptionItem", components: [
-				{content: PrintDialogString.load("PAPER_TYPE"), flex: 1, className: "label"},
-				{name: "mediaTypePicker", kind: "MediaTypePicker"}
 			]},
 			{name: "colorOption", kind: "PrinterOptionItem", components: [
 				{content: PrintDialogString.load("COLOR_PRINTING"), flex: 1, className: "label"},
@@ -74,9 +74,9 @@ enyo.kind({
 		this.inherited(arguments);
 		this.printerChanged();
 		this.copiesChanged();
-		this.duplexChanged();
-		this.mediaSizeChanged();
 		this.mediaTypeChanged();
+		this.mediaSizeChanged();
+		this.duplexChanged();
 		this.colorChanged();
 		this.pagesChanged();
 		this.qualityChanged();
@@ -105,16 +105,16 @@ enyo.kind({
 		this.$.copiesOption.setShowing(show);
 	},
 
-	duplexChanged: function() {
-		this.$.duplexOption.setShowing(this.duplex);
+	mediaTypeChanged: function() {
+		this.$.mediaTypeOption.setShowing(this.mediaType && this.$.mediaTypePicker.items.length > 0);
 	},
 
 	mediaSizeChanged: function() {
 		this.$.mediaSizeOption.setShowing(this.mediaSize && this.$.mediaSizePicker.items.length > 0);
 	},
 
-	mediaTypeChanged: function() {
-		this.$.mediaTypeOption.setShowing(this.mediaType && this.$.mediaTypePicker.items.length > 0);
+	duplexChanged: function() {
+		this.$.duplexOption.setShowing(this.duplex);
 	},
 
 	colorChanged: function() {
@@ -159,17 +159,17 @@ enyo.kind({
 		// Show options based on printer capabilities
 		if (caps) {
 			var i, items;
-			
-			// Show duplex option
-			this.$.duplexOption.setShowing(this.duplex && caps.canDuplex);
-
-			// Show media size option
-			this.$.mediaSizePicker.setItems(caps.mediaSize);
-			this.$.mediaSizeOption.setShowing(this.mediaSize && this.$.mediaSizePicker.items.length > 0);
 
 			// Show media type option
 			this.$.mediaTypePicker.setItems(caps.mediaType);
 			this.$.mediaTypeOption.setShowing(this.mediaType && this.$.mediaTypePicker.items.length > 0);
+
+			// Show media size option
+			this.$.mediaSizePicker.setItems(caps.mediaSize);
+			this.$.mediaSizeOption.setShowing(this.mediaSize && this.$.mediaSizePicker.items.length > 0);
+			
+			// Show duplex option
+			this.$.duplexOption.setShowing(this.duplex && caps.canDuplex);
 
 			// Show color option
 			this.$.colorOption.setShowing(this.color && caps.hasColor);
@@ -180,9 +180,9 @@ enyo.kind({
 		}
 		else {
 			// Hide all options that are based on printer capabilities
-			this.$.duplexOption.setShowing(false);
-			this.$.mediaSizeOption.setShowing(false);
 			this.$.mediaTypeOption.setShowing(false);
+			this.$.mediaSizeOption.setShowing(false);
+			this.$.duplexOption.setShowing(false);
 			this.$.colorOption.setShowing(false);
 			this.$.qualityOption.setShowing(false);
 		}
@@ -206,6 +206,35 @@ enyo.kind({
 		this.$.gettingCapabilitiesMessage.setContent(PrintManagerError.getErrorText(inResponse.errorCode));
 	},
 	
+	parsePageRange: function(inString) {
+		var pageNumbers = [];
+		var items = inString.split(',');
+		for (var i=0; i<items.length; i++) {
+			var subitems = items[i].split('-');
+			if (subitems.length > 2) {
+				throw PrintDialogString.load("INVALID_PAGE_RANGE", {input:items[i]});
+			}
+			else if (subitems.length == 2) {
+				var start = Number(subitems[0]);
+				var end = Number(subitems[1]);
+				if (isNaN(start) || isNaN(end) || start>end || start<this.pages.min || end<this.pages.min || start>this.pages.max || end>this.pages.max) {
+					throw PrintDialogString.load("INVALID_PAGE_RANGE", {input:items[i]});
+				}
+				for (; start<=end; start++) {
+					pageNumbers.push(start);
+				}
+			}
+			else {
+				var page = Number(subitems[0]);
+				if (isNaN(page) || page<this.pages.min || page>this.pages.max) {
+					throw PrintDialogString.load("INVALID_PAGE_NUMBER", {input:items[i]});
+				}
+				pageNumbers.push(page);
+			}
+		}
+		return pageNumbers;
+	},
+	
 	//* @public
 	getPrinterSettings: function() {
 		var printerSettings = {};
@@ -215,20 +244,20 @@ enyo.kind({
 		}
 
 		if (this.printer && this.printer.id) {
-			if (this.$.duplexOption.getShowing()) {
-				printerSettings.duplex = this.$.duplexButton.getState() ? "Book" : "None";
+			if (this.$.mediaTypeOption.getShowing()) {
+				printerSettings.mediaType = this.$.mediaTypePicker.getValue();
 			}
 			if (this.$.mediaSizeOption.getShowing()) {
 				printerSettings.mediaSize = this.$.mediaSizePicker.getValue();
 			}
-			if (this.$.mediaTypeOption.getShowing()) {
-				printerSettings.mediaType = this.$.mediaTypePicker.getValue();
+			if (this.$.duplexOption.getShowing()) {
+				printerSettings.duplex = this.$.duplexButton.getState() ? "Book" : "None";
 			}
 			if (this.$.colorOption.getShowing()) {
 				printerSettings.color = this.$.colorButton.getState() ? "Color" : "Mono";
 			}
 			if (this.$.pagesOption.getShowing()) {
-				printerSettings.pageRange = this.$.pagesInput.getValue();
+				printerSettings.pages = this.parsePageRange(this.$.pagesInput.getValue());
 			}
 			if (this.$.qualityOption.getShowing()) {
 				printerSettings.printQuality = this.$.qualityPicker.getValue();

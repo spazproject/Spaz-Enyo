@@ -44,6 +44,7 @@ enyo.kind({
 		onSSLConfirmDialog: "",
 		onUserPasswordDialog: "",
 		onNewPage: "",
+		onPrint: "",
 		onEditorFocusChanged: "",
 		onError: ""
 	},
@@ -65,7 +66,10 @@ enyo.kind({
 			onUserPasswordDialog: "doUserPasswordDialog",
 			onOpenSelect: "openSelect",
 			onNewPage: "doNewPage",
+			onPrint: "doPrint",
 			onEditorFocusChanged: "doEditorFocusChanged",
+			onConnected: "connected",
+			onDisconnected: "disconnected",
 			onError: "doError"
 		},
 		{name: "spinnerPopup", kind: "Popup", className: "enyo-webview-popup-spinner", scrim: true, components: [
@@ -77,14 +81,16 @@ enyo.kind({
 	create: function() {
 		this.inherited(arguments);
 		this.identifierChanged();
-		this.urlChanged();
 		this.minFontSizeChanged();
 		this.autoFitChanged();
 		this.fitRenderChanged();
 		this.enableJavascriptChanged();
 		this.blockPopupsChanged();
 		this.acceptCookiesChanged();
+		this.redirectsChanged();
 		this.acceleratedChanged();
+		this.networkInterfaceChanged();
+		this.urlChanged();
 	},
 	identifierChanged: function() {
 		this.$.view.setIdentifier(this.identifier);
@@ -121,6 +127,7 @@ enyo.kind({
 	},
 	openSelect: function(inSender, inId, inItemsJson) {
 		if (this._cachedSelectPopups[inId]) {
+			this._cachedSelectPopups[inId]._response = -1;
 			this._cachedSelectPopups[inId].openAtCenter();
 		} else {
 			if (Object.keys(this._cachedSelectPopups).length > 4) {
@@ -129,13 +136,12 @@ enyo.kind({
 				c.destroy();
 				delete this._cachedSelectPopups[del];
 			}
-			this.$.spinner.show();
-			this.$.spinnerPopup.openAtCenter();
+			this.showSpinner();
 			enyo.asyncMethod(this, "createSelectPopup", inId, inItemsJson);
 		}
 	},
 	createSelectPopup: function(inId, inItemsJson) {
-		var p = this.createComponent({kind: "PopupList", name: "select-" + inId, _webviewId: inId, modal: true, onSelect: "selectPopupSelect"});
+		var p = this.createComponent({kind: "PopupList", name: "select-" + inId, _webviewId: inId, _response: -1, onSelect: "selectPopupSelect", onClose: "selectPopupClose"});
 		var listItems = [];
 		var items = enyo.json.parse(inItemsJson);
 		for (var i = 0, c; c = items.items[i]; i++) {
@@ -144,12 +150,41 @@ enyo.kind({
 		p.setItems(listItems);
 		p.render();
 		this._cachedSelectPopups[inId] = p;
-		this.$.spinnerPopup.close();
-		this.$.spinner.hide();
+		this.hideSpinner();
 		p.openAtCenter();
 	},
 	selectPopupSelect: function(inSender, inSelected, inOldItem) {
-		this.callBrowserAdapter("selectPopupMenuItem", [inSender._webviewId, inSelected]);
+		inSender._response = inSelected;
+	},
+	selectPopupClose: function(inSender) {
+		// MenuItem calls close then doSelect, so wait for the function
+		// to finish before replying to get the correct value.
+		enyo.asyncMethod(this, "selectPopupReply", inSender);
+	},
+	selectPopupReply: function(inSender) {
+		this.callBrowserAdapter("selectPopupMenuItem", [inSender._webviewId, inSender._response]);
+	},
+	connected: function() {
+		this.hideSpinner();
+	},
+	disconnected: function() {
+		if (!this._requestDisconnect) {
+			this.showSpinner();
+			setTimeout(enyo.hitch(this, "reinitialize"), 5000);
+		} else {
+			this._requestDisconnect = false;
+		}
+	},
+	reinitialize: function() {
+		this.$.view.connect();
+	},
+	showSpinner: function() {
+		this.$.spinner.show();
+		this.$.spinnerPopup.openAtCenter();
+	},
+	hideSpinner: function() {
+		this.$.spinnerPopup.close();
+		this.$.spinner.hide();
 	},
 	//* @public
 	activate: function() {
@@ -157,6 +192,10 @@ enyo.kind({
 	},
 	deactivate: function() {
 		this.$.view.callBrowserAdapter("pageFocused", [false]);
+	},
+	disconnect: function() {
+		this.$.view.callBrowserAdapter("disconnectBrowserServer");
+		this._requestDisconnect = true;
 	},
 	resize: function() {
 		this.$.view.resize();

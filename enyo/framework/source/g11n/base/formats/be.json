@@ -1,6 +1,13 @@
 {
 	"localeName": "Belgium",
 
+	"numberDivider": ".",
+	"numberDecimal": ",",
+	"currencyPrepend": "€ ",
+	"currencyAppend": "",
+	"percentageSpace": false,
+	"titleCase": false,
+
 	"fullDate": "EEEE d MMMM yyyy",
 	"longDate": "d MMMM yyyy",
 	"mediumDate": "d-MMM-yyyy",

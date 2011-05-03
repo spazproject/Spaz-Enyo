@@ -1,6 +1,6 @@
 /* Copyright 2009-2011 Hewlett-Packard Development Company, L.P. All rights reserved. */
 var SyncUIUtil = (function () {
-	var rb = new enyo.g11n.Resources({root: this.libPath});
+	var rb = new enyo.g11n.Resources({root: "$enyo-lib/syncui"});
 	
 	var stateValue = {
 		"IDLE": 0,
@@ -54,10 +54,10 @@ var SyncUIUtil = (function () {
 		// Localized strings
 		REMOVING_ACCOUNT:			rb.$L("Removing Account..."),
 		SYNCING_ACCOUNT:			rb.$L("Syncing Account..."),
-		CHECK_LOGIN_PASSWORD:		rb.$L("Check your login and password."),
+		CHECK_LOGIN_PASSWORD:		rb.$L("Check your login and password"),
 		NO_CREDS_TITLE:				rb.$L("Accounts: Action Needed"),
-		NO_CREDS_TEXT:				rb.$L("Enter credentials for synergy accounts"),
-		BAD_CREDS_TEXT:				rb.$L("Check your login and password.")
+		NO_CREDS_TEXT:				rb.$L("Enter credentials for your accounts"),
+		BAD_CREDS_TEXT:				rb.$L("Check your login and password")
 	};
 }());
 

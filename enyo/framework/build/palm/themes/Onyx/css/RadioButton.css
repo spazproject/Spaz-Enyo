@@ -7,7 +7,6 @@
 
 .enyo-radiobutton, .enyo-tabbutton {
 	text-align: center;
-	text-transform: capitalize;
 	-webkit-box-sizing: border-box;
 	font-size: 16px;
 	border-width: 0px 17px;

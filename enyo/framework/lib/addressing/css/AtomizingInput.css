@@ -1,11 +1,23 @@
 /* Copyright 2009-2011 Hewlett-Packard Development Company, L.P. All rights reserved. */
+.enyo-atomizing-input-container {
+	-webkit-box-sizing: border-box;
+}
+
 .enyo-contact-atom {
 	display: -webkit-inline-box;
-	line-height: 40px;
-	height: 40px;
-	border: solid transparent;
 	max-width: 100%;
-	-webkit-box-sizing: border-box;
+	font-size: 16px;
+	line-height: 20px;
+	text-align: center;
+	padding: 8px 2px;
+	min-width: 14px;
+	min-height: 20px;
+	border: 4px 0 solid transparent;
+	margin: 3px;
+}
+
+.enyo-contact-atom.enyo-button {
+	padding: 4px 2px;
 }
 
 .enyo-contact-atom-content {
@@ -22,42 +34,16 @@
 .enyo-addressing-expand-button {
 	color: #1F75BF;
 	font-size: 14px;
-	margin-left: 4px;
+	margin-left: 6px;
 }
 
 .enyo-addressing-showall-button {
 	float: right;
-	background: url(../images/address-book.png) left top no-repeat;
-	width: 38px;
-	height: 40px;
-	margin-right: 4px;
+	margin-right: 6px;
 }
 
-.enyo-addressing-showall-button.enyo-addressing-buttony {
-	background-position: left bottom;
-}
-
-.enyo-addressing-showall-button.enyo-button-down {
-	background-position: left -40px;
-}
-
-.enyo-contact-atom.enyo-contact-atom-flat {
-	border-width: 0 12px;
-	-webkit-border-image: url(../images/recipient-atom.png) 0 12 80 12 repeat repeat;
-}
-
-.enyo-contact-atom.enyo-contact-atom-buttony {
-	border-width: 0 12px;
-	-webkit-border-image: url(../images/recipient-atom.png) 80 12 0 12 repeat repeat;
-}
-
-.enyo-contact-atom.enyo-contact-atom-buttony.enyo-button-down {
-	border-width: 0 12px;
-	-webkit-border-image: url(../images/recipient-atom.png) 40 12 40 12 repeat repeat;
-}
-
-.enyo-atomizing-input-container {
-	border: 14px solid transparent;
+.enyo-addressing-showall-icon {
+	background: url(../images/address-book.png);
 }
 
 .enyo-atomizing-input-wrapper {
@@ -69,6 +55,6 @@
 	padding: 0;
 	margin: 0 4px;
 	min-width: 1px;
-	min-height: 40px;
+	/*min-height: 40px;*/
 	/*border: 1px solid black;*/
 }

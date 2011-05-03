@@ -1,6 +1,6 @@
 {
 	"is12HourDefault": true,
-	"numberTripleDivider": ",",
+	"numberDivider": ",",
 	"numberDecimal": ".",
 	"currencyPrepend": "$",
 	"currencyAppend": "",

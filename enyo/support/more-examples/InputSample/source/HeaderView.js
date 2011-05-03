@@ -1,19 +1,24 @@
 /* Copyright 2009-2011 Hewlett-Packard Development Company, L.P. All rights reserved. */
 enyo.kind({
 	name: "HeaderView",
-	kind: enyo.VFlexBox,
+	kind: "VFlexBox",
 	published: {
 		title: "",
 		description: ""
 	},
+	events: {
+		onBack: "",
+	},
 	headerChrome: [
-		{kind: "Header", layoutKind: "VFlexLayout", align: "start", components: [
-			{name: "title"},
-			{name: "description", style: "font-size: 14px"}
+		{kind: "PageHeader", onclick: "backClicked", components: [
+			{kind: "VFlexBox", flex: 1, components: [
+				{name: "title"},
+				{name: "description", style: "font-size: 14px"}
+			]},
+			{kind: "Button", caption: "Back"}
 		]}
 	],
 	create: function(inProps) {
-		//this.chrome = this.headerChrome.concat(this.chrome || []);
 		this.inherited(arguments);
 		this.titleChanged();
 		this.descriptionChanged();
@@ -27,5 +32,8 @@ enyo.kind({
 	},
 	descriptionChanged: function() {
 		this.$.description.setContent(this.description);
-	}
+	},
+	backClicked: function(){
+		this.doBack();
+	},
 });

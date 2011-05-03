@@ -17,7 +17,7 @@ enyo.fetchControlSize = function(inControl) {
 	}
 	b = b || {w: window.innerWidth, h: window.innerHeight};
 	return b;
-}
+};
 
 //* @public
 /**
@@ -76,7 +76,7 @@ enyo.kind({
 			this.imageLoaded();
 		} else if (this.src) {
 			// show blank during loading
-			this.$.image.setSrc("$default-theme/images/blank.gif");
+			this.$.image.setSrc("$base-themes-default-theme/images/blank.gif");
 			this.bufferImage.src = this.src;
 		}
 	},
@@ -131,6 +131,9 @@ enyo.kind({
 		//this.log(inWidth, inHeight);
 		this.$.image.applyStyle("width", inWidth + "px");
 		this.$.image.applyStyle("height", inHeight + "px");
+	},
+	isZoomIn: function() {
+		return Math.round((this.zoom-this.minZoom)*100)/100 != 0;
 	},
 	updateZoomPosition: function(inZPos) {
 		this.setZoom(inZPos.zoom);

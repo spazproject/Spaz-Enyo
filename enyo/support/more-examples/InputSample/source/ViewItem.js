@@ -8,6 +8,9 @@ enyo.kind({
 		description: "",
 		viewKind: ""
 	},
+	events: {
+		onSelected: "",
+	},
 	components: [
 		{name: "title"},
 		{name: "description", style: "font-size: 14px"}
@@ -25,8 +28,10 @@ enyo.kind({
 	},
 	// default click handling
 	clickHandler: function() {
-		// make assumption here about the owner and set the view
-		var c = this.owner.owner.setView(this.viewKind);
-		this.inherited(arguments);
+		this.doSelected({
+						 viewKind:this.viewKind, 
+						 title:this.title, 
+						 description:this.description
+						});
 	}
 });

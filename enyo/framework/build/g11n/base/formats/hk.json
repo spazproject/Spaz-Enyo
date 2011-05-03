@@ -1,8 +1,9 @@
 {
-	"numberTripleDivider": "，",
+	"numberDivider": "，",
 	"numberDecimal": ".",
 	"currencyPrepend": "$",
 	"currencyAppend": "",
+	"dividerIndex": 4,
 	"percentageSpace": true,
 	"localeName": "Hong Kong",
 	"titleCase": false,

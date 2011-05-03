@@ -13,7 +13,7 @@
 // {kind: "Accounts.addAccountView", name: "addAccount", onAddAccount_AccountSelected: "editAccount", onAddAccount_Cancel: "addCancel"}
 //
 // Show the list of accounts the user can add:
-// this.$.addAccount.showAvailableAccounts(templates);
+// this.$.addAccount.showAvailableAccounts(templates, capability);
 //
 // The callback:
 // addSelectedAccount: function(inSender, template) {
@@ -22,6 +22,10 @@
 enyo.kind({
 	name: "Accounts.addAccountView",
 	kind: "enyo.VFlexBox",
+	className:"enyo-bg",
+	published: {
+		capability:["CALENDAR","CONTACTS","DOCUMENTS","MAIL","MEMOS","MESSAGING","PHONE","PHOTO","REMOTECONTACTS","TASKS","VIDEO.UPLOAD","IM","SMS"],
+	},
 	events: {
 		onAddAccount_AccountSelected: "",
 		onAddAccount_Cancel: ""
@@ -35,20 +39,23 @@ enyo.kind({
 		{kind: "Scroller", flex: 1, components: [
 			{kind:"VFlexBox", className:"box-center accounts-body", style:"margin-top:22px", components: [ 
 				{name: "list", kind: "VirtualRepeater", onGetItem: "listGetItem", onclick: "templateSelected", components: [
-					{kind: "Button", name: "Account", layoutKind: "HFlexLayout", className:"enyo-button-light accounts-btn", components: [
+					{kind: "Button", name: "Account", allowDrag:true, layoutKind: "HFlexLayout", align:"center", className:"accounts-btn accounts-btn-icon", components: [
 						{kind: "Image", name: "templateIcon", className:"icon-image"},
 						{name: "templateName", className:"account-name"}
 					]}
 				]},
-				{kind: "Button", label: AccountsUtil.BUTTON_CANCEL, className:"accounts-btn", onclick: "doAddAccount_Cancel"}
 			]},
+		]},
+		{kind:"Toolbar", components:[
+			{kind: "Button", label: AccountsUtil.BUTTON_CANCEL, className:"enyo-button-dark accounts-toolbar-btn", onclick: "doAddAccount_Cancel"}
 		]},
 		{kind: "PalmService", service: "palm://com.palm.applicationManager/", method: "open", name: "openAppCatalog"}
 	],
 	
 	// Show the list of available accounts the user can add, based on the list of templates
-	showAvailableAccounts: function(templates) {
+	showAvailableAccounts: function(templates, capability) {
 		this.templates = templates;
+		this.capability = capability || this.capability;
 		this.$.list.render();
 	},
 
@@ -76,8 +83,15 @@ enyo.kind({
 		if (!inEvent || !inEvent.rowIndex === undefined)
 			return;
 		// Was "Find More ..." tapped?
-		if (inEvent.rowIndex == this.templates.length)
-			this.$.openAppCatalog.call({"id": "com.palm.app.enyo-findapps"});
+		if (inEvent.rowIndex == this.templates.length) {
+			this.$.openAppCatalog.call({"id": "com.palm.app.enyo-findapps",	"params": {"common": {"sceneType": "search", "params": {
+				"type": "connector",
+				"connectorInfo": {
+					"searchBarTitle" : AccountsUtil.getSynergyTitle(this.capability),
+					"searchBarIcon" : AccountsUtil.libPath + "images/acounts-48x48.png",
+					"types": (enyo.isArray(this.capability)? this.capability: [this.capability])
+				}}}}});
+		}
 		else
 			this.doAddAccount_AccountSelected(this.templates[inEvent.rowIndex]);
 	},

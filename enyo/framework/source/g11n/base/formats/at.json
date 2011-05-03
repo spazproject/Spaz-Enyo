@@ -1,6 +1,13 @@
 {
 	"localeName": "Austria",
 
+	"numberDivider": ".",
+	"numberDecimal": ",",
+	"currencyPrepend": "",
+	"currencyAppend": " €",
+	"percentageSpace": true,
+	"is12HourDefault": false,
+
 	"fullDate": "EEEE, d. MMMM yyyy",
 	"longDate": "d. MMMM yyyy",
 	"mediumDate": "dd.MM.yyyy",

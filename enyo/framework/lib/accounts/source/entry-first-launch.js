@@ -50,64 +50,67 @@ enyo.kind({
 	},
 	components: [
 		// The first view shows "Loading Accounts"
-		{kind: "VFlexBox", name: "loadingAccounts", components: [
+		{kind: "VFlexBox", name: "loadingAccounts", className:"enyo-bg", components: [
 			{kind:"Header", className:"accounts-header", pack:"center", components: [
 					{kind: "Image", name:"welcomeIconStart"},
 					{content: AccountsUtil.TEXT_WELCOME}
 			]},
 			{kind: "HFlexBox", className:"box-center", flex:1, pack:"center", align:"center", components: [
 				{kind:"Spinner", name:"getAccountsSpinner"},
-				{content: $L("Loading Accounts...")}
+				{content: AccountsUtil.LOADING_ACCOUNTS}
 			]},
 		]},
-		
-		{name: "firstLaunchFromPIMApp", kind: "FadeScroller", flex:1, components: [
-			{kind: "VFlexBox", align: "center", components: [
-				{name: "noAccountsSetUpYet", style:"width:100%", components: [
-					{kind:"Header", className:"accounts-header", pack:"center", components: [
-							{kind: "Image", name:"welcomeIcon"},
-							{content: AccountsUtil.TEXT_WELCOME}
-					]},
+
+		// The next view actually shows the account information		
+		{kind: "VFlexBox", name: "firstLaunchFromPIMApp", className:"enyo-bg", components: [
+			// Display one of two headers depending on the number of accounts
+			{kind:"Header", name:"noAccountsSetUpHeader", className:"accounts-header", pack:"center", components: [
+				{kind: "Image", name:"welcomeIcon"},
+				{content: AccountsUtil.TEXT_WELCOME}
+			]},
+			{kind:"Header", name: "oneOrMoreAccountsHeader", className:"accounts-header", pack:"center", components: [
+				{kind: "Image", name: "titleIcon"},
+				{name: "titleText"}
+			]},
+
+			{kind: "FadeScroller", flex:1, components: [
+				{kind:"VFlexBox", name: "noAccountsSetUpYet", style:"width:100%", flex:1, components: [
 					{kind:"VFlexBox", className:"box-center accounts-body", components:[
 						{name: "getStartedWithProfileAccount", components: [
-							{content: AccountsUtil.TEXT_GET_STARTED_PROFILE_ACCOUNT, className:"accounts-body-text"},
+							{content: AccountsUtil.TEXT_GET_STARTED_PROFILE_ACCOUNT, className:"accounts-body-title"},
 							{kind: "Button", className: "enyo-button-affirmative accounts-btn", name: "profileButton", onclick: "doAccountsFirstLaunchDone"},
-							{content: AccountsUtil.TEXT_OR_ADD_NEW_ACCOUNT, className:"accounts-body-text"},
+							{content: AccountsUtil.TEXT_OR_ADD_NEW_ACCOUNT, className:"accounts-body-title"}
 						]},
-						{name: "welcomeMsg", className:"accounts-body-text"},
+						{name: "welcomeMsg", className:"accounts-body-title"},
 						{name: "templateList", kind: "VirtualRepeater", onGetItem: "listGetTemplate", onclick: "templateSelected", style:"margin-top: 8px", components: [
-							{name: "template", kind: "Button", className:"enyo-button-light accounts-btn", align:"center", layoutKind: "HFlexLayout", components: [
-						        {kind: "Image", name:"templateIcon", className:"icon-image"},
-						        {name: "templateName"}
+							{name: "template", kind: "Button", className:"accounts-btn", align:"center", layoutKind: "HFlexLayout", components: [
+							        {kind: "Image", name:"templateIcon", className:"icon-image"},
+							        {name: "templateName"}
 							]}
-						]}
+						]},
 					]},
 				]},
-				{name: "oneOrMoreAccounts", style:"width:100%", components: [
-					{kind:"Header", className:"accounts-header", pack:"center", name: "firstLaunchPageTitle", components: [
-						{kind: "Image", name: "titleIcon"},
-					    {name: "titleText"}
-					]},
+				{kind:"VFlexBox", name: "oneOrMoreAccounts", style:"width:100%;", flex:1, components: [
 					{kind:"VFlexBox", className:"box-center accounts-body", components:[
-						{content: AccountsUtil.TEXT_GET_STARTED_EXISTING_ACCOUNTS, className:"accounts-body-text"},
+						{content: AccountsUtil.TEXT_GET_STARTED_EXISTING_ACCOUNTS, className:"accounts-body-title"},
 						{kind:"RowGroup", components:[
 							{kind: "Accounts.accountsList", name: "accountsList"},
 						]},
 						{kind: "enyo.Button", className: "enyo-button-affirmative accounts-btn", label:AccountsUtil.BUTTON_GO, onclick: "doAccountsFirstLaunchDone"},
-						{content: AccountsUtil.TEXT_OR_ADD_NEW_ACCOUNT, className:"accounts-body-text"},
-						{kind: "enyo.Button", className:"enyo-button-light accounts-btn", label: AccountsUtil.BUTTON_ADD_ACCOUNT, onclick: "AddAccount"}
+						{content: AccountsUtil.TEXT_OR_ADD_NEW_ACCOUNT, className:"accounts-body-title"},
+						{kind: "enyo.Button", className:"accounts-btn", label: AccountsUtil.BUTTON_ADD_ACCOUNT, onclick: "AddAccount"}
 					]},
 				]},
 				{name: "client", style: "width: 100%; position: relative;"}
 			]}, 
 
 			{name: "accounts", kind: "Accounts.getAccounts", onGetAccounts_AccountsAvailable: "onAccountsAvailable"},
-			{kind: "PalmService", service: "palm://com.palm.applicationManager/", method: "open", name: "openAppCatalog"}
+			{kind: "PalmService", service: "palm://com.palm.applicationManager/", method: "open", name: "openAppCatalog"},
 		]},
 		{kind: "AccountsUI", name: "AccountsView", capability: this.capability, onAccountsUI_Done: "goToFirstLaunchView"},
 		{kind: "Accounts.credentialView", name: "changeCredentialsView", onCredentials_ValidationSuccess: "validationSuccess", onCredentials_Cancel: "goToFirstLaunchView"},
-		{kind: "Accounts.modifyView", name: "modifyAccountView", onModifyView_Success: "goToFirstLaunchView", onModifyView_Cancel: "goToFirstLaunchView"}
-		
+		{kind: "Accounts.modifyView", name: "modifyAccountView", onModifyView_Success: "goToFirstLaunchView", onModifyView_Cancel: "goToFirstLaunchView"},
+		{kind: "CrossAppUI", name:"customAccountsUI", onResult: "handleCustomUIResult"}
 	],
 	
 	startFirstLaunch: function(exclude, msgs) {
@@ -135,7 +138,7 @@ enyo.kind({
 		this.$.accounts.getAccounts({capability: this.capability}, this.exclude);
 		
 		// Get the list of accounts to display if there is more than one account
-		this.$.accountsList.getAccountsList(this.capability, this.exclude);
+		this.$.accountsList.getAccountsList(this.capability, this.exclude, true);
 		console.log("accountsList.getAccountsList= " + enyo.json.stringify(this.exclude));
 		
 		this.$.getAccountsSpinner.show();
@@ -174,12 +177,16 @@ enyo.kind({
 		
 		// There are 2 views: one for no accounts and another for one or more accounts
 		if (this.accounts.length) {
+			this.$.noAccountsSetUpHeader.hide();
 			this.$.noAccountsSetUpYet.hide();
+			this.$.oneOrMoreAccountsHeader.show();
 			this.$.oneOrMoreAccounts.show();
 		}
 		else {
 			// There are no accounts yet
+			this.$.oneOrMoreAccountsHeader.hide();
 			this.$.oneOrMoreAccounts.hide();
+			this.$.noAccountsSetUpHeader.show();
 			this.$.noAccountsSetUpYet.show();
 
 			// Render the list of available accounts to add
@@ -216,15 +223,42 @@ enyo.kind({
 			return;
 		// Was "Find More ..." tapped?
 		if (inEvent.rowIndex == this.addTemplates.length) {
-			this.$.openAppCatalog.call({"id": "com.palm.app.enyo-findapps"});
+			this.$.openAppCatalog.call({"id": "com.palm.app.enyo-findapps",	"params": {"common": {"sceneType": "search", "params": {
+				"type": "connector",
+				"connectorInfo": {
+					"searchBarTitle" : AccountsUtil.getSynergyTitle(this.capability),
+					"searchBarIcon" : this.iconSmall,
+					"types": (enyo.isArray(this.capability)? this.capability: [this.capability])
+				}}}}});
 		}
 		else {
 			this.template = this.addTemplates[inEvent.rowIndex];
-			this.$.changeCredentialsView.displayCredentialsView(this.template, this.capability);
-			this.selectViewByName("changeCredentialsView");
+			// Does this template have custom UI?
+			if (this.template.validator.customUI) {
+				AccountsUtil.setCrossAppParameters(this.$.customAccountsUI, this.template.validator.customUI, {mode: "create", template: this.template, capability: this.capability});
+				this.selectViewByName("customAccountsUI");
+			}
+			else {
+				this.$.changeCredentialsView.displayCredentialsView(this.template, this.capability);
+				this.selectViewByName("changeCredentialsView");
+			}
 		}
 	},
 
+	// Handle the validation response from the custom UI
+	handleCustomUIResult: function(inSender, msg) {
+		//console.log("handleCustomUIResult:" + enyo.json.stringify(msg));
+		if (msg && msg.returnValue && msg.template) {
+			msg.templateId = msg.template.templateId;
+			this.$.modifyAccountView.displayCreateView(msg, msg.template, this.capability);
+			this.selectViewByName("modifyAccountView");
+		}
+		else {
+			// Return to the main First Launch view
+			this.selectViewByName("firstLaunchFromPIMApp");
+		}
+	},
+	
 	goToFirstLaunchView: function() {
 		// Go back from the credentials view to the modify account view
 		this.selectViewByName("firstLaunchFromPIMApp");
@@ -232,8 +266,15 @@ enyo.kind({
 	
 	// User's credentials validated okay
 	validationSuccess: function(inSender, validationResult) {
-		this.$.modifyAccountView.displayCreateView(validationResult, this.template, this.capability);
-		this.selectViewByName("modifyAccountView");
+		if (!validationResult)
+			return;
+		// Was the capability added to the account? (in which case there is nothing more to do here)
+		if (validationResult.capabilityWasEnabled)
+			this.selectViewByName("firstLaunchFromPIMApp");
+		else {
+			this.$.modifyAccountView.displayCreateView(validationResult, this.template, this.capability);
+			this.selectViewByName("modifyAccountView");
+		}
 	},
 	
 	// "Add Account" button was tapped

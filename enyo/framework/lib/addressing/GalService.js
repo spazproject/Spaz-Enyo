@@ -41,7 +41,7 @@ enyo.kind({
 		this.receive(inResponse);
 	},
 	gotNoAccounts: function() {
-		this.receive({returnValue: false, errorText: $L("No Accounts")});
+		this.receive({returnValue: false, errorText: enyo.addressing._$L("No Accounts")});
 	},
 	call: function() {
 		this.$.contactsService.method = "";

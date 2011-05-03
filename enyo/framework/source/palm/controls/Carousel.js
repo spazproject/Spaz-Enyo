@@ -99,6 +99,15 @@ enyo.kind({
 			return c[0];
 		}
 	},
+	scrollStop: function() {
+		this.inherited(arguments);
+		var s = this.scrollH ? this._controlSize.w : this._controlSize.h;
+		if ((this.pos >= this.startPos + s || this.pos <= this.startPos - s) && this.index == 1 && this.$.left.showing && this.startPos > 0) {
+			// scroll pass the next view so need to trigger snapFinish manually
+			this.index = this.index + (this.startPos < this.pos ? 1 : -1);
+			this.snapFinish();
+		}
+	},
 	snapFinish: function() {
 		// Call adjustViews() before super-kind implementation of snapFinish()
 		// so that the Carousel is in a sane state when doSnapFinish() is called.

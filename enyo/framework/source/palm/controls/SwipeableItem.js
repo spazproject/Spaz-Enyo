@@ -77,10 +77,7 @@ enyo.kind({
 		onDrag: ""
 	},
 	chrome: [
-		{name: "confirm", canGenerate: false, showing: false, kind: "ScrimmedConfirmPrompt", className: "enyo-fit",
-			onConfirm: "confirmSwipe",
-			onCancel: "cancelSwipe"
-		}
+		{name: "confirm", canGenerate: false, showing: false, kind: "ScrimmedConfirmPrompt", className: "enyo-fit", onConfirm: "confirmSwipe", onCancel: "cancelSwipe"}
 	],
 	statified: {
 		confirmGenerated: false
@@ -110,15 +107,18 @@ enyo.kind({
 	flickHandler: function(inSender, inEvent) {
 		if (this.swipeable && !this.confirmShowing && Math.abs(inEvent.xVel) > Math.abs(inEvent.yVel)) {
 			this.handlingDrag = false;
-			this.node.style.webkitTransform = "translate3d(0, 0, 0)";
+			if (this.hasNode()) {
+				this.node.style.webkitTransform = "";
+			}
 			this.handleSwipe();
 			return true;
 		}
 	},
 	dragstartHandler: function(inSender, inEvent) {
 		this.resetPosition();
-		if (!this.confirmShowing && this.swipeable && (Math.abs(inEvent.dx) > Math.abs(inEvent.dy))) {
+		if (this.swipeable && inEvent.horizontal && !this.confirmShowing && this.hasNode()) {
 			this.index = inEvent.rowIndex;
+			//this.log(inEvent.rowIndex);
 			this.handlingDrag = true;
 			return true;
 		} else {
@@ -132,6 +132,7 @@ enyo.kind({
 				this.node.style.webkitTransform = "translate3d(" + dx + "px, 0, 0)";
 				this.doDrag(dx);
 			} else {
+				// FIXME: This can occur if a RowServer generates a row node (therefore disabling node access)
 				console.log("drag with no node!");
 			}
 		}
@@ -186,21 +187,39 @@ enyo.kind({
 		// if we've generated the confirm prompt, then always generate it
 		// so we can show it in a list onSetupRow.
 		this.$.confirm.canGenerate = this.confirmGenerated;
-		if (this.confirmShowing) {
-			this.confirmFlyweightSiblings();
+		// save show state since flyweight machinations can change it.
+		var show = this.confirmShowing;
+		var didAutoConfirm;
+		if (show) {
+			didAutoConfirm = this.confirmFlyweightSiblings();
 			this.lastConfirmIndex = this.index;
 		} else {
 			this.lastConfirmIndex = null;
 		}
-		this.$.confirm.setShowing(this.confirmShowing);
-		this.doConfirmShowingChanged(this.confirmShowing);
+		this.applyStyle("position", show ? "relative" : null);
+		//this.log(show, this.index);
+		this.$.confirm.setShowing(show);
+		this.doConfirmShowingChanged(show, this.index, didAutoConfirm);
+	},
+	// Find our manager that has row api, if exists.
+	findRowManager: function() {
+		var m = this.parent;
+		while (m) {
+			if (m.prepareRow) {
+				return this.rowManager = m;
+			}
+			m = m.parent;
+		}
 	},
 	// FIXME: special handling for use in flyweight context.
 	confirmFlyweightSiblings: function() {
 		// note: if our manager has "prepareRow" it supports flyweighting.
-		if (this.manager.prepareRow && this.lastConfirmIndex != null) {
+		var didAutoConfirm;
+		var m = this.rowManager || this.findRowManager();
+		if (m && m.prepareRow && this.lastConfirmIndex != null) {
+			//this.log(this.lastConfirmIndex);
 			// shift flyweight to previous row with a showing confirm
-			this.manager.prepareRow(this.lastConfirmIndex);
+			m.prepareRow(this.lastConfirmIndex);
 			if (this.confirmShowing) {
 				var i = this.index;
 				// temporarily reset our index so events have correct data
@@ -208,13 +227,15 @@ enyo.kind({
 				// hide confirm prompt and send an "auto" confirm.
 				this.setConfirmShowing(false);
 				if (this.confirmWhenAutoHidden) {
-					this.doConfirm(this.lastIndex);
+					didAutoConfirm = true;
+					this.doConfirm(this.index);
 				}
 				this.index = i;
 			}
 			// reset our row to the proper one.
-			this.manager.prepareRow(this.index);
+			m.prepareRow(this.index);
 		}
+		return didAutoConfirm;
 	},
 	confirmSwipe: function(inSender) {
 		this.setConfirmShowing(false);
@@ -231,6 +252,7 @@ enyo.kind({
 		return inEvent.dx > 0 || this.allowLeft ? inEvent.dx : 0;
 	}
 });
+
 
 // A swipeable item that animates the item out (or back into place).
 // Separate for now, so we can limit changes to dashboards only, until they're proven robust.

@@ -99,8 +99,8 @@ the subclass.
 		if (!this.jobCanceled) {
 			// Call setParams minus page range settings
 			var params = enyo.mixin({jobID: this.jobID}, this.printerSettings);
-			if (params.pageRange) {
-				delete params.pageRange;
+			if (params.pages) {
+				delete params.pages;
 			}
 			this.log("setParams: ", params);
 			this.$.setParams.call(params);
@@ -128,8 +128,8 @@ the subclass.
 			delete printParams.errorCode;
 
 			// Add page range settings to print params
-			if (this.printerSettings.pageRange) {
-				printParams.pageRange = this.printerSettings.pageRange;
+			if (this.printerSettings.pages) {
+				printParams.pages = this.printerSettings.pages;
 			}
 		
 			// Subscribe for status notifications so we know when the job is done
@@ -230,7 +230,7 @@ the subclass.
 	},
 	
 	finishJob: function() {
-		this.jobID = null;
+		this.$.getStatus.cancel();
 		this.hideProgressPopup();
 	}
 });

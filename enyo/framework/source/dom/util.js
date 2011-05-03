@@ -127,16 +127,51 @@ enyo.call = function(inObject, inMethod, inArguments) {
 			return fn.apply(inObject, inArguments || []);
 		}
 	}
-}
+};
 
 /**
-	Calls method _inMethod_ on _inScope_ asynchronously (on a 1ms timeout).
+	Calls method _inMethod_ on _inScope_ asynchronously.  Uses
+	_window.setTimeout_	with minimum delay, usually around 10ms.
 
 	Additional arguments are passed directly to _inMethod_.
 */
 enyo.asyncMethod = function(inScope, inMethod/*, inArgs*/) {
-	return setTimeout(enyo.hitch.apply(enyo, arguments), 1);
+	return setTimeout(enyo.bind.apply(enyo, arguments), 1);
 };
+
+/**
+	Calls method _inMethod_ on _inScope_ asynchronously.  Uses 
+	_window.postMessage()_ if possible to get shortest possible delay.
+
+	Additional arguments are passed directly to _inMethod_.
+*/
+enyo.nextTick = function(inScope, inMethod/*, inArgs*/) {
+	return setTimeout(enyo.bind.apply(enyo, arguments), 1);
+};
+
+/* alternative implementation with lower latency if browser supports window.postMessage */
+if (window.postMessage) {
+	(function() {
+		var methodQueue = [];
+
+		function nextTick(inScope, inFn/*, inArgs*/) {
+			methodQueue.push(enyo.bind.apply(enyo, arguments));
+			window.postMessage("~~~enyo-nextTick~~~", "*");
+		}
+		
+		function handleMessage(event) {
+			if (event.source === window && event.data === "~~~enyo-nextTick~~~") {
+				if (event.stopPropagation) { event.stopPropagation(); }
+				(methodQueue.shift())();
+			}
+		}
+
+		enyo.nextTick = nextTick;
+		enyo.requiresWindow(function() {
+				window.addEventListener('message', handleMessage, true);
+			});
+	})();
+}
 
 /**
 	Invokes function _inJob_ after _inWait_ milliseconds have elapsed since the
@@ -184,7 +219,7 @@ enyo.time = function(inName) {
 enyo.timeEnd = function(inName) {
 	var n = inName || enyo.time.lastTimer;
 	var dt = enyo.time.timers[n] ? new Date().getTime() - enyo.time.timers[n] : 0;
-	return enyo.time.timed[n] =  dt;
+	return (enyo.time.timed[n] = dt);
 };
 
 //* @protected
@@ -197,9 +232,11 @@ enyo.job._jobs = {};
 //* @public
 // string utils (needed so far)
 enyo.string = {
+	/** return string with white space at start and end removed */
 	trim: function(inString) {
 		return inString.replace(/^\s+|\s+$/g,"");
 	},
+	/** return string with leading and trailing quote characters removed, e.g. <code>"foo"</code> becomes <code>foo</code> */
 	stripQuotes: function(inString) {
 		var c0 = inString.charAt(0);
 		if (c0 == '"' || c0 == "'") {
@@ -211,12 +248,17 @@ enyo.string = {
 		}
 		return inString;
 	},
-	applyFilterHighlight: function(inText, inSearchText, inClassName) {
+	/** return string where _inSearchText_ is case-insensitively matched and wrapped in a &lt;span&gt; tag with
+	    CSS class _inClassName_ */
+	applyFilterHighlight: function(inText, inSearchText, inClassName) {	
 		return inText.replace(new RegExp(inSearchText, "i"), '<span class="' + inClassName + '">$&</span>');
 	},
+	/** return string with ampersand, less-than, and greater-than characters replaced with HTML entities, 
+	    e.g. <code>"This & That"</code> becomes <code>"This &amp;amp; That"</code> */
 	escapeHtml: function(inHtml) {
-		return inHtml.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+		return inHtml ? inHtml.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;') : '';
 	},
+	/** return a text-only version of a string by using the DOM to write out HTML and read back plain text */
 	removeHtml: function(inHtml) {
 		if (!this.div) {
 			this.div = document.createElement("div");
@@ -250,9 +292,9 @@ enyo.string = {
 		return inText;
 	},
 	//* Encode a string to Base64
-	toBase64: function(inText) { return window.btoa(inText) },
+	toBase64: function(inText) { return window.btoa(inText); },
 	//* Decode string from Base64. Throws exception on bad input.
-	fromBase64: function(inText) { return window.atob(inText) }
+	fromBase64: function(inText) { return window.atob(inText); }
 };
 
 if (!(window.btoa && window.atob)) {
@@ -286,3 +328,20 @@ enyo._$L = function(inText) {
 	}
 	return this._enyoG11nResources.$L(inText);
 };
+
+// return visible control dimensions unobscured by other content
+enyo.getVisibleControlBounds = function(inControl) {
+	var o = enyo.mixin(inControl.getBounds(), inControl.getOffset());
+	var oh = o.top + o.height;
+	var vh = enyo.getVisibleBounds().height;
+	o.height -= Math.max(0, oh - vh);
+	return o;
+}
+
+// return visible bounds of window unobscured by content like maybe a keyboard...
+enyo.getVisibleBounds = function() {
+	return {
+		width: window.innerWidth,
+		height: window.innerHeight
+	};
+}

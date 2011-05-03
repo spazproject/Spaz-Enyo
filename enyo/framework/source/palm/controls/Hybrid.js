@@ -9,10 +9,15 @@
   with a "ready" method name after initialization of the methods and the call to 
   `PDL_JSRegistrationComplete()`.  You can change the name of that callback by modifying the 
   _readyCallbackName_ property.
-  
+
   Non-visible plugins are supported with width and height of 0.  They are still in the 
   DOM of the page, and re-rendering them will cause the plugin executable to be shutdown 
-  and restarted.
+  and restarted.  The enyo.Hybrid code will automatically apply a "float: left" style to 0-size
+  plugins so they don't interfere with page layout.
+  
+  If you use a hybrid in a non-webOS context, only the width and height properties are
+  used, creating an inert object with no methods or behavior.  This is mainly useful for testing
+  how the control interacts with your application layout.
  */
 
 enyo.kind({
@@ -33,9 +38,14 @@ enyo.kind({
 		readyCallbackName: "ready"
 	},
 	events: {
-		/** sent when the plugin has used `PDL_CallJS()` to call the "ready" method letting you know
-		    that it is ready to allow method calls. */
-		onPluginReady: ""
+		/** sent when the plugin has is ready to allow method calls.  This is either signaled directly by
+		    remoteadapter on newer webOS builds or signaled by the plugin code using `PDL_CallJS()` to call the 
+			"ready" method. */
+		onPluginReady: "",
+		/** sent when the plugin executable has been started and has a made a connection back to the plugin. */
+		onPluginConnected: "",
+		/** sent when the plugin executable has disconnected, usually due to the process ending. */
+		onPluginDisconnected: ""
 	},
 
 	//* @protected
@@ -53,26 +63,30 @@ enyo.kind({
 			throw("must set 'executable' on enyo.hybrid object");
 		}
 
-		/* only setup attributes of <object> when running on device */
+		/* width and height are fine for desktop debugging */
+		this.widthChanged();
+		this.heightChanged();
+
+		/* use float: left to take 0-width/height control out of the flow and avoid odd layout issues */
+		if (this.width === 0 || this.height === 0) {
+			this.applyStyle("float", "left");
+		}
+		
+		/* only setup runtime attributes of <object> when running on device */
 		if (window.PalmSystem) {
 			this.setAttribute("type", "application/x-palm-remote");
-			this.widthChanged();
-			this.heightChanged();
-
-			// setup param tags that name the plugin executable and any command-line parameters
-			this.content = "<param name='exe' value='" + this.executable + "'>";
-			this.content += "<param name='alphablend' value='" + (this.alphaBlend ? "true" : "false") + "'>";
-			var paramNum = 1;
-			this.params.forEach(enyo.bind(this, function(p) {
-					// FIXME: need to escape single quotes in p
-					this.content += "<param name='param" + (paramNum++) + "' value='" + p + "'>";
-				}));
+			this.setAttribute("exe", this.executable);
+			this.setAttribute("alphablend", (this.alphaBlend ? "true" : "false"));
+			for (var paramNum = 0; paramNum < this.params.length; paramNum++) {
+				this.setAttribute("param" + (paramNum + 1), this.params[paramNum]);
+			}
 		}
 	},
 	
 	widthChanged: function() {
 		this.setAttribute("width", this.width);
 	},
+
 	heightChanged: function() {
 		this.setAttribute("height", this.height);
 	},
@@ -81,6 +95,7 @@ enyo.kind({
 		this.inherited(arguments);
 		if (this.hasNode()) {
 			// once we have a plugin node created, we can add our callback functions to it
+			this.node.__PDL_PluginStatusChange__ = enyo.bind(this, this.pluginStatusChangedCallback);
 			this.node[this.readyCallbackName] = enyo.bind(this, this.pluginReadyCallback);
 			this.deferredCallbacks.forEach(function(cb) {
 					this.node[cb.name] = cb.callback;
@@ -89,12 +104,27 @@ enyo.kind({
 		}
 	},
 
+	pluginStatusChangedCallback: function(status) {
+		switch (status) {
+			case "ready": 
+				this.pluginReadyCallback(); 
+				break;
+			case "connected":
+				this.doPluginConnected();
+				break;
+			case "disconnected":
+				this.doPluginDisconnected();
+				break;
+		}
+	},
+
 	pluginReadyCallback: function() {
 		/* we don't send an event or set pluginReady immediately, because we don't want to trigger
 		 * code that could then call functions in the plugin, as that's not allowed.  Instead, we
 		 * schedule a timeout to be called immediately where we will send our event and call any
 		 * deferred method calls. */
-		enyo.asyncMethod(this, function() {
+		enyo.nextTick(this, function() {
+				if (this.pluginReady) return; /* only can go ready once */
 				this.pluginReady = true;
 				this.doPluginReady(); /* send event to owner */
 
@@ -103,6 +133,7 @@ enyo.kind({
 				this.deferredCalls.forEach(function (call) {
 					call.callback(enyo.call(this.node, call.methodName, call.args));
 					}, this);
+				this.deferredCalls = [];
 			});
 	},
 	
@@ -127,10 +158,14 @@ enyo.kind({
 	/**
 	  Call a method on the plugin with the result returned through a callback
 	  function.  If the hybrid plugin is not ready for calls, this will defer the
-	  call to be done after the plugin is ready.
+	  call to be done after the plugin is ready.  You can pass null as the callback
+	  if you don't care about the result.
 	 */
 	callPluginMethodDeferred: function(callback, methodName) {
 		var args = Array.prototype.slice.call(arguments, 2);
+		if (callback === null) {
+			callback = enyo.nop;
+		}
 		if (this.pluginReady) {
 			callback(this.node[methodName].apply(this.node, args));
 		}
@@ -144,7 +179,7 @@ enyo.kind({
 	  _name_ is a string, the name to use for the callback method on the plugin.  _callback_ is a function that
 	  will be called with "this" pointing to the actual DOM node of the plugin, so use enyo.bind to redirect it
 	  to the appropriate context.  The _defer_ parameter is an optional boolean.  If true, the callback will be 
-	  called from an asyncMethod so it can make calls back into the plugin. */
+	  called asynchronously so it can make calls back into the plugin. */
 	addCallback: function(name, callback, defer) {
 		// defer option causes us to synthesize a function that will call the original callback after a
 		// minimal delay to avoid recursive calls into the plugin
@@ -154,7 +189,7 @@ enyo.kind({
 				var args = Array.prototype.slice.call(arguments);
 				args.unshift(callback);
 				args.unshift(this);
-				enyo.asyncMethod.apply(enyo, args);
+				enyo.nextTick.apply(enyo, args);
 			};
 		}
 		else {

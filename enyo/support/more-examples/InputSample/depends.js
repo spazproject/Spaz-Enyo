@@ -2,6 +2,7 @@
 enyo.depends(
 	"source/InputSample.js",
 	"css/InputSample.css",
+	"source/HeaderView.js",
 	"source/ViewItem.js",
 	"source/Main.js",
 	"source/input/KeyPresses.js",

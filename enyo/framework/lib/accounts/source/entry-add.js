@@ -44,7 +44,7 @@ enyo.kind({
 			throw "Expecting an array of templates to AddAccount";
 		}
 		this.capability = capability || this.capability;
-		this.$.addAccountView.showAvailableAccounts(templates);
+		this.$.addAccountView.showAvailableAccounts(templates, this.capability);
 		this.selectViewByName("addAccountView");
 	},
 	
@@ -53,7 +53,7 @@ enyo.kind({
 		this.template = template;
 		// Does this template have custom UI?
 		if (template.validator.customUI) {
-			AccountsUtil.setCrossAppParameters(this.$.customAccountsUI, template.validator.customUI, {mode:"create", template: template});
+			AccountsUtil.setCrossAppParameters(this.$.customAccountsUI, template.validator.customUI, {mode:"create", template: template, capability: this.capability});
 			this.selectViewByName("customAccountsUI");
 		}
 		else {
@@ -64,7 +64,7 @@ enyo.kind({
 	
 	// Handle the validation response from the custom UI
 	handleCustomUIResult: function(inSender, msg) {
-		console.log("handleCustomUIResult:" + enyo.json.stringify(msg));
+		//console.log("handleCustomUIResult:" + enyo.json.stringify(msg));
 		if (msg && msg.returnValue && msg.template) {
 			msg.templateId = msg.template.templateId;
 			this.$.modifyAccountView.displayCreateView(msg, msg.template, this.capability);
@@ -78,9 +78,18 @@ enyo.kind({
 	
 	// User's credentials validated okay
 	validationSuccess: function(inSender, validationResult) {
+		if (!validationResult)
+			return;
 		//console.log("validationSuccess.  validation=" + enyo.json.stringify(validationResult));
-		this.$.modifyAccountView.displayCreateView(validationResult, this.template, this.capability);
-		this.selectViewByName("modifyAccountView");
+		// Was the capability added to the account? (in which case there is nothing more to do here)
+		if (validationResult.capabilityWasEnabled) {
+			// Return to the main accounts view
+			this.doAccountsUI_Done();
+		}
+		else {
+			this.$.modifyAccountView.displayCreateView(validationResult, this.template, this.capability);
+			this.selectViewByName("modifyAccountView");
+		}
 	},
 	
 	// Go back to the previous pane

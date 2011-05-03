@@ -48,5 +48,11 @@ enyo.kind({
 			this.value = inSender.getValue();
 			this.doChange(inEvent, this.value);
 		}
+	},
+	inputTypeChanged: function() {
+		this.$.input.domAttributes["x-palm-input-type"] = this.inputType;
+		if (this.hasNode()) {
+			this.$.input.render();
+		}
 	}
 });

@@ -9,5 +9,6 @@ enyo.depends(
 	"javascript/character.js",
 	"javascript/timezone.js",
 	"javascript/datetime.js",
-	"javascript/numberfmt.js"
+	"javascript/numberfmt.js",
+	"javascript/duration.js"
 );

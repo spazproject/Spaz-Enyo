@@ -79,12 +79,14 @@ enyo.kind({
 		//
 		// FIMXE: 'needs' interface is hacky
 		if (this.needs === null || page >= this.needs || enyo.DbPages.isEOF(inResponse)) {
+			// NOTE: must dump state buffer before rendering!
+			if (this.needs !== null) {
+				this.$.list.$.list.clearState();
+			}
 			this.refresh();
 			if (this.needs !== null) {
 				// FIXME: this is an async continuation of 'reset' which is ad hoc sitting here
 				// FIXME: we need to block the UI during the interval
-				// dump state buffer
-				this.$.list.$.list.clearState();
 				// update scroll position
 				this.$.list.$.scroller.$.scroll.start();
 				// done looking for fresh data

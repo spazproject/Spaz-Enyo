@@ -32,6 +32,11 @@ enyo.kind({
 		}
 		this.inherited(arguments);
 	},
+	
+	finishJob: function() {
+		this.$.getRenderStatus.cancel();
+		this.inherited(arguments);
+	},
 
 	addFiles: function(inPrintParams) {
 		this.log("inPrintParams=", inPrintParams);

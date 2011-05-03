@@ -1,7 +1,7 @@
 {
 	"is12HourDefault": false,
 
-	"numberTripleDivider": ".",
+	"numberDivider": ".",
 	"numberDecimal": ",",
 	"currencyPrepend": "",
 	"currencyAppend": "€",

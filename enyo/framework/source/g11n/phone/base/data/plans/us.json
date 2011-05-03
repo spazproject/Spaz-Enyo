@@ -3,7 +3,7 @@
 	"skipTrunk": true,
 	"trunkCode": "1",
 	"iddCode": "011",
-	"dialingPlan": "open",
+	"dialingPlan": "closed",
 	"commonFormatChars": " ()-.",
 	"fieldLengths": {
 		"areaCode": 3,

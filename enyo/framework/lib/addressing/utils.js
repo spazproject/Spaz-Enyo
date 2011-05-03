@@ -1,6 +1,13 @@
 /* Copyright 2009-2011 Hewlett-Packard Development Company, L.P. All rights reserved. */
 enyo.addressing = {};
 
+enyo.addressing._$L = function(inText) {
+	if (!this._resources) {
+		this._resources = new enyo.g11n.Resources({root:"$enyo-lib/addressing/"});
+	}
+	return this._resources.$L(inText);
+};
+
 enyo.addressing.displayNameType = {
 	NAME: "name",
 	NICKNAME: "nickname",
@@ -137,7 +144,7 @@ enyo.addressing.formatAddress = function(inAddress, inContactType, inPerson) {
 	// localize phone numbers if they are not remote.
 	if (inContactType == "phoneNumbers" && id != r) {
 		inAddress.formattedValue = this.phoneFormatter.format(new enyo.g11n.PhoneNumber(inAddress.value));
-		console.dir(inAddress.formattedValue);
+		//console.dir(inAddress.formattedValue);
 	} else {
 		inAddress.formattedValue = inAddress.formattedValue || inAddress.value;
 	}

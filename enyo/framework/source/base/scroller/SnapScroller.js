@@ -56,13 +56,14 @@ enyo.kind({
 	},
 	indexChanged: function() {
 		var p = this.calcPos(this.index);
-		if (p != undefined) {
+		if (p !== undefined) {
+			this.calcBoundaries();
 			this.scrollToDirect(p);
-			enyo.asyncMethod(this, "scrollToDirect", p);
 		}
 	},
 	scrollStart: function() {
 		this.inherited(arguments);
+		this.startPos = this.scrollH ? this.getScrollLeft() : this.getScrollTop();
 		this._scrolling = true;
 	},
 	scroll: function(inSender) {
@@ -88,9 +89,11 @@ enyo.kind({
 	},
 	scrollStop: function() {
 		this._scrolling = false;
-		if (this.snapping && this.index != this.oldIndex) {
+		if (this.snapping) {
 			this.snapping = false;
-			this.snapFinish();
+			if (this.index != this.oldIndex) {
+				this.snapFinish();
+			}
 		}
 		this.inherited(arguments);
 	},
@@ -109,16 +112,11 @@ enyo.kind({
 	},
 	scrollToDirect: function(inPos) {
 		this.pos = inPos;
-		var d = this.scrollH ? "Left" : "Top";
-		this["scroll"+d] = inPos;
-		// update x/y in scroll
-		var s = this.$.scroll;
 		if (this.scrollH) {
-			s.x = s.x0 = -this.scrollLeft;
+			this.setScrollPositionDirect(inPos, 0);
 		} else {
-			s.y = s.y0 = -this.scrollTop;
+			this.setScrollPositionDirect(0, inPos);
 		}
-		this.effectScroll();
 	},
 	// FIXME: may need a better test for which control to snap to, probably based on what 
 	// direction you moved and how far from a snap edge you are.
@@ -144,7 +142,7 @@ enyo.kind({
 	},
 	snap: function() {
 		var i = this.calcSnapScroll();
-		if (i != undefined) {
+		if (i !== undefined) {
 			this.snapTo(i);
 		}
 	},
@@ -155,10 +153,12 @@ enyo.kind({
 	snapTo: function(inIndex) {
 		this.oldIndex = this.index;
 		var p = this.calcPos(inIndex);
-		if (p != undefined) {
+		if (p !== undefined) {
 			this.index = inIndex;
 			this.snapScrollTo(p);
-			this.doSnap(inIndex);
+			if (this.index != this.oldIndex) {
+				this.doSnap(inIndex);
+			}
 		}
 	},
 	/**
@@ -171,6 +171,6 @@ enyo.kind({
 	Scrolls to the control following (right or bottom) the one currently in view.
 	*/
 	next: function() {
-		!this.snapping && this.snapTo(this.index+1)
+		!this.snapping && this.snapTo(this.index+1);
 	}
 });

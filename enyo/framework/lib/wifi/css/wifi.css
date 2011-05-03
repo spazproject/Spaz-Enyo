@@ -8,7 +8,7 @@
 .wifi-item-name {
 }
 .wifi-item-state {
-	padding: 0px 8px 0px 0px;
+	padding: 0px 5px 0px 0px;
 }
 .wifi-item-secure {
 	padding: 0px 8px 0px 0px;
@@ -26,6 +26,7 @@
 .wifi-message-error {
 	font-size: 16px;
 	color: red;
+	padding: 10px 0px px 0px;
 }
 .wifi-message-status {
 	font-size: 12px;
@@ -33,5 +34,17 @@
 	padding: 0px 0px 0px 3px;
 }
 .wifi-ip-box {
-	margin: 20px 35px 0px 33px;
+	margin: 0px 0px 0px 0px;
+}
+.wifi-label-text {
+	color: rgb(31, 117, 191);
+}
+.scrollable {
+	-webkit-border-image: url(../images/bg_field.png) 10 7 10 7 stretch stretch;
+	border-width: 10px 7px;
+	margin: 0px;
+	overflow:hidden;
+}
+.scrollable .scrollable-inner {
+	margin: 0px 0px;
 }

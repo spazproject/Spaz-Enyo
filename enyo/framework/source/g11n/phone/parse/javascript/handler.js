@@ -15,7 +15,7 @@ enyo.g11n.StateHandler = function _StateHandler () {
 };
 
 enyo.g11n.StateHandler.prototype = {
-	processSubscriberNumber: function(number, fields) {
+	processSubscriberNumber: function(number, fields, regionSettings) {
 		var last;
 		
 		last = number.search(/[xwtp]/i);	// last digit of the local number
@@ -29,6 +29,13 @@ enyo.g11n.StateHandler.prototype = {
 			fields.extension = number.substring(last).replace('x', '');
 		} else {
 			fields.subscriberNumber = number;
+		}
+		
+		if (regionSettings.plan.fieldLengths && 
+				regionSettings.plan.fieldLengths.maxLocalLength &&
+				fields.subscriberNumber &&
+				fields.subscriberNumber.length > regionSettings.plan.fieldLengths.maxLocalLength) {
+			fields.invalid = true;
 		}
 	},
 	
@@ -52,7 +59,7 @@ enyo.g11n.StateHandler.prototype = {
 		if ( fields[fieldName] !== undefined ) {
 			// we have a spurious recognition, because this number already contains that field! So, just put
 			// everything into the subscriberNumber as the default
-			this.processSubscriberNumber(number, fields);
+			this.processSubscriberNumber(number, fields, regionSettings);
 		} else {
 			// substring() extracts the part of the string up to but not including the end character,
 			// so add one to compensate
@@ -64,7 +71,7 @@ enyo.g11n.StateHandler.prototype = {
 			}
 			
 			if ( number.length > end ) {
-				this.processSubscriberNumber(number.substring(end), fields);
+				this.processSubscriberNumber(number.substring(end), fields, regionSettings);
 			}
 		}
 		
@@ -93,7 +100,7 @@ enyo.g11n.StateHandler.prototype = {
 		if ( fields[fieldName] !== undefined ) {
 			// we have a spurious recognition, because this number already contains that field! So, just put
 			// everything into the subscriberNumber as the default
-			this.processSubscriberNumber(number, fields);
+			this.processSubscriberNumber(number, fields, regionSettings);
 			ret.number = "";
 		} else {
 			// substring() extracts the part of the string up to but not including the end character,
@@ -117,7 +124,7 @@ enyo.g11n.StateHandler.prototype = {
 		
 		if ( fields.trunkAccess !== undefined ) {
 			// What? We already have one? Okay, put the rest of this in the subscriber number as the default behaviour then.
-			this.processSubscriberNumber(number, fields);
+			this.processSubscriberNumber(number, fields, regionSettings);
 			number = "";
 		} else {
 			trunkLength = regionSettings.plan.trunkCode.length;
@@ -137,7 +144,7 @@ enyo.g11n.StateHandler.prototype = {
 		
 		if ( fields.iddPrefix !== undefined ) {
 			// What? We already have one? Okay, put the rest of this in the subscriber number as the default behaviour then.
-			this.processSubscriberNumber(number, fields);
+			this.processSubscriberNumber(number, fields, regionSettings);
 			ret.number = "";
 		} else {
 			// found the idd prefix, so save it and cause the function to parse the next part
@@ -157,7 +164,7 @@ enyo.g11n.StateHandler.prototype = {
 		
 		if ( fields.iddPrefix !== undefined ) {
 			// What? We already have one? Okay, put the rest of this in the subscriber number as the default behaviour then.
-			this.processSubscriberNumber(number, fields);
+			this.processSubscriberNumber(number, fields, regionSettings);
 			ret.number = "";
 		} else {
 			// found the idd prefix, so save it and cause the function to parse the next part
@@ -227,7 +234,7 @@ enyo.g11n.StateHandler.prototype = {
 				fields.areaCode = number.substring(1, end);
 			}
 			if ( number.length > end ) {
-				this.processSubscriberNumber(number.substring(end), fields);
+				this.processSubscriberNumber(number.substring(end), fields, regionSettings);
 			}
 		} else if ( regionSettings.plan.fieldLengths.maxLocalLength !== undefined ) {
 			if ( fields.trunkAccess !== undefined || fields.mobilePrefix !== undefined ||
@@ -237,16 +244,16 @@ enyo.g11n.StateHandler.prototype = {
 				// or mobile prefix, then consider the rest of this number to be an area code + part of the subscriber number
 				fields.areaCode = number.substring(0, end);
 				if ( number.length > end ) {
-					this.processSubscriberNumber(number.substring(end), fields);
+					this.processSubscriberNumber(number.substring(end), fields, regionSettings);
 				}
 			} else {
 				// shorter than the length needed for a local number, so just consider it a local number
-				this.processSubscriberNumber(number, fields);
+				this.processSubscriberNumber(number, fields, regionSettings);
 			}
 		} else {
 			fields.areaCode = number.substring(0, end);
 			if ( number.length > end ) {
-				this.processSubscriberNumber(number.substring(end), fields);
+				this.processSubscriberNumber(number.substring(end), fields, regionSettings);
 			}
 		}
 		
@@ -278,7 +285,7 @@ enyo.g11n.StateHandler.prototype = {
 		} 
 			
 		if (number.length > 0) {
-			this.processSubscriberNumber(number, fields);
+			this.processSubscriberNumber(number, fields, regionSettings);
 			if ( currentChar > 0 && currentChar < number.length ) {
 				// if we were part-way through parsing, and we hit an invalid digit,
 				// indicate that the number could not be parsed properly
@@ -313,7 +320,7 @@ enyo.g11n.StateHandler.prototype = {
 			number = (number.length > end) ? "^" + number.substring(end) : "";
 		} else {
 			// got it twice??? Okay, this is a bogus number then. Just put everything else into the subscriber number as the default
-			this.processSubscriberNumber(number, fields);
+			this.processSubscriberNumber(number, fields, regionSettings);
 			number = "";
 		}
 
@@ -375,19 +382,20 @@ enyo.g11n.StateHandler.prototype = {
 	local: function(number, currentChar, fields, regionSettings) {
 		// in open dialling plans, we can tell that this number is a local subscriber number because it
 		// starts with a digit that indicates as such
-		this.processSubscriberNumber(number, fields);
+		this.processSubscriberNumber(number, fields, regionSettings);
 		return {
 			number: ""
 		};
 	}
 };
 
-enyo.g11n.GBStateHandler = function () {
+// context-sensitive handler
+enyo.g11n.CSStateHandler = function () {
 	return this;
 };
 
-enyo.g11n.GBStateHandler.prototype = new enyo.g11n.StateHandler();
-enyo.g11n.GBStateHandler.prototype.special = function (number, currentChar, fields, regionSettings) {
+enyo.g11n.CSStateHandler.prototype = new enyo.g11n.StateHandler();
+enyo.g11n.CSStateHandler.prototype.special = function (number, currentChar, fields, regionSettings) {
 	var ret;
 	
 	// found a special area code that is both a node and a leaf. In
@@ -399,11 +407,43 @@ enyo.g11n.GBStateHandler.prototype.special = function (number, currentChar, fiel
 	} else {
 		fields.areaCode = number.substring(0, currentChar);
 	}
-	this.processSubscriberNumber(number.substring(currentChar), fields);
+	this.processSubscriberNumber(number.substring(currentChar), fields, regionSettings);
 	
 	ret = {
 		number: ""
 	};
 	
 	return ret;
+};
+
+enyo.g11n.USStateHandler = function () {
+	return this;
+};
+enyo.g11n.USStateHandler.prototype = new enyo.g11n.StateHandler();
+enyo.g11n.USStateHandler.prototype.vsc = function (number, currentChar, fields, regionSettings) {
+	var ret, length, end;
+
+	// found a VSC code (ie. a "star code")
+	fields.vsc = number;
+
+	// treat the rest of the number as if it were a completely new number
+	ret = {
+		number: ""
+	};
+
+	return ret;
+};
+
+enyo.g11n._handlerFactory = function (locale, plan) {
+	if (typeof(plan.contextFree) === 'boolean' && plan.contextFree === false) {
+		return new enyo.g11n.CSStateHandler();
+	}
+	var region = (locale && locale.region) || "zz";
+	switch (region) {
+	case 'us':
+		return new enyo.g11n.USStateHandler();
+		break;
+	default:
+		return new enyo.g11n.StateHandler();
+	}
 };

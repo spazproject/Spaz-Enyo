@@ -7,9 +7,12 @@
 	text-overflow: ellipsis;
 	overflow: hidden;
 	color: #000;
+	background: none;
+	border: none;
+	font-size: 18px;
 	padding: 0 0 10px;
 	text-align: center;
-	}
+}
 
 .print-dialog .label {
 	text-overflow: ellipsis;
@@ -18,6 +21,7 @@
 	font-size: 18px;
 	color:#363636;
 }
+
 .print-dialog .group {
 	-webkit-border-image: url(../images/bg_rowgroup.png) 10 10 repeat;
 	border-width: 10px;
@@ -30,7 +34,7 @@
 }
 .print-dialog .group .enyo-item {
 	border-bottom-color:#bebebe;
-	border-top:1px solid #ffffff;
+	/* border-top:1px solid #ffffff; */
 	background:#eee;
 }
 .print-dialog .group .enyo-item.enyo-first {
@@ -40,25 +44,45 @@
 	background:none;
 }
 
+.print-dialog .group .enyo-item .enyo-menucheckitem-caption {
+	padding: 0;
+}
+
+.print-dialog .search-message {
+	text-align: center;
+}
 
 .print-dialog .printer-list-item-box {
 	height: 2.3em;
 	color:#363636;
-	line-height:1.12em;
+	line-height:1.14em;
+	font-size:16px;
 	overflow: hidden;
 }
 .print-dialog .enyo-item.selected-printer {
 	background: url(../images/bg_selected_printer.png) repeat-x 0 0;
 }
 .print-dialog .enyo-item.selected-printer div {
-	height: 2.2em;
+	height: 2.14em;
 	color:#000;
 	line-height:1em;
 	overflow:hidden;
 }
-
+.print-dialog .enyo-item .enyo-picker-button {
+	margin:-8px 0;
+}
+.print-dialog .enyo-item .enyo-group {
+	margin:0;
+}
+.print-dialog .enyo-item .enyo-toggle-button {
+	margin:2px 0;
+}
+.print-dialog .enyo-item .enyo-picker-label {
+	display:none;
+}
 .print-dialog .get-capabilities-item {
-	height: 140px;
+	height: 7.5em;
+	text-align: center;
 }
 
 .print-dialog .pages-input {

@@ -383,7 +383,7 @@ body, input, button {
 
 .enyo-button-dark {
 	color: white;
-	background-color: #000;
+	background-color: rgba(23,23,23,0.5);
 }
 
 /* affirmative (green) */
@@ -453,7 +453,6 @@ body, input, button {
 
 .enyo-radiobutton, .enyo-tabbutton {
 	text-align: center;
-	text-transform: capitalize;
 	-webkit-box-sizing: border-box;
 	font-size: 16px;
 	border-width: 0px 17px;
@@ -769,7 +768,7 @@ body, input, button {
 	vertical-align: baseline;
 	width: 32px;
 	height: 32px;
-	margin: -6px 4px -10px 4px;
+	margin: -6px -6px -10px -6px;
 }
 
 .enyo-button-down .enyo-button-icon {
@@ -1269,7 +1268,8 @@ body, input, button {
 }
 
 .enyo-header-inner {
-	padding: 10px 12px;
+	padding: 13px 12px;
+	min-height: 52px;
 }
 
 .enyo-header-icon {
@@ -1309,7 +1309,7 @@ body, input, button {
 /* palm/themes/Onyx/css/SwipeableItem.css */
 
 .enyo-swipeableitem {
-	position: relative;
+	/*position: relative;*/
 	min-height: 44px;
 	padding: 8px 14px;
 }
@@ -1346,7 +1346,6 @@ body, input, button {
 }
 
 .enyo-toggle-label-off, .enyo-toggle-label-on {
-	text-transform: uppercase;
 	color: white;
 	font-size: 14px;
 	font-weight: bold;
@@ -1385,7 +1384,6 @@ body, input, button {
 	line-height: 34px;
 	font-size: 14px;
 	color: #1F75BF;
-	text-transform: uppercase;
 	white-space: nowrap;
 }
 
@@ -1393,6 +1391,7 @@ body, input, button {
 	border: 0;
 	padding: 0;
 }
+
 
 /* palm/themes/Onyx/css/PickerButton.css */
 
@@ -1472,7 +1471,6 @@ body, input, button {
 .enyo-group-label {
 	margin: -34px -12px;
 	padding: 4px 0 12px 10px;
-	text-transform: uppercase;
 	font-size: 14px;
 	color: #ffffff;
 	text-shadow: #646454 0px 1px 0px;
@@ -1508,6 +1506,7 @@ body, input, button {
 	border-style: solid;
 	border-color: transparent;
 	-webkit-box-sizing: border-box;
+	font-size: 18px;
 }
 
 .enyo-input-focus {
@@ -1527,6 +1526,7 @@ body, input, button {
 	width: 100%;
 	-webkit-box-sizing: border-box;
 	cursor: pointer;
+	font-size: 18px;
 }
 
 .enyo-input-input:focus {
@@ -1538,7 +1538,7 @@ FIXME: we almost always want some padding on a enyo-item, except when it's surro
 		a fancy-input.... so we special case that here, non-ideal 
 */
 
-.enyo-item > .enyo-input {
+.enyo-item .enyo-input {
 	margin: -11px -10px;
 }
 
@@ -1572,6 +1572,11 @@ FIXME: we almost always want some padding on a enyo-item, except when it's surro
 
 .enyo-tool-input-focus {
 	-webkit-border-image: url(palm/themes/Onyx/images/input-tool-focus.png) 6 6 7 6;
+}
+
+.enyo-tool-input-input {
+	font-size: 16px;
+	padding: 2px 0 1px 0;
 }
 
 .enyo-tool-input-input::-webkit-input-placeholder {

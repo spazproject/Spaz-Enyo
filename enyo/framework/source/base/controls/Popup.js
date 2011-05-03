@@ -54,16 +54,13 @@ enyo.kind({
 	addListeners: function() {
 		if (this.hasNode()) {
 			this.transitionEndListener = enyo.bind(this, "webkitTransitionEndHandler");
-			this.resizeListener = enyo.bind(this, "resize");
 			this.node.addEventListener("webkitTransitionEnd", this.transitionEndListener, false);
-			window.addEventListener("resize", this.resizeListener, false);
 		}
 	},
 	removeListeners: function() {
 		if (this.hasNode()) {
 			this.node.removeEventListener("webkitTransitionEnd", this.transitionEndListener, false);
 		}
-		window.removeEventListener("resize", this.resizeListener, false);
 	},
 	webkitTransitionEndHandler: function() {
 		this.setShowing(this.isOpen);
@@ -99,6 +96,10 @@ enyo.kind({
 			this[oi.method].apply(this, oi.args);
 		}
 	},
+	resizeHandler: function() {
+		this.resize();
+		this.inherited(arguments);
+	},
 	//* @public
 	/**
 	Open at the location specified by a location relative to the viewport
@@ -117,7 +118,7 @@ enyo.kind({
 		if (!this.openInfo) {
 			var m = inArguments.callee.nom;
 			m = m.split(".").pop().replace("()", "");
-			args = enyo.cloneArray(inArguments);
+			var args = enyo.cloneArray(inArguments);
 			this.openInfo = {method: m, args: args};
 		}
 	},
@@ -135,7 +136,7 @@ enyo.kind({
 		var p = {
 			left: inEvent.centerX || inEvent.clientX || inEvent.pageX,
 			top: inEvent.centerY || inEvent.clientY || inEvent.pageY
-		}
+		};
 		if (inOffset) {
 			p.left += inOffset.left || 0;
 			p.top += inOffset.top || 0;
@@ -176,6 +177,7 @@ enyo.kind({
 		var co = inControl.getOffset();
 		var o = {};
 		var n = inControl.hasNode();
+		var w, h;
 		if (n) {
 			h = n.offsetHeight;
 			w = n.offsetWidth;
@@ -226,9 +228,9 @@ enyo.kind({
 		var s = this.calcSize();
 		var vp = this.calcViewport();
 		var o = {
-			right: Math.max(0, (vp.width - s.width) / 2),
-			bottom: Math.max(0, (vp.height - s.height) / 2)
-		}
+			left: Math.max(0, (vp.width - s.width) / 2),
+			top: Math.max(0, (vp.height - s.height) / 2)
+		};
 		return o;
 	},
 	// size and position
@@ -326,7 +328,7 @@ enyo.kind({
 		var s = {
 			width: vp.width - (d.left || d.right || 0),
 			height: vp.height - (d.top || d.bottom || 0)
-		}
+		};
 		if (d.width) {
 			s.width = Math.min(d.width, s.width);
 		}
@@ -350,11 +352,13 @@ enyo.kind({
 		if (this._viewport) {
 			return this._viewport;
 		} else {
-			var op = this.parent && this.parent.hasNode() || document.body;
-			return this._viewport = {
-				width: op.offsetWidth,
-				height: op.offsetHeight
+			var vp;
+			if (this.parent && this.parent.hasNode()) {
+				vp = enyo.getVisibleControlBounds(this.parent);
+			} else {
+				vp = enyo.getVisibleBounds();
 			}
+			return this._viewport = vp;
 		}
 	},
 	// measure the size of the popup.
@@ -380,7 +384,7 @@ enyo.kind({
 			if (hidden) {
 				this.node.style.display = "none";
 			}
-			return this._size = s;
+			return (this._size = s);
 		}
 	},
 	clearSizeCache: function() {

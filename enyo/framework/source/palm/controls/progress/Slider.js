@@ -36,6 +36,14 @@ enyo.kind({
 		{name: "client"}
 	],
 	//* @protected
+	positionChanged: function(inOldPosition) {
+		// disallow position changes not a result of dragging while control is dragging
+		if (this.handlingDrag && !this.dragChange) {
+			this.position = inOldPosition;
+		} else {
+			this.inherited(arguments);
+		}
+	},
 	renderPosition: function(inPercent) {
 		this.$.button.applyStyle("left",  inPercent + "%");
 	},
@@ -71,7 +79,9 @@ enyo.kind({
 	dragHandler: function(inSender, inEvent) {
 		if (this.handlingDrag) {
 			var p = this.calcEventPosition(inEvent.pageX);
+			this.dragChange = true;
 			this.setPositionImmediate(p);
+			this.dragChange = false;
 			this.doChanging(this.position);
 		}
 	},
@@ -97,6 +107,9 @@ enyo.kind({
 			var p = this.calcEventPosition(e.pageX);
 			this._clicked = true;
 			this.setPosition(p);
+			if (!this.animatePosition) {
+				this.doChange(this.position);
+			}
 		}
 	},
 	mouseupHandler: function() {

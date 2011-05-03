@@ -58,11 +58,6 @@ enyo.kind({
 		}
 		this.inherited(arguments);
 	},
-	updateDepth: function() {
-		if (!inControl.isChrome && inControl.styleDepth) {
-			inControl._depth = this._depth + 1;
-		}
-	},
 	styleDepth: function() {
 		this.$.item.applyStyle("padding-left", (this._depth * this.indentPadding) + "px");
 	},
@@ -185,7 +180,7 @@ enyo.kind({
 		this.checkedChanged();
 	},
 	checkedChanged: function() {
-		this.$.item.checked = this.checked
+		this.$.item.checked = this.checked;
 		this.$.item.stateChanged("checked");
 	},
 	setSelected: function(inSelected) {

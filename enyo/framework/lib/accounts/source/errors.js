@@ -1,6 +1,6 @@
 /* Copyright 2009-2011 Hewlett-Packard Development Company, L.P. All rights reserved. */
 var AccountError = (function() {
-	var rb = new enyo.g11n.Resources({root: this.libPath});
+	var rb = new enyo.g11n.Resources({root: "$enyo-lib/accounts"});
 	
 	var _errorStrings = {
 		"UNKNOWN_ERROR":				rb.$L("Unknown error"),

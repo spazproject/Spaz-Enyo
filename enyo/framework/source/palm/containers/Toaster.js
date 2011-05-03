@@ -86,5 +86,53 @@ enyo.kind({
 		if (!this.isOpen) {
 			this.hide();
 		}
+	},
+	isDraggableEvent: function(inEvent) {
+		var c = inEvent.dispatchTarget;
+		return c && c.slidingHandler;
+	},
+	isHorizontal: function() {
+		return this.flyInFrom == "right" || this.flyInFrom == "left";
+	},
+	dragstartHandler: function(inSender, inEvent) {
+		if (this.isDraggableEvent(inEvent)) {
+			this.dragging = true;
+			this.dragD0 = 0;
+		}
+	},
+	dragHandler: function(inSender, inEvent) {
+		if (this.dragging) {
+			var d = this.isHorizontal() ? inEvent.dx : inEvent.dy;
+			this.dragD = this.dragD0 - d;
+			this.dragD0 = d;
+			if ((this.dragD0 * ((this.flyInFrom == "right" || this.flyInFrom == "bottom") ? 1 : -1)) > 0) {
+				var t = "translate3d(" + (this.isHorizontal() ? this.dragD0 + "px,0,0)" : "0," + this.dragD0 + "px,0)");
+				this.domStyles["-webkit-transform"] = this.node.style.webkitTransform = t;
+			}
+		}
+	},
+	dragfinishHandler: function(inSender, inEvent) {
+		if (this.dragging) {
+			var w = this.hasNode()["client" + (this.isHorizontal() ? "Width" : "Height")]; 
+			var s = Math.abs(this.dragD0/w) * 100;
+			if ((this.dragD * (this.flyInFrom == "right" || this.flyInFrom == "bottom" ? 1 : -1)) > 0) {
+				this.startAnimate(s, 0);
+				if (!this.isOpen) {
+					this.isOpen = true;
+					this.prepareOpen();
+					this.showHideScrim(this.isOpen);
+					enyo.asyncMethod(this, "afterOpen");
+				}
+			} else {
+				this.startAnimate(s, 100);
+				if (this.isOpen) {
+					this.isOpen = false;
+					this.prepareClose();
+					this.showHideScrim(this.isOpen);
+					this.doClose();
+				}
+			}
+			this.dragging = false;
+		}
 	}
 });

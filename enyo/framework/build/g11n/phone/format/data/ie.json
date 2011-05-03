@@ -5,6 +5,7 @@
 		"trunkAccess":       "",
 		"mobilePrefix":     ["X", "XX "],
 		"areaCode":         ["X ", "XX ", "XXX "],
+		"emergency":        ["X", "XX", "XXX", "XXXX", "XXXXX", "XXXXXX"],
 		"serviceCode":      ["X", "XX ", "XXX ", "XXXX ", "XXXXX " ],
 		"subscriberNumber": ["X", "XX", "XXX", "XXXX", "XXXXX", "XXX XXX", "XXX XXXX", "XXXX XXXX"],
 		"extension":        [" X", " XX", " XXX", " XXXX", " XXXXX", " XXXXXX", " XXXXXXX"]
@@ -15,6 +16,7 @@
 		"trunkAccess":       "X",
 		"mobilePrefix":     ["X", "XX "],
 		"areaCode":         ["X ", "XX ", "XXX "],
+		"emergency":        ["X", "XX", "XXX", "XXXX", "XXXXX", "XXXXXX"],
 		"serviceCode":      ["X", "XX ", "XXX ", "XXXX ", "XXXXX " ],
 		"subscriberNumber": ["X", "XX", "XXX", "XXXX", "XXX XX", "XXX XXX", "XXX XXXX", "XXXX XXXX"],
 		"extension":        [" X", " XX", " XXX", " XXXX", " XXXXX", " XXXXXX", " XXXXXXX"]
@@ -25,6 +27,7 @@
 		"trunkAccess":       "",
 		"mobilePrefix":     ["X", "XX "],
 		"areaCode":         ["X ", "XX ", "XXX "],
+		"emergency":        ["X", "XX", "XXX", "XXXX", "XXXXX", "XXXXXX"],
 		"serviceCode":      ["X", "XX ", "XXX ", "XXXX ", "XXXXX " ],
 		"subscriberNumber": ["X", "XX", "XXX", "XXXX", "XXX XX", "XXX XXX", "XXX XXXX", "XXXX XXXX"],
 		"extension":        [" X", " XX", " XXX", " XXXX", " XXXXX", " XXXXXX", " XXXXXXX"]
@@ -35,6 +38,7 @@
 		"trunkAccess":       "X",
 		"mobilePrefix":     ["X", "XX "],
 		"areaCode":         ["X ", "XX ", "XXX "],
+		"emergency":        ["X", "XX", "XXX", "XXXX", "XXXXX", "XXXXXX"],
 		"serviceCode":      ["X", "XX ", "XXX ", "XXXX ", "XXXXX " ],
 		"subscriberNumber": ["X", "XX", "XXX", "XXXX", "XXXXX", "XXX XXX", "XXX XXXX", "XXXX XXXX"],
 		"extension":        [" X", " XX", " XXX", " XXXX", " XXXXX", " XXXXXX", " XXXXXXX"]
@@ -45,6 +49,7 @@
 		"countryCode":      ["X ", "XX ", "XXX "],
 		"trunkAccess":       "(X",
 		"areaCode":         ["X) ", "XX) ", "XXX) "],
+		"emergency":        ["X", "XX", "XXX", "XXXX", "XXXXX", "XXXXXX"],
 		"serviceCode":      ["X ", "XX ", "XXX ", "XXXX "],
 		"subscriberNumber": ["X", "XX", "XXX", "XXXX", "XXXXX", "XXX XXX", "XXX XXXX", "XXXX XXXX"],
 		"extension":        [" X", " XX", " XXX", " XXXX", " XXXXX", " XXXXXX", " XXXXXXX"]
@@ -55,6 +60,7 @@
 		"countryCode":      ["X ", "XX ", "XXX "],
 		"trunkAccess":       "X",
 		"areaCode":         ["X ", "XX ", "XXX "],
+		"emergency":        ["X", "XX", "XXX", "XXXX", "XXXXX", "XXXXXX"],
 		"serviceCode":      ["X ", "XX ", "XXX ", "XXXX "],
 		"subscriberNumber": ["X", "XX", "XXX", "XXXX", "XXXXX", "XXX XXX", "XXX XXXX", "XXXX XXXX"],
 		"extension":        [" X", " XX", " XXX", " XXXX", " XXXXX", " XXXXXX", " XXXXXXX"]

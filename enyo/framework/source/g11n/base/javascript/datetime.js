@@ -516,7 +516,6 @@ enyo.g11n.DateFmt.prototype.format = function(date) {
 				break;
 			case 'k':
 				dateTimeVerbosity = '';
-				console.log("YO");
 				hr = (date.getHours() % 12);
 				acc.push(hr === 0 ? 12 : hr) ;
 				break;

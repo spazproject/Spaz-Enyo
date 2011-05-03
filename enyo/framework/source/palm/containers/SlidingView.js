@@ -192,7 +192,7 @@ enyo.kind({
 			this.slidePosition = inSlide;
 			if (this.hasNode()) {
 				//this.log(this.id, inSlide);
-				var t = inSlide != null ? "translate3d(" + inSlide + "px,0,0)" : "";
+				var t = inSlide !== null ? "translate3d(" + inSlide + "px,0,0)" : "";
 				this.domStyles["-webkit-transform"] = this.node.style.webkitTransform = t;
 			}
 		}
@@ -302,7 +302,7 @@ enyo.kind({
 			var ow = this.node.offsetWidth;
 			var w = Math.max(ow, ow - inDelta);
 			if (w) {
-				this.$.client.node.style.width = w + "px";
+				this.$.client.domStyles.width = this.$.client.node.style.width = w + "px";
 				this.doResize();
 			}
 		}

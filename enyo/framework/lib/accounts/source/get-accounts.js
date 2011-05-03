@@ -85,9 +85,9 @@ enyo.kind({
 				// Supplement the account information with information from the template
 				accounts = accounts.map(AccountsUtil.annotateAccount, {templates: this.allTemplates});
 				
-				// Remove the "com.palm.telephony" account
+				// Remove any accounts marked "invisible" (like the "com.palm.telephony" account)
 				accounts = accounts.filter(function(account) {
-					if (account.templateId === "com.palm.telephony")
+					if (account.invisible)
 						return false;
 					return true;
 				});
@@ -98,7 +98,6 @@ enyo.kind({
 					var b = inB.alias || inB.loc_name;
 					return a.localeCompare(b);
 				});
-
 			}
 		}
 		else {

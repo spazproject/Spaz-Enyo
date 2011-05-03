@@ -14,21 +14,42 @@ enyo.kind({
 		onDecorateEvent: ""
 	},
 	//* @protected
+	// NOTE: in enyo 0.7, not capturing mousemove was enough to avoid most events during scrolling
+	// as of 0.8's drag system, we process a high number of drag events while scrolling.
+	// so we filter events while dragging
 	captureDomEvent: function(e) {
-		if (e.type != "mousemove") {
-		//if (e.type != "mousemove" && e.type != "mouseover" && e.type != "mouseout") {
-			//this.log(e.type);
+		// track if we've captured dragging
+		var t = e.type;
+		if (t == "dragfinish") {
+			this.capturedDragging = false;
+		}
+		// context switch if not dragging and not mousemove, over, or out.
+		// NOTE: any event occuring while scrolling must trigger flyweight event sync
+		// because scrolling can prompt rendering, which alters flyweight state.
+		// therefore always include: flick, dragstart, dragfinish
+		if (t == "flick" || (!this.capturedDragging && t != "mousemove" && t != "mouseover" && t != "mouseout")) {
+			//this.log(t);
 			this.setNodeByEvent(e);
-			this.doDecorateEvent(e);
+		}
+		// block after we start dragging.
+		this.doDecorateEvent(e);
+		if (t == "dragstart") {
+			this.capturedDragging = true;
 		}
 	},
 	//* @public
 	setNodeByEvent: function(inEvent) {
 		var n = this.findNode(inEvent.target);
-		//if (n && n != this.node) {
 		if (n) {
-			this.setNode(n);
-			this.doNodeChange(n);
+			// FIXME: switch flyweight node if it has changed.
+			// Depending on this check assumes that child nodes will only need to 
+			// be updated if the ancestor flyweight's node is updated. When is this not true?
+			// NOTE: we can also be told we need to update via needsNode flag. RowServer.generateRow does this
+			if ((n != this.node) || this.needsNode) {
+				this.setNode(n);
+				this.doNodeChange(n);
+				this.needsNode = false;
+			}
 		}
 	},
 	// Given a node assumed to be inside a rendering of the flyweight, locate
@@ -49,48 +70,54 @@ enyo.kind({
 		this.disEnableNodeAccess(this);
 	},
 	//* @protected
-	// When rendering multiple copies of a flyweight, we want it to report that
+	// When rendering a flyweight, we want it to report that
 	// it does not have a node so that it's possible to call methods like setShowing 
-	// that can affect rendering without them actually affecting any rendering
+	// that can affect rendering without them actually affecting any specific previous rendering
 	// (i.e. its first rendering)
-	// FIXME: It would be much simpler to add a flag to hasNode which can disable it.
-	// instead here, we're actually patching the function
 	disEnableNodeAccess: function(inControl, inDisable) {
+		// optimization: only disEnable children if it was possible to do so for this control
+		if (this._disEnableNodeAccess(inControl, inDisable)) {
+			this.disEnableChildrenNodeAccess(inControl, inDisable);
+		}
+	},
+	_disEnableNodeAccess: function(inControl, inDisable) {
 		if (inDisable) {
 			if (!inControl._hasNode) {
 				inControl._hasNode = inControl.hasNode;
 				inControl.hasNode = enyo.nop;
+				return true;
 			}
 		} else if (inControl._hasNode) {
 			inControl.hasNode = inControl._hasNode;
 			delete inControl._hasNode;
+			return true;
 		}
+	},
+	disEnableChildrenNodeAccess: function(inControl, inDisable) {
 		for (var i=0, c$=inControl.children, c; c=c$[i]; i++) {
 			this.disEnableNodeAccess(c, inDisable);
 		}
 	},
-	// NOTE: When we set a flyweight's node, we udpate all its controls' nodes as well.
+	// NOTE: When we set a flyweight's node, we udpate all its children's nodes as well.
 	setNode: function(inNode) {
 		this.inherited(arguments);
-		this.assignControlNodes(this);
+		this.assignChildrenNodes(this);
 	},
-	// iterate the immediate dom of the given control's node and locate enyo Controls
-	// recursively update each Control's node reference
-	assignControlNodes: function(inControl) {
+	// update the given control's node and recursively update all children nodes
+	assignChildrenNodes: function(inControl) {
 		for (var i=0, c$=inControl.children, c, n; c=c$[i]; i++) {
 			n = this.findControlNode(c, inControl.node, i);
 			if (n) {
 				c.node = n;
-				this.assignControlNodes(c);
+				this.assignChildrenNodes(c);
 			}
 		}
 	},
-	// NOTE: previously we used enyo.$ to match a control to a node, but that
-	// requires wantsEvents true so instead matching id's.
+	// locate the node for a given control within a parent node
 	findControlNode: function(inControl, inParentNode, inIndex) {
 		var id = inControl.id;
-		// first see if the control matches node with same array index
-		// this should be almost all cases
+		// first see if the control matches node in its parent's childNodes with same array index.
+		// this should be the 90% case
 		var n = inParentNode.childNodes[inIndex];
 		if (n && n.id == id) {
 			return n;
@@ -99,3 +126,15 @@ enyo.kind({
 		return inParentNode.querySelector("[id="+id+"]");
 	}
 });
+
+// Call a method on a control (typically in a flyweight context) without 
+// access to the node. Useful if the control should call a method without updating its rendering.
+enyo.Flyweight.callWithoutNode = function(inControl, inFunc) {
+	var n = inControl.hasNode();
+	var fn = inControl.hasNode;
+	inControl.node = null;
+	inControl.hasNode = enyo.nop;
+	inFunc();
+	inControl.node = n;
+	inControl.hasNode = fn;
+};

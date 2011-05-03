@@ -21,33 +21,37 @@ enyo.kind({
 	},
 	components: [
 		{},		// Empty view so that nothing is shown when switching to the Credentials view from a "bad credentials" dashboard
-		{kind: "VFlexBox", name:"standardModifyView", flex:1, components: [
+		{kind: "VFlexBox", name:"standardModifyView", flex:1, className:"enyo-bg", components: [
 			{kind:"Header", className:"accounts-header", pack:"center", components: [
 				{kind: "Image", name:"titleIcon"},
 		        {content: AccountsUtil.PAGE_TITLE_ACCOUNT_SETTINGS}
 			]},
-			{kind: "VFlexBox", className:"box-center accounts-body", components: [
-				{kind: "RowGroup", caption: AccountsUtil.GROUP_TITLE_ACCOUNT_NAME, components: [
-					{kind: "Input", name: "accountName", spellcheck: false, autocorrect:false}
-				]},
-				{name: "useAccountWith", kind: "RowGroup", caption: AccountsUtil.GROUP_TITLE_USE_ACCOUNT_WITH, components: [
-					{name: "capabilitiesList", kind: "VirtualRepeater", onGetItem: "listGetItem", onclick: "accountSelected", components: [
-						{kind: "Item", name: "capabilityRow", layoutKind: "HFlexLayout", flex: 1, className:"accounts-list-item", components: [
-							{name: "capability", flex: 1},
-							{name: "capabilityEnabled",	kind: "ToggleButton", onChange: "capabilityToggled"}
-						]}
+			{kind: "Scroller", flex: 1, components: [
+				{kind: "VFlexBox", className:"box-center accounts-body", components: [
+					{kind: "RowGroup", caption: AccountsUtil.GROUP_TITLE_ACCOUNT_NAME, components: [
+						{kind: "Input", name: "accountName", spellcheck: false, autocorrect:false}
 					]},
+					{name: "useAccountWith", kind: "RowGroup", caption: AccountsUtil.GROUP_TITLE_USE_ACCOUNT_WITH, components: [
+						{name: "capabilitiesList", kind: "VirtualRepeater", onGetItem: "listGetItem", onclick: "accountSelected", className:"accounts-rowgroup-item", components: [
+							{kind: "Item", name: "capabilityRow", layoutKind: "HFlexLayout", flex: 1, className:"accounts-list-item", components: [
+								{name: "capability", flex: 1},
+								{name: "capabilityEnabled",	kind: "ToggleButton", onChange: "capabilityToggled"}
+							]}
+						]},
+					]},
+					{name:"changeLoginButton", kind: "Button", caption: AccountsUtil.BUTTON_CHANGE_LOGIN, onclick: "changeLoginTapped", className:"accounts-btn"},
+					{name:"removeAccountButton", kind: "ActivityButton", caption: AccountsUtil.BUTTON_REMOVE_ACCOUNT, className: "enyo-button-negative accounts-btn", onclick: "confirmAccountRemoval"},
+					{name:"createAccountButton", kind: "ActivityButton", caption: AccountsUtil.BUTTON_CREATE_ACCOUNT, onclick: "createAccountTapped", className:"enyo-button-affirmative accounts-btn"},
 				]},
-				{name:"changeLoginButton", kind: "Button", caption: AccountsUtil.BUTTON_CHANGE_LOGIN, onclick: "changeLoginTapped", className:"enyo-button-light accounts-btn"},
-				{name:"removeAccountButton", kind: "ActivityButton", caption: AccountsUtil.BUTTON_REMOVE_ACCOUNT, className: "enyo-button-negative accounts-btn", onclick: "confirmAccountRemoval"},
-				{name:"createAccountButton", kind: "ActivityButton", caption: AccountsUtil.BUTTON_CREATE_ACCOUNT, onclick: "createAccountTapped", className:"enyo-button-affirmative accounts-btn"},
-				{name:"cancelButton", kind: "Button", className:"accounts-btn", onclick: "backHandler"},
 			]},
-			{name: "removeConfirmDialog", kind: "Popup", dismissWithClick: true, scrim: true, components: [
-				{className: "popup-title", content: AccountsUtil.BUTTON_REMOVE_ACCOUNT},
-				{className: "popup-message ", content: AccountsUtil.TEXT_REMOVE_CONFIRM},
-				{kind: "Button", caption: AccountsUtil.BUTTON_REMOVE_ACCOUNT, className: "enyo-button-negative accounts-btn", onclick: "removeAccount"},
-				{kind: "Button", caption: AccountsUtil.BUTTON_KEEP_ACCOUNT, className:"accoutns-popup-btn-bottom", onclick: "keepAccount"}
+			{kind:"Toolbar", components:[
+				{name:"cancelButton", kind: "Button", className:"enyo-button-dark accounts-toolbar-btn", onclick: "backHandler"},
+			]},
+			{name: "removeConfirmDialog", kind: "Popup", modal: true, scrim: true, className: "accounts-dialog-width", components: [
+				{content: AccountsUtil.BUTTON_REMOVE_ACCOUNT},
+				{content: AccountsUtil.TEXT_REMOVE_CONFIRM},
+				{kind: "Button", caption: AccountsUtil.BUTTON_REMOVE_ACCOUNT, className: "enyo-button-negative", onclick: "removeAccount"},
+				{kind: "Button", caption: AccountsUtil.BUTTON_KEEP_ACCOUNT, onclick: "keepAccount"}
 			]},
 		]},
 		{kind: "CrossAppUI", name:"customAccountsUI", onResult: "doModifyView_Success"},
@@ -125,20 +129,13 @@ enyo.kind({
 		AccountsUtil.changeCaption(this.$.cancelButton, AccountsUtil.BUTTON_BACK);
 			
 		// Set the account name
-		this.$.accountName.value = this.account.alias || this.account.username;
+		this.$.accountName.value = this.account.alias || this.account.loc_name;
 		this.$.accountName.valueChanged();
 		
-		// If there is no alias (like the profile account) then disable some fields
-		if (!this.account.alias) {
-			AccountsUtil.disableControl(this.$.accountName, true);
-			AccountsUtil.disableControl(this.$.changeLoginButton, true);
-			AccountsUtil.disableControl(this.$.removeAccountButton, true);
-		}
-		else {
-			AccountsUtil.disableControl(this.$.accountName, false);
-			AccountsUtil.disableControl(this.$.changeLoginButton, false);
-			AccountsUtil.disableControl(this.$.removeAccountButton, false);
-		}
+		// Enable all the buttons
+		AccountsUtil.disableControl(this.$.accountName, false);
+		AccountsUtil.disableControl(this.$.changeLoginButton, false);
+		AccountsUtil.disableControl(this.$.removeAccountButton, false);
 		
 		// Update the icon on the page title
 		if (this.template && this.template.icon && this.template.icon.loc_48x48)
@@ -272,7 +269,7 @@ enyo.kind({
 	// Back was tapped
 	backHandler: function() {
 		var name = this.$.accountName.getValue();
-		var nameDirty = name && this.account && this.account.alias && name !== this.account.alias;
+		var nameDirty = name && this.account && name !== this.account.alias;
 
 		// If the capabilities or account name was changed then save them
 		if (this.account && (this.capabilitiesDirty || nameDirty)) {

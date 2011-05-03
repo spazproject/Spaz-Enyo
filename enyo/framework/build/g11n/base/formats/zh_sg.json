@@ -1,8 +1,9 @@
 {
-	"numberTripleDivider": ",",
+	"numberDivider": ",",
 	"numberDecimal": ".",
 	"currencyPrepend": "$",
 	"currencyAppend": "",
+	"dividerIndex": 4,
 	"percentageSpace": false,
 	"localeName": "Singapore",
 	"titleCase": false,

@@ -202,9 +202,14 @@ enyo.kind({
 					if (nextP && nextP.kind == 'block') {
 						o.value = this.parseProperties(inClass, nextP.children);
 					} else if (nextP && nextP.kind == 'array') {
-						o.value = [];
+						o.value = "[]";
 					} else {
 						o.value = nextP && nextP.token;
+						nextP = inProps[i+1];
+						if (nextP && nextP.kind == "argument-list") {
+							i++;
+							o.value += "(" + this.composeAssociation(nextP) + ")";
+						}
 					}
 					props.names.push(name);
 					props.map[name] = o;

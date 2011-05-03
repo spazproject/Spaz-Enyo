@@ -1,0 +1,11 @@
+/* Copyright 2009-2011 Hewlett-Packard Development Company, L.P. All rights reserved. */
+.enyo-search-input-search {
+	height: 20px;
+	width: 20px;
+	margin: 2px;
+	background-image: url(../images/search-input-search.png);
+}
+
+.enyo-search-input-cancel {
+	background-image: url(../images/search-input-cancel.png);
+}

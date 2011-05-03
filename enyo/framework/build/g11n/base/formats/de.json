@@ -1,4 +1,10 @@
 {
+	"numberDivider": ".",
+	"numberDecimal": ",",
+	"dividerIndex": 3,
+	"currencyPrepend": "",
+	"currencyAppend": " €",
+	"percentageSpace": true,
 	"is12HourDefault": false,
 
 	"localeName": "Germany",

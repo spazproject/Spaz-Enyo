@@ -1,6 +1,6 @@
 /* Copyright 2009-2011 Hewlett-Packard Development Company, L.P. All rights reserved. */
 var AccountsUtil = (function () {
-	var rb = new enyo.g11n.Resources({root: this.libPath});
+	var rb = new enyo.g11n.Resources({root: "$enyo-lib/accounts"});
 	
 	function whereEquals(prop, val) {
 		return {
@@ -101,6 +101,14 @@ var AccountsUtil = (function () {
 				return (object);
 			return [];
 		},
+		
+		// Iterate through an array of accounts for the one that matches the given accountId
+		getAccount: function(accountArray, accountId) {
+			for (i=0, l=accountArray.length; i < l; i++) {
+				if (accountArray[i]._id === accountId)
+					return accountArray[i];
+			}
+		},
 
 		// Filter the templates by ID or capability
 		// Templates marked hidden or those without a validator will automatically be filtered out
@@ -197,7 +205,7 @@ var AccountsUtil = (function () {
 				if (phoneNumber) {
 					var phone = new enyo.g11n.PhoneNumber(phoneNumber);
 					var phonefmt = new enyo.g11n.PhoneFmt();
-					var template = new enyo.g11n.Template($L("#{phoneNumber} - SIM Removed"));
+					var template = new enyo.g11n.Template(this.SIM_REMOVED_TEMPLATE);
 					result.username = template.evaluate({phoneNumber: phonefmt.format(phone)});
 				}
 			}
@@ -238,20 +246,26 @@ var AccountsUtil = (function () {
 		
 		getCapabilityText: function (rawName) {
 			var capability = this.localizedCapabilities[rawName];
-			console.log("getCapabilityText: " + rawName + " new=" + capability);
 			return capability || rawName; 
 		},
 		
 		setCrossAppParameters: function(crossAppObj, ui, params) {
 			// Special case email
 			if (ui.appId === "com.palm.app.email") {
-				ui.appId = "com.palm.app.enyo-email";
 				ui.name = "accounts/wizard.html";
 			}
 			console.log("Custom UI: Opening iFrame " + ui.appId + "/" + ui.name);			
 			crossAppObj.setPath(ui.name);
 			crossAppObj.setApp(ui.appId);
 			crossAppObj.setParams(params);
+		},
+		
+		getSynergyTitle: function(capability) {
+			if (!capability || enyo.isArray(capability))
+				return this.TITLE_SYNERGY_SEARCH;
+			var template = new enyo.g11n.Template(this.TITLE_SYNERGY_PIM_SEARCH);
+			var capabilityStr = this.getCapabilityText(capability);
+			return template.evaluate({capability: capabilityStr});
 		},
 
 		// The path to the accounts library		
@@ -273,17 +287,21 @@ var AccountsUtil = (function () {
 		BUTTON_CREATING_ACCOUNT:	rb.$L("Creating account..."),
 		BUTTON_GO:					rb.$L("Go"),
 		BUTTON_REMOVE_ACCOUNT:		rb.$L("Remove Account"),
-		BUTTON_KEEP_ACCOUNT:		rb.$L("Keep Account"),
+		BUTTON_KEEP_ACCOUNT:		rb.$L("Cancel"),
 		LIST_TITLE_USERNAME:		rb.$L("Username"),
 		LIST_TITLE_PASSWORD:		rb.$L("Password"),
 		GROUP_TITLE_ACCOUNT_NAME:	rb.$L("Account name"),
 		GROUP_TITLE_USE_ACCOUNT_WITH: rb.$L("Use account with"),
+		LOADING_ACCOUNTS:			rb.$L("Loading Accounts..."),
+		SIM_REMOVED_TEMPLATE:		rb.$L("#{phoneNumber} - SIM Removed"),
 		TEXT_WELCOME:				rb.$L("Welcome!"),
-		TEXT_GET_STARTED_PROFILE_ACCOUNT: rb.$L("Get Started with your HP webOS account:"),
-		TEXT_GET_STARTED_EXISTING_ACCOUNTS: rb.$L("Get Started with your existing accounts:"),
+		TEXT_GET_STARTED_PROFILE_ACCOUNT: rb.$L("Get started with your HP webOS account:"),
+		TEXT_GET_STARTED_EXISTING_ACCOUNTS: rb.$L("Get started with your existing accounts:"),
 		TEXT_OR_ADD_NEW_ACCOUNT:	rb.$L("Or add a new account:"),
 		TEXT_FIND_MORE:				rb.$L("Find More ..."),
 		TEXT_REMOVE_CONFIRM:		rb.$L("Are you sure you want to remove this account and all associated data from your device?"),
+		TITLE_SYNERGY_SEARCH: 		rb.$L("HP Synergy Services"),
+		TITLE_SYNERGY_PIM_SEARCH:	rb.$L("#{capability} HP Synergy Services"),
 		
 		localizedCapabilities: {
 			"MAIL": rb.$L("Email"),

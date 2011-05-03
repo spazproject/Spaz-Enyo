@@ -1,6 +1,6 @@
 {
 	"international": {
-		"vsc":              "XXX ",
+		"vsc":              ["X ", "XX ", "XXX ", "XXXX ", "XXXXX ", "XXXXXX "],
 		"iddPrefix":        ["X", "XX ", "XXX "],
 		"countryCode":      ["X ", "XX ", "XXX "],
 		"cic":              ["X", "XX", "XX X", "XX XX", "XX XX X", "XX XX XX", "XX XX XXX "],
@@ -12,7 +12,7 @@
 		"extension":        [" X", " XX", " XXX", " XXXX", " XXXXX", " XXXXXX", " XXXXXXX"]
 	},
 	"mobile": {
-		"vsc":              "XXX ",
+		"vsc":              ["X ", "XX ", "XXX ", "XXXX ", "XXXXX ", "XXXXXX "],
 		"iddPrefix":        ["X", "XX ", "XXX "],
 		"countryCode":      ["X ", "XX ", "XXX "],
 		"cic":              ["X", "XX", "XX-X", "XX-XX", "XX-XX-X", "XX-XX-XX", "XX-XX-XXX-"],
@@ -24,7 +24,7 @@
 		"extension":        [" X", " XX", " XXX", " XXXX", " XXXXX", " XXXXXX", " XXXXXXX"]
 	},
 	"internationalmobile": {
-		"vsc":              "XXX ",
+		"vsc":              ["X ", "XX ", "XXX ", "XXXX ", "XXXXX ", "XXXXXX "],
 		"iddPrefix":        ["X", "XX ", "XXX "],
 		"countryCode":      ["X ", "XX ", "XXX "],
 		"cic":              ["X", "XX", "XX X", "XX XX", "XX XX X", "XX XX XX", "XX XX XXX "],
@@ -36,7 +36,7 @@
 		"extension":        [" X", " XX", " XXX", " XXXX", " XXXXX", " XXXXXX", " XXXXXXX"]
 	},
 	"service": {
-		"vsc":              "XXX ",
+		"vsc":              ["X ", "XX ", "XXX ", "XXXX ", "XXXXX ", "XXXXXX "],
 		"iddPrefix":        ["X", "XX ", "XXX "],
 		"countryCode":      ["X ", "XX ", "XXX "],
 		"cic":              ["X", "XX", "XX X", "XX XX", "XX XX X", "XX XX XX", "XX XX XXX "],
@@ -50,7 +50,7 @@
 	"default": {
 		"example": "1 (650) 555-1234", 
 		"whole": {
-			"vsc":              "XXX ",
+			"vsc":              ["X ", "XX ", "XXX ", "XXXX ", "XXXXX ", "XXXXXX "],
 			"emergency":        "XXX ",
 			"iddPrefix":        ["X", "XX ", "XXX "],
 			"countryCode":      ["X ", "XX ", "XXX "],
@@ -62,7 +62,7 @@
 			"extension":        [" X", " XX", " XXX", " XXXX", " XXXXX", " XXXXXX", " XXXXXXX"]
 		},
 		"partial": {
-			"vsc":              "XXX ",
+			"vsc":              ["X ", "XX ", "XXX ", "XXXX ", "XXXXX ", "XXXXXX "],
 			"emergency":        "XXX ",
 			"iddPrefix":        ["X", "XX ", "XXX "],
 			"countryCode":      ["X ", "XX ", "XXX "],
@@ -77,7 +77,7 @@
 	"dashes": {
 		"example": "1-650-555-1234", 
 		"whole": {
-			"vsc":              "XXX ",
+			"vsc":              ["X ", "XX ", "XXX ", "XXXX ", "XXXXX ", "XXXXXX "],
 			"emergency":        "XXX ",
 			"iddPrefix":        ["X", "XX", "XXX-" ],
 			"countryCode":      ["X-", "XX-", "XXX-"],
@@ -89,7 +89,7 @@
 			"extension":        [" X", " XX", " XXX", " XXXX", " XXXXX", " XXXXXX", " XXXXXXX"]
 		},      
 		"partial": {
-			"vsc":              "XXX ",
+			"vsc":              ["X ", "XX ", "XXX ", "XXXX ", "XXXXX ", "XXXXXX "],
 			"emergency":        "XXX ",
 			"iddPrefix":        ["X", "XX", "XXX-" ],
 			"countryCode":      ["X-", "XX-", "XXX-"],
@@ -104,7 +104,7 @@
 	"dots": {
 		"example": "1.650.555.1234", 
 		"whole": {
-			"vsc":              "XXX ",
+			"vsc":              ["X ", "XX ", "XXX ", "XXXX ", "XXXXX ", "XXXXXX "],
 			"emergency":        "XXX ",
 			"iddPrefix":        ["X", "XX", "XXX." ],
 			"countryCode":      ["X.", "XX.", "XXX."],
@@ -116,7 +116,7 @@
 			"extension":        [" X", " XX", " XXX", " XXXX", " XXXXX", " XXXXXX", " XXXXXXX"]
 		},      
 		"partial": {
-			"vsc":              "XXX ",
+			"vsc":              ["X ", "XX ", "XXX ", "XXXX ", "XXXXX ", "XXXXXX "],
 			"emergency":        "XXX ",
 			"iddPrefix":        ["X", "XX", "XXX." ],
 			"countryCode":      ["X.", "XX.", "XXX."],

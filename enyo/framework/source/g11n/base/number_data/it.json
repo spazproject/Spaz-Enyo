@@ -1,8 +1,0 @@
-{
-	"numberDivider": ".",
-	"dividerIndex": 3,
-	"numberDecimal": ",",
-	"currencyPrepend": "€ ",
-	"currencyAppend": "",
-	"percentageSpace": false
-}

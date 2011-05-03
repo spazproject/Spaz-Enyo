@@ -5,7 +5,7 @@ enyo.kind({
 	components: [
 		{name: "accounts", kind: "Accounts.getAccounts", onGetAccounts_AccountsAvailable: "onAccountsAvailable"},
 		{name: "getSyncStatus", kind: "TempDbService", dbKind: "com.palm.account.syncstate:1", subscribe: true, method: "find", onResponse: "receivedSyncStatus", onWatch: "syncWatchFired"},
-		{name: "deleteSyncStatus", kind: "TempDbService", dbKind: "com.palm.account.syncstate:1", method: "del", onResponse: "hello"},
+		{name: "deleteSyncStatus", kind: "TempDbService", dbKind: "com.palm.account.syncstate:1", method: "del"},
 		{name: "openAccountsApp", kind: "PalmService", service: "palm://com.palm.applicationManager/", method: "open"}
 	],
 	
@@ -26,7 +26,7 @@ enyo.kind({
 	},
 	
 	syncWatchFired: function() {
-		// Get the account status (after waiting a second to prevent multiple updates from multiple transports)
+		// Get the account status (after waiting a little bit to prevent multiple updates from multiple transports)
 		console.log("SyncUI.syncDashboard: watch fired, waiting 500 msec");
 		if (!this.getStatusTimer)
 			this.getStatusTimer = setTimeout(this.getAccountStatus.bind(this), 500);
@@ -49,7 +49,7 @@ enyo.kind({
 			return;
 		var deletedSources = [];
 		
-		// Create an array or accounts with account ID, dashboard (if present) and status
+		// Create an array of accounts with account ID, dashboard (if present) and status
 		for (var i=0, l=inResponse.results.length; i < l; i++) {
 			var syncSource = inResponse.results[i];
 			var account = SyncUIUtil.getAccount(this.accounts, syncSource.accountId);
@@ -76,7 +76,6 @@ enyo.kind({
 			this.accountStatus[syncSource.accountId].status = SyncUIUtil.getHighestStatus(this.accountStatus[syncSource.accountId].status, syncSource);
 			//console.log("ac=" + syncSource.accountId + "-" + syncSource.capabilityProvider + "=" + syncSource.syncState);
 		}
-		//console.log("receivedSyncStatus: statusArray = " + enyo.json.stringify(this.accountStatus));
 
 		// Delete the status of accounts that no longer exist
 		if (deletedSources.length)
@@ -86,6 +85,7 @@ enyo.kind({
 		for (var accountId in this.accountStatus) {
 			var icon, title, text, dashAccountId;
 			var syncAccount = this.accountStatus[accountId];
+			// console.log("receivedSyncStatus: Account " + accountId + " status=" + syncAccount.status);
 
 			// Is the account now idle?
 			if (syncAccount.status === "IDLE") {
@@ -100,8 +100,10 @@ enyo.kind({
 			}
 			
 			// Has the status changed?  Does the dashboard need updating?
-			if (syncAccount.status === syncAccount.dashboardStatus)
+			if (syncAccount.status === syncAccount.dashboardStatus) {
+				syncAccount.status = "IDLE";
 				continue;
+			}
 			
 			// Save the status that corresponds to the dashboard
 			syncAccount.dashboardStatus = syncAccount.status;

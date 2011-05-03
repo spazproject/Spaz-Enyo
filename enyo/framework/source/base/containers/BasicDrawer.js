@@ -116,18 +116,6 @@ enyo.kind({
 	},
 	//* @public
 	/**
-	Convenience method to open a drawer; equivalent to setOpen(true).
-	*/
-	open: function() {
-		this.setOpen(true);
-	},
-	/**
-	Convenience method to close a drawer; equivalent to setOpen(false).
-	*/
-	close: function() {
-		this.setOpen(false);
-	},
-	/**
 	Toggles the open state of the drawer.
 	*/
 	toggleOpen: function() {

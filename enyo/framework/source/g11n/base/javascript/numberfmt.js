@@ -47,24 +47,33 @@ enyo.g11n.NumberFmt = function(options) {
 	
 	formatHash = enyo.g11n.Utils.getJsonFile({
 		root: enyo.g11n.Utils._getEnyoRoot(),
-		path: "base/number_data",
-		locale: this.locale,
-		merge: true
+		path: "base/formats",
+		locale: this.locale
 	});
 	
-	this.decimal = formatHash.numberDecimal || ".";
-	this.divider = formatHash.numberDivider || ",";
-	if (!formatHash.dividerIndex) {
-		this.numberGroupRegex = /(\d+)(\d{3})/;
-	} else if (formatHash.dividerIndex === 4) {
-		this.numberGroupRegex = /(\d+)(\d{4})/;
+	if (formatHash) {
+		this.decimal = formatHash.numberDecimal || ".";
+		this.divider = formatHash.numberDivider || ",";
+		if (!formatHash.dividerIndex) {
+			this.numberGroupRegex = /(\d+)(\d{3})/;
+		} else if (formatHash.dividerIndex === 4) {
+			this.numberGroupRegex = /(\d+)(\d{4})/;
+		} else {
+			this.numberGroupRegex = /(\d+)(\d{3})/;
+		}
+		this.percentageSpace = formatHash.percentageSpace;
+		this.currencyPrepend = formatHash.currencyPrepend || "";
+		this.currencyAppend = formatHash.currencyAppend || "";
 	} else {
+		// default is US/English style but no currency
+		this.decimal = ".";
+		this.divider = ",";
 		this.numberGroupRegex = /(\d+)(\d{3})/;
+		this.percentageSpace = false;
+		this.currencyPrepend = "";
+		this.currencyAppend = "";
 	}
 	this.numberGroupRegex.compile(this.numberGroupRegex);
-	this.percentageSpace = formatHash.percentageSpace;
-	this.currencyPrepend = formatHash.currencyPrepend || "";
-	this.currencyAppend = formatHash.currencyAppend || "";
 	
 	enyo.g11n.Utils.releaseAllJsonFiles();
 };

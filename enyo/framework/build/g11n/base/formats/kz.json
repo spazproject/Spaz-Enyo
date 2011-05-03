@@ -1,5 +1,5 @@
 {
-	"numberTripleDivider": " ",
+	"numberDivider": " ",
 	"numberDecimal": ",",
 	"currencyPrepend": "〒",
 	"currencyAppend": "",
@@ -7,8 +7,8 @@
 	"localeName": "Kazahkstan",
 	"titleCase": false,
 
-	"fullDate": "EEEE, d MMMM yyyy 'ж'.",
-	"longDate": "d MMMM yyyy 'ж'.",
+	"fullDate": "EEEE, d MMMM yyyy ж.",
+	"longDate": "d MMMM yyyy ж.",
 	"mediumDate": "dd.MM.yyyy",
 	"defaultDate": "dd.MM.yyyy",
 	"shortDate": "dd.MM.yy",
@@ -37,7 +37,7 @@
 	"longDMDate": "d MMMM",
 	"shortMYDate": "MM.yy",
 	"mediumMYDate": "MM.yyyy",
-	"longMYDate": "MMMM yyyy 'ж'.",
+	"longMYDate": "MMMM yyyy ж.",
 
 	"shortWeekday": "EE",
 	"mediumWeekday": "EEE",

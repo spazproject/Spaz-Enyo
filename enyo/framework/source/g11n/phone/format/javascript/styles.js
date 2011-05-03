@@ -91,20 +91,21 @@ The countryName property is in English, not localized.
 enyo.g11n.FmtStyles.getRegions = function getRegions() {
 	return [
         {countryCode: "us", countryName: "US, Canada, Caribbean"},
-		{countryCode: "it", countryName: "Italy"},
-		{countryCode: "fr", countryName: "France"},
-		{countryCode: "gb", countryName: "United Kingdom"},
-		{countryCode: "ie", countryName: "Ireland"},
-		{countryCode: "de", countryName: "Germany"},
-		{countryCode: "nl", countryName: "Netherlands"},
-		{countryCode: "be", countryName: "Belgium"},
-		{countryCode: "lu", countryName: "Luxembourg"},
-		{countryCode: "es", countryName: "Spain"},
-		{countryCode: "mx", countryName: "Mexico"},
-		{countryCode: "cn", countryName: "China"},
 		{countryCode: "au", countryName: "Australia"},
+		{countryCode: "be", countryName: "Belgium"},
+		{countryCode: "cn", countryName: "China (PRC)"},
+		{countryCode: "fr", countryName: "France"},
+		{countryCode: "de", countryName: "Germany"},
+		{countryCode: "in", countryName: "India"},
+		{countryCode: "ie", countryName: "Ireland"},
+		{countryCode: "it", countryName: "Italy"},
+		{countryCode: "lu", countryName: "Luxembourg"},
+		{countryCode: "mx", countryName: "Mexico"},
+		{countryCode: "nl", countryName: "Netherlands"},
+		{countryCode: "nz", countryName: "New Zealand"},
 		{countryCode: "sg", countryName: "Singapore"},
-		{countryCode: "nz", countryName: "New Zealand"}
+		{countryCode: "es", countryName: "Spain"},
+		{countryCode: "gb", countryName: "United Kingdom"}
 	];
 };
 

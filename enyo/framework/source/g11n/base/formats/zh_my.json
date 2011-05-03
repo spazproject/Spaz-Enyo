@@ -1,8 +1,9 @@
 {
-	"numberTripleDivider": ",",
+	"numberDivider": ",",
 	"numberDecimal": ".",
 	"currencyPrepend": "",
 	"currencyAppend": "RM",
+	"dividerIndex": 4,
 	"percentageSpace": "",
 	"localeName": "Malaysia",
 	"titleCase": false,
