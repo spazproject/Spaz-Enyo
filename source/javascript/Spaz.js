@@ -6,7 +6,7 @@ enyo.kind({
 		//{kind: "Pane", dragAnywhere: false, flex: 1, components: [
 			{name: "sidebar", kind: "Spaz.Sidebar"},
 			{name: "container", kind: "Spaz.Container", onShowEntryView: "showEntryView"},
-			{name: "entryview", kind: "Spaz.EntryView"}
+			//{name: "entryview", kind: "Spaz.EntryView"}
 		//]}		
 	],
 	create: function(){

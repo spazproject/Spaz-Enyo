@@ -1,3 +1,9 @@
+/* global */
+truncating-text {
+	text-overflow: ellipsis;
+}
+
+
 /* Entries */
 .timeline.list .entry .avatar {
 	padding-right: 10px;
@@ -31,6 +37,10 @@ a:active,
 }
 
 
+/* fixes padding */
+.enyo-header-inner {
+	padding: 0px 5px 0px 0px;
+}
 
 .entry-view {
 	
@@ -45,7 +55,8 @@ a:active,
 }
 .entry-view .realname {
 	font-weight: bold;
-	font-size: 30px;
+	font-size: 20px;
+
 }
 
 .entry-view .small {
