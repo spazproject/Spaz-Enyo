@@ -158,8 +158,12 @@ enyo.kind({
 	},
 
 	entryClick: function(inSender, entry){
+		//if pref
+
+
+		// else 
 		//this.$.entryview.create();
-		if(!this.$.entryview){
+		/*if(!this.$.entryview){
 			//this.$.pane.createComponent({name: "entryview", kind: "Spaz.EntryView", onDestroy: "destroyEntryView"}, {owner: this});
 			this.createComponent({name: "entryview", kind: "Spaz.EntryView", onDestroy: "destroyEntryView"}, {owner: this});
 
@@ -167,7 +171,7 @@ enyo.kind({
 			//this.$.container.refreshList();
 
 		} 
-		this.$.entryview.setEntry(entry);
+		this.$.entryview.setEntry(entry);*/
 		
 	},
 	"destroyEntryView": function(inSender, inEvent){

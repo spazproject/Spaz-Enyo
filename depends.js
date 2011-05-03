@@ -31,6 +31,7 @@ enyo.depends(
 	"source/javascript/ComposePopup.js",
 	"source/javascript/SettingsPopup.js",
 	"source/javascript/AccountsPopup.js",
+	"source/javascript/EntryClickPopup.js",
 	//custom widgets
 
 	//css
