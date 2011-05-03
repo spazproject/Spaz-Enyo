@@ -97,9 +97,6 @@ enyo.kind({
 					console.log('auth_pickle:');
 					console.log(auth_pickle);
 
-					// var newaccid = App.Users.generateID(username, SPAZCORE_SERVICE_TWITTER);
-					// console.log(newaccid);
-
 					twit.setCredentials(auth);
 
 					twit.getHomeTimeline(null, null, null, null,
@@ -118,17 +115,13 @@ enyo.kind({
 	setupRow: function(inSender, inIndex) {
 		if (this.entries[inIndex]) {
 			var entry = this.entries[inIndex];
-			this.$.entry.setContent("<span class='username'>" + entry.user.screen_name + "</span> " + entry.text);
-		var entry = this.entries[inIndex];
-		if (entry) {
-
 			this.$.entry.setContent("<span class='username'>" + entry.user.screen_name + "</span> " + enyo.string.runTextIndexer(entry.text));
 			this.$.timeFrom.setContent(sch.getRelativeTime(entry.created_at) + " from <span class='link'>" + entry.source + "</span>");
 			this.$.image.setSrc(entry.user.profile_image_url);
 			
 			//this.$.item.applyStyle("background-color", inSender.isSelected(inIndex) ? "rgba(218,235,251,0.4)" : null);
 
-			return true;			
+			return true;
 		}
 	},
 	entryClick: function(inSender, inEvent, inRowIndex) {
