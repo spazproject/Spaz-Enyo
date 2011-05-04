@@ -1,4 +1,4 @@
-if (!Spaz) { Spaz = {}; }
+if (!window.AppUtils) { window.AppUtils = {}; }
 
 /**
  * define a placeholder $L() method to handle future localization
@@ -9,7 +9,7 @@ if (!$L) {
 	};
 }
 
-Spaz.getAppObj = function() {
+AppUtils.getAppObj = function() {
 	return window.App;
 }
 
@@ -19,7 +19,7 @@ Spaz.getAppObj = function() {
  * @param {string} str
  * @return {string}
  */
-Spaz.makeItemsClickable = function(str) {
+AppUtils.makeItemsClickable = function(str) {
 	
 	str = sch.autolink(str, null, null, 20);
 	str = sch.autolinkTwitterScreenname(str, '<span class="username clickable" data-user-screen_name="#username#">@#username#</span>');
@@ -49,7 +49,7 @@ Spaz.makeItemsClickable = function(str) {
  * @param {object} opts
  *	
  */
-Spaz.sendEmail = function(opts) {
+AppUtils.sendEmail = function(opts) {
 	
 	
 	function makeRecipientObj(address, type, contactDisplay) {
@@ -139,7 +139,7 @@ Spaz.sendEmail = function(opts) {
 /**
  * Given a theme label, deactivates all themes CSS and activates the chosen theme CSS
  */
-Spaz.setTheme = function(theme) {
+AppUtils.setTheme = function(theme) {
 	console.error('AppThemes: %j', AppThemes);
 	console.error('theme: %s', theme);
 	console.error('AppThemes[theme]: %j', AppThemes[theme]);
@@ -161,7 +161,7 @@ Spaz.setTheme = function(theme) {
 /**
  * Given a time value and a set of labels, returns a relative or absolute time
  */
-Spaz.getFancyTime = function(time_value, labels, use_dateparse) {
+AppUtils.getFancyTime = function(time_value, labels, use_dateparse) {
 
 	if (sc.helpers.iswebOS() && App.prefs.get('timeline-absolute-timestamps')) {
 
