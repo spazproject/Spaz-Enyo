@@ -3,15 +3,11 @@ enyo.kind({
 	kind: enyo.HFlexBox,
 	height: "100%",
 	components: [
-		//{kind: "Pane", dragAnywhere: false, flex: 1, components: [
-			{name: "sidebar", kind: "Spaz.Sidebar"},
-			{name: "container", kind: "Spaz.Container", onShowEntryView: "showEntryView"},
-			//{name: "entryview", kind: "Spaz.EntryView"}
-		//]}		
+		{name: "sidebar", kind: "Spaz.Sidebar"},
+		{name: "container", kind: "Spaz.Container", onShowEntryView: "showEntryView"},
 	],
 	
 	twit: new SpazTwit(),
-
 	initAppObject: function() {
 		/**
 		 * initialize the App object
@@ -157,16 +153,11 @@ enyo.kind({
 		
 	},
 	showEntryView: function(inSender, inEntry){
-		//if pref
-
-
-		// else 
-		//this.$.entryview.create();
 		if(!this.$.entryview){
-			//this.$.pane.createComponent({name: "entryview", kind: "Spaz.EntryView", onDestroy: "destroyEntryView"}, {owner: this});
+			
 			this.createComponent({name: "entryview", kind: "Spaz.EntryView", onDestroy: "destroyEntryView"}, {owner: this});
-
 			this.render();
+			
 			//this.$.container.refreshList();
 
 		} 
@@ -176,8 +167,8 @@ enyo.kind({
 	"destroyEntryView": function(inSender, inEvent){
 		this.$.entryview.destroy();
 
-		//this.$.timeline.render();
-		//this.$.timeline.refreshList();
+		//this.render();
+		//this.$.container.refreshList();
 	},
 	resizeHandler: function() {
 		this.$.container.resizeHandler();
