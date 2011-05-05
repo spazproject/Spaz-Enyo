@@ -5,13 +5,14 @@ enyo.kind({
 	className: "enyo-toolbar-vertical",
 	components: [
 		{kind: "ToolButton", icon: "source/images/icon-compose.png", onclick: "openPopup", popup:"composePopup"},
-		{kind: "ToolButton", icon: "source/images/icon-new-column.png"},
+		{kind: "ToolButton", icon: "source/images/icon-new-column.png", onclick: "openPopup", popup: "columnsPopup"},
 		{kind: "ToolButton", icon: "source/images/icon-search.png"},
 		{kind: "Spacer"},
 		{kind: "ToolButton", icon: "source/images/icon-new-account.png", onclick: "openPopup", popup:"accountsPopup"},
 		{kind: "ToolButton", icon: "source/images/icon-settings.png", onclick: "openPopup", popup:"settingsPopup"},
 		
 		{name: "composePopup", kind: "Spaz.ComposePopup", onClose: "closePopup" },
+		{name: "columnsPopup", kind: "Spaz.ColumnsPopup", onClose: "closePopup" },
 		{name: "settingsPopup", kind: "Spaz.SettingsPopup", onClose: "closePopup" },
 		{name: "accountsPopup", kind: "Spaz.AccountsPopup", onClose: "closePopup" }
 	],

@@ -75,3 +75,17 @@ a:active,
     border-width: 1px 1px;
     background-color: #343434;
 }
+
+/* AvatarButton */
+.enyo-button-avatar {
+	height: 30px;
+	width: 30px;
+	border-width: 2px;
+	border-style: solid;
+	border-color: transparent;
+}
+
+.enyo-button-avatar.enyo-button-down, 
+.enyo-button-avatar.enyo-button-depressed {
+	border-color: yellow;
+}

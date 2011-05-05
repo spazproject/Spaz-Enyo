@@ -7,6 +7,10 @@ enyo.kind({
 	events: {
 		onClose: ""
 	},
+	published: {
+		dmUser: "",
+		inReplyTweet: ""	
+	},
 	style: "min-width: 400px;",
 	components: [
 		{layoutKind: "HFlexLayout", components: [
@@ -33,5 +37,16 @@ enyo.kind({
 		 this.$.basicRichText.forceFocus();
 		 this.openAtCenter();
 		 this.applyStyle("width", this.getBounds().width + "px");
-	}
+	},
+
+	dmUserChanged: function(){
+		//this can be set by calling this.$.composePopup.setDmUser({}); (from parent) 
+		//this should be cleared on send
+		//set flag?
+	},
+	inReplyTweetChanged: function(){
+		//this should be cleared on send
+		//set flag?
+
+	},
 });
