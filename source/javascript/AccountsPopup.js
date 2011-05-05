@@ -6,71 +6,74 @@ enyo.kind({
 	},
 	scrim: true,
 	modal: true,
-	style: "min-height: 250px",
+	//style: "min-height: 250px",
 	width: "400px",
 	layoutKind: "VFlexLayout",
 	components: [
 		{kind: "HFlexBox", components: [
+			{name: "topHeader", content: "Accounts", kind: "HtmlContent"},
 			{name: "header", kind: "HFlexBox", components: [
-				{name: "firstheader", content: "Accounts", kind: "HtmlContent"},
+			
 			]},
 			{kind: "Spacer"},
 			{kind: "ToolButton", icon: "source/images/icon-close.png", style: "position: relative; bottom: 7px;", onclick: "doClose"}
 		]},	
 		//very thin divider
-		{name: "list", kind: "VirtualRepeater", flex: 1, className: "timeline list", onGetItem: "setupRow", components: [
-			{kind: "Item", tapHighlight: true, className: "entry", layoutKind: "HFlexLayout", onclick: "accountClick", components: [
-				{name: "icon", kind: "Image", style: "padding-right: 5px"},
-				{name: "username", content: "", style: "font-size: 16px; vertical-align: middle; padding-right: 5px"},
-				{kind: "Spacer"},
-				{name: "realname", content: "", style: "font-size: 16px; color: grey; vertical-align: middle;"},
-			]}
-		]},
+		{name: "accountsList", kind: "Spaz.AccountsList", onAccountClick: "viewAccount"},
 		{kind: "Button", caption: "Add an Account", onclick: "newAccount"}
 	],
 	showAtCenter: function(){
 		this.openAtCenter();
 	},
-	accounts: [
-		{type: "twitter", username: "Tibfib", realname: "Will Honey"},
-		{type: "twitter", username: "Spaz", realname: "Spaz"},
-	],
-	setupRow: function(inSender, inIndex){
-		var item;
-		//if(item = App.Users[inIndex]){
-			//switch(item.type){
-			//	case "twitter":
-			//		this.$.username.setContent("@" + item.username + "");
-			//		this.$.icon.setSrc("source/images/account-icon-twitter.png");
-
-			//	break;
-			//}
-			//this.$.realname.setContent(item.realname);
-			//console.log(JSON.STRINGIFY(App.Users[inIndex]));
-			//return true;
-		//}		
-	},
-	accountClick: function(inSender, inEvent, inIndex){
+	"goTopLevel": function(inSender, InEvent){
+		this.$.header.destroyComponents();
 		
-	},
-	"newAccount": function(inSender, inEvent){
-		//this.$.header.destroyComponents();
-		this.$.header.createComponents([/*{content: "Accounts", className: "link", onclick: "showAllAccounts"},*/{content: ">", style: "padding: 0px 5px;"}, {content: "New"}]);
-		this.$.firstheader.setClassName("link");
-		this.$.firstheader.onclick = "showAllAccounts";
+		this.$.topHeader.setClassName("");
+		this.$.topHeader.onclick = "";
+		
+		this.$.secondLevel.destroy();		
 
+		this.createComponents([{kind: "Spaz.AccountsList", onAccountClick: "viewAccount"}, {name: "button", kind: "Button", caption: "Add an Account", onclick: "newAccount"}])
+		this.render();
+
+	},
+	"goDownLevel": function(inName){
+		this.$.header.createComponents([{content: ">", style: "padding: 0px 5px;"}, {content: inName}]);
+		this.$.topHeader.setClassName("link");
+		this.$.topHeader.onclick = "goTopLevel";
+
+		this.$.accountsList.destroy();
 		this.$.button.destroy();
 		this.render();
 	},
-	"showAllAccounts": function(inSender, InEvent){
-		this.$.header.destroyComponents();
-		
-		this.$.firstheader.setClassName("");
-		this.$.firstheader.onclick = "";
-		
-				
-		this.createComponents([{name: "button", kind: "Button", caption: "Add an Account", onclick: "newAccount"}])
+	viewAccount: function(inSender, inEvent, inIndex){
+		this.goDownLevel(App.Users[inIndex].username); //todo
+	},
+	"newAccount": function(inSender, inEvent){
+		//this.$.header.destroyComponents();
+		this.goDownLevel("New");
+		this.createComponents([
+			{name: "secondLevel", components: [
+				{kind: "Group", components: [
+					{name: "username", kind: "Input", hint: "username"},
+					{name: "password", kind: "Input", hint: "password"},
+					{name: "service", kind: "ListSelector", value: "twitter", items: [
+					    {caption: "Twitter", value: "twitter"},
+					    {caption: "Identi.ca", value: "identi.ca"},
+					    {caption: "Status.net", value: "status.net"},
+					]},
+				]},
+				{kind: "Button", caption: "Log in", onclick: "loginAccount"}
+			]}
+		]);
 		this.render();
+		
+	},
+	"loginAccount": function(inSender, inEvent){
+		var service = this.$.service.getValue(), username = this.$.username.getValue(), password = this.$.password.getValue();
 
+		//login and add account to App.Users. make sure that array has been refreshed
+
+		this.goTopLevel(); //this re-renders the accounts list.
 	}
 });
