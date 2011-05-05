@@ -8,19 +8,33 @@ enyo.kind({
 		onShowEntryView: ""
 	},
 	components: [
-		{name: "popup", kind: "PopupList", onSelect: "itemSelect", items: [
-			"Details",
-			"Reply",
-			"Share"
-		]}
+		{name: "popup", kind: "PopupList", onSelect: "itemSelect"}
+	],
+	items: [
+		"Details",
+		"Reply",
+		"Share"
 	],
 	create: function(){
 		this.inherited(arguments);
+		this.$.popup.setItems(this.items);
 	},
-	"itemSelect": function(){
-		//currently, this just shows the entry view. need to make a switch() function
-		this.doShowEntryView(this.entry);
-		this.$.popup.close();
+	"itemSelect": function(inSender, inIndex){
+		switch(this.items[inIndex]){
+			case "Details":
+				this.doShowEntryView(this.entry);
+				this.$.popup.close();
+				break;
+			case "Reply":
+
+				break;
+			case "Share":
+
+				break;
+			default: 
+				console.error(this.items[inIndex] + " has no handler");
+				break;
+		}		
 	},
 	"showAtEvent": function(inEntry, inEvent){
 		this.entry = inEntry;
