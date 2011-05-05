@@ -28,26 +28,21 @@ enyo.kind({
 	"goTopLevel": function(inSender, InEvent){
 		this.$.header.destroyComponents();
 		
-		this.$.topHeader.setClassName("");
-		this.$.topHeader.onclick = "";
-		
 		this.$.secondLevel.destroy();		
 
-		this.createComponents([{kind: "Spaz.AccountsList", onAccountClick: "viewAccount"}, {name: "button", kind: "Button", caption: "Add an Account", onclick: "newAccount"}])
+		this.createComponents([{name: "accountsList", kind: "Spaz.AccountsList", onAccountClick: "viewAccount"}, {name: "button", kind: "Button", caption: "Add an Account", onclick: "newAccount"}])
 		this.render();
 
 	},
 	"goDownLevel": function(inName){
 		this.$.header.createComponents([{content: ">", style: "padding: 0px 5px;"}, {content: inName}]);
-		this.$.topHeader.setClassName("link");
-		this.$.topHeader.onclick = "goTopLevel";
 
 		this.$.accountsList.destroy();
 		this.$.button.destroy();
 		this.render();
 	},
 	viewAccount: function(inSender, inEvent, inIndex){
-		this.goDownLevel(App.Users[inIndex].username); //todo
+		this.goDownLevel(App.Users[inIndex].username); //todo, not sure proper property
 	},
 	"newAccount": function(inSender, inEvent){
 		//this.$.header.destroyComponents();
@@ -63,7 +58,10 @@ enyo.kind({
 					    {caption: "Status.net", value: "status.net"},
 					]},
 				]},
-				{kind: "Button", caption: "Log in", onclick: "loginAccount"}
+				{kind: "HFlexBox", components: [
+					{kind: "Button", flex: 1, caption: "Cancel", onclick: "goTopLevel"},
+					{kind: "Button", flex: 1, caption: "Save", onclick: "loginAccount"}
+				]}
 			]}
 		]);
 		this.render();
