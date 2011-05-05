@@ -32,7 +32,9 @@ enyo.depends(
 	"source/javascript/SettingsPopup.js",
 	"source/javascript/AccountsPopup.js",
 	"source/javascript/EntryClickPopup.js",
+	
 	//custom widgets
+	"source/javascript/AccountsList.js",
 
 	//css
 	"source/css/core.css"
