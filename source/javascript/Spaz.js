@@ -12,7 +12,7 @@ enyo.kind({
 	
 	twit: new SpazTwit(),
 
-	initAppObject: function() {
+	initAppObject: function(prefsLoadedCallback) {
 		/**
 		 * initialize the App object
 		 */
@@ -118,8 +118,9 @@ enyo.kind({
 				}
 			}
 		});
-		App.prefs.load( function() {
+		App.prefs.load(function() {
 			App.Users = new SpazAccounts(App.prefs);
+			prefsLoadedCallback();
 		});
 		
 		// /*
@@ -147,14 +148,15 @@ enyo.kind({
 	},
 
 	create: function(){
-		var self = this;
+		var self = this
+		  , inheritedArgs = arguments;
 
 		// init window.App
-		self.initAppObject();
+		self.initAppObject(function() {
+		    self.inherited(inheritedArgs);
+		});
 
-		self.inherited(arguments);	
-
-		
+		//self.inherited(arguments);
 	},
 	showEntryView: function(inSender, inEntry){
 		//if pref
