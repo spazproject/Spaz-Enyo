@@ -207,22 +207,26 @@ AppUtils.convertToEntry = function(item) {
 			if (SC.is_dm) {
 				//
 			} else {
+
 				entry.service       = item.SC_service;
-				entry.from_username = item.user.screen_name;
-				entry.from_name     = item.user.name;
-				entry.from_user_id  = item.user.id;
-				entry.from_user_avatar_url  = item.user.profile_image_url;
+				entry.service_message_id = item.id;
+				entry.spaz_id       = sch.uuid();
+				entry.author_username = item.user.screen_name;
+				entry.author_description = item.user.description;
+				entry.author_fullname = item.user.name;
+				entry.author_user_id  = item.user.id;
+				entry.author_user_avatar = item.user.profile_image_url;
 				entry.text          = item.text;
 				entry.publish_date  = item.SC_created_at_unixtime;
 
 				if (item.in_reply_to_screen_name) {
-					entry.to_username = item.in_reply_to_screen_name;
-					entry.to_user_id  = item.in_reply_to_user_id;
+					entry.recipient_username = item.in_reply_to_screen_name;
+					entry.recipient_user_id  = item.in_reply_to_user_id;
 				}				
 			}
 
 			// copy to SC_orig
-			entry.SC_source_obj = _.extend({},item);
+			entry._orig = _.extend({},item);
 
 
 	}
