@@ -1,16 +1,16 @@
 /*
 	Namespace for prefs helpers
 */
-Spaz.Prefs = {};
+AppPrefs = {};
 
 
 /**
  * retrieves the username for the current account 
  */
-Spaz.Prefs.getUsername = function(acc_id) {
+AppPrefs.getUsername = function(acc_id) {
 		
 	if (!acc_id) {
-		acc_id = Spaz.Prefs.getCurrentAccountId();
+		acc_id = AppPrefs.getCurrentAccountId();
 	}
 
 	if (acc_id) {
@@ -23,19 +23,19 @@ Spaz.Prefs.getUsername = function(acc_id) {
 };
 
 /**
- * DEPRECATED; calls Spaz.Prefs.getAuthKey
+ * DEPRECATED; calls AppPrefs.getAuthKey
  */
-Spaz.Prefs.getPassword = function(acc_id) {
-	sch.error('Spaz.Prefs.getPassword is deprecated; use Spaz.Prefs.getAuthKey');
-	return Spaz.Prefs.getAuthKey(acc_id);
+AppPrefs.getPassword = function(acc_id) {
+	sch.error('AppPrefs.getPassword is deprecated; use AppPrefs.getAuthKey');
+	return AppPrefs.getAuthKey(acc_id);
 };
 
 /**
  * Returns the current account's auth key 
  */
-Spaz.Prefs.getAuthKey = function(acc_id) {
+AppPrefs.getAuthKey = function(acc_id) {
 	if (!acc_id) {
-		acc_id = Spaz.Prefs.getCurrentAccountId();
+		acc_id = AppPrefs.getCurrentAccountId();
 	}
 
 	sch.debug('getAuthKey acc_id:'+acc_id);
@@ -50,13 +50,13 @@ Spaz.Prefs.getAuthKey = function(acc_id) {
 /**
  * Returns a SpazAuth object based on the current user's type and auth key 
  */
-Spaz.Prefs.getAuthObject = function(acc_id) {
-	var authkey = Spaz.Prefs.getAuthKey(acc_id);
+AppPrefs.getAuthObject = function(acc_id) {
+	var authkey = AppPrefs.getAuthKey(acc_id);
 	console.error('getAuthObject authkey: %s', authkey);
 	
 	if (authkey) {
-		var auth = new SpazAuth(Spaz.Prefs.getAccountType(acc_id));
-		console.error('Spaz.Prefs.getAccountType(): %s', Spaz.Prefs.getAccountType(acc_id));
+		var auth = new SpazAuth(AppPrefs.getAccountType(acc_id));
+		console.error('AppPrefs.getAccountType(): %s', AppPrefs.getAccountType(acc_id));
 		console.error('auth: %j', auth);
 		auth.load(authkey);
 		return auth;
@@ -68,9 +68,9 @@ Spaz.Prefs.getAuthObject = function(acc_id) {
 /**
  * Returns the current account's type, or that of the passed id
  */
-Spaz.Prefs.getAccountType = function(acc_id) {
+AppPrefs.getAccountType = function(acc_id) {
 	if (!acc_id) {
-		acc_id = Spaz.Prefs.getCurrentAccountId();
+		acc_id = AppPrefs.getCurrentAccountId();
 	}
 
 	if (acc_id) {
@@ -86,9 +86,9 @@ Spaz.Prefs.getAccountType = function(acc_id) {
 /**
  * Retrieves the custom API url for the current account, or the account with the passed id
  */
-Spaz.Prefs.getCustomAPIUrl = function(acc_id) {
+AppPrefs.getCustomAPIUrl = function(acc_id) {
 	if (!acc_id) {
-		acc_id = Spaz.Prefs.getCurrentAccountId();
+		acc_id = AppPrefs.getCurrentAccountId();
 	}
 	
 	var custom_api_url = Spaz.getAppObj().accounts.getMeta(acc_id, 'twitter-api-base-url');
@@ -103,8 +103,8 @@ Spaz.Prefs.getCustomAPIUrl = function(acc_id) {
 /**
  * Returns the current account object
  */
-Spaz.Prefs.getCurrentAccount = function() {
-	var currentAccountId = Spaz.Prefs.getCurrentAccountId();
+AppPrefs.getCurrentAccount = function() {
+	var currentAccountId = AppPrefs.getCurrentAccountId();
 	if (currentAccountId) {
 		return Spaz.getAppObj().accounts.get(currentAccountId);
 	} else {
@@ -114,7 +114,7 @@ Spaz.Prefs.getCurrentAccount = function() {
 };
 
 
-Spaz.Prefs.getCurrentAccountId = function() {
+AppPrefs.getCurrentAccountId = function() {
 	if (Spaz.getAppObj().userid) {
 		return Spaz.getAppObj().userid;
 	} else {
