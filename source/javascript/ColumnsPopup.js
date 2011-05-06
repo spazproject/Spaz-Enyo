@@ -39,9 +39,9 @@ enyo.kind({
 		_.each(this.accounts, function(account){
 			if(filterValue === "all" || filterValue === account.type ){
 				//custom toggle buttons with images being the profile pic
-				objs.push({name: account.name, kind: "Spaz.AvatarButton", avatar: account.avatar, toggling: true, onShowAccountColumns: "showAccountColumns"});
+				objs.push({name: account.name, kind: "Spaz.AvatarButton", avatar: account.avatar, toggling: true, owner: this, onShowAccountColumns: "showAccountColumns"});
 			}	
-		});
+		}, this);
 		this.$.accounts.createComponents(objs);
 		this.$.accounts.render();
 	},
