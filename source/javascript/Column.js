@@ -72,45 +72,27 @@ enyo.kind({
 
 		var self = this;
 
-		// embedding for now for the sake of testing
-		var username = 'spaztest';
-		var password = 'poop6000';
+		try {
+			var account = App.Users._accounts[0];
+			var auth = new SpazAuth(account.type);
+			auth.load(account.auth);
 
-		var twit = new SpazTwit();
-		twit.setBaseURLByService(SPAZCORE_SERVICE_TWITTER);
-		twit.setSource(App.prefs.get('twitter-source'));
-		
-		
-		var auth  = new SpazAuth(SPAZCORE_SERVICE_TWITTER);
-		
-		console.log('authorizing…');
-		
-		// doing this each time is extemely inefficient. Should do this on account creation and store token
-		auth.authorize(
-			username,
-			password,
-			function(result) {
-				if (result) {
-
-					var auth_pickle = auth.save();
-
-					console.log('auth_pickle:');
-					console.log(auth_pickle);
-
-					twit.setCredentials(auth);
-
-					twit.getHomeTimeline(null, null, null, null,
-						function(data) {
-							self.entries = data;
-							self.$.list.render();
-						}
-					);	
-
-				} else {					
-					alert($L('Verification failed!'));
+			// embedding for now for the sake of testing
+			this.twit = new SpazTwit();
+			this.twit.setBaseURLByService(account.type);
+			this.twit.setSource(App.prefs.get('twitter-source'));
+			this.twit.setCredentials(auth);
+			this.twit.getHomeTimeline(null, null, null, null,
+				function(data) {
+					self.entries = data;
+					self.$.list.render();
 				}
-			}
-		);
+			);
+
+		} catch(e) {
+			console.error(e);
+			alert('you probably need to make an account')
+		}
 	},
 	setupRow: function(inSender, inIndex) {
 		if (this.entries[inIndex]) {
