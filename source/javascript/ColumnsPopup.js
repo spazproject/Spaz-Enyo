@@ -9,33 +9,27 @@ enyo.kind({
 	},
 	components: [
 		{kind: "HFlexBox", components: [
-			{content: "Add a Column"},
+			{content: "Add a Column for", style: "padding-right: 5px"},
+			{name: "avatarList", kind: "Spaz.AvatarList", onShowAccountColumns: "showAccountColumns"},
 			{kind: "Spacer"},
+			{name: "accountName", content: "", style: "padding: 0px 5px; color: grey;"},
 			{kind: "ToolButton", icon: "source/images/icon-close.png", style: "position: relative; bottom: 7px;", onclick: "doClose"},
 		
 		]},
 		{kind: "HFlexBox", components: [
-			{name: "service", onChange: "buildAccountList", kind: "ListSelector", value: "all", items: [
-			    {caption: "All", value: "all"},
-			    {caption: "Twitter", value: "twitter"},
-			    {caption: "Identi.ca", value: "identi.ca"},
-			    {caption: "Status.net", value: "status.net"},
-			]},
-			{name: "avatarList", kind: "Spaz.AvatarList", onShowAccountColumns: "showAccountColumns"},
+			{kind: "Spacer"},
 		]}
 	],
 	create: function(){
 		this.inherited(arguments);
 	},
 	"showAtCenter": function(){
-		this.buildAccountList();
+		this.$.avatarList.buildList();
 		this.openAtCenter();
 	},
-	buildAccountList: function(){
-		this.$.avatarList.setFilterValue(this.$.service.getValue());//automatically builds the list
-	},
-	showAccountColumns: function(account){
-		console.log("showing columns for " + account.name);
+	showAccountColumns: function(inSender, inAccount){
+		console.log("showing columns for " + inAccount.name);
+		this.$.accountName.setContent(inAccount.type);
 
 	}
 });
