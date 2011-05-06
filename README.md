@@ -1,8 +1,15 @@
-## Spaz Enyo
+## Spaz Enyo ##
 
 Spaz. In Enyo.
 
 If you want on the commits email list, sign up for <https://groups.google.com/d/topic/spaz-enyo-commits/>
+
+### Spaz Enyo Team ###
+
+* Daniel Cousineau
+* Ed Finkler
+* Clay Hinson
+* Will Honey
 
 ### Targeted Platforms ###
 
@@ -39,3 +46,4 @@ You should be able to run Spaz Enyo within Chrome or Safari – Enyo is designed
 With this, I can type `chrometest index.html` and open Spaz Enyo in Chrome. *This won't work if Chrome is already open, though.*
 
 This should work for OS X, and Linux if you modify the path to the binary. You should be able to do something similar on Windows without too much effort.
+
