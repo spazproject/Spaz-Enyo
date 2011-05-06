@@ -5,20 +5,14 @@ enyo.kind({
 	published: {
 		avatar: ""	
 	},
-	events: {
-		onShowAccountColumns: ""	
-	},
 	components: [
-		{kind: "Image", width: "100%", height: "100%", onclick: "imgClick", src: ""}
+		{kind: "Image", width: "100%", height: "100%", src: ""}
 	],
 	create: function(){
 		this.inherited(arguments);
 		this.avatarChanged();
 	},
-	imgClick: function(inSender, inEvent){
-		console.log("img click");
-		this.doShowAccountColumns(inEvent);	//this does not propogate for some reason...
-	},
+
 	avatarChanged: function(){
 		this.$.image.setSrc(this.avatar);
 	},

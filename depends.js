@@ -36,6 +36,7 @@ enyo.depends(
 	
 	//custom widgets
 	"source/javascript/AccountsList.js",
+	"source/javascript/AvatarList.js",
 	"source/javascript/AvatarButton.js",
 
 	//css

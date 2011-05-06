@@ -9,44 +9,33 @@ enyo.kind({
 	},
 	components: [
 		{kind: "HFlexBox", components: [
-			{name: "service", onChange: "buildAccounts", kind: "ListSelector", value: "all", items: [
+			{content: "Add a Column"},
+			{kind: "Spacer"},
+			{kind: "ToolButton", icon: "source/images/icon-close.png", style: "position: relative; bottom: 7px;", onclick: "doClose"},
+		
+		]},
+		{kind: "HFlexBox", components: [
+			{name: "service", onChange: "buildAccountList", kind: "ListSelector", value: "all", items: [
 			    {caption: "All", value: "all"},
 			    {caption: "Twitter", value: "twitter"},
 			    {caption: "Identi.ca", value: "identi.ca"},
 			    {caption: "Status.net", value: "status.net"},
 			]},
-			{name: "accounts", kind: "HFlexBox", components: [
-
-			]},
-
+			{name: "avatarList", kind: "Spaz.AvatarList", onShowAccountColumns: "showAccountColumns"},
 		]}
 	],
 	create: function(){
 		this.inherited(arguments);
 	},
 	"showAtCenter": function(){
-		this.buildAccounts();
+		this.buildAccountList();
 		this.openAtCenter();
 	},
-	accounts: [
-		{name: "spaztest", type: "twitter", avatar: "http://a3.twimg.com/sticky/default_profile_images/default_profile_3_bigger.png"},
-		{name: "Tibfib", type: "identi.ca", avatar: "http://a3.twimg.com/profile_images/1281983040/simpsons_profile.png"}
-	],
-	buildAccounts: function(){
-		this.$.accounts.destroyComponents();
-
-		var objs = [], filterValue = this.$.service.getValue();
-		_.each(this.accounts, function(account){
-			if(filterValue === "all" || filterValue === account.type ){
-				//custom toggle buttons with images being the profile pic
-				objs.push({name: account.name, kind: "Spaz.AvatarButton", avatar: account.avatar, toggling: true, owner: this, onShowAccountColumns: "showAccountColumns"});
-			}	
-		}, this);
-		this.$.accounts.createComponents(objs);
-		this.$.accounts.render();
+	buildAccountList: function(){
+		this.$.avatarList.setFilterValue(this.$.service.getValue());//automatically builds the list
 	},
-	showAccountColumns: function(inSender, inEvent){
-		console.log("fired");
+	showAccountColumns: function(account){
+		console.log("showing columns for " + account.name);
 
 	}
 });
