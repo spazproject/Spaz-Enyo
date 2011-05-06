@@ -69,22 +69,29 @@ enyo.kind({
 		if (this.$.secondLevel) {
 			this.$.secondLevel.destroy();
 		}
-		this.createComponents([
+		this.createComponents([ //this looks pretty bad. need to figure out what to display.
 			{name: "secondLevel", components: [
-				{kind: "Group", components: [
-					{kind: "Item", components: [
-						{name: "accountInfo", content: App.Users.getLabel(account_id)},
-					]}
+				//{kind: "Group", components: [
+					//{kind: "Item", components: [
+						//{name: "accountInfo", content: App.Users.getLabel(account_id)},
+					//]},
+				//]},
+				{kind: "Group", caption: "Options", components: [
+					{kind: "HFlexBox", components: [
+						{kind: "Button", content: "Remove", onclick: "removeAccount", flex: 1}
+						//{kind: "Button", flex: 1, content: "Change Credentials", account_id: account_id, onclick: "changeCredentials"},
+						// ^this may be more pain than it is worth. we would need to flesh out goDownLevel to be able to go down more than one level and so forth.
+					]},
 				]},
-				{kind: "Button", content: "Change Credentials"},
-				{kind: "Button", content: "Log Out"},
-				{kind: "Spacer"},
-				{kind: "Button", content: "Cancel", onclick: "goTopLevel"}
+				{kind: "Button", content: "Back", onclick: "goTopLevel", flex: 1}
 			]}
 		]);
 
 		this.render();
 		//this.createAccountEditComponents(App.Users.get(account_id));
+	},
+	changeCredentials: function(inSender, inEvent){
+		this.createAccountEditComponents(App.Users.get(inSender.account_id));
 	},
 	"newAccount": function(inSender, inEvent){
 		//this.$.header.destroyComponents();
@@ -102,14 +109,23 @@ enyo.kind({
 		this.createComponents([
 			{name: "secondLevel", components: [
 				{kind: "Group", components: [
-					{name: "username", kind: "Input", hint: "username"},
-					{name: "password", kind: "Input", hint: "password"},
-					{name: "type", kind: "ListSelector", value: SPAZCORE_SERVICE_TWITTER, items: [
-					    {caption: "Twitter", value: SPAZCORE_SERVICE_TWITTER},
-					    {caption: "Identi.ca", value: SPAZCORE_SERVICE_IDENTICA},
-					    {caption: $L("Status.net/Custom"), value: SPAZCORE_SERVICE_CUSTOM},
+					{kind: "Item", components: [
+						{name: "username", kind: "Input", hint: "username"},
 					]},
-					{name: "api_base_url", kind: "Input", hint: "Custom API URL"}
+					{kind: "Item", components: [
+						{name: "password", kind: "PasswordInput", hint: "password"},
+					]},
+					{kind: "Item", components: [
+						{name: "type", kind: "ListSelector", value: SPAZCORE_SERVICE_TWITTER, items: [
+						    {caption: "Twitter", value: SPAZCORE_SERVICE_TWITTER},
+						    {caption: "Identi.ca", value: SPAZCORE_SERVICE_IDENTICA},
+						    {caption: $L("Status.net/Custom"), value: SPAZCORE_SERVICE_CUSTOM},
+						]},					
+					]},
+					{kind: "Item", components: [
+						{name: "api_base_url", kind: "Input", hint: "Custom API URL"}
+					]}
+					
 				]},
 				{kind: "HFlexBox", components: [
 					{kind: "Button", flex: 1, caption: "Cancel", onclick: "goTopLevel"},
@@ -197,5 +213,9 @@ enyo.kind({
 		}
 
 		
+	},
+	removeAccount: function(inSender, inEvent){
+		// remove and save App.Users. then call goToTop.. that should re-build itself.
+
 	}
 });

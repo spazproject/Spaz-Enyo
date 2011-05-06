@@ -1,7 +1,7 @@
 enyo.kind({
 	name: "Spaz.AccountsList",
 	kind: "VFlexBox",
-	style: "min-height: 200px; max-height:300px; overflow:auto",
+	style: "min-height: 175px; max-height:300px; overflow:auto",
 	className: "timeline list",
 	events: {
 		onAccountClick: "",
