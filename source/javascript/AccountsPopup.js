@@ -223,8 +223,8 @@ enyo.kind({
 		
 		this.$.promptRemoveAccount.destroy();
 		this.$.removeAccountFlexBox.createComponents([
-			{kind: "Button", flex: 1, content: "Are you Sure?", onclick: "removeAccount", owner: this}, 
-			{kind: "Button", flex: 1, content: "Cancel", onclick: "goBackToViewAccount", owner: this}
+			{kind: "Button", flex: 1, content: "Cancel", onclick: "goBackToViewAccount", owner: this},
+			{kind: "Button", flex: 1, content: "Are you Sure?", onclick: "removeAccount", owner: this}
 		]);
 		this.render();
 
