@@ -13,6 +13,7 @@ enyo.depends(
 	"source/javascript/resources/consts.js",
 
 	// helpers
+	"source/javascript/helpers/apputils.js",
 
 	// models
 
