@@ -203,21 +203,33 @@ AppUtils.convertToEntry = function(item) {
 		case SPAZCORE_SERVICE_TWITTER:
 		case SPAZCORE_SERVICE_IDENTICA:
 		case SPAZCORE_SERVICE_CUSTOM:
+
+			entry.service       = item.SC_service;
+			entry.service_message_id = item.id;
+			entry.spaz_id       = sch.uuid();
+			entry.text          = item.text;
+			entry.publish_date  = item.SC_created_at_unixtime;
 			
 			if (SC.is_dm) {
-				//
+				entry.author_username = item.sender.screen_name;
+				entry.author_description = item.sender.description;
+				entry.author_fullname = item.sender.name;
+				entry.author_user_id  = item.sender.id;
+				entry.author_user_avatar = item.sender.profile_image_url;
+
+				entry.recipient_username = item.recipient.screen_name;
+				entry.recipient_description = item.recipient.description;
+				entry.recipient_fullname = item.recipient.name;
+				entry.recipient_user_id  = item.recipient.id;
+				entry.recipient_user_avatar = item.recipient.profile_image_url;
+
 			} else {
 
-				entry.service       = item.SC_service;
-				entry.service_message_id = item.id;
-				entry.spaz_id       = sch.uuid();
 				entry.author_username = item.user.screen_name;
 				entry.author_description = item.user.description;
 				entry.author_fullname = item.user.name;
 				entry.author_user_id  = item.user.id;
 				entry.author_user_avatar = item.user.profile_image_url;
-				entry.text          = item.text;
-				entry.publish_date  = item.SC_created_at_unixtime;
 
 				if (item.in_reply_to_screen_name) {
 					entry.recipient_username = item.in_reply_to_screen_name;
@@ -228,7 +240,10 @@ AppUtils.convertToEntry = function(item) {
 			// copy to SC_orig
 			entry._orig = _.extend({},item);
 
-
+			break;
+			
+		default:
+			break;
 	}
 
 	return item
