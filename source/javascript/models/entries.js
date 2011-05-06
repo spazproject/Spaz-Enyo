@@ -1,15 +1,15 @@
 /**
- * A model for interfacing with the Tweets depot
+ * A model for interfacing with the Entries depot
  * 
  */
-var Tweets = function(opts) {
+var Entries = function(opts) {
 	
 	this.opts = sch.defaults({
 		'replace':false,
 		'prefs_obj':null
 	}, opts);
 	
-	this.bucket = new Lawnchair({name:"ext:tweets"});
+	this.bucket = new Lawnchair({name:"ext:entries"});
 	this.dm_bucket = new Lawnchair({name:"ext:dms"});
 	this.user_bucket = new Lawnchair({name:"ext:users"});
 	
@@ -46,10 +46,10 @@ var Tweets = function(opts) {
 /**
  * max size of a bucket. We need to be able to cull older entries 
  */
-Tweets.prototype.maxBucketSize = 20000;
+Entries.prototype.maxBucketSize = 20000;
 
 
-Tweets.prototype._init  = function(replace) {
+Entries.prototype._init  = function(replace) {
 	if (replace === true) {
 		sch.debug('REPLACING DEPOT!!!!!!!!!!!=======================');
 		this.bucket.nuke();
@@ -60,7 +60,7 @@ Tweets.prototype._init  = function(replace) {
 	}
 };
 
-Tweets.prototype.get    = function(id, isdm, onSuccess, onFailure) {
+Entries.prototype.get    = function(id, isdm, onSuccess, onFailure) {
 	var bucket = this.getBucket(isdm);
 	
 	var that = this;
@@ -94,7 +94,7 @@ Tweets.prototype.get    = function(id, isdm, onSuccess, onFailure) {
 };
 
 
-Tweets.prototype.save   = function(object, onSuccess, onFailure) {
+Entries.prototype.save   = function(object, onSuccess, onFailure) {
 	var objid = object.id;
 	
 	/*
@@ -135,7 +135,7 @@ Tweets.prototype.save   = function(object, onSuccess, onFailure) {
 	}
 };
 
-Tweets.prototype.remove = function(objid, isdm, onSuccess, onFailure) {
+Entries.prototype.remove = function(objid, isdm, onSuccess, onFailure) {
 	isdm = isdm === true || false;
 
 	var bucket = this.getBucket(isdm);
@@ -146,14 +146,14 @@ Tweets.prototype.remove = function(objid, isdm, onSuccess, onFailure) {
 
 
 
-Tweets.prototype.saveUser = function(userobj) { 
+Entries.prototype.saveUser = function(userobj) { 
 	// userobj.key = parseInt(userobj.id, 10);
 	userobj.key = userobj.id;
 	this.user_bucket.save(userobj);
 };
 
 
-Tweets.prototype.getUser = function(id, onSuccess, onFailure, extra) {
+Entries.prototype.getUser = function(id, onSuccess, onFailure, extra) {
 	var that = this;
 	var screen_name;
 	
@@ -227,13 +227,13 @@ Tweets.prototype.getUser = function(id, onSuccess, onFailure, extra) {
 	
 };
 
-Tweets.prototype.removeUser = function(id) {
+Entries.prototype.removeUser = function(id) {
 	this.user_bucket.remove(id);
 };
 
 
 
-Tweets.prototype.getSince = function(unixtime, isdm) {
+Entries.prototype.getSince = function(unixtime, isdm) {
 	var bucket = this.getBucket(isdm);
 	
 	bucket.find(
@@ -247,7 +247,7 @@ Tweets.prototype.getSince = function(unixtime, isdm) {
 
 
 
-Tweets.prototype.getSinceId = function(since_id, isdm) {
+Entries.prototype.getSinceId = function(since_id, isdm) {
 	var bucket = this.getBucket(isdm);
 	
 	bucket.find(
@@ -261,7 +261,7 @@ Tweets.prototype.getSinceId = function(since_id, isdm) {
 
 
 
-Tweets.prototype.removeBefore = function(unixtime, isdm) {
+Entries.prototype.removeBefore = function(unixtime, isdm) {
 	var bucket = this.getBucket(isdm);
 	
 	bucket.find(
@@ -274,7 +274,7 @@ Tweets.prototype.removeBefore = function(unixtime, isdm) {
 	);
 };
 
-Tweets.prototype.removeBeforeId = function(id, isdm) {
+Entries.prototype.removeBeforeId = function(id, isdm) {
 	var bucket = this.getBucket(isdm);
 	
 	bucket.find(
@@ -288,7 +288,7 @@ Tweets.prototype.removeBeforeId = function(id, isdm) {
 };
 
 
-Tweets.prototype.getBucket = function(isdm) {
+Entries.prototype.getBucket = function(isdm) {
 	if (isdm) {
 		return this.dm_bucket;
 	} else {
@@ -297,7 +297,7 @@ Tweets.prototype.getBucket = function(isdm) {
 };
 
 
-Tweets.prototype.getRemote = function(id, isdm, onSuccess, onFailure, twit_opts) {
+Entries.prototype.getRemote = function(id, isdm, onSuccess, onFailure, twit_opts) {
 	var twit;
 
 	if (twit_opts) {
@@ -316,7 +316,7 @@ Tweets.prototype.getRemote = function(id, isdm, onSuccess, onFailure, twit_opts)
 	}
 };
 
-Tweets.prototype.getRemoteUser = function(id, onSuccess, onFailure, twit_opts) {
+Entries.prototype.getRemoteUser = function(id, onSuccess, onFailure, twit_opts) {
 	var twit;
 	
 	if (twit_opts) {
@@ -336,7 +336,7 @@ Tweets.prototype.getRemoteUser = function(id, onSuccess, onFailure, twit_opts) {
 
 
 
-Tweets.prototype.initSpazTwit = function(event_mode) {
+Entries.prototype.initSpazTwit = function(event_mode) {
 	event_mode = event_mode || 'jquery'; // default this to jquery because we have so much using it
 	
 	var users = new SpazAccounts(this.opts.prefs_obj);
@@ -349,9 +349,9 @@ Tweets.prototype.initSpazTwit = function(event_mode) {
 	
 	
 	var auth;
-	if ( (auth = Spaz.Prefs.getAuthObject()) ) {
+	if ( (auth = AppPrefs.getAuthObject()) ) {
 		this.twit.setCredentials(auth);
-		this.twit.setBaseURLByService(Spaz.Prefs.getAccountType());
+		this.twit.setBaseURLByService(AppPrefs.getAccountType());
 	} else {
 		// alert('NOT seetting credentials for!');
 	}	
@@ -363,7 +363,7 @@ Tweets.prototype.initSpazTwit = function(event_mode) {
  * in situations where we want to use different credentials/access a different
  * service, we make a new, temporary SpazTwit object 
  */
-Tweets.prototype.initTempSpazTwit = function(opts) {
+Entries.prototype.initTempSpazTwit = function(opts) {
 	var twit, auth;
 	
 	opts = sch.defaults({
@@ -396,15 +396,15 @@ Tweets.prototype.initTempSpazTwit = function(opts) {
 };
 
 
-Tweets.prototype.onSaveSuccess = function(obj, msg) {
+Entries.prototype.onSaveSuccess = function(obj, msg) {
 	dump('TweetModel Saved');
 };
 
-Tweets.prototype.onSaveFailure = function(msg, obj) {
+Entries.prototype.onSaveFailure = function(msg, obj) {
 	dump('TweetModel Save Failed On : '+obj+' '+msg);
 };
 
-Tweets.prototype.reset = function() {
+Entries.prototype.reset = function() {
 	this._init(true);
 };
 
