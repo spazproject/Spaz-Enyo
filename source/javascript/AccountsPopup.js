@@ -63,6 +63,8 @@ enyo.kind({
 	viewAccount: function(inSender, inEvent, inIndex){
 		
 		var account_id = this.$.accountsList.accounts[inIndex].id;
+		
+		this.editing_acc_id = account_id;
 
 		this.goDownLevel(account_id);
 
@@ -215,6 +217,15 @@ enyo.kind({
 		
 	},
 	removeAccount: function(inSender, inEvent){
+
+		//@TODO we should probably prompt for deletion
+
+		App.Users.remove(this.editing_acc_id);
+		//@TODO we should also delete any columns using this account
+
+		this.editing_acc_id = null
+
+		this.goTopLevel(); //this re-renders the accounts list.
 		// remove and save App.Users. then call goToTop.. that should re-build itself.
 
 	}
