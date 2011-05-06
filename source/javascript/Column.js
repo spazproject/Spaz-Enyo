@@ -19,7 +19,7 @@ enyo.kind({
 		{layoutKind: "VFlexLayout", width: "322px", style: "margin: 5px 5px;", components: [
 			{kind: "Toolbar", defaultKind: "Control", content: "Home", style: "color: white; margin: 0px 3px", components: [
 				//gotta do this crap to get the header title to center and not be a button. "defaultKind" in Toolbar is key.
-				{kind: "Spacer", flex: 2},
+				{kind: "Spacer", flex: 1},
 				{name: "header", flex: 1, content: ""},
 				{kind: "Spacer", flex: 1},
 				{kind: "ToolButton", icon: "source/images/icon-close.png"},
@@ -73,7 +73,7 @@ enyo.kind({
 		var self = this;
 
 		try {
-			var account = App.Users._accounts[0];
+			var account = App.Users.get(this.info.accounts[0]);
 			var auth = new SpazAuth(account.type);
 			auth.load(account.auth);
 
@@ -82,12 +82,50 @@ enyo.kind({
 			this.twit.setBaseURLByService(account.type);
 			this.twit.setSource(App.prefs.get('twitter-source'));
 			this.twit.setCredentials(auth);
-			this.twit.getHomeTimeline(null, null, null, null,
-				function(data) {
-					self.entries = data;
-					self.$.list.render();
-				}
-			);
+
+			switch (this.info.type) {
+				case 'home':
+					this.twit.getHomeTimeline(null, null, null, null,
+						function(data) {
+							self.entries = data.reverse();
+							self.$.list.render();
+						}
+					);
+					break;
+				case 'mentions':
+					this.twit.getReplies(null, null, null, null,
+						function(data) {
+							self.entries = data.reverse();
+							self.$.list.render();
+						}
+					);
+					break;
+				case 'dms':
+					this.twit.getDirectMessages(null, null, null, null,
+						function(data) {
+							self.entries = data.reverse();
+							self.$.list.render();
+						}
+					);
+					break;
+				case 'search':
+					this.twit.search(this.info.query, null, null, null, null, null,
+						function(data) {
+							self.entries = data.reverse();
+							self.$.list.render();
+						}
+					);
+					break;
+				default:
+					this.twit.getHomeTimeline(null, null, null, null,
+						function(data) {
+							self.entries = data.reverse();
+							self.$.list.render();
+						}
+					);
+					break;
+			}
+
 
 		} catch(e) {
 			console.error(e);
@@ -97,7 +135,7 @@ enyo.kind({
 	setupRow: function(inSender, inIndex) {
 		if (this.entries[inIndex]) {
 			var entry = this.entries[inIndex];
-			this.$.entry.setContent("<span class='username'>" + entry.user.screen_name + "</span> " + enyo.string.runTextIndexer(entry.text));
+			this.$.entry.setContent("<span class='username'>" + entry.user.screen_name + "</span><br>" + enyo.string.runTextIndexer(entry.text));
 			this.$.timeFrom.setContent(sch.getRelativeTime(entry.created_at) + " from <span class='link'>" + entry.source + "</span>");
 			this.$.image.setSrc(entry.user.profile_image_url);
 			
