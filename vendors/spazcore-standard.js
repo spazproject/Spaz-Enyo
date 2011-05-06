@@ -1,4 +1,4 @@
-/*********** Built 2011-05-05 11:22:27 CDT ***********/
+/*********** Built 2011-05-06 00:22:41 EDT ***********/
 /*jslint 
 browser: true,
 nomen: false,
@@ -8636,6 +8636,7 @@ SpazOAuth.prototype.authorize = function(username, password, onComplete) {
 		},
 		beforeSend: function(xhr) {
 			xhr.setRequestHeader('Accept-Encoding', 'none');
+			xhr.setRequestHeader('Cookie', '');
 
 		}
 
@@ -9608,22 +9609,24 @@ SpazPrefs.prototype.setEncrypted = function(key, val) {
  * loads the prefs file and parses the prefs into this._prefs,
  * or initializes the file and loads the defaults
  * @stub
- * @param {function} callback to fire when preferences are loaded
  */
-SpazPrefs.prototype.load = function(callback) {
-    if( typeof callback == 'function' )
-        callback(this);
+SpazPrefs.prototype.load = function(name) {
 };
+
+
+
+
+
 
 
 /**
  * saves the current preferences
- * @strub
- * @param {function} callback to fire when preferences are saved
+ * @todo
  */
-SpazPrefs.prototype.save = function(callback) {
-    if( typeof callback == 'function' )
-        callback(this);
+SpazPrefs.prototype.save = function() {
+
+
+	
 };
 
 
@@ -10419,12 +10422,15 @@ var SPAZCORE_EXPANDABLE_DOMAINS = [
 	"bacn.me",
 	"bloat.me",
 	"budurl.com",
+	"chzb.gr",
 	"clipurl.us",
 	"cort.as",
 	"dwarfurl.com",
 	"ff.im",
 	"fff.to",
+	"goo.gl",
 	"href.in",
+	"ht.ly",
 	"idek.net",
 	"korta.nu",
 	"lin.cr",
@@ -10459,6 +10465,7 @@ var SPAZCORE_EXPANDABLE_DOMAINS = [
 	"snipr.com",
 	"snipurl.com",
 	"snurl.com",
+	"t.co",
 	"tiny.cc",
 	"tinysong.com",
 	"togoto.us",
@@ -10469,6 +10476,7 @@ var SPAZCORE_EXPANDABLE_DOMAINS = [
 	"twurl.nl",
 	"u.mavrev.com",
 	"u.nu",
+	"un.cr",
 	"ur1.ca",
 	"url.az",
 	"url.ie",
@@ -10782,28 +10790,34 @@ SpazShortURL.prototype.expand = function(shorturl, opts) {
 				errobj.msg = 'Unknown Error';
 			}
 			shortener._onExpandResponseFailure(errobj, opts.event_target);
+			if (opts.onError) {
+				opts.onError(errobj);
+			}
+			
 		},
 		success:function(data) {
-			// var shorturl = trim(data);
-			data = sc.helpers.deJSON(data);
-			var longurl = data[shorturl];
+			data = sch.deJSON(data);
+			var longurl = data['final_url'];
 			
 			/*
 				save it to cache
 			*/
 			shortener.saveExpandedURLToCache(shorturl, longurl);
 			
-			shortener._onExpandResponseSuccess({
-					'shorturl':shorturl,
-					'longurl' :longurl
-				},
-				opts.event_target
-			);
+			var resp = {
+				'shorturl':shorturl,
+				'longurl' :longurl
+			};
+			
+			shortener._onExpandResponseSuccess(resp, opts.event_target);
+			if (opts.onSuccess) {
+				opts.onSuccess(resp);
+			}
 		},
 		beforeSend:function(xhr) {},
 		type:"GET",
-		url :'http://longurlplease.appspot.com/api/v1.1',
-		data:{ 'q':shorturl }
+		url :'http://api.getspaz.com/url/resolve',
+		data:{ 'url':shorturl }
 	});
 };
 
@@ -10833,6 +10847,8 @@ SpazShortURL.prototype.findExpandableURLs = function(str) {
 			regexes.push(new RegExp("http://"+thisdomain+"/(-?[a-zA-Z0-9]+)", "gi"));
 		} else if (thisdomain == 'ow.ly') { // we have to skip ow.ly/i/XXX links
 			regexes.push(new RegExp("http://"+thisdomain+"/(-?[a-zA-Z0-9]{2,})", "gi"));
+		} else if (thisdomain == 'goo.gl') { // we have to skip ow.ly/i/XXX links
+			regexes.push(new RegExp("http://"+thisdomain+"/(?:fb/|)(-?[a-zA-Z0-9]+)", "gi"));
 		} else {
 			regexes.push(new RegExp("http://"+thisdomain+"/([a-zA-Z0-9-_]+)", "gi"));
 		}
@@ -10858,11 +10874,11 @@ SpazShortURL.prototype.findExpandableURLs = function(str) {
 };
 
 
-SpazShortURL.prototype.expandURLs = function(urls, target) {
+SpazShortURL.prototype.expandURLs = function(urls, target, onSuccess, onFailure) {
 	for (var i=0; i < urls.length; i++) {
 		var thisurl = urls[i];
 		sch.dump('expanding '+thisurl);
-		this.expand(thisurl, { 'event_target':target });
+		this.expand(thisurl, { 'event_target':target, 'onSuccess':onSuccess, 'onFailure':onFailure });
 	};
 };
 
@@ -15704,9 +15720,8 @@ if (!window.localStorage) { // if localStorage is not available, we fall back to
 			sch.debug('prefsval does not exist; saving with defaults');
 			this.save();
 		}
-		
 		if( typeof callback == 'function' )
-            callback(this);
+			callback(this);
 	};
 
 	/**
@@ -15716,9 +15731,9 @@ if (!window.localStorage) { // if localStorage is not available, we fall back to
 		var cookie_key = this.id || SPAZCORE_PREFS_STANDARD_COOKIENAME;
 		jaaulde.utils.cookies.set(cookie_key, this._prefs);
 		sch.debug('stored prefs in cookie');
-		
 		if( typeof callback == 'function' )
-            callback(this);
+			callback(this);
+		
 	};
 	
 } else {
@@ -15738,9 +15753,9 @@ if (!window.localStorage) { // if localStorage is not available, we fall back to
 			sch.debug('prefsval does not exist; saving with defaults');
 			this.save();
 		}
-		
 		if( typeof callback == 'function' )
-            callback(this);
+			callback(this);
+		
 	};
 
 	/**
@@ -15756,9 +15771,10 @@ if (!window.localStorage) { // if localStorage is not available, we fall back to
 				sch.error('LocalStorage quota exceeded!');
 			}
 		}
-        
-        if( typeof callback == 'function' )
-            callback(this);
+		if( typeof callback == 'function' )
+			callback(this);
+		
+
 	};
 	
 
