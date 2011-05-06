@@ -61,11 +61,30 @@ enyo.kind({
 		this.render();
 	},
 	viewAccount: function(inSender, inEvent, inIndex){
-
+		
 		var account_id = this.$.accountsList.accounts[inIndex].id;
 
 		this.goDownLevel(account_id);
-		this.createAccountEditComponents(App.Users.get(account_id));
+
+		if (this.$.secondLevel) {
+			this.$.secondLevel.destroy();
+		}
+		this.createComponents([
+			{name: "secondLevel", components: [
+				{kind: "Group", components: [
+					{kind: "Item", components: [
+						{name: "accountInfo", content: App.Users.getLabel(account_id)},
+					]}
+				]},
+				{kind: "Button", content: "Change Credentials"},
+				{kind: "Button", content: "Log Out"},
+				{kind: "Spacer"},
+				{kind: "Button", content: "Cancel", onclick: "goTopLevel"}
+			]}
+		]);
+
+		this.render();
+		//this.createAccountEditComponents(App.Users.get(account_id));
 	},
 	"newAccount": function(inSender, inEvent){
 		//this.$.header.destroyComponents();
