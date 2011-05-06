@@ -19,7 +19,7 @@ enyo.kind({
 			{kind: "ToolButton", icon: "source/images/icon-close.png", style: "position: relative; bottom: 7px;", onclick: "doClose"}
 		]},	
 		//very thin divider
-		{name: "accountsList", kind: "Spaz.AccountsList", onAccountClick: "viewAccount"},
+		{name: "accountsList", kind: "Spaz.AccountsList", onAccountClick: "viewAccountFromListTap"},
 		{kind: "Button", caption: "Add an Account", onclick: "newAccount"}
 	],
 	showAtCenter: function(){
@@ -34,7 +34,7 @@ enyo.kind({
 
 		this.createComponents(
 			[
-				{name: "accountsList", kind: "Spaz.AccountsList", onAccountClick: "viewAccount"},
+				{name: "accountsList", kind: "Spaz.AccountsList", onAccountClick: "viewAccountFromListTap"},
 				{name: "button", kind: "Button", caption: "Add an Account", onclick: "newAccount"}
 			]
 		);
@@ -54,16 +54,19 @@ enyo.kind({
 
 
 		this.$.header.createComponents([{content: ">", style: "padding: 0px 5px;"}, {content: label}]);
-
-		this.$.accountsList.destroy();
-		this.$.button.destroy();
+		if(this.$.accountsList){
+			this.$.accountsList.destroy();	
+		}
+		if(this.$.button){
+			this.$.button.destroy();			
+		}
 
 		this.render();
 	},
-	viewAccount: function(inSender, inEvent, inIndex){
-		
-		var account_id = this.$.accountsList.accounts[inIndex].id;
-		
+	viewAccountFromListTap: function(inSender, inEvent, inIndex){
+		this.viewAccount(this.$.accountsList.accounts[inIndex].id);
+	},
+	viewAccount: function(account_id){		
 		this.editing_acc_id = account_id;
 
 		this.goDownLevel(account_id);
@@ -79,8 +82,8 @@ enyo.kind({
 					//]},
 				//]},
 				{kind: "Group", caption: "Options", components: [
-					{kind: "HFlexBox", components: [
-						{kind: "Button", content: "Remove", onclick: "removeAccount", flex: 1}
+					{name: "removeAccountFlexBox", kind: "HFlexBox", components: [
+						{name: "promptRemoveAccount", kind: "Button", content: "Remove", onclick: "promptRemoveAccount", flex: 1, owner: this}
 						//{kind: "Button", flex: 1, content: "Change Credentials", account_id: account_id, onclick: "changeCredentials"},
 						// ^this may be more pain than it is worth. we would need to flesh out goDownLevel to be able to go down more than one level and so forth.
 					]},
@@ -216,17 +219,27 @@ enyo.kind({
 
 		
 	},
+	promptRemoveAccount: function(inSender, inEvent){
+		
+		this.$.promptRemoveAccount.destroy();
+		this.$.removeAccountFlexBox.createComponents([
+			{kind: "Button", flex: 1, content: "Are you Sure?", onclick: "removeAccount", owner: this}, 
+			{kind: "Button", flex: 1, content: "Cancel", onclick: "goBackToViewAccount", owner: this}
+		]);
+		this.render();
+
+	},
 	removeAccount: function(inSender, inEvent){
-
-		//@TODO we should probably prompt for deletion
-
 		App.Users.remove(this.editing_acc_id);
 		//@TODO we should also delete any columns using this account
 
-		this.editing_acc_id = null
+		this.editing_acc_id = null;
 
 		this.goTopLevel(); //this re-renders the accounts list.
-		// remove and save App.Users. then call goToTop.. that should re-build itself.
-
-	}
+	},
+	goBackToViewAccount: function(inSender, inEvent){
+		var id = this.editing_acc_id;
+		this.goTopLevel(); //this re-renders the accounts list.
+		this.viewAccount(id);
+	},
 });
