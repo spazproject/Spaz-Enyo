@@ -3,7 +3,6 @@ enyo.kind({
 	flex: 1,
 	kind: "Control",
 	height: "100%",
-	peekWidth: 50,
 	events: {
 		onShowEntryView: ""
 	},
@@ -39,20 +38,18 @@ enyo.kind({
 				name:'Column'+i,
 				info: colData[i],
 				kind: "Spaz.Column",
-				onShowEntryView: "doShowEntryView"
-			})
+				onShowEntryView: "doShowEntryView",
+				owner: this //@TODO there is an issue here with scope. when we create kinds like this dynamically, the event handlers passed is the scope `this.$.columnsScroller` rather than `this` which is what we want in this case since `doShowEntryView` belongs to `this`. It won't be a big deal here, because if we need the column kinds, we can call this.getComponents() and filter out the scroller itself.
+			});
 		};
 
 		this.$.columnsScroller.createComponents(cols.reverse());
 
 		this.render();
 	},
-	showEntryView: function(inSender, inEntry) {
-		//this.doShowEntryView(inEntry);
-	},
 	resizeHandler: function() {
-		_.each(this.$.snapScroller.components, function(kind){
-			this.$[kind.name].resizeHandler();
+		_.each(this.getComponents(), function(column){
+			this.$[column.name].resizeHandler();
 		}, this);
 	}
 });

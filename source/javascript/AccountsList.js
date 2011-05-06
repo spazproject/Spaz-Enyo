@@ -17,10 +17,7 @@ enyo.kind({
 			]}
 		]}
 	],
-	accounts: [
-		// {type: "twitter", username: "Tibfib", realname: "Will Honey"},
-		// {type: "twitter", username: "Spaz", realname: "Spaz"},
-	],
+	accounts: [],
 	create: function(){
 		this.buildAccounts();
 		this.inherited(arguments);
