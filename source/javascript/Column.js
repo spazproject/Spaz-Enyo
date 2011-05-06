@@ -87,6 +87,7 @@ enyo.kind({
 				case 'home':
 					this.twit.getHomeTimeline(null, null, null, null,
 						function(data) {
+							console.log(data);
 							self.entries = data.reverse();
 							self.$.list.render();
 						}
