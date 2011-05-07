@@ -8,33 +8,56 @@ enyo.kind({
 		onClose: ""
 	},
 	published: {
-		dmUser: "",
-		inReplyTweet: ""	
+		dmUser: "", // use this to show the user we are direct messaging
+		inReplyTweet: "" // use this to display the tweet being replied to
 	},
+	inReplyToId:null, // set this when making a reply to a specific entry
 	style: "min-width: 400px;",
 	components: [
 		{layoutKind: "HFlexLayout", components: [
 			{content: "New Entry", style: "padding-bottom: 0px"},
 			{kind: "Spacer"},
-			{kind: "ToolButton", icon: "source/images/icon-close.png", style: "position: relative; bottom: 7px;", onclick: "doClose"},
+			{kind: "ToolButton", icon: "source/images/icon-close.png", style: "position: relative; bottom: 7px;", onclick: "doClose"}
 		]},
 		{kind: "InputBox", style: "min-height: 50px", components: [
 		    //{kind: "Input", hint: "entry...", className: "enyo-input-inner", onchange: "inputChange", onfocus: "inputFocus"},
-		    {kind: "BasicRichText", richContent: false, multiline: true, flex: 1, className: "enyo-input-inner"},
-		    {content: "140"},
+		    {name:"postTextBox", kind: "BasicRichText", richContent: false, multiline: true, flex: 1, className: "enyo-input-inner"},
+		    {content: "140"}
 		]},
 		{name: "controls", layoutKind: "HFlexLayout", style: "padding-top: 5px", components: [
-			{kind: "Button", toggling: true, down: true, label: "@Tibfib"},
-			{kind: "Button", toggling: true, label: "@Spaz"},
+			{"kind":"Button","style":"padding: 0px 5px; position: relative; bottom: 7px;","components":[
+			   {name: "accountSelection", "kind":"ListSelector", onChange: "onChangeAccount", className: "accountSelection"}
+			]},
 			{kind: "Spacer", style: "min-width: 50px"},
-			{kind: "Button", label: "Send"}
+			{kind: "Button", label: "Send", onclick: "onSendClick"}
 		]}
 	],
 	create: function(){
 		this.inherited(arguments);
 	},
+	buildAccounts: function() {
+
+		var allusers = App.Users.getAll();
+		this.accounts = [];
+		for (var key in allusers) {
+			this.accounts.push({
+				id:allusers[key].id,
+				value: allusers[key].id,
+				caption:App.Users.getLabel(allusers[key].id),
+				type:allusers[key].type
+			});
+		}
+		this.$.accountSelection.setItems(this.accounts);
+		this.$.accountSelection.setValue(this.accounts[0].value);
+
+		var last_posting_account_id = App.Prefs.get('last_posting_account_id');
+		if (last_posting_account_id) {
+			this.setPostingAccount(last_posting_account_id);
+		}
+	},
 	"showAtCenter": function(){
-		 this.$.basicRichText.forceFocus();
+		 this.buildAccounts();
+		 this.$.postTextBox.forceFocus();
 		 this.openAtCenter();
 		 this.applyStyle("width", this.getBounds().width + "px");
 	},
@@ -49,4 +72,41 @@ enyo.kind({
 		//set flag?
 
 	},
+	setPostingAccount: function(account_id) {
+
+		for (var i = 0; i < this.$.accountSelection.items.length; i++) {
+			if (this.$.accountSelection.items[i].id === account_id) {
+				this.$.accountSelection.setValue(this.$.accountSelection.items[i].value);
+				break;
+			}
+		}
+
+		// make the SpazTwit object
+		this.twit = AppUtils.makeTwitObj(account_id);
+
+		// save this for next time
+		App.Prefs.set('last_posting_account_id', account_id);
+	},
+	onChangeAccount: function(inSender, inValue, inOldValue) {
+		this.setPostingAccount(inValue);
+	},
+
+	updateCharCount:function() {
+		//@TODO	
+	},
+
+	onSendClick: function(inSender) {
+		var self = this;
+
+		this.twit.update(this.$.postTextBox.value, null, this.inReplyToId,
+			function() {
+				self.$.postTextBox.setValue('');
+				self.close();
+			},
+			function() {
+				//@TODO report error info
+				alert('failed');
+			}
+		);
+	}
 });
