@@ -32,7 +32,7 @@ TempCache.prototype.initUser = function(idkey) {
 		idkey = this.App.userid;
 	}
 	
-	Mojo.Log.info('TempCache: idkey for user is '+idkey);
+	console.info('TempCache: idkey for user is '+idkey);
 	
 	if (!this._spaztmpcache) {
 		this._spaztmpcache = {};
@@ -53,9 +53,9 @@ TempCache.prototype.save = function(key, val, idkey) {
 		idkey = this.App.userid;
 	}
 
-	Mojo.Log.info("saving key:"+key);
-	Mojo.Log.info("saving val:"+val);
-	Mojo.Log.info("saving idkey:"+idkey);	
+	console.info("saving key:"+key);
+	console.info("saving val:"+val);
+	console.info("saving idkey:"+idkey);	
 	
 	if (!this._spaztmpcache) {
 		this.init();
@@ -92,8 +92,8 @@ TempCache.prototype.load = function(key, idkey) {
 		this.initUser(idkey);
 	}
 	
-	Mojo.Log.info("TempCache: loading key:"+key);
-	Mojo.Log.info("TempCache: loading idkey:"+idkey);
+	console.info("TempCache: loading key:"+key);
+	console.info("TempCache: loading idkey:"+idkey);
 	
 	if (this._spaztmpcache[idkey][key]) {
 		return this._spaztmpcache[idkey][key];
@@ -105,7 +105,7 @@ TempCache.prototype.load = function(key, idkey) {
 
 TempCache.prototype.saveToDB = function(idkey) {
 	
-	Mojo.Log.error('Saving Cache to DB');
+	console.error('Saving Cache to DB');
 	
 	Mojo.Timing.resume("timing_TempCache.saveToDB");
 	
@@ -114,19 +114,19 @@ TempCache.prototype.saveToDB = function(idkey) {
 	}
 	
 	function success(tx, rs) {
-		Mojo.Log.info("SUCCESS SAVING TEMP CACHE");
+		console.info("SUCCESS SAVING TEMP CACHE");
 		sch.triggerCustomEvent('temp_cache_save_db_success', document);
 		Mojo.Timing.pause("timing_TempCache.saveToDB");
 		
-		Mojo.Log.error(Mojo.Timing.createTimingString("timing_", "Cache op times"));
+		console.error(Mojo.Timing.createTimingString("timing_", "Cache op times"));
 	}
 	function failure(tx, err) {
 		sch.error("ERROR SAVING TEMP CACHE");
-		Mojo.Log.error(err);
+		console.error(err);
 		sch.triggerCustomEvent('temp_cache_save_db_failure', document);
 		Mojo.Timing.pause("timing_TempCache.saveToDB");
 		
-		Mojo.Log.error(Mojo.Timing.createTimingString("timing_", "Cache op times"));
+		console.error(Mojo.Timing.createTimingString("timing_", "Cache op times"));
 	}
 
 	Mojo.Timing.resume("timing_TempCache.JSON.stringify");	
@@ -161,7 +161,7 @@ TempCache.prototype.loadFromDB = function(onLoad, idkey) {
 	}
 	
 	function success(tx, rs) {
-		Mojo.Log.info("SUCCESS LOADING TEMP CACHE");
+		console.info("SUCCESS LOADING TEMP CACHE");
 		Mojo.Timing.resume("timing_TempCache.sch.deJSON");
 		for(var i = 0; i < rs.rows.length; i++) {
 			var this_key = rs.rows.item(i).key.replace('json_cache_', '');
@@ -177,14 +177,14 @@ TempCache.prototype.loadFromDB = function(onLoad, idkey) {
 		sch.triggerCustomEvent('temp_cache_load_db_success', document, that._spaztmpcache);
 		Mojo.Timing.pause("timing_TempCache.loadFromDB");
 		
-		Mojo.Log.error(Mojo.Timing.createTimingString("timing_", "Cache op times"));
+		console.error(Mojo.Timing.createTimingString("timing_", "Cache op times"));
 	}
 	function failure(tx, err) {
-		Mojo.Log.error("ERROR LOADING TEMP CACHE: %j", err);
+		console.error("ERROR LOADING TEMP CACHE: %j", err);
 		sch.triggerCustomEvent('temp_cache_load_db_failure', document, err);
 		Mojo.Timing.pause("timing_TempCache.loadFromDB");
 		
-		Mojo.Log.error(Mojo.Timing.createTimingString("timing_", "Cache op times"));
+		console.error(Mojo.Timing.createTimingString("timing_", "Cache op times"));
 	}
 	
 	var SpazTempCache = openDatabase("ext:SpazTempCache", "1", 'SpazTempCache', 10*1024*1024);
@@ -210,7 +210,7 @@ TempCache.prototype.clear = function() {
 	
 	var appController = Mojo.Controller.getAppController();
 	
-	Mojo.Log.error('triggering temp_cache_cleared');
+	console.error('triggering temp_cache_cleared');
 	appController.sendToNotificationChain({"event":"temp_cache_cleared"});
 	
 	Mojo.Timing.pause("timing_TempCache.clear");

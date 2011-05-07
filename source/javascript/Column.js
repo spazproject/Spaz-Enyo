@@ -80,7 +80,7 @@ enyo.kind({
 			// embedding for now for the sake of testing
 			this.twit = new SpazTwit();
 			this.twit.setBaseURLByService(account.type);
-			this.twit.setSource(App.prefs.get('twitter-source'));
+			this.twit.setSource(App.Prefs.get('twitter-source'));
 			this.twit.setCredentials(auth);
 
 			switch (this.info.type) {
@@ -136,7 +136,7 @@ enyo.kind({
 	setupRow: function(inSender, inIndex) {
 		if (this.entries[inIndex]) {
 			var entry = this.entries[inIndex];
-			this.$.entry.setContent("<span class='username'>" + entry.user.screen_name + "</span><br>" + enyo.string.runTextIndexer(entry.text));
+			this.$.entry.setContent("<span class='username'>" + entry.user.screen_name + "</span><br>" + AppUtils.makeItemsClickable(enyo.string.runTextIndexer(entry.text)));
 			this.$.timeFrom.setContent(sch.getRelativeTime(entry.created_at) + " from <span class='link'>" + entry.source + "</span>");
 			this.$.image.setSrc(entry.user.profile_image_url);
 			
