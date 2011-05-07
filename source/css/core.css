@@ -89,3 +89,8 @@ a:active,
 .enyo-button-avatar.enyo-button-depressed {
 	border-color: yellow;
 }
+
+/* Columns Popup */
+.accountSelection .enyo-menucheckitem-caption {
+	padding-right: 0px;
+}
