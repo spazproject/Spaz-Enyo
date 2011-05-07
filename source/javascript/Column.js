@@ -80,7 +80,7 @@ enyo.kind({
 			// embedding for now for the sake of testing
 			this.twit = new SpazTwit();
 			this.twit.setBaseURLByService(account.type);
-			this.twit.setSource(App.prefs.get('twitter-source'));
+			this.twit.setSource(App.Prefs.get('twitter-source'));
 			this.twit.setCredentials(auth);
 
 			switch (this.info.type) {

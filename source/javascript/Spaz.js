@@ -54,29 +54,24 @@ enyo.kind({
 			console.error('SPAZCORE_CONSUMERKEY_TWITTER not set, will not be able to authenticate against Twitter');
 		}
 
-
-		App.username = null;
-		App.prefs = null;
+		App.Prefs = null;
 		
-		App.accounts = null;
-
-
 		/*
 			load our prefs
 			default_preferences is from default_preferences.js, loaded in index.html
 		*/
-		App.prefs = new SpazPrefs(SPAZ_DEFAULT_PREFS, null, {
+		App.Prefs = new SpazPrefs(SPAZ_DEFAULT_PREFS, null, {
 			'timeline-maxentries': {
 				'onGet': function(key, value){
-					if (App.prefs.get('timeline-friends-getcount') > value) {
-						value = App.prefs.get('timeline-friends-getcount');
+					if (App.Prefs.get('timeline-friends-getcount') > value) {
+						value = App.Prefs.get('timeline-friends-getcount');
 					}
 					sch.debug(key + ':' + value);
 					return value;
 				},
 				'onSet': function(key, value){
-					if (App.prefs.get('timeline-friends-getcount') > value) {
-						value = App.prefs.get('timeline-friends-getcount');
+					if (App.Prefs.get('timeline-friends-getcount') > value) {
+						value = App.Prefs.get('timeline-friends-getcount');
 					}
 					sch.debug(key + ':' + value);
 					return value;					
@@ -84,15 +79,15 @@ enyo.kind({
 			},
 			'timeline-maxentries-dm': {
 				'onGet': function(key, value){
-					if (App.prefs.get('timeline-dm-getcount') > value) {
-						value = App.prefs.get('timeline-dm-getcount');
+					if (App.Prefs.get('timeline-dm-getcount') > value) {
+						value = App.Prefs.get('timeline-dm-getcount');
 					}
 					sch.debug(key + ':' + value);
 					return value;
 				},
 				'onSet': function(key, value){
-					if (App.prefs.get('timeline-dm-getcount') > value) {
-						value = App.prefs.get('timeline-dm-getcount');
+					if (App.Prefs.get('timeline-dm-getcount') > value) {
+						value = App.Prefs.get('timeline-dm-getcount');
 					}
 					sch.debug(key + ':' + value);
 					return value;					
@@ -100,23 +95,23 @@ enyo.kind({
 			},
 			'timeline-maxentries-reply': {
 				'onGet': function(key, value){
-					if (App.prefs.get('timeline-replies-getcount') > value) {
-						value = App.prefs.get('timeline-replies-getcount');
+					if (App.Prefs.get('timeline-replies-getcount') > value) {
+						value = App.Prefs.get('timeline-replies-getcount');
 					}
 					sch.debug(key + ':' + value);
 					return value;
 				},
 				'onSet': function(key, value){
-					if (App.prefs.get('timeline-replies-getcount') > value) {
-						value = App.prefs.get('timeline-replies-getcount');
+					if (App.Prefs.get('timeline-replies-getcount') > value) {
+						value = App.Prefs.get('timeline-replies-getcount');
 					}
 					sch.debug(key + ':' + value);
 					return value;					
 				}
 			}
 		});
-		App.prefs.load(function() {
-			App.Users = new SpazAccounts(App.prefs);
+		App.Prefs.load(function() {
+			App.Users = new SpazAccounts(App.Prefs);
 			prefsLoadedCallback();
 		});
 		
@@ -125,7 +120,7 @@ enyo.kind({
 		// */
 		// App.Tweets = new Tweets({
 		// 	'replace':false,
-		// 	'prefs_obj':this.App.prefs
+		// 	'prefs_obj':this.App.Prefs
 		// });
 		
 		// App.master_timeline_model = {
@@ -139,7 +134,7 @@ enyo.kind({
 		// }
 		
 		
-		// App.versionCookie = new VersionCookie(this.App.prefs);
+		// App.versionCookie = new VersionCookie(this.App.Prefs);
 		// App.versionCookie.init();
 
 	},
