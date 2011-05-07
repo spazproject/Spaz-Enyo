@@ -3,7 +3,7 @@ if (!window.AppUtils) { window.AppUtils = {}; }
 /**
  * define a placeholder $L() method to handle future localization
  */
-if (!$L) {
+if (!window.$L) {
 	var $L = function(str) {
 		return str;
 	};
@@ -11,7 +11,7 @@ if (!$L) {
 
 AppUtils.getAppObj = function() {
 	return window.App;
-}
+};
 
 
 /**
@@ -81,7 +81,7 @@ AppUtils.sendEmail = function(opts) {
 		};
 		
 		return re_obj;
-	};
+	}
 	
 	var to_addresses  = opts.to	 || null;
 	var cc_addresses  = opts.cc	 || null;
@@ -89,22 +89,23 @@ AppUtils.sendEmail = function(opts) {
 	
 	var recipients = [];
 	
+	var i;
 	if (to_addresses) {
-		for (var i=0; i < to_addresses.length; i++) {
+		for (i=0; i < to_addresses.length; i++) {
 			recipients.push( makeRecipientObj(to_addresses[i].address, 'to', to_addresses[i].name) );
-		};													
+		}
 	}														
 															
-	if (cc_addresses) {										
-		for (i=0; i < cc_addresses.length; i++) {		
+	if (cc_addresses) {			
+		for (i=0; i < cc_addresses.length; i++) {
 			recipients.push( makeRecipientObj(cc_addresses[i].address, 'cc', cc_addresses[i].name) );
-		};													
+		}
 	}														
 															
 	if (bcc_addresses) {									
 		for (i=0; i < bcc_addresses.length; i++) {		
 			recipients.push( makeRecipientObj(bcc_addresses[i].address, 'bcc', bcc_addresses[i].name) );
-		};
+		}
 	}
 	
 	var account		= opts.account	   || null; // an integer or null
@@ -122,7 +123,7 @@ AppUtils.sendEmail = function(opts) {
 	};
 	
 
-	// THIS NEEDS TO BE REDONE FOR Enyo!
+	//@TODO THIS NEEDS TO BE REDONE FOR Enyo!
 	var email_srvc = opts.controller.serviceRequest(
 		'palm://com.palm.applicationManager',
 		{
@@ -163,7 +164,7 @@ AppUtils.setTheme = function(theme) {
  */
 AppUtils.getFancyTime = function(time_value, labels, use_dateparse) {
 
-	if (sc.helpers.iswebOS() && App.prefs.get('timeline-absolute-timestamps')) {
+	if (sc.helpers.iswebOS() && App.Prefs.get('timeline-absolute-timestamps')) {
 
 		if (use_dateparse === true) {
 			parsed_date = new Date.parse(time_value);
@@ -185,4 +186,75 @@ AppUtils.getFancyTime = function(time_value, labels, use_dateparse) {
 		return sch.getRelativeTime(time_value, labels, use_dateparse);
 		
 	}
+};
+
+
+/**
+ * Get the avatar image URL for the given account_id.
+ */
+AppUtils.getAccountAvatar = function(account_id, onSuccess, onFailure) {
+
+	if (!window.App.avatarCache) {
+		window.App.avatarCache = {};
+	}
+
+	if (window.App.avatarCache[account_id]) {
+		onSuccess(window.App.avatarCache[account_id]);
+		return;
+	}
+
+	var twit = makeTwitObj(account_id);
+	var username = App.Users.get(account_id);
+
+	twit.getUser(
+		'@'+username,
+		function(data) {
+			var av_url = data.profile_image_url;
+			onSuccess(av_url);
+		}, function(xhr, msg, exc) {
+			onFailure(xhr, msg, exc);
+		}
+	);
+
+};
+
+
+/**
+ * Retrieves the custom API url for the current account, or the account with the passed id
+ */
+AppUtils.getCustomAPIUrl = function(account_id) {
+
+	var custom_api_url = App.Users.getMeta(account_id, 'twitter-api-base-url');
+	if (!custom_api_url) {
+		// used to be called api-url, so try that
+		custom_api_url = App.Users.getMeta(account_id, 'api-url');
+	}
+	return custom_api_url;
+};
+
+
+
+AppUtils.makeTwitObj = function(account_id) {
+
+	var twit = new SpazTwit({
+		'timeout':1000*60
+	});
+	twit.setSource(App.Prefs.get('twitter-source'));
+		
+	var auth;
+	if (account_id) {
+		if ( (auth = App.Users.getAuthObject(account_id)) ) {
+			twit.setCredentials(auth);
+			if (App.Users.getType(account_id) === SPAZCORE_ACCOUNT_CUSTOM) {
+				twit.setBaseURL(AppUtils.getCustomAPIUrl(account_id));
+			} else {
+				twit.setBaseURLByService(App.Users.getType(account_id));
+			}
+		}		
+	} else {
+		// alert('NOT seetting credentials for!');
+	}
+
+	return twit;
+
 };
