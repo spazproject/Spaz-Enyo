@@ -203,13 +203,16 @@ AppUtils.getAccountAvatar = function(account_id, onSuccess, onFailure) {
 		return;
 	}
 
-	var twit = makeTwitObj(account_id);
-	var username = App.Users.get(account_id);
+	var twit = AppUtils.makeTwitObj(account_id);
+	var username = App.Users.get(account_id).username;
+
+	console.log(username);
 
 	twit.getUser(
 		'@'+username,
 		function(data) {
 			var av_url = data.profile_image_url;
+			window.App.avatarCache[account_id] = av_url;
 			onSuccess(av_url);
 		}, function(xhr, msg, exc) {
 			onFailure(xhr, msg, exc);
