@@ -44,7 +44,7 @@ enyo.kind({
 			]},	
 			{kind: "Toolbar", style: "color: white; margin: 0px 3px", components: [
 				{kind: "ToolButton", icon: "source/images/icon-clear.png"},
-				{kind: "ToolButton", icon: "source/images/icon-refresh.png"}
+				{kind: "ToolButton", icon: "source/images/icon-refresh.png", onclick:"loadNewer"}
 			]}
 		]},
 
@@ -68,11 +68,31 @@ enyo.kind({
 	infoChanged: function(){
 		this.$.header.setContent(this.info.display);
 	},
-	loadData: function() {
+
+	loadNewer:function() {
+		this.loadData({'mode':'newer'});
+	},
+
+	loadOlder:function() {
+		this.loadData({'mode':'older'});
+	},
+
+
+	/**
+	 * @param string [opts.mode] newer or older
+	 */
+	loadData: function(opts) {
+
+		opts = sch.defaults({
+			'mode':'newer',
+			'since_id':null,
+			'max_id':null
+		}, opts);
 
 		var self = this;
 
 		try {
+			var since_id;
 			var account = App.Users.get(this.info.accounts[0]);
 			var auth = new SpazAuth(account.type);
 			auth.load(account.auth);
@@ -83,44 +103,52 @@ enyo.kind({
 			this.twit.setSource(App.Prefs.get('twitter-source'));
 			this.twit.setCredentials(auth);
 
+			if (this.entries.length > 0) {
+				if (opts.mode === 'newer') {
+					since_id = _.first(this.entries).id;
+				}
+
+				if (opts.mode === 'older') {
+					if (this.info.type === 'search') {
+						throw {
+							message:'Search columns do not yet support loading older messages',
+							name:'UserException'
+						};
+					}
+					since_id = (_.last(this.entries).id)*-1;
+				}
+			} else {
+				since_id = 1;
+			}
+
+
 			switch (this.info.type) {
 				case 'home':
-					this.twit.getHomeTimeline(null, null, null, null,
+					this.twit.getHomeTimeline(since_id, 200, null, null,
 						function(data) {
-							self.entries = data.reverse();
-							self.$.list.render();
+							self.processData(data);
 						}
 					);
 					break;
 				case 'mentions':
-					this.twit.getReplies(null, null, null, null,
+					// this method would consistently 502 if we tried to get 200. limit to 100
+					this.twit.getReplies(since_id, 100, null, null,
 						function(data) {
-							self.entries = data.reverse();
-							self.$.list.render();
+							self.processData(data);
 						}
 					);
 					break;
 				case 'dms':
-					this.twit.getDirectMessages(null, null, null, null,
+					this.twit.getDirectMessages(since_id, 200, null, null,
 						function(data) {
-							self.entries = data.reverse();
-							self.$.list.render();
+							self.processData(data);
 						}
 					);
 					break;
 				case 'search':
-					this.twit.search(this.info.query, null, null, null, null, null,
+					this.twit.search(this.info.query, since_id, 200, null, null, null,
 						function(data) {
-							self.entries = data.reverse();
-							self.$.list.render();
-						}
-					);
-					break;
-				default:
-					this.twit.getHomeTimeline(null, null, null, null,
-						function(data) {
-							self.entries = data.reverse();
-							self.$.list.render();
+							self.processData(data);
 						}
 					);
 					break;
@@ -130,6 +158,20 @@ enyo.kind({
 		} catch(e) {
 			console.error(e);
 			alert('you probably need to make an account')
+		}
+	},
+	processData: function(data) {
+		if (data) {
+			switch (this.info.type) {
+				default:
+					this.entries = [].concat(data.reverse(), this.entries);
+					this.entries.sort(function(a,b){
+						return b.id - a.id; // newest first
+					});
+
+					this.$.list.render();
+					break;
+			}			
 		}
 	},
 	setupRow: function(inSender, inIndex) {
