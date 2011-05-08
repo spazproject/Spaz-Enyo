@@ -36,5 +36,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 # Social Media Icons
 
 This application uses the Social Media Icons set by Paul Robert Lloyd
+
 Licensed under CC BY-SA 2.0 - http://creativecommons.org/licenses/by-sa/2.0/uk/
+
 See http://paulrobertlloyd.com/2009/06/social_media_icons for more info
