@@ -1,4 +1,4 @@
-/*********** Built 2011-05-07 18:20:30 EDT ***********/
+/*********** Built 2011-05-08 15:36:19 EDT ***********/
 /*jslint 
 browser: true,
 nomen: false,
@@ -12438,7 +12438,7 @@ SpazTwit.prototype.getAPIURL = function(key, urldata) {
 	urls.friends_timeline   = "statuses/friends_timeline.json";
 	urls.home_timeline	= "statuses/home_timeline.json";
 	urls.user_timeline      = "statuses/user_timeline.json";
-	urls.replies_timeline   = "statuses/replies.json";
+	urls.replies_timeline   = "statuses/mentions.json";
 	urls.show		= "statuses/show/{{ID}}.json";
 	urls.show_related	= "related_results/show/{{ID}}.json";
 	urls.favorites          = "favorites.json";
@@ -12610,7 +12610,9 @@ SpazTwit.prototype.getPublicTimeline = function(onSuccess, onFailure) {
 /**
  * Initiates retrieval of the home timeline (all the people you are following)
  * 
- * @param {integer} since_id default is 1
+ * parameters can also be passed as a single opts hash
+ * 
+ * @param {integer} since_id default is 1. If a negative number is passed, Math.abs(since_id) is used as the max_id
  * @param {integer} count default is 200 
  * @param {integer} page default is null (ignored if null)
  */
