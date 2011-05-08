@@ -1,7 +1,6 @@
 enyo.kind({
 	name: "Spaz",
 	kind: enyo.HFlexBox,
-	height: "100%",
 	components: [
 		{name: "sidebar", kind: "Spaz.Sidebar"},
 		{name: "container", kind: "Spaz.Container", onShowEntryView: "showEntryView"},
@@ -154,7 +153,7 @@ enyo.kind({
 		if(!this.$.entryview){
 			
 			this.createComponent({name: "entryview", kind: "Spaz.EntryView", onDestroy: "destroyEntryView"}, {owner: this});
-			this.render();
+			this.$.entryview.render();
 			
 			//this.$.container.refreshList();
 
