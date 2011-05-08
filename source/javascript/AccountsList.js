@@ -35,15 +35,22 @@ enyo.kind({
 	},
 	setupRow: function(inSender, inIndex){
 		var item;
-		if(item = this.accounts[inIndex]/*App.Users[inIndex]*/){//todo
+		if(item = this.accounts[inIndex]){
+
+			this.$.label.setContent(item.label);
+
 			switch(item.type){
-				case "twitter":
-					this.$.label.setContent(item.label);
-
-					// @TODO change icon based on item.type
+				case SPAZCORE_SERVICE_TWITTER:
 					this.$.icon.setSrc("source/images/account-icon-twitter.png");
+					break;
 
-				break;
+				case SPAZCORE_SERVICE_IDENTICA:
+					this.$.icon.setSrc("source/images/account-icon-identica.png");
+					break;
+
+				default:
+					this.$.icon.setSrc("source/images/account-icon-custom.png");
+					break;
 			}
 			// this.$.label.setContent(item.label);
 			return true;
