@@ -85,7 +85,7 @@ enyo.kind({
 		if (this.columnToDelete) {
 			this.columnToDelete.destroy();
 			this.columnToDelete = null;
-            this.$.columnsScroller.resizeHandler();
+			this.$.columnsScroller.resizeHandler();
 		}
 	}
 });
