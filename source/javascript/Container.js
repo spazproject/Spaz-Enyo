@@ -2,12 +2,12 @@ enyo.kind({
 	name: "Spaz.Container",
 	flex: 1,
 	kind: "Control",
-	layoutKind: "HFlexLayout",
+	height: "100%",
 	events: {
 		onShowEntryView: ""
 	},
 	components: [
-		{name:"columnsScroller", kind: "SnapScroller", flex: 1, vertical: false, autoVertical: false, style: "background: black" , components:[]}
+		{name:"columnsScroller", kind: "SnapScroller", flex: 1, vertical: false, autoVertical: false, style: "background: black; padding: 2px;" , components:[]}
 	],
 	create: function(){
 		this.inherited(arguments);
@@ -29,6 +29,7 @@ enyo.kind({
 			// {type: "dms", display: "Messages", accounts: [App.Users.getAll()[0].id]},
 			{type: "search", query: 'webos', display: "Search&nbsp;'webos'", accounts: [firstAccount.id]},
 			{type: "search", query: 'spaz', display: "Search&nbsp;'spaz'", accounts: [firstAccount.id]},
+			{type: "search", query: 'spaz', display: "Search&nbsp;'spaz'", accounts: [firstAccount.id]},
 		]
 
 		var cols = [];
@@ -48,8 +49,18 @@ enyo.kind({
 		this.render();
 	},
 	resizeHandler: function() {
+		this.columnsFunction("resizeHandler");
+	},
+	columnsFunction: function(functionName, opts){
 		_.each(this.getComponents(), function(column){
-			this.$[column.name].resizeHandler();
+			try {
+				if(column.kind === "Spaz.Column"){
+					this.$[column.name][functionName]()				
+				}
+			} 
+			catch (e) {
+				console.error(e);
+			}
 		}, this);
 	}
 });

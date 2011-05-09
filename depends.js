@@ -36,6 +36,7 @@ enyo.depends(
 	"source/javascript/EntryClickPopup.js",
 	
 	//custom widgets
+	"source/javascript/VirtualList.js",
 	"source/javascript/AccountsList.js",
 	"source/javascript/AvatarList.js",
 	"source/javascript/AvatarButton.js",

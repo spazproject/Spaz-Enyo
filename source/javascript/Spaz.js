@@ -2,7 +2,7 @@ enyo.kind({
 	name: "Spaz",
 	kind: enyo.HFlexBox,
 	components: [
-		{name: "sidebar", kind: "Spaz.Sidebar"},
+		{name: "sidebar", kind: "Spaz.Sidebar", onColumnsFunction: "columnsFunction"},
 		{name: "container", kind: "Spaz.Container", onShowEntryView: "showEntryView"},
 	],
 	
@@ -166,6 +166,9 @@ enyo.kind({
 
 		//this.render();
 		//this.$.container.refreshList();
+	},
+	columnsFunction: function(inSender, functionName, opts){
+		this.$.container.columnsFunction(functionName, opts);	
 	},
 	resizeHandler: function() {
 		this.$.container.resizeHandler();

@@ -1,3 +1,5 @@
+//deprecated
+
 enyo.kind({
 	name: "Spaz.AvatarButton",
 	kind: "CustomButton",

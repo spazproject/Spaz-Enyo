@@ -2,7 +2,7 @@ enyo.kind({
 	name: "Spaz.Column",
 	kind: enyo.VFlexBox,
 	width: "322px",
-	style: "margin: 5px 5px;", 
+	style: "margin: 3px;", 
 	events: {
 		onShowEntryView: ""
 	},
@@ -25,7 +25,7 @@ enyo.kind({
 				{kind: "Spacer", flex: 1},
 				{kind: "ToolButton", icon: "source/images/icon-close.png"},
 			]},
-			{name: "list", kind: "VirtualList", flex: 1, style: "background-color: #D8D8D8; margin: 0px 0px; min-height: 400px;", className: "timeline list", onSetupRow: "setupRow", components: [
+			{name: "list", kind: "Spaz.VirtualList", flex: 1, style: "background-color: #D8D8D8; margin: 0px 3px; min-height: 200px;", horizontal: false, className: "timeline list", onSetupRow: "setupRow", components: [
 				{kind: "Item", tapHighlight: true, className: "entry", style: "padding-right: 5px;", layoutKind: "HFlexLayout", onclick: "entryClick", components: [
 					{kind: "VFlexBox", components: [
 						{kind: "Image", width: "50px", height: "50px", className: "avatar"},
@@ -92,15 +92,15 @@ enyo.kind({
 
 		try {
 			var since_id;
-			var account = App.Users.get(this.info.accounts[0]);
+			var account = App.Users.get(self.info.accounts[0]);
 			var auth = new SpazAuth(account.type);
 			auth.load(account.auth);
 
 			// embedding for now for the sake of testing
-			this.twit = new SpazTwit();
-			this.twit.setBaseURLByService(account.type);
-			this.twit.setSource(App.Prefs.get('twitter-source'));
-			this.twit.setCredentials(auth);
+			self.twit = new SpazTwit();
+			self.twit.setBaseURLByService(account.type);
+			self.twit.setSource(App.Prefs.get('twitter-source'));
+			self.twit.setCredentials(auth);
 
 			if (this.entries.length > 0) {
 				if (opts.mode === 'newer') {
@@ -108,22 +108,22 @@ enyo.kind({
 				}
 
 				if (opts.mode === 'older') {
-					if (this.info.type === 'search') {
+					if (self.info.type === 'search') {
 						throw {
 							message:'Search columns do not yet support loading older messages',
 							name:'UserException'
 						};
 					}
-					since_id = (_.last(this.entries).id)*-1;
+					since_id = (_.last(self.entries).id)*-1;
 				}
 			} else {
 				since_id = 1;
 			}
 
 
-			switch (this.info.type) {
+			switch (self.info.type) {
 				case 'home':
-					this.twit.getHomeTimeline(since_id, 200, null, null,
+					self.twit.getHomeTimeline(since_id, 200, null, null,
 						function(data) {
 							self.processData(data);
 						}
@@ -131,21 +131,21 @@ enyo.kind({
 					break;
 				case 'mentions':
 					// this method would consistently 502 if we tried to get 200. limit to 100
-					this.twit.getReplies(since_id, 100, null, null,
+					self.twit.getReplies(since_id, 100, null, null,
 						function(data) {
 							self.processData(data);
 						}
 					);
 					break;
 				case 'dms':
-					this.twit.getDirectMessages(since_id, 200, null, null,
+					self.twit.getDirectMessages(since_id, 200, null, null,
 						function(data) {
 							self.processData(data);
 						}
 					);
 					break;
 				case 'search':
-					this.twit.search(this.info.query, since_id, 200, null, null, null,
+					self.twit.search(self.info.query, since_id, 200, null, null, null,
 						function(data) {
 							self.processData(data);
 						}
