@@ -187,7 +187,7 @@ enyo.kind({
 	setupRow: function(inSender, inIndex) {
 		if (this.entries[inIndex]) {
 			var entry = this.entries[inIndex];
-			this.$.entry.setContent("<span class='username'>" + entry.user.screen_name + "</span><br>" + AppUtils.makeItemsClickable(enyo.string.runTextIndexer(entry.text)));
+			this.$.entry.setContent("<span class='username author'>" + entry.user.screen_name + "</span><br>" + AppUtils.makeItemsClickable(enyo.string.runTextIndexer(entry.text)));
 			this.$.timeFrom.setContent(sch.getRelativeTime(entry.created_at) + " from <span class='link'>" + entry.source + "</span>");
 			this.$.image.setSrc(entry.user.profile_image_url);
 			
@@ -197,7 +197,19 @@ enyo.kind({
 		}
 	},
 	entryClick: function(inSender, inEvent, inRowIndex) {
-		this.$.entryClickPopup.showAtEvent(this.entries[inRowIndex], inEvent);
+		switch(inEvent.target.className){
+			case "username":
+
+				break;
+			case "hashtag":
+
+				break;
+			case "avatar":
+			case "text":
+				this.$.entryClickPopup.showAtEvent(this.entries[inRowIndex], inEvent);
+				break;
+
+		}
 		//this.doEntryClick(this.entries[inRowIndex]);
 		//this.$.list.select(inRowIndex);
 	},
