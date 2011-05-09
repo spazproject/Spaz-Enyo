@@ -160,9 +160,20 @@ enyo.kind({
 		}
 	},
 	processData: function(data) {
+		var self = this;
 		if (data) {
 			switch (this.info.type) {
 				default:
+					
+					/* check for duplicates based on the .id property */
+					data = _.reject(data, function(item) {
+						for (var i = 0; i < self.entries.length; i++) {
+							if (item.id === self.entries[i].id) {
+								return true;
+							}
+						};
+					});
+
 					this.entries = [].concat(data.reverse(), this.entries);
 					this.entries.sort(function(a,b){
 						return b.id - a.id; // newest first
