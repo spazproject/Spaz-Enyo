@@ -3,11 +3,15 @@ enyo.kind({
 	width: "50px",
 	kind: "VFlexBox",
 	className: "enyo-toolbar-vertical",
+	events: {
+		onColumnsFunction: ""
+	},
 	components: [
 		{kind: "ToolButton", icon: "source/images/icon-compose.png", onclick: "openPopup", popup:"composePopup"},
-		{kind: "ToolButton", icon: "source/images/icon-new-column.png", onclick: "openPopup", popup: "columnsPopup"},
 		{kind: "ToolButton", icon: "source/images/icon-search.png"},
+		{kind: "ToolButton", icon: "source/images/icon-refresh.png", onclick: "refreshAll"},
 		{kind: "Spacer"},
+		{kind: "ToolButton", icon: "source/images/icon-new-column.png", onclick: "openPopup", popup: "columnsPopup"},
 		{kind: "ToolButton", icon: "source/images/icon-new-account.png", onclick: "openPopup", popup:"accountsPopup"},
 		{kind: "ToolButton", icon: "source/images/icon-settings.png", onclick: "openPopup", popup:"settingsPopup"},
 		
@@ -25,5 +29,8 @@ enyo.kind({
 	},
 	closePopup: function(inSender) {
 		inSender.close();
+	},
+	refreshAll: function(inSender, inEvent){
+		this.doColumnsFunction("loadNewer");
 	}
 });

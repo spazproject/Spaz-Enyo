@@ -8,15 +8,18 @@ If you want on the commits email list, sign up for <https://groups.google.com/d/
 
 * Daniel Cousineau
 * Ed Finkler
+* Paddy Foran
+* Nicholas Guarracino
 * Clay Hinson
 * Will Honey
+* Daniel Weigh
 
 ### Targeted Platforms ###
 
 While the primary intial target is the HP TouchPad, Enyo is capable of running in any Webkit browser. If HP licenses Enyo liberally, the potential is there for Spaz Enyo to run on the following platforms:
 
 * webOS
-* Desktop Browsers
+* Desktop Browsers (we may be limited by same-origin issues, though)
 * Desktop web runtimes (AIR/Titanium)
 * iOS
 * Android

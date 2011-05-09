@@ -203,13 +203,16 @@ AppUtils.getAccountAvatar = function(account_id, onSuccess, onFailure) {
 		return;
 	}
 
-	var twit = makeTwitObj(account_id);
-	var username = App.Users.get(account_id);
+	var twit = AppUtils.makeTwitObj(account_id);
+	var username = App.Users.get(account_id).username;
+
+	console.log(username);
 
 	twit.getUser(
 		'@'+username,
 		function(data) {
 			var av_url = data.profile_image_url;
+			window.App.avatarCache[account_id] = av_url;
 			onSuccess(av_url);
 		}, function(xhr, msg, exc) {
 			onFailure(xhr, msg, exc);
@@ -257,17 +260,20 @@ AppUtils.makeTwitObj = function(account_id) {
 
 	return twit;
 
-};};
+};
 
 
 
-
+/**
+ * This converts an item from a given service into 
+ * a common structure we use for everything internally
+ */
 AppUtils.convertToEntry = function(item) {
 	
-	var entry;
+	var entry = {};
 
 	if (!item.SC_service) {
-		item.SC_service = SPAZCORE_SERVICE_TWITTER
+		item.SC_service = SPAZCORE_SERVICE_TWITTER;
 	}
 
 	switch(item.SC_service) {
@@ -277,39 +283,44 @@ AppUtils.convertToEntry = function(item) {
 		case SPAZCORE_SERVICE_CUSTOM:
 
 			entry.service       = item.SC_service;
-			entry.service_message_id = item.id;
-			entry.spaz_id       = sch.uuid();
+			entry.service_id    = item.id;
+			entry.spaz_id       = sch.UUID();
 			entry.text          = item.text;
+			entry.text_raw      = item.SC_text_raw;
 			entry.publish_date  = item.SC_created_at_unixtime;
 			
-			if (SC.is_dm) {
+			if (item.SC_is_dm) {
 				entry.author_username = item.sender.screen_name;
 				entry.author_description = item.sender.description;
 				entry.author_fullname = item.sender.name;
-				entry.author_user_id  = item.sender.id;
-				entry.author_user_avatar = item.sender.profile_image_url;
+				entry.author_id  = item.sender.id;
+				entry.author_avatar = item.sender.profile_image_url;
 
 				entry.recipient_username = item.recipient.screen_name;
 				entry.recipient_description = item.recipient.description;
 				entry.recipient_fullname = item.recipient.name;
-				entry.recipient_user_id  = item.recipient.id;
-				entry.recipient_user_avatar = item.recipient.profile_image_url;
+				entry.recipient_id  = item.recipient.id;
+				entry.recipient_avatar = item.recipient.profile_image_url;
 
 			} else {
 
 				entry.author_username = item.user.screen_name;
 				entry.author_description = item.user.description;
 				entry.author_fullname = item.user.name;
-				entry.author_user_id  = item.user.id;
-				entry.author_user_avatar = item.user.profile_image_url;
+				entry.author_id  = item.user.id;
+				entry.author_avatar = item.user.profile_image_url;
 
 				if (item.in_reply_to_screen_name) {
 					entry.recipient_username = item.in_reply_to_screen_name;
-					entry.recipient_user_id  = item.in_reply_to_user_id;
+					entry.recipient_id  = item.in_reply_to_user_id;
+				}
+				
+				if (item.in_reply_to_status_id) {
+					entry.in_reply_to_id = item.in_reply_to_status_id;
 				}				
 			}
 
-			// copy to SC_orig
+			// copy to _orig
 			entry._orig = _.extend({},item);
 
 			break;
@@ -318,6 +329,17 @@ AppUtils.convertToEntry = function(item) {
 			break;
 	}
 
-	return item
+	return entry;
 
-}
+};
+
+
+
+AppUtils.convertToEntries = function(item_array) {
+	
+	for (var i = 0; i < item_array.length; i++) {
+		item_array[i] = AppUtils.convertToEntry(item_array[i]);
+	};
+
+	return item_array;
+};
