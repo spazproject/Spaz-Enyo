@@ -7,7 +7,15 @@ enyo.kind({
 		onShowEntryView: ""
 	},
 	components: [
-		{name:"columnsScroller", kind: "SnapScroller", flex: 1, vertical: false, autoVertical: false, style: "background: black; padding: 2px;" , components:[]}
+		{name:"columnsScroller", kind: "SnapScroller", flex: 1, vertical: false, autoVertical: false, style: "background: black; padding: 2px;" , components:[]},
+		{name: "confirmPopup", kind: "enyo.Popup", scrim : true, components: [
+			{content: enyo._$L("Delete Column?")},
+			{style: "height: 10px;"},
+			{kind: "enyo.HFlexBox", components: [
+				{kind: "enyo.Button", caption: enyo._$L("Cancel"), flex: 1, onclick: "cancelColumnDeletion"},
+				{kind: "enyo.Button", className: "enyo-button-negative", caption: enyo._$L("Delete"), flex: 1, onclick: "confirmColumnDeletion"}
+			]}
+		]}
 	],
 	create: function(){
 		this.inherited(arguments);
@@ -40,6 +48,7 @@ enyo.kind({
 				info: colData[i],
 				kind: "Spaz.Column",
 				onShowEntryView: "doShowEntryView",
+				onDeleteClicked: "deleteColumn",
 				owner: this //@TODO there is an issue here with scope. when we create kinds like this dynamically, the event handlers passed is the scope `this.$.columnsScroller` rather than `this` which is what we want in this case since `doShowEntryView` belongs to `this`. It won't be a big deal here, because if we need the column kinds, we can call this.getComponents() and filter out the scroller itself.
 			});
 		};
@@ -62,5 +71,21 @@ enyo.kind({
 				console.error(e);
 			}
 		}, this);
+	},
+	deleteColumn: function(inSender) {
+		this.columnToDelete = inSender;
+		this.$.confirmPopup.openAtCenter();
+	},
+	cancelColumnDeletion: function(inSender) {
+		this.$.confirmPopup.close();
+		this.columnToDelete = null;
+	},
+	confirmColumnDeletion: function(inSender) {
+		this.$.confirmPopup.close();
+		if (this.columnToDelete) {
+			this.columnToDelete.destroy();
+			this.columnToDelete = null;
+            this.$.columnsScroller.resizeHandler();
+		}
 	}
 });
