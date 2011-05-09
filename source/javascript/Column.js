@@ -2,6 +2,7 @@ enyo.kind({
 	name: "Spaz.Column",
 	kind: enyo.VFlexBox,
 	width: "322px",
+	style: "margin: 5px 5px;", 
 	events: {
 		onShowEntryView: ""
 	},
@@ -16,33 +17,31 @@ enyo.kind({
 		}
 	},
 	components: [
-		{layoutKind: "VFlexLayout", width: "322px", style: "margin: 5px 5px;", components: [
-			{kind: "Toolbar", defaultKind: "Control", content: "Home", style: "color: white; margin: 0px 3px", components: [
+		{layoutKind: "VFlexLayout", components: [
+			{kind: "Toolbar", defaultKind: "Control", content: "Home", style: "color: white;", components: [
 				//gotta do this crap to get the header title to center and not be a button. "defaultKind" in Toolbar is key.
 				{kind: "Spacer", flex: 1},
 				{name: "header", flex: 1, content: ""},
 				{kind: "Spacer", flex: 1},
 				{kind: "ToolButton", icon: "source/images/icon-close.png"},
 			]},
-			{kind: "Scroller", autoHorizontal: false, horizontal: false, style: "background-color: #D8D8D8; margin: 0px 5px;", className: "timeline", flex: 1, components: [
-				{name: "list", kind: "VirtualRepeater", flex: 1, style: "background-color: #D8D8D8; margin: 0px 0px; min-height: 400px;", className: "timeline list", onGetItem: "setupRow", components: [
-					{kind: "Item", tapHighlight: true, className: "entry", style: "padding-right: 5px;", layoutKind: "HFlexLayout", onclick: "entryClick", components: [
-						{kind: "VFlexBox", components: [
-							{kind: "Image", width: "50px", height: "50px", className: "avatar"},
-						]},
-						{kind: "VFlexBox", flex: 1, components: [
-							{name: "entry", className: "text"},
-							{name: "timeFrom", className: "small"},
-						]},		
-						//{kind: "VFlexBox", width: "24px", components: [
-						//	{kind: "Image", src: "source/images/action-icon-favorite.png"},
-						//	{kind: "Image", src: "source/images/action-icon-share.png"},
-						//	{kind: "Image", src: "source/images/action-icon-reply.png"},
-						//]}		
-					]}
-				]},
-			]},	
-			{kind: "Toolbar", style: "color: white; margin: 0px 3px", components: [
+			{name: "list", kind: "VirtualList", flex: 1, style: "background-color: #D8D8D8; margin: 0px 0px; min-height: 400px;", className: "timeline list", onSetupRow: "setupRow", components: [
+				{kind: "Item", tapHighlight: true, className: "entry", style: "padding-right: 5px;", layoutKind: "HFlexLayout", onclick: "entryClick", components: [
+					{kind: "VFlexBox", components: [
+						{kind: "Image", width: "50px", height: "50px", className: "avatar"},
+					]},
+					{kind: "VFlexBox", flex: 1, components: [
+						{name: "entry", className: "text"},
+						{name: "timeFrom", className: "small"},
+					]},		
+					//{kind: "VFlexBox", width: "24px", components: [
+					//	{kind: "Image", src: "source/images/action-icon-favorite.png"},
+					//	{kind: "Image", src: "source/images/action-icon-share.png"},
+					//	{kind: "Image", src: "source/images/action-icon-reply.png"},
+					//]}		
+				]}
+			]},
+			{kind: "Toolbar", style: "color: white;", components: [
 				{kind: "ToolButton", icon: "source/images/icon-clear.png"},
 				{kind: "ToolButton", icon: "source/images/icon-refresh.png", onclick:"loadNewer"}
 			]}
@@ -169,7 +168,7 @@ enyo.kind({
 						return b.id - a.id; // newest first
 					});
 
-					this.$.list.render();
+					this.$.list.refresh();
 					break;
 			}			
 		}
@@ -192,6 +191,7 @@ enyo.kind({
 		//this.$.list.select(inRowIndex);
 	},
 	resizeHandler: function(inHeight) {
-		this.$.scroller.applyStyle("height", window.innerHeight - 117 + "px");
+		this.$.list.applyStyle("height", window.innerHeight - 117 + "px");
+		this.$.list.resizeHandler();
 	}
 });

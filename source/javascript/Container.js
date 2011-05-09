@@ -2,7 +2,7 @@ enyo.kind({
 	name: "Spaz.Container",
 	flex: 1,
 	kind: "Control",
-	height: "100%",
+	layoutKind: "HFlexLayout",
 	events: {
 		onShowEntryView: ""
 	},
