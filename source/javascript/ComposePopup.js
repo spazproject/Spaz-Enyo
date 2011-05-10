@@ -25,11 +25,13 @@ enyo.kind({
 		    {content: "140"}
 		]},
 		{name: "controls", layoutKind: "HFlexLayout", style: "padding-top: 5px", components: [
-			{"kind":"Button","style":"padding: 0px 5px; position: relative; bottom: 7px;","components":[
+			{kind: "Button", style: "padding: 0px 5px; position: relative;", components: [
 			   {name: "accountSelection", "kind":"ListSelector", onChange: "onChangeAccount", className: "accountSelection"}
 			]},
 			{kind: "Spacer", style: "min-width: 50px"},
-			{kind: "Button", label: "Send", onclick: "onSendClick"}
+			{kind: "Button", label: enyo._$L("Shorten Text"), onclick: "onShortenTextClick"},
+			{kind: "Button", label: enyo._$L("Shorten URLs"), onclick: "onShortenURLsClick"},
+			{kind: "Button", label: enyo._$L("Send"), onclick: "onSendClick"}
 		]}
 	],
 	create: function(){
@@ -108,5 +110,27 @@ enyo.kind({
 				alert('failed');
 			}
 		);
+	},
+	
+	onShortenTextClick: function(inSender) {
+		this.$.postTextBox.setValue(new SpazShortText().shorten(this.$.postTextBox.getValue()));
+		this.$.postTextBox.forceFocus();
+	},
+	
+	onShortenURLsClick: function(inSender) {
+		//@TODO Hardcoding to use jmp for now, we should grab this from a pref
+		var urls = sc.helpers.extractURLs(this.$.postTextBox.getValue());
+		new SpazShortURL(SPAZCORE_SHORTURL_SERVICE_JMP).shorten(urls, {
+			apiopts: {
+				version:'2.0.1',
+				format:'json',
+				login: 'spazcore',
+				apiKey: 'R_f3b86681a63a6bbefc7d8949fd915f1d'
+			},
+			onSuccess: enyo.bind(this, function(inData) {
+				this.$.postTextBox.setValue(this.$.postTextBox.getValue().replace(inData.longurl, inData.shorturl));
+				this.$.postTextBox.forceFocus();
+			})
+		});
 	}
 });
