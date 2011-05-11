@@ -19,9 +19,7 @@ enyo.kind({
 			{kind: "ToolButton", icon: "source/images/icon-close.png", style: "position: relative; bottom: 7px;", onclick: "doClose"},
 		
 		]},
-		{kind: "HFlexBox", components: [
-			{kind: "Spacer"},
-		]}
+		{name: "columnsList", kind: "HFlexBox", components: []}
 	],
 	create: function(){
 		this.inherited(arguments);
@@ -39,6 +37,8 @@ enyo.kind({
 		};
 		this.$.accountSelection.setItems(this.accounts);
 		this.$.accountSelection.setValue(this.accounts[0].value);
+
+		this.buildColumnSelection(this, this.accounts[0].value);
 	},
 	"showAtCenter": function(){
 		//this.$.avatarList.buildList();
@@ -46,8 +46,15 @@ enyo.kind({
 		this.openAtCenter();
 	},
 	buildColumnSelection: function(inSender, inValue, inOldValue){
-		console.log("showing columns for " + inAccount.name);
-		this.$.accountName.setContent(inAccount.type);
+		var account = App.Users.get(inValue),
+			columns = SPAZ_COLUMN_TYPES[account.type]; //array of available columns
 
+		this.$.columnsList.destroyComponents();
+
+		_.each(columns, function(column){
+			this.$.columnsList.createComponent({name: column, flex: 1, kind: "Button", label: column});
+		}, this);
+
+		this.$.columnsList.render();
 	}
 });

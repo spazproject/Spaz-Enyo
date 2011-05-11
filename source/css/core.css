@@ -2,6 +2,9 @@
 truncating-text {
 	text-overflow: ellipsis;
 }
+body, input, button {
+	font-size: 20px;
+}
 
 a,
 .username,
@@ -32,7 +35,7 @@ a:active,
 	color: black;
 }
 .timeline.list .entry .text {
-	font-size: 15px;
+	font-size: 14px;
 }
 .timeline.list .entry .action-separator {
 	width: 12px;
@@ -49,7 +52,7 @@ a:active,
 
 }
 .entry-view .header {
-	padding: 10px;
+	padding: 5px 10px 10px 10px;
 }
 .entry-view .username,
 .entry-view .realname {

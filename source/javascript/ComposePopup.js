@@ -108,7 +108,7 @@ enyo.kind({
 			}
 		);
 	},
-	
+
 	onShortenTextClick: function(inSender) {
 		this.$.postTextBox.setValue(new SpazShortText().shorten(this.$.postTextBox.getValue()));
 		this.$.postTextBox.forceFocus();
@@ -148,3 +148,4 @@ enyo.kind({
 		}
 	}
 });
+
