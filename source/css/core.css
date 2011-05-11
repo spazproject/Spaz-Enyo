@@ -76,7 +76,8 @@ a:active,
     position: relative;
     min-height: 54px;
     -webkit-box-sizing: border-box;
-    -webkit-border-image: url(source/images/toolbar.png) 1 1 repeat stretch;
+    -webkit-border-image: "none";
+   /* -webkit-border-image: url(../images/toolbar.png) 1 1 repeat stretch;*/
     border-width: 1px 1px;
     background-color: #343434;
 }

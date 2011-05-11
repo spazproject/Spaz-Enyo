@@ -9,7 +9,7 @@ enyo.kind({
 	},
 	components: [
 		{kind: "ToolButton", icon: "source/images/icon-compose.png", onclick: "openPopup", popup:"composePopup"},
-		{kind: "ToolButton", icon: "source/images/icon-search.png"},
+		{kind: "ToolButton", icon: "source/images/icon-search.png", onclick: "openPopup", popup: "searchPopup"},
 		{kind: "ToolButton", icon: "source/images/icon-refresh.png", onclick: "refreshAll"},
 		{kind: "Spacer"},
 		{kind: "ToolButton", icon: "source/images/icon-new-column.png", onclick: "openPopup", popup: "columnsPopup"},
@@ -17,6 +17,7 @@ enyo.kind({
 		{kind: "ToolButton", icon: "source/images/icon-settings.png", onclick: "openPopup", popup:"settingsPopup"},
 		
 		{name: "composePopup", kind: "Spaz.ComposePopup", onClose: "closePopup" },
+		{name: "searchPopup", kind: "Spaz.SearchPopup", onClose: "closePopup" },
 		{name: "columnsPopup", kind: "Spaz.ColumnsPopup", onCreateColumn: "doCreateColumn", onClose: "closePopup" },
 		{name: "settingsPopup", kind: "Spaz.SettingsPopup", onClose: "closePopup" },
 		{name: "accountsPopup", kind: "Spaz.AccountsPopup", onClose: "closePopup" }

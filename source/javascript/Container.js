@@ -58,7 +58,6 @@ enyo.kind({
 			cols.push(col);
 		};
 		this.$.columnsScroller.createComponents(cols.reverse());
-		//this.$.columnsScroller.showEntryView = this.doShowEntryView;
 
 		this.render();
 	},
@@ -86,7 +85,7 @@ enyo.kind({
 	columnsFunction: function(functionName, opts){
 		_.each(this.getComponents(), function(column){
 			try {
-				if(column.kind === "Spaz.Column"){
+				if(column.kind === "Spaz.Column" || column.kind === "Spaz.SearchColumn"){
 					this.$[column.name][functionName]()				
 				}
 			} 

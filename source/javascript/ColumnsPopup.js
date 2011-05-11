@@ -51,5 +51,6 @@ enyo.kind({
 	newColumn: function(inSender, inCaption){
 		console.log("new column");
 		this.doCreateColumn(this.$.accountSelection.getValue(), inCaption.toLowerCase());
+		this.doClose();
 	}
 });

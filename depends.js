@@ -30,6 +30,7 @@ enyo.depends(
 	//popups
 	"source/javascript/ComposePopup.js",
 	"source/javascript/ColumnsPopup.js",
+	"source/javascript/SearchPopup.js",
 	"source/javascript/SettingsPopup.js",
 	"source/javascript/AccountsPopup.js",
 	"source/javascript/EntryClickPopup.js",

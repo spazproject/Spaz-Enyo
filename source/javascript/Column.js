@@ -24,7 +24,7 @@ enyo.kind({
 				{name: "header", style: "padding: 0px 0px 5px 10px;", content: ""},
 				{kind: "Spacer", flex: 1},
 				{name: "accountName", style: "color: grey; font-size: 12px"},
-				{kind: "ToolButton", icon: "source/images/icon-close.png", onclick: "doDeleteClicked"},
+				{name: "topRightButton", kind: "ToolButton", icon: "source/images/icon-close.png", onclick: "doDeleteClicked"},
 			]},
 			{name: "list", kind: "Spaz.VirtualList", flex: 1, style: "background-color: #D8D8D8; margin: 0px 3px; min-height: 200px;", horizontal: false, className: "timeline list", onSetupRow: "setupRow", components: [
 				{kind: "Item", tapHighlight: true, className: "entry", style: "padding-right: 5px;", layoutKind: "HFlexLayout", onclick: "entryClick", components: [
@@ -183,6 +183,7 @@ enyo.kind({
 					});
 
 					this.$.list.refresh();
+					this.resizeHandler();
 					break;
 			}			
 		}

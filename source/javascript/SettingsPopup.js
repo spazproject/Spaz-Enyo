@@ -3,13 +3,16 @@ enyo.kind({
 	kind: "Popup",
 	scrim: true,
 	modal: true,
-	width: "500px",
+	width: "400px",
 	events: {
 		onClose: ""
 	},
 	components: [
-		{content: "Settings Popup", style: "font-size: 26px; padding: 6px;"},
-		{kind: "Button", flex: 1, caption: "Close/Cancel", onclick: "doClose"},
+		{layoutKind: "HFlexLayout", components: [
+			{content: "Settings"},
+			{kind: "Spacer"},
+			{kind: "ToolButton", icon: "source/images/icon-close.png", style: "position: relative; bottom: 7px;", onclick: "doClose"}
+		]},	
 	],
 	create: function(){
 		this.inherited(arguments);

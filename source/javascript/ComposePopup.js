@@ -153,9 +153,12 @@ enyo.kind({
 	
 	postTextBoxKeydown: function(inSender, inEvent) {
 		if (inEvent.keyCode === 13) {
-			// Enter to send - this should be a pref evenutally.
-			this.onSendClick();
-			inEvent.preventDefault();
+			if(this.$.sendButton.disabled === false){
+				// Enter to send - this should be a pref evenutally.
+				this.onSendClick();
+			}
+			inEvent.preventDefault();	
+			
 		}
 	}
 });
