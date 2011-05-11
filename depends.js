@@ -1,9 +1,7 @@
 enyo.depends(
 	//vendors
 	"vendors/jquery.min.js",
-	"vendors/underscore-min.js",
-	"vendors/underscore.string.min.js",
-	"vendors/spazcore-standard.js",
+	"vendors/spazcore-standard.js", // includes underscore, underscore.string
 
 	// config
 	"source/javascript/config/auth_config.js",
