@@ -52,7 +52,7 @@ enyo.kind({
 		this.$.columnsList.destroyComponents();
 
 		_.each(columns, function(column){
-			this.$.columnsList.createComponent({name: column, flex: 1, kind: "Button", label: column.capitalize()});
+			this.$.columnsList.createComponent({name: column, flex: 1, kind: "Button", label: column});
 		}, this);
 
 		this.$.columnsList.render();
