@@ -20,12 +20,12 @@ enyo.kind({
 			{kind: "ToolButton", icon: "source/images/icon-close.png", style: "position: relative; bottom: 7px;", onclick: "doClose"}
 		]},
 		{kind: "InputBox", style: "min-height: 50px", components: [
-		    //{kind: "Input", hint: "entry...", className: "enyo-input-inner", onchange: "inputChange", onfocus: "inputFocus"},
-		    {name:"postTextBox", kind: "BasicRichText", richContent: false, multiline: true, flex: 1, className: "enyo-input-inner"},
-		    {content: "140"}
+			{name:"postTextBox", kind: "RichText", richContent: false, multiline: true, flex: 1, oninput: "postTextBoxInput", onkeydown: "postTextBoxKeydown"},
+			{style: "width: 5px;"},
+			{name: "remaining", content: "140"}
 		]},
 		{name: "controls", layoutKind: "HFlexLayout", style: "padding-top: 5px", components: [
-			{"kind":"Button","style":"padding: 0px 5px; position: relative; bottom: 7px;","components":[
+			{kind: "Button", style: "padding: 0px 5px;", components: [
 			   {name: "accountSelection", "kind":"ListSelector", onChange: "onChangeAccount", className: "accountSelection"}
 			]},
 			{kind: "Spacer", style: "min-width: 50px"},
@@ -55,6 +55,9 @@ enyo.kind({
 		var last_posting_account_id = App.Prefs.get('last_posting_account_id');
 		if (last_posting_account_id) {
 			this.setPostingAccount(last_posting_account_id);
+		}
+		else {
+			this.setPostingAccount(this.accounts[0].value);
 		}
 	},
 	"showAtCenter": function(){
@@ -93,18 +96,12 @@ enyo.kind({
 		this.setPostingAccount(inValue);
 	},
 
-	updateCharCount:function() {
-		//@TODO	
-	},
-
 	onSendClick: function(inSender) {
-		var self = this;
-
 		this.twit.update(this.$.postTextBox.value, null, this.inReplyToId,
-			function() {
-				self.$.postTextBox.setValue('');
-				self.close();
-			},
+			enyo.bind(this, function() {
+				this.$.postTextBox.setValue('');
+				this.close();
+			}),
 			function() {
 				//@TODO report error info
 				alert('failed');
@@ -115,6 +112,7 @@ enyo.kind({
 	onShortenTextClick: function(inSender) {
 		this.$.postTextBox.setValue(new SpazShortText().shorten(this.$.postTextBox.getValue()));
 		this.$.postTextBox.forceFocus();
+		this.postTextBoxInput();
 	},
 	
 	onShortenURLsClick: function(inSender) {
@@ -130,8 +128,24 @@ enyo.kind({
 			onSuccess: enyo.bind(this, function(inData) {
 				this.$.postTextBox.setValue(this.$.postTextBox.getValue().replace(inData.longurl, inData.shorturl));
 				this.$.postTextBox.forceFocus();
+				this.postTextBoxInput();
 			})
 		});
+	},
+	
+	postTextBoxInput: function(inSender, inEvent, inValue) {
+		if (!inValue) {
+			inValue = this.$.postTextBox.getValue();
+		}
+		this.$.remaining.setContent(140 - inValue.length);
+	},
+	
+	postTextBoxKeydown: function(inSender, inEvent) {
+		if (inEvent.keyCode === 13) {
+			// Enter to send - this should be a pref evenutally.
+			this.onSendClick();
+			inEvent.preventDefault();
+		}
 	}
 });
 
