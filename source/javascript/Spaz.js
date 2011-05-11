@@ -2,7 +2,7 @@ enyo.kind({
 	name: "Spaz",
 	kind: enyo.HFlexBox,
 	components: [
-		{name: "sidebar", kind: "Spaz.Sidebar", onColumnsFunction: "columnsFunction"},
+		{name: "sidebar", kind: "Spaz.Sidebar", onColumnsFunction: "columnsFunction", onCreateColumn: "createColumn"},
 		{name: "container", kind: "Spaz.Container", onShowEntryView: "showEntryView"},
 	],
 	
@@ -150,6 +150,7 @@ enyo.kind({
 		//self.inherited(arguments);
 	},
 	showEntryView: function(inSender, inEntry){
+		console.log("showing entryView");
 		if(!this.$.entryview){
 			
 			this.createComponent({name: "entryview", kind: "Spaz.EntryView", onDestroy: "destroyEntryView"}, {owner: this});
@@ -166,6 +167,9 @@ enyo.kind({
 
 		//this.render();
 		//this.$.container.refreshList();
+	},
+	createColumn: function(inSender, inAccountId, inColumn){
+		this.$.container.createColumn(inAccountId, inColumn);	
 	},
 	columnsFunction: function(inSender, functionName, opts){
 		this.$.container.columnsFunction(functionName, opts);	
