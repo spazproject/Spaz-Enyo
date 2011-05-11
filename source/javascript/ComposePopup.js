@@ -31,7 +31,7 @@ enyo.kind({
 			{kind: "Spacer", style: "min-width: 50px"},
 			{kind: "Button", style: "padding-top: 6px;", label: enyo._$L("Shorten Text"), onclick: "onShortenTextClick"},
 			{kind: "Button", style: "padding-top: 6px;", label: enyo._$L("Shorten URLs"), onclick: "onShortenURLsClick"},
-			{kind: "Button", style: "padding-top: 6px;", label: enyo._$L("Send"), onclick: "onSendClick"}
+			{name: "sendButton", kind: "Button", style: "padding-top: 6px;", label: enyo._$L("Send"), onclick: "onSendClick"}
 		]}
 	],
 	create: function(){
@@ -135,9 +135,20 @@ enyo.kind({
 	
 	postTextBoxInput: function(inSender, inEvent, inValue) {
 		if (!inValue) {
-			inValue = this.$.postTextBox.getValue();
+			var inValue = this.$.postTextBox.getValue();
 		}
-		this.$.remaining.setContent(140 - inValue.length);
+		var remaining = 140 - inValue.length;
+		this.$.remaining.setContent(remaining);
+		if(remaining > 0){
+			this.$.remaining.applyStyle("color", "grey");
+			this.$.sendButton.setDisabled(false);
+		} else if(remaining === 0){
+			this.$.remaining.applyStyle("color", "black");
+			this.$.sendButton.setDisabled(false);
+		} else {
+			this.$.remaining.applyStyle("color", "red");
+			this.$.sendButton.setDisabled(true);
+		}
 	},
 	
 	postTextBoxKeydown: function(inSender, inEvent) {
