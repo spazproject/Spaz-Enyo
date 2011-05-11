@@ -4,7 +4,8 @@ enyo.kind({
 	kind: "VFlexBox",
 	className: "enyo-toolbar-vertical",
 	events: {
-		onColumnsFunction: ""
+		onColumnsFunction: "",
+		onCreateColumn: ""
 	},
 	components: [
 		{kind: "ToolButton", icon: "source/images/icon-compose.png", onclick: "openPopup", popup:"composePopup"},
@@ -16,7 +17,7 @@ enyo.kind({
 		{kind: "ToolButton", icon: "source/images/icon-settings.png", onclick: "openPopup", popup:"settingsPopup"},
 		
 		{name: "composePopup", kind: "Spaz.ComposePopup", onClose: "closePopup" },
-		{name: "columnsPopup", kind: "Spaz.ColumnsPopup", onClose: "closePopup" },
+		{name: "columnsPopup", kind: "Spaz.ColumnsPopup", onCreateColumn: "doCreateColumn", onClose: "closePopup" },
 		{name: "settingsPopup", kind: "Spaz.SettingsPopup", onClose: "closePopup" },
 		{name: "accountsPopup", kind: "Spaz.AccountsPopup", onClose: "closePopup" }
 	],
