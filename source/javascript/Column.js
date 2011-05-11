@@ -4,7 +4,8 @@ enyo.kind({
 	width: "322px",
 	style: "margin: 3px;", 
 	events: {
-		onShowEntryView: ""
+		onShowEntryView: "",
+		onDeleteClicked: ""
 	},
 	published: {
 		info: {
@@ -23,7 +24,7 @@ enyo.kind({
 				{kind: "Spacer", flex: 1},
 				{name: "header", flex: 1, content: ""},
 				{kind: "Spacer", flex: 1},
-				{kind: "ToolButton", icon: "source/images/icon-close.png"},
+				{kind: "ToolButton", icon: "source/images/icon-close.png", onclick: "doDeleteClicked"},
 			]},
 			{name: "list", kind: "Spaz.VirtualList", flex: 1, style: "background-color: #D8D8D8; margin: 0px 3px; min-height: 200px;", horizontal: false, className: "timeline list", onSetupRow: "setupRow", components: [
 				{kind: "Item", tapHighlight: true, className: "entry", style: "padding-right: 5px;", layoutKind: "HFlexLayout", onclick: "entryClick", components: [

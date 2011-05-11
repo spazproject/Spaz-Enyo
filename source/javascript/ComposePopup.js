@@ -29,7 +29,7 @@ enyo.kind({
 			   {name: "accountSelection", "kind":"ListSelector", onChange: "onChangeAccount", className: "accountSelection"}
 			]},
 			{kind: "Spacer", style: "min-width: 50px"},
-			{kind: "Button", label: "Send", onclick: "onSendClick", style: "padding-top: 6px"}
+			{kind: "Button", label: "Send", onclick: "onSendClick"}
 		]}
 	],
 	create: function(){
