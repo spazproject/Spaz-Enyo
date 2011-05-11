@@ -19,19 +19,19 @@ enyo.kind({
 			{kind: "Spacer"},
 			{kind: "ToolButton", icon: "source/images/icon-close.png", style: "position: relative; bottom: 7px;", onclick: "doClose"}
 		]},
-		{kind: "InputBox", style: "min-height: 50px", components: [
-			{name:"postTextBox", kind: "RichText", richContent: false, multiline: true, flex: 1, oninput: "postTextBoxInput", onkeydown: "postTextBoxKeydown"},
-			{style: "width: 5px;"},
-			{name: "remaining", content: "140"}
+		{kind: "HFlexBox", style: "min-height: 50px", components: [
+			{name:"postTextBox", kind: "RichText", richContent: false, multiline: true, flex: 1, oninput: "postTextBoxInput", onkeydown: "postTextBoxKeydown", components: [
+				{name: "remaining", style: "color: grey; padding-left: 5px;", content: "140"},
+			]},
 		]},
 		{name: "controls", layoutKind: "HFlexLayout", style: "padding-top: 5px", components: [
 			{kind: "Button", style: "padding: 0px 5px;", components: [
 			   {name: "accountSelection", "kind":"ListSelector", onChange: "onChangeAccount", className: "accountSelection"}
 			]},
 			{kind: "Spacer", style: "min-width: 50px"},
-			{kind: "Button", label: enyo._$L("Shorten Text"), onclick: "onShortenTextClick"},
-			{kind: "Button", label: enyo._$L("Shorten URLs"), onclick: "onShortenURLsClick"},
-			{kind: "Button", label: enyo._$L("Send"), onclick: "onSendClick"}
+			{kind: "Button", style: "padding-top: 6px;", label: enyo._$L("Shorten Text"), onclick: "onShortenTextClick"},
+			{kind: "Button", style: "padding-top: 6px;", label: enyo._$L("Shorten URLs"), onclick: "onShortenURLsClick"},
+			{kind: "Button", style: "padding-top: 6px;", label: enyo._$L("Send"), onclick: "onSendClick"}
 		]}
 	],
 	create: function(){
