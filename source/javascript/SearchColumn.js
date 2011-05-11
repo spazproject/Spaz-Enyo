@@ -16,7 +16,9 @@ enyo.kind({
 		]});		
 	},
 	infoChanged: function(){
-		this.$.header.setContent(_.capitalize(this.info.type) + ": " + this.info.query);
+		this.$.topLeftButton.setStyle("");
+		this.$.topLeftButton.setIcon("source/images/icon-search.png");
+		this.$.header.setContent(this.info.query);
 		this.$.accountName.setContent(App.Users.getLabel(this.info.accounts[0]));
 	},
 	optionsPopup: function(inSender, inEvent){
