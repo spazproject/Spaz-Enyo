@@ -4,14 +4,16 @@ enyo.kind({
 	create: function(){
 		this.inherited(arguments);	
 
+     	this.modify();
+     
+	},
+	modify: function(){
 		this.$.topRightButton.setIcon("source/images/icon-settings.png");
 		this.$.topRightButton.onclick = "optionsPopup";
 		this.createComponent({kind: "PopupList", onSelect: "popupSelect", items: [
 			"Change Query",
 			"Remove Column"
-		]});
-		this.render();
-
+		]});		
 	},
 	infoChanged: function(){
 		this.$.header.setContent(_.capitalize(this.info.type) + ": " + this.info.query);
