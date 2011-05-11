@@ -66,7 +66,7 @@ enyo.kind({
      	this.loadData();
 	},
 	infoChanged: function(){
-		this.$.header.setContent(this.info.display);
+		this.$.header.setContent(_.capitalize(this.info.type));
 		this.$.accountName.setContent(App.Users.getLabel(this.info.accounts[0]));
 
 	},

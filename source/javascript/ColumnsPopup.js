@@ -48,8 +48,8 @@ enyo.kind({
 		this.buildAccounts();
 		this.openAtCenter();
 	},
-	newColumn: function(inSender, inEvent){
+	newColumn: function(inSender, inCaption){
 		console.log("new column");
-		this.doCreateColumn(this.$.accountSelection.getValue(), inEvent.target.innerHTML);
+		this.doCreateColumn(this.$.accountSelection.getValue(), inCaption.toLowerCase());
 	}
 });

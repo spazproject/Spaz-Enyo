@@ -20,9 +20,12 @@ enyo.kind({
 		this.destroyComponents();
 
 		_.each(columns, function(column){
-			this.createComponent({name: column, flex: 1, kind: "IconButton", label: _.capitalize(column), icon: "source/images/icon-"+column+".png", onclick: "doNewColumn"});
+			this.createComponent({name: column, flex: 1, kind: "IconButton", label: _.capitalize(column), icon: "source/images/icon-"+column+".png", onclick: "newColumn"});
 		}, this);
 
 		this.render();
+	},
+	newColumn: function(inSender, inEvent){
+		this.doNewColumn(inSender.caption);
 	}
 })
