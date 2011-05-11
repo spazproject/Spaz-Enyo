@@ -21,9 +21,9 @@ enyo.kind({
 		{layoutKind: "VFlexLayout", components: [
 			{kind: "Toolbar", defaultKind: "Control", content: "Home", style: "color: white;", components: [
 				//gotta do this crap to get the header title to center and not be a button. "defaultKind" in Toolbar is key.
+				{name: "header", style: "padding: 0px 0px 5px 10px;", content: ""},
 				{kind: "Spacer", flex: 1},
-				{name: "header", flex: 1, content: ""},
-				{kind: "Spacer", flex: 1},
+				{name: "accountName", style: "color: grey; font-size: 12px"},
 				{kind: "ToolButton", icon: "source/images/icon-close.png", onclick: "doDeleteClicked"},
 			]},
 			{name: "list", kind: "Spaz.VirtualList", flex: 1, style: "background-color: #D8D8D8; margin: 0px 3px; min-height: 200px;", horizontal: false, className: "timeline list", onSetupRow: "setupRow", components: [
@@ -67,6 +67,8 @@ enyo.kind({
 	},
 	infoChanged: function(){
 		this.$.header.setContent(this.info.display);
+		this.$.accountName.setContent(App.Users.getLabel(this.info.accounts[0]));
+
 	},
 
 	loadNewer:function() {

@@ -51,3 +51,8 @@ SPAZ_COLUMN_TYPES[SPAZCORE_SERVICE_CUSTOM] = [
 	SPAZ_COLUMN_SEARCH
 ];
 
+var SPAZ_ACCOUNT_ICONS = {};
+SPAZ_ACCOUNT_ICONS[SPAZCORE_SERVICE_TWITTER] = "source/images/account-icon-twitter.png";
+SPAZ_ACCOUNT_ICONS[SPAZCORE_SERVICE_IDENTICA] = "source/images/account-icon-identica.png";
+SPAZ_ACCOUNT_ICONS[SPAZCORE_SERVICE_CUSTOM] = "source/images/account-icon-custom.png";
+

@@ -38,20 +38,8 @@ enyo.kind({
 		if(item = this.accounts[inIndex]){
 
 			this.$.label.setContent(item.label);
-
-			switch(item.type){
-				case SPAZCORE_SERVICE_TWITTER:
-					this.$.icon.setSrc("source/images/account-icon-twitter.png");
-					break;
-
-				case SPAZCORE_SERVICE_IDENTICA:
-					this.$.icon.setSrc("source/images/account-icon-identica.png");
-					break;
-
-				default:
-					this.$.icon.setSrc("source/images/account-icon-custom.png");
-					break;
-			}
+			this.$.icon.setSrc(SPAZ_ACCOUNT_ICONS[item.type]);
+			
 			// this.$.label.setContent(item.label);
 			return true;
 		}		
