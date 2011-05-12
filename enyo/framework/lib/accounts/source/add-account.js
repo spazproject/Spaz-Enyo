@@ -31,23 +31,24 @@ enyo.kind({
 		onAddAccount_Cancel: ""
 	},
 	components: [
-		{kind:"Header", className:"accounts-header", pack:"center", components: [
+		{kind:"Toolbar", className:"enyo-toolbar-light accounts-header", pack:"center", components: [
 				{kind: "Image", src: AccountsUtil.libPath + "images/acounts-48x48.png"},
-				{content: AccountsUtil.PAGE_TITLE_ADD_ACCOUNT}
+				{content: AccountsUtil.PAGE_TITLE_ADD_ACCOUNT, className:""}
 		]},
-			
+		{className:"accounts-header-shadow"},
 		{kind: "Scroller", flex: 1, components: [
-			{kind:"VFlexBox", className:"box-center accounts-body", style:"margin-top:22px", components: [ 
-				{name: "list", kind: "VirtualRepeater", onGetItem: "listGetItem", onclick: "templateSelected", components: [
-					{kind: "Button", name: "Account", allowDrag:true, layoutKind: "HFlexLayout", align:"center", className:"accounts-btn accounts-btn-icon", components: [
+			{kind:"Control", className:"box-center", style:"margin-top:24px", components: [ 
+				{name: "list", kind: "VirtualRepeater", onSetupRow: "listGetItem", onGetItem: "listGetItem", onclick: "templateSelected", className:"accounts-btn-list", components: [
+					{kind: "Button", name: "Account", allowDrag:true, layoutKind: "HFlexLayout", align:"center", className:"accounts-btn", components: [
 						{kind: "Image", name: "templateIcon", className:"icon-image"},
-						{name: "templateName", className:"account-name"}
+						{name: "templateName"}
 					]}
 				]},
 			]},
 		]},
-		{kind:"Toolbar", components:[
-			{kind: "Button", label: AccountsUtil.BUTTON_CANCEL, className:"enyo-button-dark accounts-toolbar-btn", onclick: "doAddAccount_Cancel"}
+		{className:"accounts-footer-shadow"},
+		{kind:"Toolbar", className:"enyo-toolbar-light", components:[
+			{kind: "Button", label: AccountsUtil.BUTTON_CANCEL, className:"accounts-toolbar-btn", onclick: "doAddAccount_Cancel"}
 		]},
 		{kind: "PalmService", service: "palm://com.palm.applicationManager/", method: "open", name: "openAppCatalog"}
 	],

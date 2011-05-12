@@ -135,10 +135,18 @@ enyo.kind({
 		return {left: n.offsetLeft, top: n.offsetTop, width: n.offsetWidth, height: n.offsetHeight};
 	},
 	addCssText: function(inCssText) {
+		// remove spaces between rules, then split rules on delimiter (;)
 		var sa = inCssText.replace(/; /g, ";").split(";");
-		for (var i=0, s; s=sa[i]; i++) {
+		// parse string styles into name/value pairs
+		for (var i=0, s, n, v; s=sa[i]; i++) {
+			// "background-image: url(http://foo.com/foo.png)" => ["background-image", "url(http", "//foo.com/foo.png)"]
 			s = s.split(":");
-			this.domStyles[s[0]] = s[1];
+			// n = "background-image", s = ["url(http", "//foo.com/foo.png)"]
+			n = s.shift();
+			// v = ["url(http", "//foo.com/foo.png)"].join(':') = "url(http://foo.com/foo.png)"
+			v = s.length > 1 ? s.join(':') : s[0];
+			// store name/value pair
+			this.domStyles[n] = v;
 		}
 	},
 	//* @public

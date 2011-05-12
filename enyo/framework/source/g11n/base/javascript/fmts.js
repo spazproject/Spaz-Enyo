@@ -28,11 +28,11 @@ enyo.g11n.Fmts = function Fmts(params){
 		 this.locale = params.locale;
 	 }
 	
-	 //Need some sort of enyo.enviroment.path variable otherwise we are screwed on each enyo upgrade
 	 this.dateTimeFormatHash = enyo.g11n.Utils.getJsonFile({
 		 root: enyo.g11n.Utils._getEnyoRoot(),
 		 path: "base/formats",
-		 locale: this.locale
+		 locale: this.locale,
+		 type: "region"
 	 });
 	 
 	 this.dateTimeHash = enyo.g11n.Utils.getJsonFile({
@@ -41,6 +41,21 @@ enyo.g11n.Fmts = function Fmts(params){
 		 locale: this.locale
 	 });
 	 
+	 if (!this.dateTimeHash) {
+		 this.dateTimeHash = enyo.g11n.Utils.getJsonFile({
+			 root: enyo.g11n.Utils._getEnyoRoot(),
+			 path: "base/datetime_data",
+			 locale: enyo.g11n.currentLocale()
+		 });
+	 }
+
+	 if (!this.dateTimeHash) {
+		 this.dateTimeHash = enyo.g11n.Utils.getJsonFile({
+			 root: enyo.g11n.Utils._getEnyoRoot(),
+			 path: "base/datetime_data",
+			 locale: new enyo.g11n.Locale('en_us')	// should always exist
+		 });
+	 }
 };
 
 //* @public
@@ -190,4 +205,14 @@ default is "10X15CM" if not otherwise specified in the formats config file.
 */
 enyo.g11n.Fmts.prototype.getDefaultPhotoSize = function(){
 	return (this.dateTimeFormatHash && this.dateTimeFormatHash.defaultPhotoSize) || "10X15CM";
+};
+
+/**
+Returns the zone ID of the default time zone for the locale. For many locales, there are multiple
+time zones. This function returns the one that either is the most important or contains the 
+largest population. If the current formats object is for an unknown locale, the default time
+zone is GMT (Europe/London).
+*/
+enyo.g11n.Fmts.prototype.getDefaultTimeZone = function(){
+	return (this.dateTimeFormatHash && this.dateTimeFormatHash.defaultTimeZone) || "Europe/London";
 };

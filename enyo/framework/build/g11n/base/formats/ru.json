@@ -3,8 +3,6 @@
     
 	"numberDivider": " ",
 	"numberDecimal": ",",
-	"currencyPrepend": "руб. ",
-	"currencyAppend": "",
 	"percentageSpace": true,
 	"localeName": "Russian Federation",
 	"titleCase": false,
@@ -39,6 +37,9 @@
 	"shortMYDate": "MM.yy",
 	"mediumMYDate": "MM.yyyy",
 	"longMYDate": "MMMM yyyy г.",
+	"shortDDate": "dd",
+	"mediumDDate": "dd",
+	"longDDate": "d",	
 
 	"shortWeekday": "EE",
 	"mediumWeekday": "EEE",
@@ -53,5 +54,15 @@
 	"bigTime12": "h:mm:ss",
 
 	"smallTime24": "H:mm",
-	"bigTime24": "H:mm:ss"
+	"bigTime24": "H:mm:ss",
+
+	"timeH12": "h",
+	"timeH24": "H",
+	
+	"currency": {
+		"name": "RUB",
+		"iso": "#{sign} #{amt}",
+		"common": "#{sign} #{amt}"
+	},
+	"defaultTimeZone": "Asia/Moscow"
 }

@@ -133,7 +133,7 @@ Tellurium.sendMenuCommand = function(command) {
 Tellurium.getIndexFromList = function(locator,value) {                                       
   var element = document.querySelectorAll(locator);                                          
   var temp;                                                                                  
-  for (i=0;i<element.length;i++) {                                                           
+  for (var i=0;i<element.length;i++) {                                                           
     temp = element[i].innerHTML;                                                             
     if (temp.indexOf(value) != -1) {                                                         
         return i+1;                                                                          
@@ -285,4 +285,29 @@ Tellurium.textFieldGetCursorPosition = function(locator) {
 Tellurium.textFieldSetCursorPosition = function(locator, start, end) {
 	var element = Tellurium.getElement(locator);
 	element.mojo.setCursorPosition(start, end);
+};
+
+//SCROLLER WIDGET
+
+Tellurium.scrollToBottom = function(scrollerLocator) {
+	var scrollerTe = Tellurium.getElement(scrollerLocator);
+	if (scrollerTe.id == undefined || scrollerTe.id == null || scrollerTe.id == "") throw { message : "Scroller element has no associated 'id' property." };
+	var evalText = "Tellurium.enyo.windows.getActiveWindow().enyo.$."+scrollerTe.id+".scrollToBottom()";
+	eval(evalText);
+};
+
+Tellurium.scrollToTop = function(scrollerLocator) {
+	var scrollerTe = Tellurium.getElement(scrollerLocator);
+	if (scrollerTe.id == undefined || scrollerTe.id == null || scrollerTe.id == "") throw { message : "Scroller element has no associated 'id' property." };
+	var evalText = "Tellurium.enyo.windows.getActiveWindow().enyo.$."+scrollerTe.id+".scrollTo(0,0)";
+	eval(evalText);
+};
+
+Tellurium.scrollToElement = function(scrollerLocator, elementLocator) {
+	var scrollerTe = Tellurium.getElement(scrollerLocator);
+	if (scrollerTe.id == undefined || scrollerTe.id == null || scrollerTe.id == "") throw { message : "Scroller element has no associated 'id' property." };
+	var elementTe = Tellurium.getElement(elementLocator);
+	if (elementTe.offsetTop == undefined || elementTe.offsetTop == null)  throw { message : "Unable to determine the top location of elementLocator." };
+	var evalText = "Tellurium.enyo.windows.getActiveWindow().enyo.$."+scrollerTe.id+".scrollTo("+elementTe.offsetTop+",0)";
+	eval(evalText);
 };

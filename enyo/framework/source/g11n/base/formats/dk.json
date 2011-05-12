@@ -3,8 +3,6 @@
 
 	"numberDivider": ",",
 	"numberDecimal": ",",
-	"currencyPrepend": "",
-	"currencyAppend": " kr",
 	"percentageSpace": true,
 	"localeName": "Denmark",
 	"titleCase": false,
@@ -22,13 +20,13 @@
 	"defaultTime12": "hh.mm.ss a",
 	"shortTime12": "hh.mm a",
 	"mediumTime12": "hh.mm.ss a",
-	"longTime12": "hh:mm:ss a zzz",
+	"longTime12": "hh.mm.ss a zzz",
 	"fullTime12": "hh.mm.ss a zzz",
 
 	"defaultTime24": "HH.mm.ss",
 	"shortTime24": "HH.mm",
 	"mediumTime24": "HH.mm.ss",
-	"longTime24": "HH:mm:ss zzz",
+	"longTime24": "HH.mm.ss zzz",
 	"fullTime24": "HH.mm.ss zzz",
 
 	"firstDayOfWeek": 1,
@@ -41,6 +39,9 @@
 	"shortMYDate": "MM/yy",
 	"mediumMYDate": "MM/yyyy",
 	"longMYDate": "MMM yyyy",
+	"shortDDate": "dd",
+	"mediumDDate": "dd",
+	"longDDate": "d",	
 
 	"shortWeekday": "EE",
 	"mediumWeekday": "EEE",
@@ -52,8 +53,18 @@
 	"timeAZFormat": "TIME AM ZONE",
 
 	"smallTime12": "hh.mm",
-	"bigTime12": "hh:mm:ss",
+	"bigTime12": "hh.mm.ss",
 
 	"smallTime24": "HH.mm",
-	"bigTime24": "HH:mm:ss"
+	"bigTime24": "HH.mm.ss",
+	
+	"timeH12": "hh",
+	"timeH24": "HH",
+	
+	"currency": {
+		"name": "DKK",
+		"iso": "#{amt} #{sign}",
+		"common": "#{amt} #{sign}"
+	},
+	"defaultTimeZone": "Europe/Copenhagen"
 }

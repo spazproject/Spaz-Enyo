@@ -1,8 +1,6 @@
 {
 	"numberDivider": ".",
 	"numberDecimal": ",",
-	"currencyPrepend": "",
-	"currencyAppend": " MKD",
 	"percentageSpace": true,
 	"localeName": "The Former Yugoslav Republic of Macedonia",
 	"titleCase": false,
@@ -38,6 +36,9 @@
 	"shortMYDate": "M.yy",
 	"mediumMYDate": "M.yyyy",
 	"longMYDate": "MMMM yyyy",
+	"shortDDate": "dd",
+	"mediumDDate": "dd",
+	"longDDate": "dd",	
 
 	"shortWeekday": "EE",
 	"mediumWeekday": "EEE",
@@ -52,5 +53,15 @@
 	"bigTime12": "hh:mm:ss",
 
 	"smallTime24": "HH:mm",
-	"bigTime24": "HH:mm:ss"
+	"bigTime24": "HH:mm:ss",
+	
+	"timeH12": "hh",
+	"timeH24": "HH",
+	
+	"currency": {
+		"name": "MKD",
+		"iso": "#{amt} #{sign}",
+		"common": "#{amt} #{sign}"
+	},
+	"defaultTimeZone": "Europe/Skopje"
 }

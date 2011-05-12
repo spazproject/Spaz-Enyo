@@ -52,8 +52,10 @@ var SyncUIUtil = (function () {
 		libPath: enyo.path.paths["-..-lib-syncui"],
 		
 		// Localized strings
-		REMOVING_ACCOUNT:			rb.$L("Removing Account..."),
-		SYNCING_ACCOUNT:			rb.$L("Syncing Account..."),
+		REMOVING_ACCOUNT:			rb.$L("Removing account..."),
+		REMOVE_FINISHED:			rb.$L("Account removed"),
+		SYNCING_ACCOUNT:			rb.$L("Syncing account..."),
+		SYNC_FINISHED:				rb.$L("Sync completed"),
 		CHECK_LOGIN_PASSWORD:		rb.$L("Check your login and password"),
 		NO_CREDS_TITLE:				rb.$L("Accounts: Action Needed"),
 		NO_CREDS_TEXT:				rb.$L("Enter credentials for your accounts"),

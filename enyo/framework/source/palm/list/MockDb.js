@@ -79,7 +79,7 @@ enyo.kind({
 		var query = inProps.params.query || {};
 		// if we do a query with no handle, it implies the users has discarded
 		// all handles and we can empty the cursors array.
-		if (query.page == undefined) {
+		if (query.page === undefined) {
 			this.cursors = {};
 		}
 		var start = this.cursors[query.page] || (query.desc ? this.data.length - 1 : 0);
@@ -106,14 +106,17 @@ enyo.kind({
 			this.cursors[handle] = next;
 			response.next = handle;
 		}
-		enyo.vizLog && enyo.vizLog.log("MockDb.query: " + query.page + ": " + start + "/" + end + (inQqueryuery.desc ? " (desc) " : "" + " next: ") + next + " (" + handle + ")");
+		enyo.vizLog && enyo.vizLog.log("MockDb.query: " + query.page + ": " + start + "/" + end + (query.desc ? " (desc) " : "" + " next: ") + next + " (" + handle + ")");
+		var destroyed = false;
 		var request = {
 			params: {query: query},
-			destroy: enyo.nop,
+			destroy: function() { destroyed = true},
 			isWatch: enyo.nop
 		};
 		setTimeout(enyo.bind(this, function() {
-			this.doSuccess(response, request);
+			if (!destroyed) {
+				this.doSuccess(response, request);
+			}
 		}), this.latency());
 		return request;
 	},
@@ -157,7 +160,7 @@ enyo.kind({
 		if (i >= 0) {
 			this.log(inId);
 			this.data.splice(i, 1);
-		};
+		}
 	},
 	remove: function(inRecord) {
 		this._remove(inRecord._id);

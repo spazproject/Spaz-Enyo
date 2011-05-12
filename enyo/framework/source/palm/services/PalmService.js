@@ -43,8 +43,8 @@ For PalmService objects, inResponse is a pre-parsed JavaScript object.
 
 The different response events are fired under the following conditions:
 
-<li>onSuccess is called on a "successful" response. For PalmService objects, this is called if returnValue === true.</li>
-<li>onFailure is called on a failure response.</li>
+<li>onSuccess is called on a "successful" response. For PalmService objects, this is called for responses with { "returnValue": true } or { "errorCode": 0 }.</li>
+<li>onFailure is called on any response that isn't classified as "successful".</li>
 <li>onResponse is called on any kind of response.</li>
 
 You can also defer assignment of all the other properties of the request until the call is actually made. This is handy when you want to re-use a single service for different kinds of requests:
@@ -79,9 +79,13 @@ enyo.kind({
 	name: "enyo.PalmService",
 	kind: enyo.Service,
 	published: {
+		/** name of method to call */
 		method: "",
+		/** should be true if you're calling a method that returns multiple results */
 		subscribe: null,
+		/** set to true to have your subscription automatically restarted when it gets a failure response */
 		resubscribe: false,
+		/** object containing parameters for the service call */
 		params: null
 	},
 	resubscribeDelay: 10000,
@@ -107,7 +111,7 @@ enyo.kind({
 			service: this.service,
 			method: this.method
 		};
-		// use the default setup, unless overriden by props
+		// use the default setup, unless overridden by props
 		props = enyo.mixin(setup, props);
 		// propagate this.subscribe to params.subscribe as necessary
 		if (this.subscribe) {

@@ -2,8 +2,11 @@
 	"is12HourDefault": true,
 	"numberDivider": ",",
 	"numberDecimal": ".",
-	"currencyPrepend": "$",
-	"currencyAppend": "",
+	"currency": {
+		"name": "USD",
+		"iso": "#{sign} #{amt}",
+		"common": "#{sign}#{amt}"
+	},
 	"percentageSpace": false,
 	"localeName": "The United States of America",
 	"titleCase": true,
@@ -38,10 +41,14 @@
 	"shortMYDate": "M/yy",
 	"mediumMYDate": "MMM yyyy",
 	"longMYDate": "MMMM yyyy",
+	"shortDDate": "d",
+	"mediumDDate": "d",
+	"longDDate": "d",
+
 	"shortWeekday": "EE",
 	"mediumWeekday": "EEE",
 	"longWeekday": "EEEE",
-	"weekDateFormat": "WEEK, DATE",
+	"weekDateFormat": "WEEK DATE",
 	"timeAFormat": "TIME AM",
 	"timeZFormat": "TIME ZONE",
 	"timeAZFormat": "TIME AM ZONE",
@@ -50,7 +57,11 @@
 	"smallTime24": "H:mm",
 	"bigTime24": "H:mm:ss",
 	
+	"timeH12": "h",
+	"timeH24": "H",
+	
 	"defaultPaperSize": "letter",
 	"defaultPhotoSize": "4x6",
-	"measurementSystem": "uscustomary"
+	"measurementSystem": "uscustomary",
+	"defaultTimeZone": "America/Los_Angeles"
 }

@@ -9,31 +9,31 @@ enyo.kind({
 	},
 	events: {
 		onCancelClick: "",
-		onSetPinSuccess: ""
+		onSetPinSuccess: "",
+		onPinVerified:""
 	},
 	components: [
 		{name: "label", components: [
-			{name: "Text", content: $L("Phone Locked"), style: "font-size: 26px; text-align: center; color: white; width: 100%; weight: bold"},
-			{name: "subText", content: $L("Enter PIN"), style: "font-size: 16px; text-align: center; color: white; width: 100%; weight: bold"},
+			{name: "Text", content: rb_auth.$L("Phone Locked"), style: "font-size: 26px; text-align: center; color: white; width: 100%; weight: bold"},
+			{name: "subText", content: rb_auth.$L("Enter PIN"), style: "font-size: 16px; text-align: center; color: white; width: 100%; weight: bold"},
 			{name: "pinForm", style: "width: 100%; height: 32px; position: relative;", components: [
 				{name: "pinDisplay", content: " ", style: "width: 100%; font-size: 32px; text-align: center; position: absolute; bottom: 5px; color: white; weight: bold;"}
 			]},
 		]},			
 		{kind: "PinDialpad", flex: 1, onNumberAdded: "handleButtonClick", onHandleDelete: "handleBackspace"},			
 		{name: "groupButton", layoutKind: "HFlexLayout", defaultKind: "Button", components: [
-			{name: "buttonCancel", flex: 1, pack: "center", layoutKind: "VFlexLayout", caption: $L("Cancel"), onclick: "onCancel", className: "pin-menu-button"},
-			{flex: 1, layoutKind: "VFlexLayout", pack: "center", caption: $L("Done"), onclick: "unlock", className: "pin-menu-button"}
+			{name: "buttonCancel", flex: 1, pack: "center", layoutKind: "VFlexLayout", caption: rb_auth.$L("Cancel"), onclick: "onCancel", className: "pin-menu-button"},
+			{flex: 1, layoutKind: "VFlexLayout", pack: "center", caption: rb_auth.$L("Done"), onclick: "unlock", className: "pin-menu-button"}
 		]},
 		{className: "firstuse-bottom-corners"},		
 		
 		//{name: "popEmergencyMenu", kind: "EmergencyPopupMenu"},
 		{name: "matchDevicePasscode", kind:"PalmService", service:"palm://com.palm.systemmanager/", method:"matchDevicePasscode", onSuccess: "", onFailure: ""},
-		{name: "updatePinAppState", kind:"PalmService", service:"palm://com.palm.systemmanager/", method:"updatePinAppState"},
 		{name: "sysmanagerService", kind:"PalmService", service:"palm://com.palm.systemmanager/", subscribe: true, onSuccess: "", onFailure: ""},
 		{name: "lastChanceAlert", kind: "DialogPrompt", 
-			title: $L("Warning"),
-			message: $L("If you enter an incorrect PIN now your phone will be erased."),
-			acceptButtonCaption: $L("OK"),
+			title: rb_auth.$L("Warning"),
+			message: rb_auth.$L("If you enter an incorrect PIN now your phone will be erased."),
+			acceptButtonCaption: rb_auth.$L("OK"),
 			cancelButtonCaption: null,
 			modal: true
 		},
@@ -57,17 +57,17 @@ enyo.kind({
 		console.log("### pinSetChanged!!!!!");
 		if (this.pinSet){
 			console.log("### we need to enter a new pin!!!!!");
-			this.$.Text.setContent($L("Enter new PIN"));
+			this.$.Text.setContent(rb_auth.$L("Enter new PIN"));
 			this.$.subText.setContent(" ");		
 		} else {
 			console.log("### pin already in place. this phone is locked!!!!!");
-			this.$.Text.setContent($L("Phone Locked"));
+			this.$.Text.setContent(rb_auth.$L("Phone Locked"));
 			
 			if (this.onlyOneRetryRemaining === true) {
-				this.$.subText.setContent($L("Entering an incorrect PIN will erase your phone"));
+				this.$.subText.setContent(rb_auth.$L("Entering an incorrect PIN will erase your phone"));
 				this.$.lastChanceAlert.open();
 			} else {
-				this.$.subText.setContent($L("Enter PIN"));
+				this.$.subText.setContent(rb_auth.$L("Enter PIN"));
 			}
 		}
 	}, 
@@ -109,7 +109,7 @@ enyo.kind({
 	setPin: function() {
 		if (!this.verifyPin) {
 			this.verifyPin = this.pin;
-			this.$.Text.setContent($L("Enter PIN again"));
+			this.$.Text.setContent(rb_auth.$L("Enter PIN again"));
 			this.$.subText.setContent(" ");
 			this.pin = "";
 			this.updatePinDisplay();
@@ -126,8 +126,8 @@ enyo.kind({
 			} else {
 				this.verifyPin = "";
 				this.pin = "";
-				this.$.Text.setContent($L("PIN numbers don't match"));
-				this.$.subText.setContent($L("Try Again"));
+				this.$.Text.setContent(rb_auth.$L("PIN numbers don't match"));
+				this.$.subText.setContent(rb_auth.$L("Try Again"));
 			}
 		}
 	}, 
@@ -136,31 +136,31 @@ enyo.kind({
 		this.log("------------devicePinVerifyResponse: ",enyo.json.to(response)); 
 		if (response.returnValue) {
 			this.log("time to get response: " + (Date.now() - this._timer))
-			this.$.updatePinAppState.call({state: 'unlock'});
+			this.doPinVerified();
 			this.onlyOneRetryRemaining = false;
 		}else{
-			this.$.Text.setContent($L("PIN incorrect"));
+			this.$.Text.setContent(rb_auth.$L("PIN incorrect"));
 			
 			// TODO: Need to check response.lockedOut === true? Then initiate device reset?
 			if (this.securityPolicyState === "active" && response.retriesLeft > 0) {
 				if (response.retriesLeft === 1) {
 					// Show Last Chance Warning Message
 					this.onlyOneRetryRemaining = true;
-					this.$.subText.setContent($L("Entering an incorrect PIN will erase your phone"));
+					this.$.subText.setContent(rb_auth.$L("Entering an incorrect PIN will erase your phone"));
 					this.$.lastChanceAlert.open();
 				}
 				else {
-					var t = new enyo.g11n.Template($L("1#One try remaining|##{tries} tries remaining")); 
-					var str = t.formatChoice(response.retriesLeft, {tries: enyo.application.Utils.numberToWord(response.retriesLeft)});
+					var t = new enyo.g11n.Template(rb_auth.$L("1#One try remaining|##{tries} tries remaining")); 
+					var str = t.formatChoice(response.retriesLeft, {tries: this.numberToWord(response.retriesLeft)});
 					this.$.subText.setContent(str);
 				}
 			} else {
 				if (response.lockedOut) {
-					this.$.Text.setContent($L('Phone Locked'));
-					this.$.subText.setContent($L('Try Again Later'));
+					this.$.Text.setContent(rb_auth.$L('Phone Locked'));
+					this.$.subText.setContent(rb_auth.$L('Try Again Later'));
 				}
 				else {
-					this.$.subText.setContent($L('Try Again'));
+					this.$.subText.setContent(rb_auth.$L('Try Again'));
 				}				
 			}
 		}		
@@ -171,25 +171,17 @@ enyo.kind({
 		this.doSetPinSuccess();
 		console.log("onSetPin"+enyo.json.to(response)); //todo: rui: take me out later		
 		this.reset();
-		this.$.sysmanagerService.call({
-			state: 'unlock'
-		},{
-			method: 'updatePinAppState',
-			onSuccess: "",
-			onFailure: ""	
-		});			
-		
 	}, 
 	
 	onSetPinFailure: function(inSender, response) {
 this.log(enyo.json.to(response)); //temp log to track a policy issue		
-		this.setErrorMessage($L("Passcode does not match security requirements."));
+		this.setErrorMessage(rb_auth.$L("Passcode does not match security requirements."));
 	},
 	
 	// resets and sets error message, if one defined
 	setErrorMessage: function(message) {
 		this.$.Text.setContent(message || '');
-		this.$.subText.setContent($L("Please try again"));
+		this.$.subText.setContent(rb_auth.$L("Please try again"));
 		this.reset();		
 	},	
 	
@@ -256,4 +248,8 @@ this.log(enyo.json.to(response)); //temp log to track a policy issue
 				break;
 		}
 	},
+	numberToWord: function(number){
+		var word=[rb_auth.$L('Zero'),rb_auth.$L('One'),rb_auth.$L('Two'), rb_auth.$L('Three'),rb_auth.$L('Four'),rb_auth.$L('Five'),rb_auth.$L('Six'),rb_auth.$L('Seven'),rb_auth.$L('Eight'),rb_auth.$L('Nine')];
+		return word[number];
+	}
 });

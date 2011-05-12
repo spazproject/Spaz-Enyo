@@ -18,33 +18,33 @@ If the params is passed as a string, then the string should specify the custom d
 format to use. If the params are specified as an object, they may contain the 
 following properties:
 
-* *locale*: locale to use to format the date. If not specified, the locale used
+* locale: locale to use to format the date. If not specified, the locale used
 will be the current locale of the device.
-* *date*: format a date using the locale's standard format, and specify the length 
+* date: format a date using the locale's standard format, and specify the length 
 of the format to use. Valid values are 'short', 'medium', 'long', and 'full', or
 specify a custom date format string directly. Default is "long" if this property 
 is not specified.
-* *time*: format a time using the locale's standard format, and specify the length 
+* time: format a time using the locale's standard format, and specify the length 
 of the format to use. Valid values are 'short', 'medium', 'long', and 'full', or
 specify a custom time format string directly. Default is "long" if this property is not specified.
-* *format*: format as a date and time string together, specifying the length of 
+* format: format as a date and time string together, specifying the length of 
 the format. Valid values are 'short', 'medium', 'long', and 'full', or specify a
 custom date/time format string directly.
-* *dateComponents*: format a date with only certain components in it using the 
+* dateComponents: format a date with only certain components in it using the 
 locale's standard format for those components. Valid values are 'DM', 'MY', and 'DMY',
 which mean "date and month", "month and year", and "date, month, and year" 
 respectively. This can be combined with the date or format properties to specify the length of 
 those components. Default if this property is not specified is 'DMY'. 
-* *timeComponents*: format a time with certain additional components in it using the 
+* timeComponents: format a time with certain additional components in it using the 
 locale's standard format for those components. Valid values are 'A', 'Z', and 'AZ',
 which mean "am/pm", "time zone", and "am/pm and time zone" respectively. The additional
 components will appear before or after the time, as required by the locale. This can 
 be combined with the time or format properties to specify the length of those components. Default 
 if this property is not specified is no additional components.
-* *twelveHourFormat*: if passed as true, use a 12-hour clock when formatting times.
-* *weekday*: if passed as true, return the date formatted with the day of the week included
+* twelveHourFormat: if passed as true, use a 12-hour clock when formatting times.
+* weekday: if passed as true, return the date formatted with the day of the week included
 in the date format as well
-* *TZ*: use the given time zone. If not specified, the current device time zone is used.
+* TZ: use the given time zone. If not specified, the current device time zone is used.
 Otherwise, if false, use a 24-hour clock. 
 
 The codes to use when specifying custom date or time formats are the following:
@@ -88,6 +88,7 @@ enyo.g11n.DateFmt = function(params){
 				'md': 'DM',
 				'my': 'MY',
 				'ym': 'MY',
+				'd':  'D',
 				'dmy': '',
 				'dym': '',
 				'mdy': '',
@@ -295,6 +296,7 @@ enyo.g11n.DateFmt = function(params){
 	} else {
 		locale = params.locale;
 	}
+	this.locale = locale;
 	
 	if (typeof(params) === "string"){
 		self.formatType = params;
@@ -324,7 +326,11 @@ enyo.g11n.DateFmt = function(params){
 		path: "base/formats",
 		locale: locale
 	});
-
+	
+	self.rb = new enyo.g11n.Resources({
+		root: enyo.g11n.Utils._getEnyoRoot() + "base",
+		locale: locale
+	});
 	
 	if(typeof(params) === 'undefined' || typeof(params.twelveHourFormat) === 'undefined'){
 		if(typeof(PalmSystem) !== 'undefined'){
@@ -343,6 +349,7 @@ enyo.g11n.DateFmt = function(params){
 		case "long":
 		case "full":
 		case "default":
+			self.partsLength = self.formatType;
 			finalFormat = self._finalDateTimeFormat(self._getDateFormat(self.formatType, params),
 													self._getTimeFormat(self.formatType, params),
 													params);
@@ -354,13 +361,18 @@ enyo.g11n.DateFmt = function(params){
 		params = self._normalizeDateTimeFormatComponents(params);
 		if (params.time) {
 			timeFormat = self._getTimeFormat(params.time, params);
+			self.partsLength = params.time;
 		}
 		if (params.date) {
 			dateFormat = self._getDateFormat(params.date, params);
+			self.partsLength = params.date;
 		}
 		finalFormat = self._finalDateTimeFormat(dateFormat, timeFormat, params);
 	}
 	self.tokenized = self._getTokenizedFormat(finalFormat);
+	if (!self.partsLength) {
+		self.partsLength = 'full'; 
+	}
 };
 
 //* @public
@@ -402,22 +414,12 @@ enyo.g11n.DateFmt.prototype.getFirstDayOfWeek = function(){
 	return this.dateTimeHash.firstDayOfWeek;
 };
 
-//* @public
-/**
-format(date): Format a date according to the format set up in the constructor of this formatter instance.
-* date (Object): a standard javascript date instance to format as a string
- 
-Returns a string with the date formatted according to the format set up for this formatter instance
-*/
-enyo.g11n.DateFmt.prototype.format = function(date) {
+//* @protected
+enyo.g11n.DateFmt.prototype._format = function(date, parsedArray) {
     //var startTime = new Date();
-	var self = this, hr, acc = [], dateTimeVerbosity, dateTimeType, dateTimeIdx, tz, i, length, dtHash;
+	var self = this, hr, acc = [], dateTimeVerbosity, dateTimeType, dateTimeIdx, tz, i, length, dtHash, tokenized;
 	dtHash = self.dateTimeHash;
-	if (typeof(date) !== "object" || self.tokenized === null){
-		return undefined;
-	}
-
-	var parsedArray = self.tokenized;
+	
 	for(i=0, length = parsedArray.length;  i < length && parsedArray[i] !== undefined; i++) {
 		switch(parsedArray[i]) {
 			case 'yy':
@@ -561,9 +563,14 @@ enyo.g11n.DateFmt.prototype.format = function(date) {
 				acc.push(secs < 10 ? "0" + (""+secs) : secs);
 				break;
 			default:
+				tokenized = /'([A-Za-z]+)'/.exec(parsedArray[i]);
 				dateTimeVerbosity = '';
-				acc.push(parsedArray[i]);
-			}
+				if(tokenized) {
+					acc.push(tokenized[1]);
+				} else {
+					acc.push(parsedArray[i]);
+				}
+		}
 
 		if(dateTimeVerbosity) {
 			acc.push(dtHash[dateTimeVerbosity][dateTimeType][dateTimeIdx]);
@@ -573,9 +580,25 @@ enyo.g11n.DateFmt.prototype.format = function(date) {
 	//var endTime = new Date();
 	//console.log("Time elapsed: " + (endTime.getTime() - startTime.getTime()));
 	return acc.join("");
-
 };
-	
+
+//* @public
+/**
+format(date): Format a date according to the format set up in the constructor of this formatter instance.
+* date (Object): a standard javascript date instance to format as a string
+ 
+Returns a string with the date formatted according to the format set up for this formatter instance
+*/
+enyo.g11n.DateFmt.prototype.format = function(date) {
+    //var startTime = new Date();
+	var self = this;
+	if (typeof(date) !== "object" || self.tokenized === null){
+		return undefined;
+	}
+
+	return this._format(date, self.tokenized);
+};
+
 //* @public
 /**
 Format a date as relative to another date.
@@ -664,5 +687,142 @@ enyo.g11n.DateFmt.prototype.formatRelativeDate = function(date, options) {
 				}
 				
 			}
+	}
+};
+
+/**
+Format a pair of dates as a date range.
+
+* dateStart (Object): the date at the start of the range
+* dateEnd (Object): the date at the end of the range
+
+This method formats a pair of dates as a date/time range from start to end using the settings of
+the formatter object to guide the formatting. 
+
+The format of the output string is determined as follows:
+
+* If the dates are on the same calendar day, the format is a time range of the form 
+(starttime_to_endtime, month+date)
+* If the dates are on different calendar days, but are in the same calendar month, the
+format is a date range of the form (month date_to_date, year)
+* If the dates are on different calendar days and different calendar months, but the 
+same calendar year, the format is to a date range of (month+date to month+date, year)
+* If the dates are on in different consecutive calendar years, the format
+is a date range of the form (month+date+year to month+date+year)
+* If the dates are further apart than 2 years, the format is a date range of the form
+(year to year)
+
+The order of the month, date, and year components in the above formats and the text of 
+the separators are locale-dependent. For example, if the start date is September 2, 2011, and 
+the end date is September 5, 2011, the ranges would be:
+
+* US English: "Sept 2-5, 2011"
+* British English: "2-5 Sept, 2011"
+* German: "2.-5. Sept, 2011"
+
+The length of the month abbreviations are determined by the date length with which the current 
+formatter object was constructed. If the end date preceeds the start date, the dates will 
+be switched so that the earlier date will become the start date. The text in the returned string 
+will be localized to the locale of the formatter instance.
+
+Returns a string with the date/time range.
+*/
+enyo.g11n.DateFmt.prototype.formatRange = function(dateStart, dateEnd) {
+	var temp, 
+		timeFmt, 
+		dateFmt, 
+		name, 
+		year, 
+		templ,
+		formatLength = this.partsLength,
+		dtHash = this.dateTimeHash, 
+		dtfHash = this.dateTimeFormatHash;
+	
+	if (!dateStart && !dateEnd) {
+		return "";
+	} else if (!dateStart || !dateEnd) {
+		return this.format(dateStart || dateEnd);
+	}
+	
+	// make sure they are in the right order
+	if (dateEnd.getTime() < dateStart.getTime()) {
+		temp = dateEnd;
+		dateEnd = dateStart;
+		dateStart = temp;
+	}
+	
+	if (dateStart.getYear() === dateEnd.getYear()) {
+		year = (formatLength === 'short' || formatLength === 'single') ? (dateStart.getFullYear() + "").substring(2) : dateStart.getFullYear();
+		
+		if (dateStart.getMonth() === dateEnd.getMonth()) {
+			if (dateStart.getDate() === dateEnd.getDate()) {
+				// format a time range on the same day
+				name = "shortTime" + (this.twelveHourFormat ? "12" : "24");
+				timeFmt = this._getTokenizedFormat(dtfHash[name]); 
+
+				name = formatLength + "Date";
+				dateFmt = this._getTokenizedFormat(dtfHash[name]);
+				
+				templ = new enyo.g11n.Template(this.rb.$L({key: "dateRangeWithinDay", value: "#{startTime}-#{endTime}, #{date}"}));
+				return templ.evaluate({
+					startTime: this._format(dateStart, timeFmt),
+					endTime: this._format(dateEnd, timeFmt),
+					date: this._format(dateStart, dateFmt)
+				});
+			} else {
+				name = formatLength + "DDate";
+				dateFmt = this._getTokenizedFormat(dtfHash[name]);
+				
+				templ = new enyo.g11n.Template(this.rb.$L({key: "dateRangeWithinMonth", value: "#{month} #{startDate}-#{endDate}, #{year}"}));
+				return templ.evaluate({
+					month: dtHash[formatLength].month[dateStart.getMonth()],
+					startDate: this._format(dateStart, dateFmt),
+					endDate: this._format(dateEnd, dateFmt),
+					year: year
+				});
+			}
+		} else {
+			if (formatLength === 'full') {
+				// there is no full DM format
+				formatLength = "long";
+			} else if (formatLength === 'single') {
+				// nor short
+				formatLength = "short";
+			}
+			name = formatLength + "DMDate";
+			dateFmt = this._getTokenizedFormat(dtfHash[name]);
+			
+			templ = new enyo.g11n.Template(this.rb.$L({key: "dateRangeWithinYear", value: "#{start} - #{end}, #{year}"}));
+			return templ.evaluate({
+				start: this._format(dateStart, dateFmt),
+				end: this._format(dateEnd, dateFmt),
+				year: year
+			});
+		}
+	} else if (dateEnd.getYear() - dateStart.getYear() < 2) {
+		name = formatLength + "Date";
+		dateFmt = this._getTokenizedFormat(dtfHash[name]);
+		
+		templ = new enyo.g11n.Template(this.rb.$L({key: "dateRangeWithinConsecutiveYears", value: "#{start} - #{end}"}));
+		return templ.evaluate({
+			start: this._format(dateStart, dateFmt),
+			end: this._format(dateEnd, dateFmt)
+		});
+	} else {
+		if (formatLength === 'full') {
+			// there is no full MY format
+			formatLength = "long";
+		} else if (formatLength === 'single') {
+			// nor short
+			formatLength = "short";
+		}
+		name = formatLength + "MYDate";
+		dateFmt = this._getTokenizedFormat(dtfHash[name]);
+		
+		templ = new enyo.g11n.Template(this.rb.$L({key: "dateRangeMultipleYears", value: "#{startMonthYear} - #{endMonthYear}"}));
+		return templ.evaluate({
+			startMonthYear: this._format(dateStart, dateFmt),
+			endMonthYear: this._format(dateEnd, dateFmt)
+		});
 	}
 };

@@ -3,8 +3,6 @@
 
 	"numberDivider": " ",
 	"numberDecimal": ",",
-	"currencyPrepend": "",
-	"currencyAppend": " kr",
 	"percentageSpace": true,
 	"localeName": "Sweden",
 	"titleCase": false,
@@ -41,6 +39,9 @@
 	"shortMYDate": "yyyy-MM",
 	"mediumMYDate": "MMM yyyy",
 	"longMYDate": "MMMM yyyy",
+	"shortDDate": "dd",
+	"mediumDDate": "d",
+	"longDDate": "d",	
 
 	"shortWeekday": "EE",
 	"mediumWeekday": "EEE",
@@ -55,5 +56,15 @@
 	"bigTime12": "hh.mm.ss",
 
 	"smallTime24": "HH.mm",
-	"bigTime24": "HH.mm.ss"
+	"bigTime24": "HH.mm.ss",
+	
+	"timeH12": "hh",
+	"timeH24": "HH",
+	
+	"currency": {
+		"name": "SEK",
+		"iso": "#{amt} #{sign}",
+		"common": "#{amt} #{sign}"
+	},
+	"defaultTimeZone": "Europe/Stockholm"
 }

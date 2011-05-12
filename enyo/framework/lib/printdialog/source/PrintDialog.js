@@ -86,10 +86,7 @@ Here's an example of how to use PrintDialog to print a web page from the browser
 */
 enyo.kind({
 	name: "PrintDialog",
-	kind: enyo.Popup,
-	scrim: true,
-	modal: true,
-	width: "351px",
+	kind: "ModalDialog",
 	layoutKind: "VFlexLayout",
 	published: {
 		copiesRange: {min:1, max:25},
@@ -118,7 +115,7 @@ enyo.kind({
 	},
 	className: "enyo-popup print-dialog",
 	components: [
-		{name: "dialogTitle", className: "title"},
+		//{name: "dialogTitle", className: "title"},
 		{kind: "Pane", height: "258px", className: "group", transitionKind: "enyo.transitions.Simple", onSelectView: "viewSelected", components: [
 			{name: "printerSelector", kind: "PrinterSelector",
 				onSelect: "printerSelected",
@@ -171,10 +168,10 @@ enyo.kind({
 		case "printerSelector":
 			// Update dialog title
 			if (this.$.printerSelector.getCount() > 0) {
-				this.$.dialogTitle.setContent(this.strings.SELECT_A_PRINTER);
+				this.setCaption(this.strings.SELECT_A_PRINTER);
 			}
 			else {
-				this.$.dialogTitle.setContent(this.strings.PRINT);
+				this.setCaption(this.strings.PRINT);
 			}
 			
 			// Disable print button
@@ -186,7 +183,7 @@ enyo.kind({
 			selectedPrinter = this.$.printerSelector.getSelectedPrinter();
 			if (selectedPrinter) {
 				// Set dialog title
-				this.$.dialogTitle.setContent(this.strings.PRINT);
+				this.setCaption(this.strings.PRINT);
 
 				// Disable print button
 				this.$.printButton.setCaption(this.strings.PRINT);
@@ -206,7 +203,7 @@ enyo.kind({
 			
 		case "printerAdder":
 			// Update dialog title
-			this.$.dialogTitle.setContent(this.strings.ADD_A_PRINTER);
+			this.setCaption(this.strings.ADD_A_PRINTER);
 			
 			// Disable done button
 			this.$.printButton.setCaption(this.strings.DONE);
@@ -225,10 +222,10 @@ enyo.kind({
 	printerSelectorCountChanged: function(inSender, inCount) {
 		if (this.$.pane.getViewName() === "printerSelector") {
 			if (inCount > 0) {
-				this.$.dialogTitle.setContent(this.strings.SELECT_A_PRINTER);
+				this.setCaption(this.strings.SELECT_A_PRINTER);
 			}
 			else {
-				this.$.dialogTitle.setContent(this.strings.PRINT);
+				this.setCaption(this.strings.PRINT);
 			}
 		}
 	},

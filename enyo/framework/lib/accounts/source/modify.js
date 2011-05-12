@@ -22,17 +22,18 @@ enyo.kind({
 	components: [
 		{},		// Empty view so that nothing is shown when switching to the Credentials view from a "bad credentials" dashboard
 		{kind: "VFlexBox", name:"standardModifyView", flex:1, className:"enyo-bg", components: [
-			{kind:"Header", className:"accounts-header", pack:"center", components: [
+			{kind:"Toolbar", className:"enyo-toolbar-light accounts-header", pack:"center", components: [
 				{kind: "Image", name:"titleIcon"},
-		        {content: AccountsUtil.PAGE_TITLE_ACCOUNT_SETTINGS}
+		        {content: AccountsUtil.PAGE_TITLE_ACCOUNT_SETTINGS, className:""}
 			]},
+			{className:"accounts-header-shadow"},
 			{kind: "Scroller", flex: 1, components: [
-				{kind: "VFlexBox", className:"box-center accounts-body", components: [
-					{kind: "RowGroup", caption: AccountsUtil.GROUP_TITLE_ACCOUNT_NAME, components: [
+				{kind: "Control", className:"box-center", components: [
+					{kind: "RowGroup", className:"accounts-group", caption: AccountsUtil.GROUP_TITLE_ACCOUNT_NAME, components: [
 						{kind: "Input", name: "accountName", spellcheck: false, autocorrect:false}
 					]},
-					{name: "useAccountWith", kind: "RowGroup", caption: AccountsUtil.GROUP_TITLE_USE_ACCOUNT_WITH, components: [
-						{name: "capabilitiesList", kind: "VirtualRepeater", onGetItem: "listGetItem", onclick: "accountSelected", className:"accounts-rowgroup-item", components: [
+					{name: "useAccountWith", kind: "RowGroup", className:"accounts-group", caption: AccountsUtil.GROUP_TITLE_USE_ACCOUNT_WITH, components: [
+						{name: "capabilitiesList", kind: "VirtualRepeater", onSetupRow: "listGetItem", onGetItem: "listGetItem", onclick: "accountSelected", className:"accounts-rowgroup-item", components: [
 							{kind: "Item", name: "capabilityRow", layoutKind: "HFlexLayout", flex: 1, className:"accounts-list-item", components: [
 								{name: "capability", flex: 1},
 								{name: "capabilityEnabled",	kind: "ToggleButton", onChange: "capabilityToggled"}
@@ -44,20 +45,22 @@ enyo.kind({
 					{name:"createAccountButton", kind: "ActivityButton", caption: AccountsUtil.BUTTON_CREATE_ACCOUNT, onclick: "createAccountTapped", className:"enyo-button-affirmative accounts-btn"},
 				]},
 			]},
-			{kind:"Toolbar", components:[
-				{name:"cancelButton", kind: "Button", className:"enyo-button-dark accounts-toolbar-btn", onclick: "backHandler"},
+			{className:"accounts-footer-shadow"},
+			{kind:"Toolbar", className:"enyo-toolbar-light", components:[
+				{name:"cancelButton", kind: "Button", className:"accounts-toolbar-btn", onclick: "backHandler"},
 			]},
-			{name: "removeConfirmDialog", kind: "Popup", modal: true, scrim: true, className: "accounts-dialog-width", components: [
-				{content: AccountsUtil.BUTTON_REMOVE_ACCOUNT},
-				{content: AccountsUtil.TEXT_REMOVE_CONFIRM},
-				{kind: "Button", caption: AccountsUtil.BUTTON_REMOVE_ACCOUNT, className: "enyo-button-negative", onclick: "removeAccount"},
-				{kind: "Button", caption: AccountsUtil.BUTTON_KEEP_ACCOUNT, onclick: "keepAccount"}
+			{name: "removeConfirmDialog", kind: "ModalDialog", caption: AccountsUtil.BUTTON_REMOVE_ACCOUNT, modal: true, scrim: true, components: [
+				{content: AccountsUtil.TEXT_REMOVE_CONFIRM, className:"enyo-paragraph"},
+				{kind:"HFlexBox", components:[
+					{kind: "Button", caption: AccountsUtil.BUTTON_KEEP_ACCOUNT, id:"button-modify-keep", flex:0.8, className:"enyo-button-light", onclick: "keepAccount"},
+					{kind: "Button", caption: AccountsUtil.BUTTON_REMOVE_ACCOUNT, id:"button-modify-remove", flex:1, className: "enyo-button-negative", onclick: "removeAccount"}
+				]}
 			]},
 		]},
 		{kind: "CrossAppUI", name:"customAccountsUI", onResult: "doModifyView_Success"},
 		
 		{name: "createAccount", kind: "PalmService", service: enyo.palmServices.accounts, method: "createAccount", onResponse: "createResponse"},
-		{name: "modifyAccount", kind: "PalmService", service: enyo.palmServices.accounts, method: "modifyAccount", onResponse: "doModifyView_Success"},
+		{name: "modifyAccount", kind: "PalmService", service: enyo.palmServices.accounts, method: "modifyAccount"},
 		{name: "deleteAccount", kind: "PalmService", service: enyo.palmServices.accounts, method: "deleteAccount", onResponse: "doModifyView_Success"}
 	],
 	
@@ -125,6 +128,7 @@ enyo.kind({
 		// Stop the spinner on the button
 		this.$.removeAccountButton.active = false;
 		this.$.removeAccountButton.activeChanged();
+		AccountsUtil.disableControl(this.$.removeAccountButton, false);
 
 		AccountsUtil.changeCaption(this.$.cancelButton, AccountsUtil.BUTTON_BACK);
 			
@@ -216,9 +220,10 @@ enyo.kind({
 		// Close the dialog
 		this.$.removeConfirmDialog.close();
 
-		// Start the spinner on the button
+		// Start the spinner on the button and disable it
 		this.$.removeAccountButton.active = true;
 		this.$.removeAccountButton.activeChanged();
+		AccountsUtil.disableControl(this.$.removeAccountButton, true);
 
 		// Delete this account
 		this.$.deleteAccount.call({accountId:this.account._id});
@@ -261,9 +266,8 @@ enyo.kind({
 	},
 	
 	createResponse: function(inSender, inResponse) {
-		// Return to the account list of account creation was successful
-		if (inResponse.returnValue)
-			this.doModifyView_Success();
+		// Hopefully the response was successful and the account was created.  Even if it wasn't, nothing more can be done here
+		this.doModifyView_Success();
 	},
 	
 	// Back was tapped

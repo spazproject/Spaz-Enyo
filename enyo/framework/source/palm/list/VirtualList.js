@@ -165,14 +165,17 @@ enyo.kind({
 	getSelection: function() {
 		return this.$.selection;
 	},
-	resizeHandler: function() {
-		//this.log();
-		this.$.scroller.measure();
-		this.refresh();
-	},
 	//* @protected
 	selectionChanged: function() {
 		this.refresh();
+	},
+	resizeHandler: function() {
+		//this.log();
+		if (this.hasNode()) {
+			this.$.scroller.measure();
+			this.refresh();
+			this.$.scroller.start();
+		}
 	},
 	//* @protected
 	rowToPage: function(inRowIndex) {

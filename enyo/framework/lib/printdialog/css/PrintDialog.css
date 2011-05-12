@@ -1,49 +1,26 @@
 /* Copyright 2009-2011 Hewlett-Packard Development Company, L.P. All rights reserved. */
-.print-dialog {
-	font-size: 18px;
-}
-
-.print-dialog .title {
-	text-overflow: ellipsis;
-	overflow: hidden;
-	color: #000;
-	background: none;
-	border: none;
-	font-size: 18px;
-	padding: 0 0 10px;
-	text-align: center;
-}
-
 .print-dialog .label {
 	text-overflow: ellipsis;
 	overflow: hidden;
 	white-space: nowrap;
-	font-size: 18px;
 	color:#363636;
 }
 
-.print-dialog .group {
-	-webkit-border-image: url(../images/bg_rowgroup.png) 10 10 repeat;
-	border-width: 10px;
-	margin-bottom: 10px;
-}
 .print-dialog .group-inner {
 	margin: -6px -8px;
-	-webkit-box-sizing:content-box;
-	-webkit-border-radius:10px
+	-webkit-box-sizing: content-box;
+	-webkit-border-radius: 10px
 }
-.print-dialog .group .enyo-item {
-	border-bottom-color:#bebebe;
-	/* border-top:1px solid #ffffff; */
-	background:#eee;
+.palm-modal-dialog-content .group .enyo-item {
+	border-bottom-color: #bebebe;
+	background: #eee;
 }
-.print-dialog .group .enyo-item.enyo-first {
-	border-top:0;
+.palm-modal-dialog-content .group .enyo-item.enyo-first {
+	border-top: 0;
 }
-.print-dialog .group .enyo-item.enyo-last {
-	background:none;
+.palm-modal-dialog-content .group .enyo-item.enyo-last {
+	background: none;
 }
-
 .print-dialog .group .enyo-item .enyo-menucheckitem-caption {
 	padding: 0;
 }
@@ -54,32 +31,20 @@
 
 .print-dialog .printer-list-item-box {
 	height: 2.3em;
-	color:#363636;
-	line-height:1.14em;
-	font-size:16px;
+	color: #363636;
+	line-height: 1.12em;
 	overflow: hidden;
 }
 .print-dialog .enyo-item.selected-printer {
 	background: url(../images/bg_selected_printer.png) repeat-x 0 0;
 }
 .print-dialog .enyo-item.selected-printer div {
-	height: 2.14em;
-	color:#000;
-	line-height:1em;
-	overflow:hidden;
+	height: 2.2em;
+	color: #000;
+	line-height: 1em;
+	overflow: hidden;
 }
-.print-dialog .enyo-item .enyo-picker-button {
-	margin:-8px 0;
-}
-.print-dialog .enyo-item .enyo-group {
-	margin:0;
-}
-.print-dialog .enyo-item .enyo-toggle-button {
-	margin:2px 0;
-}
-.print-dialog .enyo-item .enyo-picker-label {
-	display:none;
-}
+
 .print-dialog .get-capabilities-item {
 	height: 7.5em;
 	text-align: center;
@@ -89,14 +54,7 @@
 	text-align: center;
 }
 
-.print-dialog .progress-caption {
-	font-size: 22px;
-	color: black;
-	text-align: center;
-}
-
 .print-dialog .progress-message {
-	font-size: 18px;
 	color: gray;
 	text-align: center;
 	margin: 10px 10px 0 0;
@@ -108,7 +66,6 @@
 }
 
 .print-dialog .messagebox-message {
-	font-size: 18px;
 	color: black;
 	white-space: pre-wrap;
 	padding: 0 0 0 20px;

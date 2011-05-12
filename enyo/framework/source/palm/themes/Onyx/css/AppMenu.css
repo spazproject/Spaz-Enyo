@@ -12,13 +12,15 @@
 }
 
 .enyo-appmenu-inner {
-	margin: -12px -17px 0 -16px;
+	margin: -12px -14px 0 -13px;
 }
 
 
 .enyo-appmenu-item.enyo-item {
 	-webkit-border-image: url(../images/appmenu-divider.png) 0 0 2 0 stretch;
 	border-bottom: 2px;
+	margin-right: -3px;
+	margin-left: -5px;
 }
 
 .enyo-appmenu-item.enyo-item.enyo-menu-last {

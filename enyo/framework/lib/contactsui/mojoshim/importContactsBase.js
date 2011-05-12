@@ -1,4 +1,9 @@
 /* Copyright 2009-2011 Hewlett-Packard Development Company, L.P. All rights reserved. */
+if (Mojo && Mojo.Core && Mojo.Core.Service) { //Sets up Mojo.Core.Service - attaching methods to its prototype
+  Mojo.Core.Service.setup();
+}
+
+
 var	libsInfo =
     [
         {

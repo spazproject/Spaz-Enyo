@@ -92,6 +92,11 @@ enyo.kind({
 				// Did this account have a dashboard that should be removed?
 				if (syncAccount.dashboard) {
 					console.log("Removing dashboard " + syncAccount.dashboardStatus + " for account " + accountId)
+					// If a sync has finished then display a "sync done" banner
+					if (syncAccount.dashboardStatus === "INITIAL_SYNC")
+						enyo.windows.addBannerMessage(SyncUIUtil.SYNC_FINISHED, "{}", syncAccount.dashboard.smallIcon);
+					else if (syncAccount.dashboardStatus === "DELETE")
+						enyo.windows.addBannerMessage(SyncUIUtil.REMOVE_FINISHED, "{}", syncAccount.dashboard.smallIcon);
 					syncAccount.dashboard.destroy();
 					delete syncAccount.dashboard;
 					syncAccount.dashboardStatus = "IDLE";
@@ -135,6 +140,12 @@ enyo.kind({
 					smallIcon: icon,
 					accountId: dashAccountId
 				});
+				
+				// Display a banner
+				if (syncAccount.status === "INITIAL_SYNC")
+					enyo.windows.addBannerMessage(SyncUIUtil.SYNCING_ACCOUNT, "{}", icon);
+				else if (syncAccount.status === "DELETE")
+					enyo.windows.addBannerMessage(SyncUIUtil.REMOVING_ACCOUNT, "{}", icon);
 			}
 
 			// Display the dashboard message			

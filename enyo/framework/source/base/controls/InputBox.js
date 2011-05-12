@@ -17,9 +17,10 @@ enyo.kind({
 	kind: enyo.Control,
 	events: {
 		onfocus: "",
-		onblur: "",
+		onblur: ""
 	},
 	published: {
+		alwaysLooksFocused: false,
 		focusClassName: "enyo-input-focus",
 		spacingClassName: "enyo-input-spacing"
 	},
@@ -31,6 +32,7 @@ enyo.kind({
 	className: "enyo-input",
 	create: function() {
 		this.inherited(arguments);
+		this.alwaysLooksFocusedChanged();
 		this.spacingClassNameChanged();
 	},
 	spacingClassNameChanged: function(inOldValue) {
@@ -39,12 +41,21 @@ enyo.kind({
 		}
 		this.$.client.addClass(this.spacingClassName);
 	},
+	alwaysLooksFocusedChanged: function() {
+		if (this.alwaysLooksFocused) {
+			this.addClass(this.focusClassName);
+		}
+	},
 	focusHandler: function(inSender, inEvent) {
-		this.addClass(this.focusClassName);
+		if (!this.alwaysLooksFocused) {
+			this.addClass(this.focusClassName);
+		}
 		this.doFocus(inEvent);
 	},
 	blurHandler: function(inSender, inEvent) {
-		this.removeClass(this.focusClassName);
+		if (!this.alwaysLooksFocused) {
+			this.removeClass(this.focusClassName);
+		}
 		this.doBlur(inEvent);
 	},
 	layoutKindChanged: function() {

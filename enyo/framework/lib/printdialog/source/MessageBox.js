@@ -1,10 +1,7 @@
 /* Copyright 2009-2011 Hewlett-Packard Development Company, L.P. All rights reserved. */
 enyo.kind({
 	name: "MessageBox",
-	kind: enyo.Popup,
-	scrim: true,
-	modal: true,
-	width: "351px",
+	kind: "ModalDialog",
 	className: "enyo-popup print-dialog",
 	published: {
 		message: ""

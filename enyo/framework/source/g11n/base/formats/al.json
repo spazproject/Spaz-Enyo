@@ -3,8 +3,6 @@
 
 	"numberDivider": ".",
 	"numberDecimal": ",",
-	"currencyPrepend": "L",
-	"currencyAppend": "",
 	"percentageSpace": false,
 	"titleCase": false,
 
@@ -37,6 +35,9 @@
 	"shortMYDate": "yy-MM",
 	"mediumMYDate": "yyyy-MM",
 	"longMYDate": "MMMM yyyy",
+	"shortDDate": "dd",
+	"mediumDDate": "dd",
+	"longDDate": "dd",	
 
 	"singleWeekday": "E",
 	"shortWeekday": "EE",
@@ -52,5 +53,15 @@
 	"bigTime12": "h.mm.ss",
 
 	"smallTime24": "H.mm",
-	"bigTime24": "H.mm.ss"
+	"bigTime24": "H.mm.ss",
+	"currency": {
+		"name": "ALL",
+		"iso": "#{sign} #{amt}",
+		"common": "#{sign}#{amt}"
+	},
+	
+	"timeH12": "h",
+	"timeH24": "H",
+	
+	"defaultTimeZone": "Europe/Tirane"
 }

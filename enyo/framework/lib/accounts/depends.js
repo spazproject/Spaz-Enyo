@@ -5,6 +5,7 @@ enyo.depends(
 	"source/accounts-list.js",
 	"source/add-account.js",
 	"source/credentials.js",
+	"source/cross-app.js",
 	"source/entry-add.js",
 	"source/entry-first-launch.js",
 	"source/entry-modify.js",

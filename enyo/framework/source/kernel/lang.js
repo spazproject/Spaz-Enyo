@@ -203,7 +203,7 @@
 			// the value of bar.call(foo);
 			var value = fn();
 	*/
-	enyo.bind  = function(scope, method/*, bound arguments*/){
+	enyo.bind = function(scope, method/*, bound arguments*/){
 		if (arguments.length > 2) {
 			return enyo._hitchArgs.apply(enyo, arguments);
 		}
@@ -218,7 +218,8 @@
 		}
 		return !scope ? method : function(){ return method.apply(scope, arguments || []); };
 	};
-	/* add alias for older code */
+
+	// add alias for older code
 	enyo.hitch = enyo.bind;
 
 	//* @protected
@@ -233,11 +234,15 @@
 		};
 	}
 	
+	// this name is reported in inspectors as the type of objects created via delegate, 
+	// otherwise we would just use enyo.nop
+	var enyoObject = function() {};
+
 	// boodman/crockford delegation w/cornford optimization
 	enyo.delegate = function(obj) {
-		enyo.setPrototype(enyo.nop, obj);
-		var obj = new enyo.nop();
-		enyo.setPrototype(enyo.nop, null);
+		enyo.setPrototype(enyoObject, obj);
+		var obj = new enyoObject();
+		//enyo.setPrototype(enyo.nop, null);
 		return obj;
 	};
 })();

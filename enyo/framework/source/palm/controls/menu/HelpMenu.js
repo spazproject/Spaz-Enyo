@@ -10,7 +10,7 @@ It is meant to go inside an <a href="#enyo.AppMenu">AppMenu</a>.
 */
 enyo.kind({
 	name: "enyo.HelpMenu",
-	kind: enyo.MenuItem,
+	kind: enyo.AppMenuItem,
 	caption: enyo._$L("Help"),
 	published: {
 		target: ""

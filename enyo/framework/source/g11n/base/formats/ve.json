@@ -1,8 +1,6 @@
 {
 	"numberDivider": ".",
 	"numberDecimal": ",",
-	"currencyPrepend": "Bs F",
-	"currencyAppend": "",
 	"percentageSpace": false,
 	"localeName": "Venezuela",
 	"titleCase": false,
@@ -37,6 +35,9 @@
 	"shortMYDate": "MM/yy",
 	"mediumMYDate": "MM/yyyy",
 	"longMYDate": "MMMM 'de' yyyy",
+	"shortDDate": "dd",
+	"mediumDDate": "dd",
+	"longDDate": "d",	
 
 	"shortWeekday": "EE",
 	"mediumWeekday": "EEE",
@@ -51,5 +52,15 @@
 	"bigTime12": "hh:mm:ss",
 
 	"smallTime24": "HH:mm",
-	"bigTime24": "HH:mm:ss"
+	"bigTime24": "HH:mm:ss",
+	
+	"timeH12": "hh",
+	"timeH24": "HH",
+	
+	"currency": {
+		"name": "VEF",
+		"iso": "#{sign} #{amt}",
+		"common": "#{sign}#{amt}"
+	},
+	"defaultTimeZone": "America/Caracas"
 }

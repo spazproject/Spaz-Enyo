@@ -3,8 +3,6 @@
 
 	"numberDivider": " ",
 	"numberDecimal": ",",
-	"currencyPrepend": "",
-	"currencyAppend": " zł",
 	"percentageSpace": false,
 	"localeName": "Poland",
 	"titleCase": false,
@@ -19,7 +17,7 @@
 
 	"dateTimeFormat": "DATE TIME",
 
-	"defaultTime12": "h:mm:ss a ",
+	"defaultTime12": "hh:mm:ss a ",
 	"shortTime12": "hh:mm a",
 	"mediumTime12": "hh:mm:ss a",
 	"longTime12": "hh:mm:ss a zzz",
@@ -41,6 +39,9 @@
 	"shortMYDate": "yy-MM",
 	"mediumMYDate": "yyyy-MM",
 	"longMYDate": "MMMM yyyy",
+	"shortDDate": "dd",
+	"mediumDDate": "dd",
+	"longDDate": "d",	
 
 	"shortWeekday": "EE",
 	"mediumWeekday": "EEE",
@@ -55,5 +56,15 @@
 	"bigTime12": "hh:mm:ss",
 
 	"smallTime24": "HH:mm",
-	"bigTime24": "HH:mm:ss"
+	"bigTime24": "HH:mm:ss",
+	
+	"timeH12": "hh",
+	"timeH24": "HH",
+	
+	"currency": {
+		"name": "PLN",
+		"iso": "#{amt} #{sign}",
+		"common": "#{amt} #{sign}"
+	},
+	"defaultTimeZone": "Europe/Warsaw"
 }

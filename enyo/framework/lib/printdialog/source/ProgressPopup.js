@@ -1,13 +1,9 @@
 /* Copyright 2009-2011 Hewlett-Packard Development Company, L.P. All rights reserved. */
 enyo.kind({
 	name: "ProgressPopup",
-	kind: enyo.Popup,
-	scrim: true,
-	modal: true,
-	width: "351px",
+	kind: "ModalDialog",
 	className: "enyo-popup print-dialog",
 	published: {
-	   caption: "",
 	   message: "",
 	   cancelOption: true
 	},
@@ -15,7 +11,6 @@ enyo.kind({
 		onCancel: ""
 	},
 	components: [
-		{name: "caption", content: "", flex: 1, className: "progress-caption"},
 		{name: "message", content: "", className: "progress-message"},
 		{name: "progressBar", kind: "ProgressBar", className: "progress-bar"},
 		{kind: "VFlexBox", pack: 'justify', align: 'center', components: [
@@ -26,13 +21,8 @@ enyo.kind({
 	//* @protected
 	create: function() {
 		this.inherited(arguments);
-		this.captionChanged();
 		this.messageChanged();
 		this.cancelOptionChanged();
-	},
-	
-	captionChanged: function() {
-		this.$.caption.setContent(this.caption);
 	},
 	
 	messageChanged: function() {

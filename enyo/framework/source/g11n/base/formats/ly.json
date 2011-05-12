@@ -1,0 +1,67 @@
+{
+	"numberDivider": " ",
+	"numberDecimal": ",",
+	"currency": {
+		"name": "LYD",
+		"iso": "#{sign} #{amt}",
+		"common": "#{sign} #{amt}"
+	},
+	"percentageSpace": true,
+	"localeName": "Libya",
+	"titleCase": false,
+
+	"fullDate": "EEEE, d MMMM, yyyy",
+	"longDate": "d MMMM, yyyy",
+	"mediumDate": "dd/MM/yyyy",
+	"defaultDate": "dd/MM/yyyy",
+	"shortDate": "d/M/yyyy",
+	"dateFieldOrder": "dmy",
+	"timeFieldOrder": "hma",
+
+	"fullTime24": "v H:mm:ss",
+	"fullTime12": "v h:mm:ss a",
+	"longTime24": "z H:mm:ss",
+	"longTime12": "z h:mm:ss a",
+	"mediumTime24": "H:mm:ss",
+	"mediumTime12": "h:mm:ss a",
+	"defaultTime24": "H:mm:ss",
+	"defaultTime12": "h:mm:ss a",
+	"shortTime24": "H:mm",
+	"shortTime12": "h:mm a",
+	"dateTimeFormat": "DATE TIME",
+
+	"is12HourDefault": true,
+	"firstDayOfWeek": 6,
+	
+	"isMetric": true,
+
+	"shortDMDate": "d/M",
+	"mediumDMDate": "dd/MM",
+	"longDMDate": "d MMMM",
+	"shortMYDate": "M/yyyy",
+	"mediumMYDate": "MM/yyyy",
+	"longMYDate": "MMMM, yyyy",
+	"shortDDate": "d",
+	"mediumDDate": "dd",
+	"longDDate": "d",	
+
+	"shortWeekday": "EE",
+	"mediumWeekday": "EEE",
+	"longWeekday": "EEEE",
+
+	"weekDateFormat": "WEEK, DATE",
+	"timeAFormat": "TIME AM",
+	"timeZFormat": "ZONE TIME",
+	"timeAZFormat": "ZONE TIME AM",
+
+	"smallTime12": "h:mm",
+	"bigTime12": "h:mm:ss",
+
+	"smallTime24": "H:mm",
+	"bigTime24": "H:mm:ss",
+
+	"timeH12": "h",
+	"timeH24": "H",
+	
+	"defaultTimeZone": "Africa/Tripoli"
+}

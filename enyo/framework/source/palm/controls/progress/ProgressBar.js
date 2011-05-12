@@ -32,6 +32,11 @@ enyo.kind({
 	contentChanged: function() {
 		this.$.client.setContent(this.content);
 	},
+	layoutKindChanged: function() {
+		this.$.client.align = this.align;
+		this.$.client.pack = this.pack;
+		this.$.client.setLayoutKind(this.layoutKind);
+	},
 	//* @public
 	/**
 	Set position immediately to the given position, bypassing animation.

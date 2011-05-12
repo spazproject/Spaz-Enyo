@@ -24,7 +24,8 @@ enyo.kind({
 
 		inAddress {Object} The contact record for the selected address
 		*/
-		onSelect: ""
+		onSelect: "",
+		onSetupHeader: ""
 	},
 	filterHighlightClassName: "enyo-text-filter-highlight",
 	//* @protected
@@ -42,12 +43,20 @@ enyo.kind({
 			{kind: "Divider", className: "enyo-addressing-item-divider"},
 			{name: "addressList", kind: "VirtualRepeater", className: "enyo-addressing-item-addresses", onGetItem: "addressGetItem", components: [
 				{kind: "Item", tapHighlight: true, onclick: "selectItem", components: [
-					{name: "addressType", className: "enyo-addressing-type"},
-					{name: "address"}
+					{name: "addressType", className: "enyo-addressing-type enyo-addressing-padding enyo-label"},
+					{name: "address", className: "enyo-addressing-address enyo-addressing-padding"}
 				]}
 			]}
 		]},
-		{kind: "Spinner", className: "enyo-addressing-list-spinner", showing: false}
+		{name:"noResultsMessage", kind:"VFlexBox", showing:false, flex:1, components:[
+			{kind:"Spacer"},
+			{content:enyo.addressing._$L("No search results found"), flex:1, className:"enyo-addressing-noresults"},
+		]},
+		{kind:"HFlexBox", name:"GalMessage", className:"enyo-addressing-GAL", showing:false, components:[
+			{content:enyo.addressing._$L("Global Address Search"), className:"enyo-addressing-GAL-message enyo-addressing-GAL-padding"},
+			{kind:"Spacer"},
+			{name:"GalSpinner", kind:"Spinner", className:"enyo-addressing-GAL-spinner enyo-addressing-GAL-padding"}
+		]}
 	],
 	favoriteHtml: '<div class="enyo-addressing-favorite"></div>',
 	create: function() {
@@ -77,14 +86,20 @@ enyo.kind({
 		var r = this.fetchRow(i);
 		var vr = r.displayAddresses[vi];
 		this.setSelected({person: r, address: vr});
+	},
+	refresh: function() {
 		this.$.list.refresh();
 	},
 	selectItem: function(inSender, inEvent) {
+		// user selection so not default.
+		this.defaultSelection = false;
 		this.updateSelection(inEvent);
 		var s = this.getSelected();
 		if (s) {
-			enyo.asyncMethod(this, "doSelect", s);
+			this.doSelect(s);
+			//enyo.asyncMethod(this, "doSelect", s);
 		}
+		this.refresh();
 	},
 	editContact: function(inSender, inContact) {
 		this.$.get.call({
@@ -108,11 +123,19 @@ enyo.kind({
 	cancelSearch: function() {
 		this.data = [];
 		this.setSelected(null);
+		this.defaultSelection = true;
 		this.$.find.cancel();
 		this.$.search.cancel();
 		this.$.galService.cancel();
 	},
 	//* @protected
+	showGalSpinner: function(inShowing){
+		// always hide noResults, because we don't know if the message is real yet
+		this.$.noResultsMessage.hide();
+		this.$.GalMessage.setShowing(inShowing);
+		this.$.GalSpinner.setShowing(inShowing);
+		this.$.list.resized();
+	},
 	searchForFavorites: function() {
 		this.searchForFilterLocal(this.searchString, true, null, {onSuccess: "gotFavorites"});
 	},
@@ -130,7 +153,7 @@ enyo.kind({
 		}
 	},
 	searchForFilter: function() {
-		this.$.spinner.show();
+		this.showGalSpinner(true);
 		this.$.galService.call({filterString: this.searchString, addressTypes: this.addressTypes});
 		this.searchForFilterLocal(this.searchString, false, 200);
 	},
@@ -155,12 +178,19 @@ enyo.kind({
 		this.$.list.refresh();
 	},
 	gotGalResults: function(inSender, inResponse) {
-		this.$.spinner.hide();
+		this.showGalSpinner(false);
 		this.data = this.data.concat(inResponse.results);
-		this.$.list.refresh();
+		if (this.data.length) {
+			this.$.noResultsMessage.hide();
+			this.$.list.show();
+		} else {
+			this.$.noResultsMessage.show();
+			this.$.list.hide()
+		}
+		this.$.list.resized();
 	},
 	gotFailure: function(inSender, inResponse) {
-		this.$.spinner.hide();
+		this.showGalSpinner(false);
 		//console.log("Contact lookup failed: " + (inResponse && inResponse.errorText));
 	},
 	// list paging query/response
@@ -203,10 +233,16 @@ enyo.kind({
 	},
 	listSetupRow: function(inSender, inIndex) {
 		var d = this.fetchRow(inIndex);
+		// Show controls only on first row when filtering.
+		var showHeader = Boolean(this.isFiltering && inIndex == 0);
+		var showListContent = Boolean(d);
+		this.$.client.canGenerate = showHeader;
+		this.$.divider.canGenerate = showListContent;
+		this.$.addressList.canGenerate = showListContent;
+		if (showHeader) {
+			this.doSetupHeader();
+		}
 		if (d) {
-			// Show controls only on first row when filtering.
-			this.$.client.canGenerate = Boolean(this.isFiltering && inIndex == 0);
-			//
 			enyo.addressing.appendContactDisplayAddresses(d, this.addressTypes, this.imTypes);
 			this.repeaterPerson = d;
 			// if there's more than one address, show a divider
@@ -233,6 +269,7 @@ enyo.kind({
 			}
 			return true;
 		}
+		return showHeader;
 	},
 	addressGetItem: function(inSender, inIndex) {
 		var displayAddresses = this.repeaterPerson.displayAddresses;

@@ -12,10 +12,18 @@ enyo.kind({
 	events: {
 		onGetFieldValue: "",
 		onGetFieldType: "",
-		onFieldClick: ""
+		onGetFieldTypeOptions: "",
+		onFieldClick: "",
+		onShowArrow: "",
+		onMouseHold: ""
 	},
 	fieldsChanged: function () {
 		this.renderGroup();
+	},
+	destroy: function ()
+	{
+		this.destroyControls();
+		this.inherited(arguments);
 	},
 	renderGroup: function () {
 		this.destroyControls();
@@ -24,33 +32,40 @@ enyo.kind({
 	},
 	renderFields: function () {
 		var i,
-			value,
-			type,
 			c,
 			f;
 
 		this.setShowing(this.fields && this.fields.length > 0);
 
 		for (i = 0; this.fields && (f = this.fields[i]); i += 1) {
-			value = this.getFieldValue(f);
-			type = this.getFieldType(f);
 			c = this.createComponent(
-				{onclick: "itemClick", components: [
-					{content: type, className: "type-label"},
-					{content: value, domStyles: {padding: "4px"}}
+				{onclick: "itemClick", onmousehold: "itemMouseHold", components: [
+					{name: "dropdownArrow", className: "icon"},
+					{content: this.getFieldValue(f), className: "value", flex: 1},
+					{content: this.getFieldTypeDisplay(f), className: "label"}
 				]}, {field: f});
+			this.$.dropdownArrow.setShowing(this.doShowArrow(this.getFieldType(f)));
 		}
 	},
 	getFieldValue: function (inField) {
 		return this.doGetFieldValue(inField) || inField.value || inField.getDisplayValue() || "";
 	},
+	getFieldTypeDisplay: function (inField) {
+		return (inField.x_displayType) || "";
+	},
 	getFieldType: function (inField) {
 		return this.doGetFieldType(inField) || 
-			(inField.getType && inField.getType() && inField.x_displayType) || 
-			(inField.type && inField.type.indexOf("type_") === 0 && inField.type.substring(5).toUpperCase()) || 
+			(inField.getType && inField.getType()) || 
 			"";
 	},
-	itemClick: function (inSender) {
-		this.doFieldClick(inSender.field);
+	getFieldTypeOptions: function () {
+		return this.doGetFieldTypeOptions();
+	},
+	itemClick: function (inSender, inEvent) {
+		this.doFieldClick(inEvent, inSender.field);
+	},
+	itemMouseHold: function (inSender, inEvent) 
+	{
+		this.doMouseHold(inEvent, inSender.field);
 	}
 });

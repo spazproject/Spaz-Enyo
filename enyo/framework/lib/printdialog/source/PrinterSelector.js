@@ -45,6 +45,13 @@ enyo.kind({
 		}
 	},
 	
+	resizeHandler: function() {
+		// Only handle resize when the printer selector is shown
+		if (this.showing) {
+			this.inherited(arguments);
+		}
+	},
+	
 	//* @public
 	loadPrinters: function() {
 		if (!this.printerItems) {

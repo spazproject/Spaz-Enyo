@@ -1,4 +1,9 @@
 {
+	"dateRangeMultipleYears": "cMkdàtèRàñgèMùltïþlèÝèàrs0123",
+	"dateRangeWithinConsecutiveYears": "c4tdàtèRàñgèWïthïñÇòñsèçùtïvèÝèàrs012345",
+	"dateRangeWithinDay": "hmqdàtèRàñgèWïthïñÐàÿ012",
+	"dateRangeWithinMonth": "uDhdàtèRàñgèWïthïñMòñth0123",
+	"dateRangeWithinYear": "paUdàtèRàñgèWïthïñÝèàr012",
 	"dateTimeSeparatorFull": "1xQdàtèTïmèSèþàràtòrFùll0123",
 	"dateTimeSeparatorLong": "nNWdàtèTïmèSèþàràtòrLòñg0123",
 	"dateTimeSeparatorMedium": "Ta9dàtèTïmèSèþàràtòrMèdïùm0123",
