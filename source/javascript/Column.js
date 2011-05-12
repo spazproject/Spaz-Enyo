@@ -124,18 +124,18 @@ enyo.kind({
 				since_id = 1;
 			}
 
-
+			function removeSpinning(){
+				self.$.refresh.removeClass("spinning");
+			}
 			switch (self.info.type) {
 				case 'home':
 					self.$.refresh.addClass("spinning");
 					self.twit.getHomeTimeline(since_id, 200, null, null,
 						function(data) {
 							self.processData(data);
-							self.$.refresh.removeClass("spinning");
+							removeSpinning();
 						},
-						function() {
-							self.$.refresh.removeClass("spinning");
-						}
+						removeSpinning
 					);
 					break;
 				case 'mentions':
@@ -144,11 +144,9 @@ enyo.kind({
 					self.twit.getReplies(since_id, 100, null, null,
 						function(data) {
 							self.processData(data);
-							self.$.refresh.removeClass("spinning");
+							removeSpinning();
 						},
-						function() {
-							self.$.refresh.removeClass("spinning");
-						}
+						removeSpinning
 					);
 					break;
 				case 'dms':
@@ -156,11 +154,9 @@ enyo.kind({
 					self.twit.getDirectMessages(since_id, 200, null, null,
 						function(data) {
 							self.processData(data);
-							self.$.refresh.removeClass("spinning");
+							removeSpinning();
 						},
-						function() {
-							self.$.refresh.removeClass("spinning");
-						}
+						removeSpinning
 					);
 					break;
 				case 'search':
@@ -168,11 +164,9 @@ enyo.kind({
 					self.twit.search(self.info.query, since_id, 200, null, null, null,
 						function(data) {
 							self.processData(data);
-							self.$.refresh.removeClass("spinning");
+							removeSpinning();
 						},
-						function() {
-							self.$.refresh.removeClass("spinning");
-						}
+						removeSpinning
 					);
 					break;
 			}
