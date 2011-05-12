@@ -22,7 +22,7 @@ enyo.kind({
 			{kind: "Toolbar", defaultKind: "Control", content: "Home", style: "color: white;", components: [
 				//gotta do this crap to get the header title to center and not be a button. "defaultKind" in Toolbar is key.
 				{name: "topLeftButton", kind: "ToolButton", style: "display: none"},
-				{name: "header", style: "padding: 0px 0px 5px 10px;", class: "truncating-text", content: ""},
+				{name: "header", style: "padding: 0px 0px 5px 10px;", 'class': "truncating-text", content: ""},
 				{kind: "Spacer", flex: 1},
 				{name: "accountName", style: "color: grey; font-size: 12px"},
 				{name: "topRightButton", kind: "ToolButton", icon: "source/images/icon-close.png", onclick: "doDeleteClicked"},
