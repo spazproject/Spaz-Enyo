@@ -202,9 +202,6 @@ enyo.kind({
 	setupRow: function(inSender, inIndex) {
 		if (this.entries[inIndex]) {
 			var entry = this.entries[inIndex];
-			this.$.entry.setContent("<span class='username'>" + entry.author_username + "</span><br>" + AppUtils.makeItemsClickable(enyo.string.runTextIndexer(entry.text)));
-			this.$.timeFrom.setContent(sch.getRelativeTime(entry.publish_date) + " from <span class='link'>" + entry._orig.source + "</span>");
-			this.$.image.setSrc(entry.author_avatar);
 			this.$.item.setEntry(entry);
 			
 			//this.$.item.applyStyle("background-color", inSender.isSelected(inIndex) ? "rgba(218,235,251,0.4)" : null);

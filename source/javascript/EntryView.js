@@ -55,18 +55,14 @@ enyo.kind({
 	entryChanged: function(){
 		if(this.$.entry.content !== this.entry.message){
 			this.$.image.setSrc(this.entry.author_avatar);
-			this.$.image.applyStyle("display", "");
-			this.$.realname.setContent(this.entry.author_fullname||this.entry.author_username);
-			this.$.username.setContent(this.entry.author_username+"@"+this.entry.service);
+			this.$.image.applyStyle("display", "");			
+			if(this.entry.author_fullname){
+				this.$.realname.setContent(this.entry.author_fullname);			
+			}
+			this.$.username.setContent("@" + this.entry.author_username);
 			this.$.bio.setContent(this.entry.author_description||'');
 			this.$.timeFrom.setContent(sch.getRelativeTime(this.entry.publish_date) + " from <span class='link'>" + this.entry._orig.source + "</span>");
-			if(this.entry.user.name){
-				this.$.realname.setContent(this.entry.user.name);			
-			}
-			this.$.username.setContent("@" + this.entry.user.screen_name);
-			this.$.bio.setContent(this.entry.user.description);
-			this.$.timeFrom.setContent(sch.getRelativeTime(this.entry.created_at) + " from <span class='link'>" + this.entry.source + "</span>");
-			this.$.entry.setContent(this.entry.text);
+			this.$.entry.setContent(AppUtils.makeItemsClickable(this.entry.text));
 		} else {
 			this.doDestroy();
 			//this.$.image.applyStyle("display", "none");
