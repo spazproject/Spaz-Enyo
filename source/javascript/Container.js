@@ -3,6 +3,7 @@ enyo.kind({
 	flex: 1,
 	kind: "Control",
 	height: "100%",
+	style: "background-color: black",
 	events: {
 		onShowEntryView: "",
 		onRefreshAllFinished: ""
@@ -78,8 +79,7 @@ enyo.kind({
 		};
 		this.$.columnsScroller.createComponents(cols);
 
-		setTimeout(enyo.bind(this, this.refreshAll), 1);
-		//this.render();
+		this.render();
 
 	},
 	createColumn: function(inAccountId, inColumn){

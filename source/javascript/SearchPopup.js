@@ -14,7 +14,7 @@ enyo.kind({
 			{kind: "ToolButton", icon: "source/images/icon-close.png", style: "position: relative; bottom: 7px;", onclick: "doClose"}
 		]},	
 		{kind: "HFlexBox", components: [
-			{name:"postTextBox", kind: "RichText", alwaysLooksFocused: true, richContent: false, multiline: false, flex: 1, onkeydown: "searchBoxKeydown"},
+			{name:"postTextBox", kind: "RichText", alwaysLooksFocused: true, richContent: false, hint: "Search Query...", multiline: false, flex: 1, onkeydown: "searchBoxKeydown"},
 		]},
 		{name: "searchResultsList", kind: "VirtualRepeater", onGetItem: "getItem", components: [
 	        {kind: "Item", layoutKind: "HFlexLayout", components: [
