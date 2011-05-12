@@ -97,7 +97,7 @@ enyo.kind({
 	},
 
 	onSendClick: function(inSender) {
-		this.twit.update(this.$.postTextBox.value, null, this.inReplyToId,
+		this.twit.update(this.$.postTextBox.getValue(), null, this.inReplyToId,
 			enyo.bind(this, function() {
 				this.$.postTextBox.setValue('');
 				this.close();
