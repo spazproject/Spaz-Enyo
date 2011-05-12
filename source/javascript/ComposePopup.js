@@ -20,7 +20,7 @@ enyo.kind({
 			{kind: "ToolButton", icon: "source/images/icon-close.png", style: "position: relative; bottom: 7px;", onclick: "doClose"}
 		]},
 		{kind: "HFlexBox", style: "min-height: 50px", components: [
-			{name:"postTextBox", kind: "RichText", alwaysLooksFocused: true, richContent: false, multiline: true, flex: 1, oninput: "postTextBoxInput", onkeydown: "postTextBoxKeydown", components: [
+			{name:"postTextBox", kind: "RichText", alwaysLooksFocused: true, richContent: false, multiline: true, flex: 1, oninput: "postTextBoxInput", hint: "Type message here...", onkeydown: "postTextBoxKeydown", components: [
 				{name: "remaining", style: "color: grey; padding-left: 5px;", content: "140"},
 			]},
 		]},

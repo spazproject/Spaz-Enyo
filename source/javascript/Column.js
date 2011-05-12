@@ -33,7 +33,7 @@ enyo.kind({
 				{name: "item", kind: "Spaz.Entry", onclick: "entryClick"}
 			]},
 			{kind: "Toolbar", style: "color: white;", components: [
-				{kind: "ToolButton", icon: "source/images/icon-clear.png"},
+				//{kind: "ToolButton", icon: "source/images/icon-clear.png"}, @TODO. make this clear the current tweets, or remove it completely
 				{name: "refresh", kind: "ToolButton", icon: "source/images/icon-refresh.png", onclick:"loadNewer"}
 			]}
 		]},
@@ -51,6 +51,8 @@ enyo.kind({
 		this.inherited(arguments);
      	this.infoChanged();
      	setTimeout(enyo.bind(this, this.resizeHandler), 1);
+
+     	this.loadNewer();
 	},
 	
 	infoChanged: function(){
