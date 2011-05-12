@@ -56,7 +56,9 @@ enyo.kind({
 		if(this.$.entry.content !== this.entry.message){
 			this.$.image.setSrc(this.entry.user.profile_image_url);
 			this.$.image.applyStyle("display", "");
-			this.$.realname.setContent(this.entry.user.name);
+			if(this.entry.user.name){
+				this.$.realname.setContent(this.entry.user.name);			
+			}
 			this.$.username.setContent("@" + this.entry.user.screen_name);
 			this.$.bio.setContent(this.entry.user.description);
 			this.$.timeFrom.setContent(sch.getRelativeTime(this.entry.created_at) + " from <span class='link'>" + this.entry.source + "</span>");

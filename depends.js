@@ -41,6 +41,7 @@ enyo.depends(
 
 	//custom widgets
 	"source/javascript/VirtualList.js",
+	"source/javascript/Entry.js",
 
 	//css
 	"source/css/core.css"
