@@ -20,32 +20,47 @@ enyo.kind({
 			]}
 		]}
 	],
+
+
 	create: function(){
 		this.inherited(arguments);
+
 		this.loadingColumns = 0;
-		this.columnData = []; 		// we should load this from prefs
+		
+		// load the column set
+		this.columnData = App.Prefs.get('columns') || [];
 		this.createColumns();
 	},
-	createColumns: function() {
-		this.columnsFunction("destroy"); //destroy them all. don't want to always do this.
+
+	getDefaultColumns: function() {
+		
 		var firstAccount = App.Users.getAll()[0];
 
 		if (!firstAccount || !firstAccount.id) {
 			alert('no accounts! you should add one');
-			return;
+			return [];
 		}
+
+		var default_columns = [
+			{type: SPAZ_COLUMN_HOME, accounts: [firstAccount.id]},
+			{type: SPAZ_COLUMN_MENTIONS, accounts: [firstAccount.id]},
+			// {type: "dms", display: "Messages", accounts: [App.Users.getAll()[0].id]},
+			{type: SPAZ_COLUMN_SEARCH, query: 'webos', accounts: [firstAccount.id]},
+			{type: SPAZ_COLUMN_SEARCH, query: 'spaz', accounts: [firstAccount.id]}
+		];
+
+		return default_columns;
+	},
+
+	createColumns: function() {
+		this.columnsFunction("destroy"); //destroy them all. don't want to always do this.
+
 		if(this.columnData.length === 0){
-			this.columnData.push(
-				{type: SPAZ_COLUMN_HOME, accounts: [firstAccount.id]},
-				{type: SPAZ_COLUMN_MENTIONS, accounts: [firstAccount.id]},
-				// {type: "dms", display: "Messages", accounts: [App.Users.getAll()[0].id]},
-				{type: SPAZ_COLUMN_SEARCH, query: 'webos', accounts: [firstAccount.id]},
-				{type: SPAZ_COLUMN_SEARCH, query: 'spaz', accounts: [firstAccount.id]}
-			)
+			this.columnData = this.getDefaultColumns();
 		}
 		var cols = [];
 
-		for (var i = this.columnData.length - 1; i >= 0; i--) {
+		for (var i = 0; i < this.columnData.length; i++) {
 			var col = {
 				name:'Column'+i,
 				info: this.columnData[i],
@@ -61,15 +76,23 @@ enyo.kind({
 			}
 			cols.push(col);
 		};
-		this.$.columnsScroller.createComponents(cols.reverse());
+		this.$.columnsScroller.createComponents(cols);
+
 		setTimeout(enyo.bind(this, this.refreshAll), 1);
+		//this.render();
+
 	},
 	createColumn: function(inAccountId, inColumn){
 		this.columnData.push({type: inColumn, accounts: [inAccountId]});
+
+		// save the column set
+		App.Prefs.set('columns', this.columnData);
+
 		this.createColumns();
 	},
 	deleteColumn: function(inSender) {
 		this.columnToDelete = inSender;
+
 		this.$.confirmPopup.openAtCenter();
 	},
 	cancelColumnDeletion: function(inSender) {
@@ -79,7 +102,14 @@ enyo.kind({
 	confirmColumnDeletion: function(inSender) {
 		this.$.confirmPopup.close();
 		if (this.columnToDelete) {
-			//@TODO: remove it from App.Prefs
+			
+			// find the index to delete and remove it
+			var del_idx = parseInt(this.columnToDelete.name.replace('Column', ''), 10);
+			this.columnData.splice(del_idx, 1);
+
+			// save the column set
+			App.Prefs.set('columns', this.columnData);
+
 			this.columnToDelete.destroy();
 			this.columnToDelete = null;
             this.$.columnsScroller.resizeHandler();
