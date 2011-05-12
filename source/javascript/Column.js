@@ -223,11 +223,13 @@ enyo.kind({
 			case "hashtag":
 
 				break;
+			case "small":
+				this.doEntryClick(this.entries[inRowIndex]);
+				break;
 			case "avatar": //we may want to move toward a default situation.
 			case "text":
 			case "enyo-vflexbox":
 			case "enyo-item entry enyo-hflexbox":
-			case "small":
 				this.$.entryClickPopup.showAtEvent(this.entries[inRowIndex], inEvent);
 				break;
 
