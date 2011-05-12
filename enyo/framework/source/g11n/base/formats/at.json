@@ -3,8 +3,6 @@
 
 	"numberDivider": ".",
 	"numberDecimal": ",",
-	"currencyPrepend": "",
-	"currencyAppend": " €",
 	"percentageSpace": true,
 	"is12HourDefault": false,
 
@@ -37,6 +35,9 @@
 	"shortMYDate": "MM.yy",
 	"mediumMYDate": "MM.yyyy",
 	"longMYDate": "MMMM yyyy",
+	"shortDDate": "dd",
+	"mediumDDate": "dd",
+	"longDDate": "d",	
 
 	"shortWeekday": "EE",
 	"mediumWeekday": "EEE",
@@ -51,5 +52,15 @@
 	"bigTime12": "hh:mm:ss",
 
 	"smallTime24": "HH:mm",
-	"bigTime24": "HH:mm:ss"
+	"bigTime24": "HH:mm:ss",
+	
+	"timeH12": "hh",
+	"timeH24": "HH",
+	
+	"currency": {
+		"name": "EUR",
+		"iso": "#{amt} #{sign}",
+		"common": "#{amt} #{sign}"
+	},
+	"defaultTimeZone": "Europe/Vienna"
 }

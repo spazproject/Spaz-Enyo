@@ -24,7 +24,7 @@ enyo.kind({
 		onChange: ""
 	},
 	components: [
-		{name: "label", className: "enyo-picker-label"},
+		{name: "label", className: "enyo-picker-label enyo-label"},
 		{kind: "Picker"}
 	],
 	//* @protected

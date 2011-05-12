@@ -1,8 +1,6 @@
 {
 	"numberDivider": ".",
 	"numberDecimal": ",",
-	"currencyPrepend": "TL",
-	"currencyAppend": "",
 	"percentageSpace": "true",
 	"localeName": "Turkey",
 	"titleCase": false,
@@ -38,6 +36,9 @@
 	"shortMYDate": "MM.yyyy",
 	"mediumMYDate": "MMM.yyyy",
 	"longMYDate": "MMMM yyyy",
+	"shortDDate": "dd",
+	"mediumDDate": "dd",
+	"longDDate": "d",	
 
 	"shortWeekday": "EE",
 	"mediumWeekday": "EEE",
@@ -52,5 +53,15 @@
 	"bigTime12": "hh:mm:ss",
 
 	"smallTime24": "HH:mm",
-	"bigTime24": "HH:mm:ss"
+	"bigTime24": "HH:mm:ss",
+	
+	"timeH12": "hh",
+	"timeH24": "HH",
+	
+	"currency": {
+		"name": "TRY",
+		"iso": "#{sign} #{amt}",
+		"common": "#{sign}#{amt}"
+	},
+	"defaultTimeZone": "Asia/Istanbul"
 }

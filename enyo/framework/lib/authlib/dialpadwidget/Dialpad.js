@@ -1,5 +1,7 @@
 /* Copyright 2009-2011 Hewlett-Packard Development Company, L.P. All rights reserved. */
-/*globals enyo */
+/*globals enyo rb_auth*/
+
+rb_auth = new enyo.g11n.Resources({root: "$enyo-lib/authlib"});
 
 enyo.kind({
 	name: "Dialpad",

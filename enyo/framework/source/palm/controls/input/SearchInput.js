@@ -6,7 +6,7 @@ enyo.kind({
 		onSearch: ""
 	},
 	components: [
-		{kind: "Image", src: "$palm-themes-Onyx/images/search-icon.png", style: "display: block", onclick: "fireSearch"}
+		{kind: "Image", src: "$palm-themes-Onyx/images/search-input-search.png", style: "display: block", onclick: "fireSearch"}
 	],
 	keypressHandler: function(inSender, inEvent) {
 		if (inEvent.keyCode == "13") {

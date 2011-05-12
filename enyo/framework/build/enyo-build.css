@@ -283,7 +283,7 @@ body, html {
 	height: 100%;
 }
 
-body, input, button {
+html, body, input, button {
 	font-family: Prelude, Prelude Medium, Segoe UI, Arial, Helvetica, Sans-Serif;
 	font-size: 20px;
 	cursor: default;
@@ -302,6 +302,38 @@ body, input, button {
 .enyo-text-filter-highlight {
 	background: url(palm/themes/Onyx/images/filter-highlight.png) bottom left repeat-x;
 }
+
+.enyo-label {
+	color: #1f75bf;
+	text-transform: uppercase;
+}
+
+.enyo-header {
+	font-size: 1rem;
+}
+
+.enyo-subheader {
+	font-size: .9rem;
+}
+
+.enyo-body,
+.enyo-paragraph {
+	font-size: .8rem;
+}
+
+.enyo-paragraph {
+	margin: .5em 0;
+}
+
+.enyo-subtext {
+	font-size: .8rem;
+	color: #696969;
+}
+
+.enyo-footnote {
+	font-size: .7rem;
+}
+
 
 /* palm/themes/Onyx/css/CheckBox.css */
 
@@ -345,7 +377,7 @@ body, input, button {
 	border-radius: 5px;
 	margin: 3px;
 	color: #292929;
-	background-color: rgba(240,242,242,0.5);
+	background-color: rgba(255,255,255,0.8);
 }
 
 .enyo-button.enyo-button-down, .enyo-button.enyo-button-depressed {
@@ -365,7 +397,7 @@ body, input, button {
 }
 
 .enyo-activity-button-inner {
-	min-height: 32px;
+
 }
 
 .enyo-button img {
@@ -431,11 +463,9 @@ body, input, button {
 
 /* notification button (negative) */
 
-
 .enyo-notification-button-negative {
 	background-color: #c01b1e;
 }
-
 
 /* notification button (alternate) */
 
@@ -932,9 +962,11 @@ body, input, button {
 	height: 24px;
 	width: 30px;
 	background: url(palm/themes/Onyx/images/menuitem-arrow.png) center 0px;
+	margin-right: -5px
+	;
 }
 
-.enyo-menuitem.enyo-checked .enyo-menucheckitem-caption {
+.enyo-menuitem.enyo-checked.enyo-menucheckitem-caption, .enyo-menuitem.enyo-checked .enyo-menucheckitem-caption {
 	background: url(palm/themes/Onyx/images/checkmark.png) center right no-repeat;
 }
 
@@ -942,7 +974,7 @@ body, input, button {
 	text-overflow: ellipsis;
 	white-space:nowrap;
 	overflow: hidden;
-	padding: 2px 34px 2px 0;
+	padding-right: 34px;
 }
 
 /* palm/themes/Onyx/css/EditMenuItem.css */
@@ -964,13 +996,15 @@ body, input, button {
 }
 
 .enyo-appmenu-inner {
-	margin: -12px -17px 0 -16px;
+	margin: -12px -14px 0 -13px;
 }
 
 
 .enyo-appmenu-item.enyo-item {
 	-webkit-border-image: url(palm/themes/Onyx/images/appmenu-divider.png) 0 0 2 0 stretch;
 	border-bottom: 2px;
+	margin-right: -3px;
+	margin-left: -5px;
 }
 
 .enyo-appmenu-item.enyo-item.enyo-menu-last {
@@ -1136,20 +1170,24 @@ body, input, button {
 /* palm/themes/Onyx/css/ProgressButton.css */
 
 .enyo-progress-button {
-	height: 34px;
-	border-width: 0px 5px;
-	-webkit-border-image: url(palm/themes/Onyx/images/progress-button.png) 0 5 0 5 repeat repeat;
-	-webkit-box-sizing: border-box;
+	min-height: 34px;
+	border-width: 4px;
+	border-radius: 5px;
+	-webkit-border-image: url(palm/themes/Onyx/images/button-down.png) 4 4 4 4 stretch stretch;
 	color: white;
+	background-color: rgba(23,23,23,0.5);
+	margin: 3px;
 	position:relative;
 }
 
 .enyo-progress-button-inner {
-	height: 34px;
-	margin: 0 -5px;
-	border-width: 0 5px;
+	margin: -4px;
+	top: 0;
+	bottom: 0;
+	border-width: 4px;
+	border-radius: 5px;
 	position: absolute;
-	-webkit-border-image: url(palm/themes/Onyx/images/button.png) 0 5 1052 5 repeat repeat;
+	-webkit-border-image: url(palm/themes/Onyx/images/button.png) 4 4 4 4 stretch stretch;
 }
 
 .enyo-progress-button-client {
@@ -1167,23 +1205,28 @@ body, input, button {
 }
 
 .enyo-progress-button.affirmative > .enyo-progress-button-inner {
-	-webkit-border-image: url(palm/themes/Onyx/images/button.png) 315 5 737 5 repeat repeat;
+	color: white;
+	background-color: #2aa100;
 }
 
 .enyo-progress-button.negative > .enyo-progress-button-inner {
-	-webkit-border-image: url(palm/themes/Onyx/images/button.png) 420 5 632 5 repeat repeat;
+	color: white;
+	background-color: #be0003;
 }
 
 .enyo-progress-button.light > .enyo-progress-button-inner {
-	-webkit-border-image: url(palm/themes/Onyx/images/button.png) 105 5 947 5 repeat repeat;
+	background-color: rgba(255,255,255,0.8);
+	color: #292929;
 }
 
 .enyo-progress-button.dark > .enyo-progress-button-inner {
-	-webkit-border-image: url(palm/themes/Onyx/images/button.png) 210 5 842 5 repeat repeat;
+	color: white;
+	background-color: rgba(23,23,23,0.5);
 }
 
 .enyo-progress-button.blue > .enyo-progress-button-inner {
-	-webkit-border-image: url(palm/themes/Onyx/images/button.png) 525 5 527 5 repeat repeat;
+	color: white;
+	background-color: #2071bb;
 }
 
 
@@ -1288,6 +1331,15 @@ body, input, button {
 	background-color: #343434;
 }
 
+.enyo-toolbar-light {
+	position: relative;
+	min-height: 54px;
+	-webkit-box-sizing: border-box;
+	-webkit-border-image: url(palm/themes/Onyx/images/toolbar-light.png) 1 4 repeat stretch;
+	border-width: 1px 4px;
+	background-color: #a9a9a9;
+}
+
 /* palm/themes/Onyx/css/ConfirmPrompt.css */
 
 .enyo-confirmprompt {
@@ -1354,11 +1406,18 @@ body, input, button {
 .enyo-toggle-label-off {
 	padding-left: 4px;
 	padding-right: 2px;
+	text-transform: uppercase;
 }
 
 .enyo-toggle-label-on {
 	padding-right: 4px;
 	padding-left: 2px;
+	text-transform: uppercase;
+}
+
+.enyo-tool-button.enyo-button-disabled {
+	opacity: 0.4;
+	/*color: rgba(255,254,255,0.4);*/
 }
 
 
@@ -1383,7 +1442,6 @@ body, input, button {
 	margin: 1px 4px 0px 4px;
 	line-height: 34px;
 	font-size: 14px;
-	color: #1F75BF;
 	white-space: nowrap;
 }
 
@@ -1424,7 +1482,6 @@ body, input, button {
 /* palm/themes/Onyx/css/Picker.css */
 
 .enyo-picker-label {
-	color: #1F75BF;
 	line-height: 52px;
 	padding-right: 5px;
 	font-size: 18px;
@@ -1439,6 +1496,7 @@ body, input, button {
 	background: #fff;
 }
 
+
 /* palm/themes/Onyx/css/PickerGroup.css */
 
 .enyo-pickergroup-above-scrim {
@@ -1450,7 +1508,7 @@ body, input, button {
 
 .enyo-group {
 	border-width: 14px 14px 14px 14px;
-	-webkit-border-image: url(palm/themes/Onyx/images/group-unlabeled.png) 14 14;
+	-webkit-border-image: url(palm/themes/Onyx/images/group-unlabeled.png) 14 14 repeat repeat;
 	margin: 8px 3px;
 }
 
@@ -1464,7 +1522,7 @@ body, input, button {
 
 .enyo-group.labeled {
 	border-width: 36px 14px 14px 14px;
-	-webkit-border-image: url(palm/themes/Onyx/images/group-labeled.png) 36 14 14 14;
+	-webkit-border-image: url(palm/themes/Onyx/images/group-labeled.png) 36 14 14 14 repeat repeat;
 	margin: 8px 3px;
 }
 
@@ -1476,6 +1534,7 @@ body, input, button {
 	text-shadow: #646454 0px 1px 0px;
 	font-weight: bold;
 	height: 44px;
+	text-transform: uppercase;
 }
 
 
@@ -1574,9 +1633,14 @@ FIXME: we almost always want some padding on a enyo-item, except when it's surro
 	-webkit-border-image: url(palm/themes/Onyx/images/input-tool-focus.png) 6 6 7 6;
 }
 
-.enyo-tool-input-input {
+.enyo-input-input.enyo-tool-input-input {
+	color: #e5e5e5;
 	font-size: 16px;
 	padding: 2px 0 1px 0;
+}
+
+.enyo-input-input.enyo-tool-input-input:focus {
+	color: #000;
 }
 
 .enyo-tool-input-input::-webkit-input-placeholder {
@@ -1587,6 +1651,7 @@ FIXME: we almost always want some padding on a enyo-item, except when it's surro
 	margin: -1px;
 }
 
+
 /* palm/themes/Onyx/css/Spinner.css */
 
 .enyo-spinner {
@@ -1594,6 +1659,7 @@ FIXME: we almost always want some padding on a enyo-item, except when it's surro
 	height: 32px;
 	-webkit-box-sizing: border-box;
 	background-image: url(palm/themes/Onyx/images/spinner.png);
+	margin: -10px -5px;
 }
 
 .enyo-spinner-large {
@@ -1716,6 +1782,26 @@ FIXME: we almost always want some padding on a enyo-item, except when it's surro
 .enyo-webview-popup-spinner {
 	min-width: 0px;
 	-webkit-border-image: none;
+}
+
+
+/* palm/themes/Onyx/css/ModalDialog.css */
+
+.enyo-modaldialog {
+	width: 320px;
+}
+.enyo-modaldialog-container {
+	margin: -4px;
+}
+.enyo-modaldialog-title {
+	font-size: 20px;
+	margin: 0 0 10px;
+	text-align: center;
+}
+.enyo-modaldialog-content .group {
+	-webkit-border-image: url(palm/themes/Onyx/images/dialog-group-background.png) 10 10 repeat;
+	border-width: 10px;
+	margin-bottom: 10px;
 }
 
 

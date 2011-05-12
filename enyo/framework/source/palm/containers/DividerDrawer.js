@@ -19,7 +19,7 @@ enyo.kind({
 		{name: "caption", kind: "enyo.Divider", onclick: "toggleOpen", components: [
 			{name: "openButton", kind: "enyo.SwitchedButton", className: "enyo-collapsible-arrow"}
 		]},
-		{name: "client", kind: "enyo.BasicDrawer", onOpenChanged: "doOpenChanged"}
+		{name: "client", kind: "enyo.BasicDrawer", onOpenChanged: "doOpenChanged", onOpenAnimationComplete: "doOpenAnimationComplete"}
 	],
 	create: function() {
 		this.inherited(arguments);

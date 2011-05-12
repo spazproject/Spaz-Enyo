@@ -1,8 +1,6 @@
 {
 	"numberDivider": ".",
 	"numberDecimal": ",",
-	"currencyPrepend": "€",
-	"currencyAppend": "",
 	"percentageSpace": true,
 	"localeName": "Greece",
 	"titleCase": false,
@@ -38,6 +36,9 @@
 	"shortMYDate": "MM/yyyy",
 	"mediumMYDate": "MMM yyyy",
 	"longMYDate": "MMMM yyyy",
+	"shortDDate": "dd",
+	"mediumDDate": "dd",
+	"longDDate": "dd",	
 
 	"shortWeekday": "EE",
 	"mediumWeekday": "EEE",
@@ -52,5 +53,15 @@
 	"bigTime12": "h:mm:ss",
 
 	"smallTime24": "H:mm",
-	"bigTime24": "H:mm:ss"
+	"bigTime24": "H:mm:ss",
+
+	"timeH12": "h",
+	"timeH24": "H",
+	
+	"currency": {
+		"name": "EUR",
+		"iso": "#{sign} #{amt}",
+		"common": "#{sign}#{amt}"
+	},
+	"defaultTimeZone": "Europe/Athens"
 }

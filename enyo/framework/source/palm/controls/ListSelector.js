@@ -81,7 +81,7 @@ enyo.kind({
 			{name: "itemContainer"},
 			{name: "client"}
 		]},
-		{name: "label", className: "enyo-listselector-label"},
+		{name: "label", className: "enyo-listselector-label enyo-label"},
 		{name: "arrow", className: "enyo-listselector-arrow"}
 	],
 	//* @protected

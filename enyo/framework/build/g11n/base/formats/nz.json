@@ -1,8 +1,11 @@
 {
 	"numberDivider": ",",
 	"numberDecimal": ".",
-	"currencyPrepend": "$",
-	"currencyAppend": "",
+	"currency": {
+		"name": "NZD",
+		"iso": "#{sign} #{amt}",
+		"common": "#{sign}#{amt}"
+	},
 	"percentageSpace": false,
 	"localeName": "New Zealand",
 	"titleCase": true,
@@ -38,6 +41,9 @@
 	"shortMYDate": "MM/yyyy",
 	"mediumMYDate": "MMM yyyy",
 	"longMYDate": "MMMM yyyy",
+	"shortDDate": "dd",
+	"mediumDDate": "d",
+	"longDDate": "d",	
 
 	"shortWeekday": "EE",
 	"mediumWeekday": "EEE",
@@ -54,5 +60,9 @@
 	"smallTime24": "H:mm",
 	"bigTime24": "H:mm:ss",
 	
-	"defaultPhotoSize": "4x6"
+	"timeH12": "h",
+	"timeH24": "H",
+	
+	"defaultPhotoSize": "4x6",
+	"defaultTimeZone": "Pacific/Aukland"
 }

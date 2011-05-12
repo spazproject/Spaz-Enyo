@@ -3,8 +3,11 @@
 
 	"numberDivider": ".",
 	"numberDecimal": ",",
-	"currencyPrepend": "",
-	"currencyAppend": "€",
+	"currency": {
+		"name": "EUR",
+		"iso": "#{amt} #{sign}",
+		"common": "#{amt}#{sign}"
+	},
 	"percentageSpace": false,
 	"localeName": "Spain",
 	"titleCase": false,
@@ -41,6 +44,9 @@
 	"shortMYDate": "MM/yy",
 	"mediumMYDate": "MM/yyyy",
 	"longMYDate": "MMMM 'de' yyyy",
+	"shortDDate": "dd",
+	"mediumDDate": "dd",
+	"longDDate": "d",	
 
 	"shortWeekday": "EE",
 	"mediumWeekday": "EEE",
@@ -55,5 +61,10 @@
 	"bigTime12": "hh:mm:ss",
 
 	"smallTime24": "HH:mm",
-	"bigTime24": "HH:mm:ss"
+	"bigTime24": "HH:mm:ss",
+	
+	"timeH12": "hh",
+	"timeH24": "HH",
+	
+	"defaultTimeZone": "Europe/Madrid"
 }

@@ -70,6 +70,8 @@ enyo.kind({
 	//* @protected
 	dispatchDomEvent: function(e) {
 		var r = this.inherited(arguments);
+		// avoid bubbling dom events if we are not modal and will therefore forward events
+		// this prevents events from being sent twice to ancestors of both the popup and the event dispatch target.
 		return !this.modal ? true : r;
 	},
 	prepareOpen: function() {
@@ -126,10 +128,25 @@ enyo.kind({
 	// open / close events
 	mousedownHandler: function(inSender, e) {
 		// mousedowns that are not inside this popup can dismiss us, if we are not modal and dismissWithClick is true
-		if (!this.modal && this.dismissWithClick && e.dispatchTarget != this && !e.dispatchTarget.isDescendantOf(this)) {
+		var foreignMousedown = !e.dispatchTarget.isDescendantOf(this);
+		if (!this.modal && this.dismissWithClick && e.dispatchTarget != this && foreignMousedown) {
 			this.close(e);
+		} else if (this.modal && foreignMousedown) {
+			// prevent focusing from shifting if we're modal.
+			e.preventDefault();
 		}
 		this.fire("onmousedown", e);
+	},
+	blurHandler: function(inSender, e) {
+		this.lastFocus = inSender;
+	},
+	focusHandler: function(inSender, e) {
+		if (this.modal && !inSender.isDescendantOf(this)) {
+			var n = (this.lastFocus && this.lastFocus.hasNode()) || this.hasNode();
+			if (n) {
+				n.focus();
+			}
+		}
 	},
 	keydownHandler: function(inSender, e, inTarget) {
 		switch (e.keyCode) {

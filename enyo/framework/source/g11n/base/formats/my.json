@@ -1,8 +1,6 @@
 {
 	"numberDivider": ",",
 	"numberDecimal": ".",
-	"currencyPrepend": "",
-	"currencyAppend": "RM",
 	"percentageSpace": "",
 	"localeName": "Malaysia",
 	"titleCase": true,
@@ -38,6 +36,9 @@
 	"shortMYDate": "MM/yyyy",
 	"mediumMYDate": "MMM yyyy",
 	"longMYDate": "MMMM yyyy",
+	"shortDDate": "dd",
+	"mediumDDate": "d",
+	"longDDate": "d",	
 
 	"shortWeekday": "EE",
 	"mediumWeekday": "EEE",
@@ -52,7 +53,16 @@
 	"bigTime12": "hh:mm:ss",
 
 	"smallTime24": "HH:mm",
-	"bigTime24": "HH:mm:ss",
+	"bigTime24": "HH:mm:ss",	
 	
-	"defaultPhotoSize": "4x6"
+	"timeH12": "hh",
+	"timeH24": "HH",
+	
+	"defaultPhotoSize": "4x6",
+	"currency": {
+		"name": "MYR",
+		"iso": "#{amt} #{sign}",
+		"common": "#{amt}#{sign}"
+	},
+	"defaultTimeZone": "Asia/Kuala_Lumpur"
 }

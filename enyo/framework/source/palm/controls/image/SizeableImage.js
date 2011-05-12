@@ -95,6 +95,12 @@ enyo.kind({
 	maxZoomRatioChanged: function() {
 		this.maxZoom = this.minZoom * this.maxZoomRatio;
 	},
+	getMaxZoom: function() {
+		return this.maxZoom;
+	},
+	getMinZoom: function() {
+		return this.minZoom;
+	},
 	adjustSize: function() {
 		var w = this._imageWidth = this.bufferImage.width;
 		var h = this._imageHeight = this.bufferImage.height;

@@ -37,6 +37,7 @@ enyo.depends(
 	"menu/MenuItem.js",
 	"popup/PopupSelect.js",
 	"popup/PopupList.js",
+	"popup/ModalDialog.js",
 	"ListSelector.js",
 	"button/RadioGroup.js",
 	"button/RadioButton.js",

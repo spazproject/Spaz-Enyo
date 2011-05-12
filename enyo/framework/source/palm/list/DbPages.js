@@ -25,7 +25,7 @@ enyo.kind({
 		var m = inMin; //this.min;
 		// "&& m" term because if page 0 is in range and has no handle,
 		// actual min is 0 (special 0)
-		while (m <= this.max && this.handles[m] == undefined && m) {
+		while (m <= this.max && this.handles[m] === undefined && m) {
 			m++;
 		}
 		var h = this.handles[m];
@@ -100,7 +100,7 @@ enyo.kind({
 		this.doReceive(index);
 	},
 	setHandle: function(inIndex, inHandle) {
-		if (inHandle == undefined) {
+		if (inHandle === undefined) {
 			return;
 		}
 		//
@@ -112,7 +112,7 @@ enyo.kind({
 			this.acquireNext(inIndex, inHandle);
 		}
 		//
-		var p = this.pages[inIndex - 1];
+		p = this.pages[inIndex - 1];
 		if (p && p.pending) {
 			p.inflight = true;
 			this.acquirePrevious(inIndex - 1, inHandle);
@@ -126,10 +126,12 @@ enyo.kind({
 		var request = this.queryBack(inKey);
 		this._acquire(request, inPageIndex);
 	},
-	_acquire: function(inQuery, inPageIndex) {
-		if (inQuery) {
-			inQuery.index = inPageIndex;
+	_acquire: function(inRequest, inPageIndex) {
+		if (inRequest) {
+			inRequest.index = inPageIndex;
 		}
+		// record page request when it's acquired so it can be cancelled while in flight.
+		this.pages[inPageIndex].request = inRequest;
 	},
 	require: function(inPage) {
 		enyo.vizLog && enyo.vizLog.log("DbPages: require: " + inPage);
@@ -145,7 +147,7 @@ enyo.kind({
 			this.acquireNext(inPage, this.handles[inPage]);
 		} else if (this.handles[inPage+1] !== undefined) {
 			this.acquirePrevious(inPage, this.handles[inPage+1]);
-		} else if (inPage == 0) {
+		} else if (inPage === 0) {
 			// we shouldn't acquire keyless page 0 (special 0) if it will be acquired in a chain
 			// from previous pages
 			for (var i=-1; i>=this.min; i--) {

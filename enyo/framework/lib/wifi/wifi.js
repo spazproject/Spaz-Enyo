@@ -2,7 +2,7 @@
 /******************************
 WiFi - Service
 ******************************/
-var rb = new enyo.g11n.Resources({root: enyo.path.paths["-..-lib-wifi"]});
+var rb = new enyo.g11n.Resources({root: "$enyo-lib/wifi"});
 enyo.kind({
 	name: "WiFiService",
 	kind: "PalmService",
@@ -45,6 +45,9 @@ enyo.kind({
 	],
 	create: function() {
 		this.inherited(arguments);
+	},
+	reset: function() {
+		this.$.wifiConfig.purgeWiFiProfiles();
 	},
 	start: function() {
 		this.$.wifiConfig.turnWiFiOn();
@@ -99,6 +102,7 @@ enyo.kind({
 		{name: "FindNetworks", kind: "WiFiService", method: "findnetworks", onResponse: "handleFindNetworksResponse"},
 		{name: "Connect", kind: "WiFiService", method: "connect", onFailure: "handleConnectFailure"},
 		{name: "GetProfileInfo", kind: "WiFiService", method: "getprofile", onResponse: "handleProfileInfoResponse"},
+		{name: "DeleteProfile", kind: "WiFiService", method: "deleteprofile", onFailure: "handleDeleteProfileFailure"},
 
 		{kind: "Pane", name: "pane", flex: 1, components: [
 			{kind: "VFlexBox", components: [
@@ -146,7 +150,7 @@ enyo.kind({
 					]}
 				]},
 				{name: "joinMessage", content: "", className: "wifi-message-error"},
-				{kind: "ActivityButton", caption: rb.$L("JOIN"), name: "joinButton", disabled: true, onclick: "joinNetwork"},
+				{kind: "ActivityButton", className: "enyo-button-dark", caption: rb.$L("JOIN"), name: "joinButton", disabled: true, onclick: "joinNetwork"},
 				{kind: "Button", caption: rb.$L("CANCEL"), onclick: "showNetworkList"}
 			]}
 		]}
@@ -166,6 +170,10 @@ enyo.kind({
 
 	turnWiFiOff: function() {
 		this.$.SetRadioState.call({"state":"disabled"});
+	},
+
+	purgeWiFiProfiles: function() {
+		this.$.DeleteProfile.call({});
 	},
 
 	startAutoScan: function() {
@@ -229,6 +237,7 @@ enyo.kind({
 		this.$.pane.selectViewByIndex(0);
 		this.doViewChange("NetworkList");
 		this.startAutoScan();
+		this.selectedNetwork = null;
 	},
 
 	showIpConfig: function(inProfile) {
@@ -288,6 +297,21 @@ enyo.kind({
 	},
 
 	updateNetworkItem: function(info, inIndex) {
+		var isSelected = false;
+		var isJoined   = false;
+
+		if (null !== this.selectedNetwork &&
+			this.selectedNetwork.ssid === info.ssid)
+		{
+			isSelected = true;
+		}
+
+		if (null !== this.joinedNetwork &&
+			this.joinedNetwork.ssid === info.ssid)
+		{
+			isJoined = true;
+		}
+
 		this.$.itemName.setContent(info.ssid);
 
 		if (undefined !== info.securityType) {
@@ -338,21 +362,26 @@ enyo.kind({
 			this.$.itemStatus.show();
 			break;
 		case "associationFailed":
-			this.$.itemStatus.setContent(rb.$L("ASSOCIATION FAILED"));
-			this.$.itemStatus.show();
+			if (undefined !== info.lastConnectError &&
+					"ApNotFound" !== info.lastConnectError &&
+					"DisconnectRequest" !== info.lastConnectErr)
+			{
+				this.$.itemStatus.setContent(rb.$L("ASSOCIATION FAILED"));
+				this.$.itemStatus.show();
+			}
 		case "notAssociated":
-			if (null !== this.joinedNetwork &&
-					info.ssid === this.joinedNetwork.ssid) {
-				this.joinedNetwork = null;
-			}
-
-			if (null !== this.selectedNetwork &&
-					info.ssid === this.selectedNetwork.ssid) {
-				this.selectedNetwork = null;
-			}
+			if (isJoined) this.joinedNetwork = null;
+			if (isSelected) this.selectedNetwork = null;
 			break;
 		default:
 			break;
+		}
+
+		// display connecting status as soon as the network is selected
+		if (undefined === info.connectState && isSelected)
+		{
+			this.$.itemStatus.setContent(rb.$L("CONNECTING..."));
+			this.$.itemStatus.show();
 		}
 	},
 
@@ -399,6 +428,7 @@ enyo.kind({
 	handleWiFiConnectionStatus: function(inSender, inResponse, inRequest) {
 		if (inResponse) {
 			if ("serviceDisabled" !== inResponse.status) {
+				if ("serviceEnabled" === inResponse.status) this.startAutoScan();
 				if (undefined === inResponse.networkInfo) return;
 				if (undefined === inResponse.networkInfo.connectState) return;
 
@@ -478,7 +508,7 @@ enyo.kind({
 			else if (undefined === record.networkInfo.securityType) {
 				this.delayAutoScan();
 				this.$.Connect.call({"ssid":record.networkInfo.ssid});
-				record.networkInfo.connectState = "associating";
+				this.selectedNetwork = record.networkInfo;
 				//this.$.list.renderRow(inRowIndex);
 				this.$.list.render();
 			}
@@ -486,7 +516,7 @@ enyo.kind({
 					undefined === record.networkInfo.lastConnectError) {
 				this.delayAutoScan();
 				this.$.Connect.call({"profileId":record.networkInfo.profileId});
-				record.networkInfo.connectState = "associating";
+				this.selectedNetwork = record.networkInfo;
 				//this.$.list.renderRow(inRowIndex);
 				this.$.list.render();
 			}
@@ -689,7 +719,7 @@ enyo.kind({
 					]}
 			]}
 		]},
-		{kind: "Button", caption: rb.$L("Forget Network"), onclick: "handleForgetNetworkButton"},
+		{kind: "Button", className: "enyo-button-negative", caption: rb.$L("Forget Network"), onclick: "handleForgetNetworkButton"},
 		{kind: "Button", caption: rb.$L("Done"), onclick: "handleDoneButton"}
 	],
 	create: function() {

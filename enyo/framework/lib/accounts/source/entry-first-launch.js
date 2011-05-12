@@ -51,11 +51,12 @@ enyo.kind({
 	components: [
 		// The first view shows "Loading Accounts"
 		{kind: "VFlexBox", name: "loadingAccounts", className:"enyo-bg", components: [
-			{kind:"Header", className:"accounts-header", pack:"center", components: [
+			{kind:"Toolbar", className:"enyo-toolbar-light accounts-header", pack:"center", components: [
 					{kind: "Image", name:"welcomeIconStart"},
-					{content: AccountsUtil.TEXT_WELCOME}
+					{content: AccountsUtil.TEXT_WELCOME, className:""}
 			]},
-			{kind: "HFlexBox", className:"box-center", flex:1, pack:"center", align:"center", components: [
+			{className:"accounts-header-shadow"},
+			{kind: "HFlexBox", className:"box-center", style:"margin-top:0", flex:1, pack:"center", align:"center", components: [
 				{kind:"Spinner", name:"getAccountsSpinner"},
 				{content: AccountsUtil.LOADING_ACCOUNTS}
 			]},
@@ -64,25 +65,25 @@ enyo.kind({
 		// The next view actually shows the account information		
 		{kind: "VFlexBox", name: "firstLaunchFromPIMApp", className:"enyo-bg", components: [
 			// Display one of two headers depending on the number of accounts
-			{kind:"Header", name:"noAccountsSetUpHeader", className:"accounts-header", pack:"center", components: [
+			{kind:"Toolbar", name:"noAccountsSetUpHeader", className:"enyo-toolbar-light accounts-header", pack:"center", components: [
 				{kind: "Image", name:"welcomeIcon"},
-				{content: AccountsUtil.TEXT_WELCOME}
+				{content: AccountsUtil.TEXT_WELCOME, className:""}
 			]},
-			{kind:"Header", name: "oneOrMoreAccountsHeader", className:"accounts-header", pack:"center", components: [
+			{kind:"Toolbar", name: "oneOrMoreAccountsHeader", className:"enyo-toolbar-light accounts-header", pack:"center", components: [
 				{kind: "Image", name: "titleIcon"},
-				{name: "titleText"}
+				{name: "titleText", className:""}
 			]},
-
+			{className:"accounts-header-shadow"},
 			{kind: "FadeScroller", flex:1, components: [
-				{kind:"VFlexBox", name: "noAccountsSetUpYet", style:"width:100%", flex:1, components: [
-					{kind:"VFlexBox", className:"box-center accounts-body", components:[
+				{kind:"Control", name: "noAccountsSetUpYet", style:"width:100%", components: [
+					{kind:"Control", className:"box-center", components:[
 						{name: "getStartedWithProfileAccount", components: [
 							{content: AccountsUtil.TEXT_GET_STARTED_PROFILE_ACCOUNT, className:"accounts-body-title"},
 							{kind: "Button", className: "enyo-button-affirmative accounts-btn", name: "profileButton", onclick: "doAccountsFirstLaunchDone"},
 							{content: AccountsUtil.TEXT_OR_ADD_NEW_ACCOUNT, className:"accounts-body-title"}
 						]},
 						{name: "welcomeMsg", className:"accounts-body-title"},
-						{name: "templateList", kind: "VirtualRepeater", onGetItem: "listGetTemplate", onclick: "templateSelected", style:"margin-top: 8px", components: [
+						{name: "templateList", kind: "VirtualRepeater", onSetupRow: "listGetTemplate", onGetItem: "listGetTemplate", onclick: "templateSelected", className:"accounts-btn-list", components: [
 							{name: "template", kind: "Button", className:"accounts-btn", align:"center", layoutKind: "HFlexLayout", components: [
 							        {kind: "Image", name:"templateIcon", className:"icon-image"},
 							        {name: "templateName"}
@@ -90,10 +91,10 @@ enyo.kind({
 						]},
 					]},
 				]},
-				{kind:"VFlexBox", name: "oneOrMoreAccounts", style:"width:100%;", flex:1, components: [
-					{kind:"VFlexBox", className:"box-center accounts-body", components:[
+				{kind:"Control", name: "oneOrMoreAccounts", style:"width:100%", components: [
+					{kind:"Control", className:"box-center", components:[
 						{content: AccountsUtil.TEXT_GET_STARTED_EXISTING_ACCOUNTS, className:"accounts-body-title"},
-						{kind:"RowGroup", components:[
+						{kind:"RowGroup", className:"accounts-group", components:[
 							{kind: "Accounts.accountsList", name: "accountsList"},
 						]},
 						{kind: "enyo.Button", className: "enyo-button-affirmative accounts-btn", label:AccountsUtil.BUTTON_GO, onclick: "doAccountsFirstLaunchDone"},
@@ -102,7 +103,11 @@ enyo.kind({
 					]},
 				]},
 				{name: "client", style: "width: 100%; position: relative;"}
-			]}, 
+			]},
+			{className:"accounts-footer-shadow", name:"doneNoAccountsShadow"},
+			{kind:"Toolbar", className:"enyo-toolbar-light", name:"doneNoAccounts", components:[
+				{kind: "Button", label: AccountsUtil.BUTTON_DONE, className:"accounts-toolbar-btn", onclick: "doAccountsFirstLaunchDone"}
+			]},
 
 			{name: "accounts", kind: "Accounts.getAccounts", onGetAccounts_AccountsAvailable: "onAccountsAvailable"},
 			{kind: "PalmService", service: "palm://com.palm.applicationManager/", method: "open", name: "openAppCatalog"},
@@ -110,7 +115,7 @@ enyo.kind({
 		{kind: "AccountsUI", name: "AccountsView", capability: this.capability, onAccountsUI_Done: "goToFirstLaunchView"},
 		{kind: "Accounts.credentialView", name: "changeCredentialsView", onCredentials_ValidationSuccess: "validationSuccess", onCredentials_Cancel: "goToFirstLaunchView"},
 		{kind: "Accounts.modifyView", name: "modifyAccountView", onModifyView_Success: "goToFirstLaunchView", onModifyView_Cancel: "goToFirstLaunchView"},
-		{kind: "CrossAppUI", name:"customAccountsUI", onResult: "handleCustomUIResult"}
+		{kind: "Accounts.crossAppUI", name:"customAccountsUI", onResult: "handleCustomUIResult"}
 	],
 	
 	startFirstLaunch: function(exclude, msgs) {
@@ -121,8 +126,8 @@ enyo.kind({
 		}
 		console.log("startFirstLaunch: capabilty = " + this.capability);
 		// Set up the page title
-		this.$.titleText.content = msgs.pageTitle;
-		this.$.titleText.contentChanged();
+		this.$.titleText.caption = msgs.pageTitle;
+		this.$.titleText.captionChanged();
 		this.$.welcomeIcon.src = this.iconSmall;
 		this.$.welcomeIcon.srcChanged();
 		this.$.welcomeIconStart.src = this.iconSmall;
@@ -174,7 +179,8 @@ enyo.kind({
 			// Hide the "Get started with your HP webOS account"
 			this.$.getStartedWithProfileAccount.hide();
 		}
-		
+		this.$.doneNoAccountsShadow.hide();
+		this.$.doneNoAccounts.hide();
 		// There are 2 views: one for no accounts and another for one or more accounts
 		if (this.accounts.length) {
 			this.$.noAccountsSetUpHeader.hide();
@@ -188,8 +194,14 @@ enyo.kind({
 			this.$.oneOrMoreAccounts.hide();
 			this.$.noAccountsSetUpHeader.show();
 			this.$.noAccountsSetUpYet.show();
+			
+			// Show a "Done" button for Photos
+			if (this.capability === "PHOTO")
+				this.$.doneNoAccountsShadow.show();
+				this.$.doneNoAccounts.show();
 
 			// Render the list of available accounts to add
+			this.$.templateList.setStripSize(this.addTemplates.length);		
 			this.$.templateList.render();
 		}
 		
@@ -235,7 +247,7 @@ enyo.kind({
 			this.template = this.addTemplates[inEvent.rowIndex];
 			// Does this template have custom UI?
 			if (this.template.validator.customUI) {
-				AccountsUtil.setCrossAppParameters(this.$.customAccountsUI, this.template.validator.customUI, {mode: "create", template: this.template, capability: this.capability});
+				this.$.customAccountsUI.launchCrossAppUI(this.template.validator.customUI, {mode: "create", template: this.template, capability: this.capability});
 				this.selectViewByName("customAccountsUI");
 			}
 			else {

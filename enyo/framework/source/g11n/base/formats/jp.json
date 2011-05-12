@@ -1,8 +1,11 @@
 {
 	"numberDivider": ",",
 	"numberDecimal": ".",
-	"currencyPrepend": "¥",
-	"currencyAppend": "",
+	"currency": {
+		"name": "JPY",
+		"iso": "#{sign} #{amt}",
+		"common": "#{sign}#{amt}"
+	},
 	"percentageSpace": false,
 	"localeName": "Japan",
 	"titleCase": false,
@@ -17,8 +20,8 @@
 
 	"fullTime24": "H時mm分ss秒",
 	"fullTime12": "H時mm分ss秒",
-	"longTime24": "HH:mm:sszzz",
-	"longTime12": "hh:mm:ss azzz",
+	"longTime24": "H:mm:sszzz",
+	"longTime12": "h:mm:ss azzz",
 	"mediumTime24": "H:mm:ss",
 	"mediumTime12": "h:mm:ss a",
 	"defaultTime24": "H:mm:ss",
@@ -38,6 +41,9 @@
 	"shortMYDate": "yy/MM",
 	"mediumMYDate": "yyyy/MM",
 	"longMYDate": "yyyy年M月",
+	"shortDDate": "dd",
+	"mediumDDate": "dd",
+	"longDDate": "d日",	
 
 	"shortWeekday": "EE",
 	"mediumWeekday": "EEE",
@@ -49,10 +55,14 @@
 	"timeAZFormat": "TIME AMZONE",
 
 	"smallTime12": "h:mm",
-	"bigTime12": "hh:mm:ss",
+	"bigTime12": "h:mm:ss",
 
 	"smallTime24": "H:mm",
-	"bigTime24": "HH:mm:ss",
+	"bigTime24": "H:mm:ss",
 	
-	"defaultPhotoSize": "L"
+	"timeH12": "h",
+	"timeH24": "H",
+	
+	"defaultPhotoSize": "L",
+	"defaultTimeZone": "Asia/Tokyo"
 }

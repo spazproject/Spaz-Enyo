@@ -23,7 +23,8 @@ enyo.kind({
 		disabled: false,
 		readonly: false,
 		placeholder: "",
-		placeholderClassName: ""
+		placeholderClassName: "",
+		tabIndex: ""
 	},
 	events: {
 		onfocus: "",
@@ -91,6 +92,9 @@ enyo.kind({
 	},
 	placeholderChanged: function() {
 		this.setAttribute("placeholder", this.placeholder);
+	},
+	tabIndexChanged: function() {
+		this.setAttribute("tabindex", this.tabIndex);
 	},
 	focusHandler: function(inSender, e) {
 		if (this.hasNode()) {

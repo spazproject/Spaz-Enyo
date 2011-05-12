@@ -10,7 +10,6 @@ enyo.kind({
 	name: "enyo.ProgressButton",
 	kind: enyo.ProgressBar,
 	className: "enyo-progress-button",
-	layoutKind: "HFlexLayout",
 	events: {
 		onCancel: "" //* Sent when cancel button is clicked.
 	},
@@ -20,8 +19,10 @@ enyo.kind({
 	chrome: [
 		{name: "animator", kind: enyo.Animator, onBegin: "beginAnimation", onAnimate: "stepAnimation", onEnd: "endAnimation", onStop: "stopAnimation"},
 		{name: "bar", className: "enyo-progress-button-inner"},
-		{name: "client", flex:1, align:"center", layoutKind:"HFlexLayout", className: "enyo-progress-button-client"},
-		{name: "cancelButton", className: "enyo-progress-button-cancel", requiresDomMousedown: true, onclick:"doCancel"}
+		{className: "enyo-fit", kind: "HFlexBox", components: [
+			{name: "client", flex:1, align:"center", layoutKind:"HFlexLayout", className: "enyo-progress-button-client"},
+			{name: "cancelButton", className: "enyo-progress-button-cancel", requiresDomMousedown: true, onclick:"doCancel"}
+		]}
 	],
 	create: function() {
 		this.inherited(arguments);

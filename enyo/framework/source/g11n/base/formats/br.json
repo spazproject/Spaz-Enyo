@@ -3,8 +3,6 @@
 
 	"numberDivider": ".",
 	"numberDecimal": ",",
-	"currencyPrepend": "R$",
-	"currencyAppend": "",
 	"percentageSpace": false,
 	"localeName": "Brazil",
 	"titleCase": false,
@@ -41,6 +39,9 @@
 	"shortMYDate": "yy-MM",
 	"mediumMYDate": "yyyy-MM",
 	"longMYDate": "MMMM yyyy",
+	"shortDDate": "dd",
+	"mediumDDate": "dd",
+	"longDDate": "d",	
 
 	"shortWeekday": "EE",
 	"mediumWeekday": "EEE",
@@ -55,5 +56,15 @@
 	"bigTime12": "hh:mm:ss",
 
 	"smallTime24": "HH:mm",
-	"bigTime24": "HH:mm:ss"
+	"bigTime24": "HH:mm:ss",
+	
+	"timeH12": "hh",
+	"timeH24": "HH",
+	
+	"currency": {
+		"name": "BRL",
+		"iso": "#{sign} #{amt}",
+		"common": "#{sign}#{amt}"
+	},
+	"defaultTimeZone": "America/Sao_Paulo"
 }

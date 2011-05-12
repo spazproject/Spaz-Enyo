@@ -24,25 +24,26 @@
 
 enyo.kind({
 	name: "Accounts.credentials",
-	kind: "enyo.VFlexBox",
+	kind: enyo.Control,
 	events: {
 		onCredentials_ValidationSuccess: "",
 	},
 	components: [
-		{name: "usernameTitle", kind: "RowGroup", components: [
+		{name: "usernameTitle", kind: "RowGroup", className:"accounts-group", components: [
 			{kind: "Input", name: "username", spellcheck: false, autocorrect:false, autoCapitalize: "lowercase", inputType:"email", changeOnInput: true, onchange: "keyTapped"}
 		]},
-		{name: "passwordTitle", kind: "RowGroup", components: [
+		{name: "passwordTitle", kind: "RowGroup", className:"accounts-group", components: [
 			{kind: "PasswordInput", name: "password", changeOnInput: true, onchange: "keyTapped"}
 		]},
 		{name: "errorBox", kind: "enyo.HFlexBox", className:"error-box", showing:false, components: [
-			{name: "errorImage", kind: "Image", src: AccountsUtil.libPath + "images/warning-icon.png"},
-			{name: "errorMessage", className: "error-text"}
+			{name: "errorImage", kind: "Image", src: AccountsUtil.libPath + "images/header-warning-icon.png"},
+			{name: "errorMessage", className: "error-text", style:"margin-right:60px"}
 		]},
 		{name:"signInButton", kind: "ActivityButton", className:"enyo-button-affirmative accounts-btn", onclick: "signInTapped"},
+		
 		{name: "callValidators", kind: "PalmService", onResponse: "validationResponse"},
 		
-		{name: "accounts", kind: "Accounts.getAccounts", onGetAccounts_AccountsAvailable: "onAccountsAvailable"},
+		{name: "accounts", kind: "Accounts.getAccounts", onGetAccounts_AccountsAvailable: "onAccountsAvailable", subscribe: false},
 		{name: "modifyAccount", kind: "PalmService", service: enyo.palmServices.accounts, method: "modifyAccount", onResponse: "doModifyView_Success"},
 	],
 	
@@ -210,7 +211,7 @@ enyo.kind({
 			return;
 		if (account && account.length) {
 			for (i in account) {
-				if (account[i].username !== this.results.username)
+				if (account[i].username !== this.results.username || account[i].beingDeleted)
 					continue;
 
 				// If there are no capabilities then the account was created from the Accounts app
@@ -294,10 +295,10 @@ enyo.kind({
 		AccountsUtil.disableControl(this.$.password, false);
 		
 		// Reset the "Sign In" button
-		AccountsUtil.disableControl(this.$.signInButton, false);
 		AccountsUtil.changeCaption(this.$.signInButton, AccountsUtil.BUTTON_SIGN_IN);
 		this.$.signInButton.active = false;
 		this.$.signInButton.activeChanged();
+		this.keyTapped();
 	}
 });
 
@@ -310,17 +311,19 @@ enyo.kind({
 		onCredentials_ValidationSuccess: ""
 	},
 	components: [
-		{kind:"Header", className:"accounts-header", pack:"center", components: [
+		{kind:"Toolbar", className:"enyo-toolbar-light accounts-header", pack:"center", components: [
 			{kind: "Image", name:"titleIcon"},
-	        {content: AccountsUtil.PAGE_TITLE_SIGN_IN}
+	        {content: AccountsUtil.PAGE_TITLE_SIGN_IN, className:""}
 		]},
+		{className:"accounts-header-shadow"},
 		{kind: "Scroller", flex: 1, components: [
-			{kind: "VFlexBox", className:"box-center accounts-body", components: [
+			{kind: "Control", className:"box-center", components: [
 				{kind: "Accounts.credentials", name: "credentials", onCredentials_ValidationSuccess: "doCredentials_ValidationSuccess"},
 			]}
 		]},
-		{kind:"Toolbar", components:[
-			{kind: "Button", label: AccountsUtil.BUTTON_CANCEL, className:"enyo-button-dark accounts-toolbar-btn", onclick: "doCredentials_Cancel"}
+		{className:"accounts-footer-shadow"},
+		{kind:"Toolbar", className:"enyo-toolbar-light", components:[
+			{kind: "Button", label: AccountsUtil.BUTTON_CANCEL, className:"accounts-toolbar-btn", onclick: "doCredentials_Cancel"}
 		]},
 	],
 	

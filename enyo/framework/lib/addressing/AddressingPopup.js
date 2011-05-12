@@ -12,7 +12,7 @@ enyo.kind({
 		addressTypes: null,
 		imTypes: null,
 		inputType: "email",
-		expandButtonCaption: "TO",
+		expandButtonCaption: enyo.addressing._$L("To:"),
 		popupClassName: ""
 	},
 	events: {
@@ -31,11 +31,13 @@ enyo.kind({
 		{name: "input", kind: "AtomizingInput",
 			onFilterStringChanged: "inputFilterStringChanged",
 			onAtomize: "inputAtomize",
+			onGetContact: "inputGetContact",
 			onfocus: "inputFocus",
 			onblur: "inputBlur",
 			onEditContact: "inputEditContact",
 			onShowAllButtonClick: "inputShowAllContacts",
-			onExpandButtonClick: "doExpandButtonClick"
+			onExpandButtonClick: "doExpandButtonClick",
+			onFilterCleared: "inputFilterCleared"
 		},
 		{kind: "ReverseLookupService", onSuccess: "gotReverseLookup", onFailure: "failedReverseLookup"},
 		{kind: "Popup", layoutKind: "VFlexLayout", dismissWithClick: false, onmousedown: "popupMousedown",
@@ -120,6 +122,10 @@ enyo.kind({
 	inputBlur: function() {
 		this.close();
 	},
+	inputGetContact: function() {
+		var selected = this.$.list.getSelected();
+		return (selected ? selected.address : null);
+	},
 	//* @public
 	//* search for contacts by person name
 	search: function(inSearch) {
@@ -182,6 +188,9 @@ enyo.kind({
 	},
 	refreshList: function() {
 		this.$.list.refresh();
+	},
+	inputFilterCleared: function() {
+		this.close();
 	},
 	inputShowAllContacts: function() {
 		this.toggleSearch();

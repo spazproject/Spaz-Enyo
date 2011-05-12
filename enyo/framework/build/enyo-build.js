@@ -125,10 +125,11 @@ return b.apply(a, arguments || []);
 } : b;
 }, enyo.hitch = enyo.bind, enyo.nop = function() {}, enyo.nob = {}, enyo.setPrototype || (enyo.setPrototype = function(a, b) {
 a.prototype = b;
-}), enyo.delegate = function(a) {
-enyo.setPrototype(enyo.nop, a);
-var a = new enyo.nop;
-enyo.setPrototype(enyo.nop, null);
+});
+var b = function() {};
+enyo.delegate = function(a) {
+enyo.setPrototype(b, a);
+var a = new b;
 return a;
 };
 })();
@@ -210,7 +211,7 @@ var c = this.getProperty(a);
 this[a] = b, this.propertyChanged && this.propertyChanged(a, b, c), a += "Changed", this[a] && this[a](c);
 },
 __console: function(a, b) {
-window.console && (console.firebug ? console[a].apply(console, b) : console.log(b.join(" ")));
+window.console && (window.PalmSystem && (b = [ b.join(" ") ]), console[a] ? console[a].apply(console, b) : console.log(b));
 },
 _console: function(a, b) {
 var c = [];
@@ -465,7 +466,7 @@ return enyo.g11n._phoneLocale;
 enyo.g11n._sourceLocale || enyo.g11n._init();
 return enyo.g11n._sourceLocale;
 }, enyo.g11n.setLocale = function setLocale(a) {
-a && (enyo.g11n._init(), a.uiLocale && (enyo.g11n._locale = new enyo.g11n.Locale(a.uiLocale)), a.formatLocale && (enyo.g11n._formatLocale = new enyo.g11n.Locale(a.formatLocale)), a.phoneLocale && (enyo.g11n._phoneLocale = new enyo.g11n.Locale(a.phoneLocale)), a.sourceLocale && (enyo.g11n._sourceLocale = new enyo.g11n.Locale(a.sourceLocale)));
+a && (enyo.g11n._init(), a.uiLocale && (enyo.g11n._locale = new enyo.g11n.Locale(a.uiLocale)), a.formatLocale && (enyo.g11n._formatLocale = new enyo.g11n.Locale(a.formatLocale)), a.phoneLocale && (enyo.g11n._phoneLocale = new enyo.g11n.Locale(a.phoneLocale)), a.sourceLocale && (enyo.g11n._sourceLocale = new enyo.g11n.Locale(a.sourceLocale)), enyo.g11n._enyoAvailable && enyo.reloadG11nResources());
 };
 
 // g11n/base/javascript/fmts.js
@@ -475,12 +476,21 @@ var b;
 typeof a !== "undefined" && a.locale ? typeof a.locale === "string" ? this.locale = new enyo.g11n.Locale(a.locale) : this.locale = a.locale : this.locale = enyo.g11n.formatLocale(), this.dateTimeFormatHash = enyo.g11n.Utils.getJsonFile({
 root: enyo.g11n.Utils._getEnyoRoot(),
 path: "base/formats",
-locale: this.locale
+locale: this.locale,
+type: "region"
 }), this.dateTimeHash = enyo.g11n.Utils.getJsonFile({
 root: enyo.g11n.Utils._getEnyoRoot(),
 path: "base/datetime_data",
 locale: this.locale
-});
+}), this.dateTimeHash || (this.dateTimeHash = enyo.g11n.Utils.getJsonFile({
+root: enyo.g11n.Utils._getEnyoRoot(),
+path: "base/datetime_data",
+locale: enyo.g11n.currentLocale()
+})), this.dateTimeHash || (this.dateTimeHash = enyo.g11n.Utils.getJsonFile({
+root: enyo.g11n.Utils._getEnyoRoot(),
+path: "base/datetime_data",
+locale: new enyo.g11n.Locale("en_us")
+}));
 }, enyo.g11n.Fmts.prototype.isAmPm = function() {
 typeof this.twelveHourFormat === "undefined" && (enyo.g11n.getPlatform() === "device" ? this.twelveHourFormat = PalmSystem.timeFormat === "HH12" : this.twelveHourFormat = this.dateTimeFormatHash.is12HourDefault);
 return this.twelveHourFormat;
@@ -516,6 +526,8 @@ return this.dateTimeFormatHash && this.dateTimeFormatHash.measurementSystem || "
 return this.dateTimeFormatHash && this.dateTimeFormatHash.defaultPaperSize || "A4";
 }, enyo.g11n.Fmts.prototype.getDefaultPhotoSize = function() {
 return this.dateTimeFormatHash && this.dateTimeFormatHash.defaultPhotoSize || "10X15CM";
+}, enyo.g11n.Fmts.prototype.getDefaultTimeZone = function() {
+return this.dateTimeFormatHash && this.dateTimeFormatHash.defaultTimeZone || "Europe/London";
 };
 
 // g11n/base/javascript/locale.js
@@ -594,7 +606,7 @@ var b, c, d, e, f, g, h, i, j;
 if (!a || !a.path || !a.locale) return undefined;
 d = a.path.charAt(0) !== "/" ? a.root || this._getRoot() : "", d.slice(-1) !== "/" && (d += "/"), a.path ? (e = a.path, e.slice(-1) !== "/" && (e += "/")) : e = "", e += a.prefix || "", d += e, j = d + (a.locale + "") + ".json";
 if (enyo.g11n.Utils._fileCache[j] !== undefined) b = enyo.g11n.Utils._fileCache[j].json; else {
-a.merge ? (a.locale.language && (c = d + a.locale.language + ".json", f = this._loadFile(c)), a.locale.region && (c = d + a.locale.language + "_" + a.locale.region + ".json", g = this._loadFile(c), a.locale.language !== a.locale.region && (c = d + a.locale.region + ".json", h = this._loadFile(c))), a.locale.variant && (c = d + a.locale.language + "_" + a.locale.region + "_" + a.locale.variant + ".json", i = this._loadFile(c)), b = this._merge([ f, h, g, i ])) : (c = d + (a.locale + "") + ".json", b = this._loadFile(c), !b && a.locale.language && (c = d + a.locale.language + ".json", b = this._loadFile(c)), !b && a.locale.region && (c = d + a.locale.region + ".json", b = this._loadFile(c)));
+a.merge ? (a.locale.language && (c = d + a.locale.language + ".json", f = this._loadFile(c)), a.locale.region && (c = d + a.locale.language + "_" + a.locale.region + ".json", g = this._loadFile(c), a.locale.language !== a.locale.region && (c = d + a.locale.region + ".json", h = this._loadFile(c))), a.locale.variant && (c = d + a.locale.language + "_" + a.locale.region + "_" + a.locale.variant + ".json", i = this._loadFile(c)), b = this._merge([ f, h, g, i ])) : (c = d + (a.locale + "") + ".json", b = this._loadFile(c), !b && a.type !== "region" && a.locale.language && (c = d + a.locale.language + ".json", b = this._loadFile(c)), !b && a.type !== "language" && a.locale.region && (c = d + a.locale.region + ".json", b = this._loadFile(c)), !b && a.type !== "language" && a.locale.region && (c = d + "_" + a.locale.region + ".json", b = this._loadFile(c)));
 if (a.cache === undefined || a.cache !== !1) enyo.g11n.Utils._fileCache[j] = {
 path: j,
 json: b,
@@ -883,6 +895,7 @@ dm: "DM",
 md: "DM",
 my: "MY",
 ym: "MY",
+d: "D",
 dmy: "",
 dym: "",
 mdy: "",
@@ -974,7 +987,7 @@ return c;
 var b = a.getTime(), c = new Date;
 c.setTime(b), c.setHours(0), c.setMinutes(0), c.setSeconds(0), c.setMilliseconds(0);
 return c;
-}, f.inputParams = a, typeof a !== "undefined" && a.locale ? typeof a.locale === "string" ? b = new enyo.g11n.Locale(a.locale) : b = a.locale : b = enyo.g11n.formatLocale(), typeof a === "string" ? f.formatType = a : typeof a === "undefined" ? (a = {
+}, f.inputParams = a, typeof a !== "undefined" && a.locale ? typeof a.locale === "string" ? b = new enyo.g11n.Locale(a.locale) : b = a.locale : b = enyo.g11n.formatLocale(), this.locale = b, typeof a === "string" ? f.formatType = a : typeof a === "undefined" ? (a = {
 format: "short"
 }, f.formatType = a.format) : f.formatType = a.format, f.dateTimeHash = enyo.g11n.Utils.getJsonFile({
 root: enyo.g11n.Utils._getEnyoRoot(),
@@ -988,6 +1001,9 @@ locale: new enyo.g11n.Locale("en_us")
 root: enyo.g11n.Utils._getEnyoRoot(),
 path: "base/formats",
 locale: b
+}), f.rb = new enyo.g11n.Resources({
+root: enyo.g11n.Utils._getEnyoRoot() + "base",
+locale: b
 }), typeof a === "undefined" || typeof a.twelveHourFormat === "undefined" ? typeof PalmSystem !== "undefined" ? f.twelveHourFormat = PalmSystem.timeFormat === "HH12" : f.twelveHourFormat = f.dateTimeFormatHash.is12HourDefault : f.twelveHourFormat = a.twelveHourFormat;
 if (f.formatType) switch (f.formatType) {
 case "short":
@@ -995,12 +1011,12 @@ case "medium":
 case "long":
 case "full":
 case "default":
-e = f._finalDateTimeFormat(f._getDateFormat(f.formatType, a), f._getTimeFormat(f.formatType, a), a);
+f.partsLength = f.formatType, e = f._finalDateTimeFormat(f._getDateFormat(f.formatType, a), f._getTimeFormat(f.formatType, a), a);
 break;
 default:
 e = f.formatType;
-} else a = f._normalizeDateTimeFormatComponents(a), a.time && (d = f._getTimeFormat(a.time, a)), a.date && (c = f._getDateFormat(a.date, a)), e = f._finalDateTimeFormat(c, d, a);
-f.tokenized = f._getTokenizedFormat(e);
+} else a = f._normalizeDateTimeFormatComponents(a), a.time && (d = f._getTimeFormat(a.time, a), f.partsLength = a.time), a.date && (c = f._getDateFormat(a.date, a), f.partsLength = a.date), e = f._finalDateTimeFormat(c, d, a);
+f.tokenized = f._getTokenizedFormat(e), f.partsLength || (f.partsLength = "full");
 }, enyo.g11n.DateFmt.prototype.toString = function() {
 return this.tokenized.join("");
 }, enyo.g11n.DateFmt.prototype.isAmPm = function() {
@@ -1009,97 +1025,99 @@ return this.twelveHourFormat;
 return this.dateTimeFormatHash.is12HourDefault;
 }, enyo.g11n.DateFmt.prototype.getFirstDayOfWeek = function() {
 return this.dateTimeHash.firstDayOfWeek;
-}, enyo.g11n.DateFmt.prototype.format = function(a) {
-var b = this, c, d = [], e, f, g, h, i, j, k;
-k = b.dateTimeHash;
-if (typeof a !== "object" || b.tokenized === null) return undefined;
-var l = b.tokenized;
-for (i = 0, j = l.length; i < j && l[i] !== undefined; i++) {
-switch (l[i]) {
+}, enyo.g11n.DateFmt.prototype._format = function(a, b) {
+var c = this, d, e = [], f, g, h, i, j, k, l, m;
+l = c.dateTimeHash;
+for (j = 0, k = b.length; j < k && b[j] !== undefined; j++) {
+switch (b[j]) {
 case "yy":
-e = "", d.push((a.getFullYear() + "").substring(2));
+f = "", e.push((a.getFullYear() + "").substring(2));
 break;
 case "yyyy":
-e = "", d.push(a.getFullYear());
+f = "", e.push(a.getFullYear());
 break;
 case "MMMM":
-e = "long", f = "month", g = a.getMonth();
+f = "long", g = "month", h = a.getMonth();
 break;
 case "MMM":
-e = "medium", f = "month", g = a.getMonth();
+f = "medium", g = "month", h = a.getMonth();
 break;
 case "MM":
-e = "short", f = "month", g = a.getMonth();
+f = "short", g = "month", h = a.getMonth();
 break;
 case "M":
-e = "single", f = "month", g = a.getMonth();
+f = "single", g = "month", h = a.getMonth();
 break;
 case "dd":
-e = "short", f = "date", g = a.getDate() - 1;
+f = "short", g = "date", h = a.getDate() - 1;
 break;
 case "d":
-e = "single", f = "date", g = a.getDate() - 1;
+f = "single", g = "date", h = a.getDate() - 1;
 break;
 case "zzz":
-e = "", typeof b.timezoneFmt === "undefined" && (typeof b.inputParams === "undefined" || typeof b.inputParams.TZ === "undefined" ? b.timezoneFmt = new enyo.g11n.TzFmt : b.timezoneFmt = new enyo.g11n.TzFmt(b.inputParams)), h = b.timezoneFmt.getCurrentTimeZone(), d.push(h);
+f = "", typeof c.timezoneFmt === "undefined" && (typeof c.inputParams === "undefined" || typeof c.inputParams.TZ === "undefined" ? c.timezoneFmt = new enyo.g11n.TzFmt : c.timezoneFmt = new enyo.g11n.TzFmt(c.inputParams)), i = c.timezoneFmt.getCurrentTimeZone(), e.push(i);
 break;
 case "a":
-e = "", a.getHours() > 11 ? d.push(k.pm) : d.push(k.am);
+f = "", a.getHours() > 11 ? e.push(l.pm) : e.push(l.am);
 break;
 case "K":
-e = "", d.push(a.getHours() % 12);
+f = "", e.push(a.getHours() % 12);
 break;
 case "KK":
-e = "", c = a.getHours() % 12, d.push(c < 10 ? "0" + ("" + c) : c);
+f = "", d = a.getHours() % 12, e.push(d < 10 ? "0" + ("" + d) : d);
 break;
 case "h":
-e = "", c = a.getHours() % 12, d.push(c === 0 ? 12 : c);
+f = "", d = a.getHours() % 12, e.push(d === 0 ? 12 : d);
 break;
 case "hh":
-e = "", c = a.getHours() % 12, d.push(c === 0 ? 12 : c < 10 ? "0" + ("" + c) : c);
+f = "", d = a.getHours() % 12, e.push(d === 0 ? 12 : d < 10 ? "0" + ("" + d) : d);
 break;
 case "H":
-e = "", d.push(a.getHours());
+f = "", e.push(a.getHours());
 break;
 case "HH":
-e = "", c = a.getHours(), d.push(c < 10 ? "0" + ("" + c) : c);
+f = "", d = a.getHours(), e.push(d < 10 ? "0" + ("" + d) : d);
 break;
 case "k":
-e = "", c = a.getHours() % 12, d.push(c === 0 ? 12 : c);
+f = "", d = a.getHours() % 12, e.push(d === 0 ? 12 : d);
 break;
 case "kk":
-e = "", c = a.getHours() % 12, d.push(c === 0 ? 12 : c < 10 ? "0" + ("" + c) : c);
+f = "", d = a.getHours() % 12, e.push(d === 0 ? 12 : d < 10 ? "0" + ("" + d) : d);
 break;
 case "EEEE":
-e = "long", f = "day", g = a.getDay();
+f = "long", g = "day", h = a.getDay();
 break;
 case "EEE":
-e = "medium", f = "day", g = a.getDay();
+f = "medium", g = "day", h = a.getDay();
 break;
 case "EE":
-e = "short", f = "day", g = a.getDay();
+f = "short", g = "day", h = a.getDay();
 break;
 case "E":
-e = "single", f = "day", g = a.getDay();
+f = "single", g = "day", h = a.getDay();
 break;
 case "mm":
 case "m":
-e = "";
-var m = a.getMinutes();
-d.push(m < 10 ? "0" + ("" + m) : m);
+f = "";
+var n = a.getMinutes();
+e.push(n < 10 ? "0" + ("" + n) : n);
 break;
 case "ss":
 case "s":
-e = "";
-var n = a.getSeconds();
-d.push(n < 10 ? "0" + ("" + n) : n);
+f = "";
+var o = a.getSeconds();
+e.push(o < 10 ? "0" + ("" + o) : o);
 break;
 default:
-e = "", d.push(l[i]);
+m = /'([A-Za-z]+)'/.exec(b[j]), f = "", m ? e.push(m[1]) : e.push(b[j]);
 }
-e && d.push(k[e][f][g]);
+f && e.push(l[f][g][h]);
 }
-return d.join("");
+return e.join("");
+}, enyo.g11n.DateFmt.prototype.format = function(a) {
+var b = this;
+if (typeof a !== "object" || b.tokenized === null) return undefined;
+return this._format(a, b.tokenized);
 }, enyo.g11n.DateFmt.prototype.formatRelativeDate = function(a, b) {
 var c, d, e, f, g = this;
 if (typeof a !== "object") return undefined;
@@ -1134,23 +1152,91 @@ num: i
 return g.format(a);
 }
 }
+}, enyo.g11n.DateFmt.prototype.formatRange = function(a, b) {
+var c, d, e, f, g, h, i = this.partsLength, j = this.dateTimeHash, k = this.dateTimeFormatHash;
+if (!a && !b) return "";
+if (!a || !b) return this.format(a || b);
+b.getTime() < a.getTime() && (c = b, b = a, a = c);
+if (a.getYear() === b.getYear()) {
+g = i === "short" || i === "single" ? (a.getFullYear() + "").substring(2) : a.getFullYear();
+if (a.getMonth() === b.getMonth()) {
+if (a.getDate() === b.getDate()) {
+f = "shortTime" + (this.twelveHourFormat ? "12" : "24"), d = this._getTokenizedFormat(k[f]), f = i + "Date", e = this._getTokenizedFormat(k[f]), h = new enyo.g11n.Template(this.rb.$L({
+key: "dateRangeWithinDay",
+value: "#{startTime}-#{endTime}, #{date}"
+}));
+return h.evaluate({
+startTime: this._format(a, d),
+endTime: this._format(b, d),
+date: this._format(a, e)
+});
+}
+f = i + "DDate", e = this._getTokenizedFormat(k[f]), h = new enyo.g11n.Template(this.rb.$L({
+key: "dateRangeWithinMonth",
+value: "#{month} #{startDate}-#{endDate}, #{year}"
+}));
+return h.evaluate({
+month: j[i].month[a.getMonth()],
+startDate: this._format(a, e),
+endDate: this._format(b, e),
+year: g
+});
+}
+i === "full" ? i = "long" : i === "single" && (i = "short"), f = i + "DMDate", e = this._getTokenizedFormat(k[f]), h = new enyo.g11n.Template(this.rb.$L({
+key: "dateRangeWithinYear",
+value: "#{start} - #{end}, #{year}"
+}));
+return h.evaluate({
+start: this._format(a, e),
+end: this._format(b, e),
+year: g
+});
+}
+if (b.getYear() - a.getYear() < 2) {
+f = i + "Date", e = this._getTokenizedFormat(k[f]), h = new enyo.g11n.Template(this.rb.$L({
+key: "dateRangeWithinConsecutiveYears",
+value: "#{start} - #{end}"
+}));
+return h.evaluate({
+start: this._format(a, e),
+end: this._format(b, e)
+});
+}
+i === "full" ? i = "long" : i === "single" && (i = "short"), f = i + "MYDate", e = this._getTokenizedFormat(k[f]), h = new enyo.g11n.Template(this.rb.$L({
+key: "dateRangeMultipleYears",
+value: "#{startMonthYear} - #{endMonthYear}"
+}));
+return h.evaluate({
+startMonthYear: this._format(a, e),
+endMonthYear: this._format(b, e)
+});
 };
 
 // g11n/base/javascript/numberfmt.js
 
 enyo.g11n.NumberFmt = function(a) {
-var b;
-typeof a === "number" ? this.fractionDigits = a : a && typeof a.fractionDigits === "number" && (this.fractionDigits = a.fractionDigits), a && a.locale ? typeof a.locale === "string" ? this.locale = new enyo.g11n.Locale(a.locale) : this.locale = a.locale : this.locale = enyo.g11n.formatLocale(), this.style = a && a.style || "number", this.style === "currency" && (this.fractionDigits = 2), b = enyo.g11n.Utils.getJsonFile({
+var b, c, d, e, f, g, h;
+typeof a === "number" ? this.fractionDigits = a : a && typeof a.fractionDigits === "number" && (this.fractionDigits = a.fractionDigits), a && a.locale ? typeof a.locale === "string" ? this.locale = new enyo.g11n.Locale(a.locale) : this.locale = a.locale : this.locale = enyo.g11n.formatLocale(), this.style = a && a.style || "number", b = enyo.g11n.Utils.getJsonFile({
 root: enyo.g11n.Utils._getEnyoRoot(),
 path: "base/formats",
 locale: this.locale
-}), b ? (this.decimal = b.numberDecimal || ".", this.divider = b.numberDivider || ",", b.dividerIndex ? b.dividerIndex === 4 ? this.numberGroupRegex = /(\d+)(\d{4})/ : this.numberGroupRegex = /(\d+)(\d{3})/ : this.numberGroupRegex = /(\d+)(\d{3})/, this.percentageSpace = b.percentageSpace, this.currencyPrepend = b.currencyPrepend || "", this.currencyAppend = b.currencyAppend || "") : (this.decimal = ".", this.divider = ",", this.numberGroupRegex = /(\d+)(\d{3})/, this.percentageSpace = !1, this.currencyPrepend = "", this.currencyAppend = ""), this.numberGroupRegex.compile(this.numberGroupRegex), enyo.g11n.Utils.releaseAllJsonFiles();
+}), this.style === "currency" && (d = a && a.currency || b && b.currency && b.currency.name, d ? (d = d.toUpperCase(), this.currencyStyle = a && a.currencyStyle === "iso" ? "iso" : "common", c = enyo.g11n.Utils.getNonLocaleFile({
+root: enyo.g11n.Utils._getEnyoRoot(),
+path: "base/number_data/iso4217.json"
+}), c ? (e = c[d], e || (f = new enyo.g11n.Locale(d), h = enyo.g11n.Utils.getJsonFile({
+root: enyo.g11n.Utils._getEnyoRoot(),
+path: "base/formats",
+locale: f
+}), h && (d = h.currency && h.currency.name, e = c[d])), e || (d = b && b.currency && b.currency.name, e = c[d]), e ? (this.sign = this.currencyStyle !== "iso" ? e.sign : d, this.fractionDigits = a && typeof a.fractionDigits === "number" ? a.fractionDigits : e.digits) : this.style = "number") : (d = b && b.currency && b.currency.name, this.sign = d)) : (d = b && b.currency && b.currency.name, this.sign = d), d ? (g = b && b.currency && b.currency[this.currencyStyle] || "#{sign} #{amt}", this.currencyTemplate = new enyo.g11n.Template(g)) : this.style = "number"), b ? (this.decimal = b.numberDecimal || ".", this.divider = b.numberDivider || ",", b.dividerIndex ? b.dividerIndex === 4 ? this.numberGroupRegex = /(\d+)(\d{4})/ : this.numberGroupRegex = /(\d+)(\d{3})/ : this.numberGroupRegex = /(\d+)(\d{3})/, this.percentageSpace = b.percentageSpace) : (this.decimal = ".", this.divider = ",", this.numberGroupRegex = /(\d+)(\d{3})/, this.percentageSpace = !1), this.numberGroupRegex.compile(this.numberGroupRegex), enyo.g11n.Utils.releaseAllJsonFiles();
 }, enyo.g11n.NumberFmt.prototype.format = function(a) {
 try {
 var b, c, d, e;
 typeof this.fractionDigits !== "undefined" ? b = a.toFixed(this.fractionDigits) : b = a + "", c = b.split("."), d = c[0];
 while (this.divider && this.numberGroupRegex.test(d)) d = d.replace(this.numberGroupRegex, "$1" + this.divider + "$2");
-c[0] = d, e = c.join(this.decimal), this.style === "currency" ? e = this.currencyPrepend + e + this.currencyAppend : this.style === "percent" && (e += this.percentageSpace ? " %" : "%");
+c[0] = d, e = c.join(this.decimal), this.style === "currency" && this.currencyTemplate ? e = this.currencyTemplate.evaluate({
+amt: e,
+sign: this.sign
+}) : this.style === "percent" && (e += this.percentageSpace ? " %" : "%");
 return e;
 } catch (f) {
 console.log("formatNumber error : " + f);
@@ -1518,7 +1604,14 @@ enyo.job.stop(a), b();
 }, c);
 }, enyo.job.stop = function(a) {
 enyo.job._jobs[a] && (clearTimeout(enyo.job._jobs[a]), delete enyo.job._jobs[a]);
-}, enyo.time = function(a) {
+}, function() {
+var a = window.webkitRequestAnimationFrame;
+enyo.requestAnimationFrame = a ? enyo.bind(window, a) : function(a) {
+return window.setTimeout(a, Math.round(1e3 / 60));
+};
+var a = window.webkitCancelRequestAnimationFrame || window.clearTimeout;
+enyo.cancelRequestAnimationFrame = enyo.bind(window, a);
+}(), enyo.time = function(a) {
 enyo.time.timers[a] = (new Date).getTime(), enyo.time.lastTimer = a;
 }, enyo.timeEnd = function(a) {
 var b = a || enyo.time.lastTimer, c = enyo.time.timers[b] ? (new Date).getTime() - enyo.time.timers[b] : 0;
@@ -1574,6 +1667,10 @@ this._enyoG11nResources || (this._enyoG11nResources = new enyo.g11n.Resources({
 root: "$enyo"
 }));
 return this._enyoG11nResources.$L(a);
+}, enyo.reloadG11nResources = function() {
+this._enyoG11nResources = new enyo.g11n.Resources({
+root: "$enyo"
+});
 }, enyo.getVisibleControlBounds = function(a) {
 var b = enyo.mixin(a.getBounds(), a.getOffset()), c = b.top + b.height, d = enyo.getVisibleBounds().height;
 b.height -= Math.max(0, c - d);
@@ -1780,12 +1877,13 @@ return enyo.master.getComponents()[0];
 dispatch: function(a) {
 var b = this.findDispatchTarget(a.target) || this.findDefaultTarget(a);
 a.dispatchTarget = b;
-for (var c = 0, d; fn = this.features[c]; c++) if (fn.call(this, a)) return !0;
+var c;
+for (var d = 0, e; c = this.features[d]; d++) if (c.call(this, a)) return !0;
 b = a.filterTarget || b;
 if (b) {
 a.filterTarget || this.dispatchCapture(a, b);
-var e = this.dispatchBubble(a, b);
-a.forward && (e = this.forward(a));
+var f = this.dispatchBubble(a, b);
+a.forward && (f = this.forward(a));
 }
 },
 forward: function(a) {
@@ -1813,7 +1911,6 @@ a.stopPropagation = function() {
 this._handled = !0;
 };
 while (b) {
-a.type == "click" && a.ctrlKey && a.altKey && console.log(a.type + ": " + b.name + " [" + b.kindName + "]");
 if (this.dispatchToTarget(a, b) === !0) return !0;
 b = b.parent || b.manager || b.owner;
 }
@@ -1829,15 +1926,7 @@ return !0;
 }
 },
 handleMouseOverOut: function(a, b) {
-var c = this.mouseOverOutEvents[a.type];
-if (c) {
-if (this.isInternalMouseOverOut(a, b)) return !0;
-var d = {
-type: "child" + a.type,
-dispatchTarget: a.dispatchTarget
-};
-this.dispatchBubble(d, b.parent);
-}
+if (this.mouseOverOutEvents[a.type]) if (this.isInternalMouseOverOut(a, b)) return !0;
 },
 isInternalMouseOverOut: function(a, b) {
 var c = b.eventNode, d = this.findDispatchTarget(a.relatedTarget);
@@ -1851,22 +1940,7 @@ return d && d.isDescendantOf(b);
 return enyo.dispatcher.dispatch(enyo.fixEvent(a));
 }, enyo.bubble = function(a) {
 a && enyo.dispatch(a);
-}, enyo.bubbler = "enyo.bubble(arguments[0])", enyo.requiresWindow(enyo.dispatcher.connect), enyo.dispatcher.features = [], enyo.mixin(enyo.dispatcher, {
-_squelch: [],
-squelchPeriod: 150,
-squelchNextType: function(a) {
-this._squelch[a] = (new Date).getTime() + this.squelchPeriod;
-},
-squelchNextClick: function() {
-this.squelchNextType("click");
-}
-}), enyo.dispatcher.features.push(function(a) {
-var b = this._squelch[a.type];
-if (b && a.synthetic) {
-this._squelch[a.type] = 0;
-if ((new Date).getTime() < b) return !0;
-}
-}), enyo.dispatcher.captureFeature = {
+}, enyo.bubbler = "enyo.bubble(arguments[0])", enyo.requiresWindow(enyo.dispatcher.connect), enyo.dispatcher.features = [], enyo.dispatcher.captureFeature = {
 noCaptureEvents: {
 load: 1,
 error: 1
@@ -2165,7 +2239,7 @@ height: a.offsetHeight
 },
 addCssText: function(a) {
 var b = a.replace(/; /g, ";").split(";");
-for (var c = 0, d; d = b[c]; c++) d = d.split(":"), this.domStyles[d[0]] = d[1];
+for (var c = 0, d, e, f; d = b[c]; c++) d = d.split(":"), e = d.shift(), f = d.length > 1 ? d.join(":") : d[0], this.domStyles[e] = f;
 },
 setDomStyles: function(a) {
 this.domStyles = a, this.domStylesChanged();
@@ -2663,6 +2737,8 @@ topBoundary: 0,
 rightBoundary: 0,
 bottomBoundary: 0,
 leftBoundary: 0,
+interval: 20,
+fixedTime: !0,
 x0: 0,
 x: 0,
 y0: 0,
@@ -2699,22 +2775,21 @@ simulate: function(a) {
 while (a >= this.frame) a -= this.frame, this.dragging || this.constrain(), this.verlet(), this.friction("y", "y0", this.kFrictionDamping), this.friction("x", "x0", this.kFrictionDamping);
 return a;
 },
-interval: 20,
 animate: function() {
 this.stop();
-var a = (new Date).getTime(), b = 0, c = 0, d = 0, e = [], f, g, h, i = enyo.hitch(this, function() {
-this.job = window.setTimeout(i, this.interval);
-var f = (new Date).getTime(), j = f - a;
-a = f, j < this.interval - 5 && console.log("wall-clock delta " + j + "ms is significantly less than timer interval " + this.interval + "ms"), d += j, e.push(j), ++c == 20 && (c--, d -= e.shift()), this.fps = (c * 1e3 / d).toFixed(1) + " fps", this.dragging && (this.y0 = this.y = this.uy, this.x0 = this.x = this.ux), b += j;
-b >= this.frame && (b = this.simulate(b), h != this.y || g != this.x ? this.scroll() : this.dragging || (this.stop(!0), this.fps = "stopped", this.scroll()), h = this.y, g = this.x);
+var a = (new Date).getTime(), b = 0, c, d, e = enyo.bind(this, function() {
+var f = (new Date).getTime();
+this.job = enyo.requestAnimationFrame(e);
+var g = f - a;
+a = f, this.dragging && (this.y0 = this.y = this.uy, this.x0 = this.x = this.ux), b += g, this.fixedTime && !this.isInOverScroll() && (b = this.interval), b = this.simulate(b), d != this.y || c != this.x ? this.scroll() : this.dragging || (this.stop(!0), this.scroll()), d = this.y, c = this.x;
 });
-this.job = window.setTimeout(i, this.interval);
+this.job = enyo.requestAnimationFrame(e);
 },
 start: function() {
 this.job || (this.animate(), this.doScrollStart());
 },
 stop: function(a) {
-window.clearTimeout(this.job), this.job = null, a && this.doScrollStop();
+this.job = enyo.cancelRequestAnimationFrame(this.job), a && this.doScrollStop();
 },
 startDrag: function(a) {
 this.dragging = !0, this.my = a.pageY, this.py = this.uy = this.y, this.mx = a.pageX, this.px = this.ux = this.x;
@@ -2729,7 +2804,11 @@ return !0;
 }
 },
 dragDrop: function(a) {
-this.dragging && !window.PalmSystem && (this.y = this.uy, this.y0 = this.y - (this.y - this.y0) * 1, this.x = this.ux, this.x0 = this.x - (this.x - this.x0) * 1), this.dragging = !1;
+if (this.dragging && !window.PalmSystem) {
+var b = .5;
+this.y = this.uy, this.y0 = this.y - (this.y - this.y0) * b, this.x = this.ux, this.x0 = this.x - (this.x - this.x0) * b;
+}
+this.dragging = !1;
 },
 dragFinish: function() {
 this.dragging = !1;
@@ -2744,7 +2823,7 @@ isScrolling: function() {
 return this.job;
 },
 isInOverScroll: function() {
-if (this.job) if (this.x > this.leftBoundary || this.x < this.rightBoundary || this.y > this.topBoundary || this.y < this.bottomBoundary) return !0;
+return this.job && (this.x > this.leftBoundary || this.x < this.rightBoundary || this.y > this.topBoundary || this.y < this.bottomBoundary);
 }
 });
 
@@ -3446,7 +3525,8 @@ draggable: !1
 },
 srcChanged: function() {
 this.setAttribute("src", enyo.path.rewrite(this.src));
-}
+},
+renderDomContent: function() {}
 });
 
 // base/controls/Stateful.js
@@ -3483,7 +3563,7 @@ toggling: !1,
 allowDrag: !1
 },
 create: function() {
-this.inherited(arguments), this.caption = this.caption || this.label || this.content, this.captionChanged(), this.disabledChanged(), this.isDefaultChanged(), this.downChanged();
+this.inherited(arguments), this.caption = this.caption || this.label || this.content, this.captionChanged(), this.disabledChanged(), this.isDefaultChanged(), this.downChanged(), this.depressedChanged();
 },
 captionChanged: function() {
 this.setContent(this.caption);
@@ -3625,7 +3705,8 @@ value: "",
 disabled: !1,
 readonly: !1,
 placeholder: "",
-placeholderClassName: ""
+placeholderClassName: "",
+tabIndex: ""
 },
 events: {
 onfocus: "",
@@ -3672,6 +3753,9 @@ this.setAttribute("readonly", this.readonly ? "readonly" : null);
 placeholderChanged: function() {
 this.setAttribute("placeholder", this.placeholder);
 },
+tabIndexChanged: function() {
+this.setAttribute("tabindex", this.tabIndex);
+},
 focusHandler: function(a, b) {
 this.hasNode() && (this.isEmpty() && this.updatePlaceholder(!1), this.doFocus());
 },
@@ -3712,6 +3796,7 @@ kind: enyo.Control,
 published: {
 hint: enyo._$L("Tap Here To Type"),
 value: "",
+tabIndex: "",
 spellcheck: !0,
 autocorrect: !0,
 autoKeyModifier: "",
@@ -3723,6 +3808,7 @@ inputType: "",
 inputClassName: "",
 focusClassName: "enyo-input-focus",
 spacingClassName: "enyo-input-spacing",
+alwaysLooksFocused: !1,
 selection: null,
 disabled: !1,
 changeOnInput: !1,
@@ -3746,23 +3832,18 @@ kind: enyo.BasicInput,
 className: "enyo-input-input"
 } ],
 clientChrome: [ {
-name: "spacer",
-kind: "HFlexBox",
-align: "center",
-components: [ {
 name: "client",
-layoutKind: "HFlexLayout",
+kind: "HFlexBox",
 align: "center"
-} ]
 } ],
 create: function() {
-this.inherited(arguments), this.updateSpacingControl(), this.disabledChanged(), this.inputTypeChanged(), this.valueChanged(), this.hintChanged(), this.inputClassNameChanged(), this.styledChanged(), this.applySmartTextOptions();
+this.inherited(arguments), this.updateSpacingControl(), this.disabledChanged(), this.inputTypeChanged(), this.tabIndexChanged(), this.valueChanged(), this.hintChanged(), this.alwaysLooksFocusedChanged(), this.inputClassNameChanged(), this.styledChanged(), this.applySmartTextOptions();
 },
 destroy: function() {
 this.stopInputDelayJob(), this.inherited(arguments);
 },
 addControl: function(a) {
-!a.isChrome && !this.$.client && (this.createChrome(this.clientChrome), this.$.input.prepend = !0, this.$.input.setParent(this.$.spacer), this.updateSpacingControl()), this.inherited(arguments);
+!a.isChrome && !this.$.client && (this.createChrome(this.clientChrome), this.$.input.setParent(this.$.client), this.updateSpacingControl()), this.inherited(arguments);
 },
 selectAllHandler: function() {
 document.execCommand("selectAll");
@@ -3781,10 +3862,10 @@ b.dispatchTarget != this.$.input && b.preventDefault();
 return this.doMousedown(b);
 },
 focusHandler: function(a, b) {
-this.styled && this.addClass(this.focusClassName), this.selectAllOnFocus && this.forceSelect(), this.doFocus(b);
+this.styled && !this.alwaysLooksFocused && this.addClass(this.focusClassName), this.selectAllOnFocus && this.forceSelect(), this.doFocus(b);
 },
 blurHandler: function(a, b) {
-this.removeClass(this.focusClassName), this.selectAllOnFocus && document.execCommand("Unselect"), this.doBlur(b);
+this.alwaysLooksFocused || this.removeClass(this.focusClassName), this.selectAllOnFocus && document.execCommand("Unselect"), this.doBlur(b);
 },
 clickHandler: function(a, b) {
 this.forceFocus(), this.doClick(b);
@@ -3794,6 +3875,9 @@ this.inherited(arguments), this.selectionChanged();
 },
 inputClassNameChanged: function() {
 this.$.input.addClass(this.inputClassName);
+},
+alwaysLooksFocusedChanged: function() {
+this.alwaysLooksFocused && this.styled && this.addClass(this.focusClassName);
 },
 inputTypeChanged: function() {
 this.$.input.domAttributes.type = this.inputType, this.hasNode() && this.$.input.render();
@@ -3806,6 +3890,9 @@ return this.$.input.getDomValue();
 },
 getValue: function() {
 return this.$.input.getValue();
+},
+tabIndexChanged: function() {
+this.$.input.setTabIndex(this.tabIndex);
 },
 changeHandler: function(a, b) {
 this.changeOnInput || (this.value = a.getValue(), this.doChange(b, this.value));
@@ -3866,7 +3953,7 @@ applySmartTextOptions: function() {
 this.spellcheckChanged(), this.autoWordCompleteChanged(), this.autocorrectChanged(), this.autoLinkingChanged(), this.autoEmoticonsChanged(), this.autoCapitalizeChanged(), this.autoKeyModifierChanged();
 },
 updateSpacingControl: function() {
-var a = this.$.spacer || this.$.input;
+var a = this.$.client || this.$.input;
 a != this.spacingControl && (this.spacingControl && this.spacingControl.removeClass(this.spacingClassName), this.spacingControl = a), this.spacingClassNameChanged();
 },
 spacingClassNameChanged: function(a) {
@@ -3902,6 +3989,7 @@ onfocus: "",
 onblur: ""
 },
 published: {
+alwaysLooksFocused: !1,
 focusClassName: "enyo-input-focus",
 spacingClassName: "enyo-input-spacing"
 },
@@ -3912,16 +4000,19 @@ align: "center",
 layoutKind: "HFlexLayout",
 className: "enyo-input",
 create: function() {
-this.inherited(arguments), this.spacingClassNameChanged();
+this.inherited(arguments), this.alwaysLooksFocusedChanged(), this.spacingClassNameChanged();
 },
 spacingClassNameChanged: function(a) {
 a && this.$.client.removeClass(a), this.$.client.addClass(this.spacingClassName);
 },
+alwaysLooksFocusedChanged: function() {
+this.alwaysLooksFocused && this.addClass(this.focusClassName);
+},
 focusHandler: function(a, b) {
-this.addClass(this.focusClassName), this.doFocus(b);
+this.alwaysLooksFocused || this.addClass(this.focusClassName), this.doFocus(b);
 },
 blurHandler: function(a, b) {
-this.removeClass(this.focusClassName), this.doBlur(b);
+this.alwaysLooksFocused || this.removeClass(this.focusClassName), this.doBlur(b);
 },
 layoutKindChanged: function() {
 this.$.client.align = this.align, this.$.client.pack = this.pack, this.$.client.setLayoutKind(this.layoutKind);
@@ -4179,7 +4270,17 @@ this._zIndex ? a = this._zIndex : this.hasNode() && (a = Number(enyo.dom.getComp
 return this._zIndex = a;
 },
 mousedownHandler: function(a, b) {
-!this.modal && this.dismissWithClick && b.dispatchTarget != this && !b.dispatchTarget.isDescendantOf(this) && this.close(b), this.fire("onmousedown", b);
+var c = !b.dispatchTarget.isDescendantOf(this);
+!this.modal && this.dismissWithClick && b.dispatchTarget != this && c ? this.close(b) : this.modal && c && b.preventDefault(), this.fire("onmousedown", b);
+},
+blurHandler: function(a, b) {
+this.lastFocus = a;
+},
+focusHandler: function(a, b) {
+if (this.modal && !a.isDescendantOf(this)) {
+var c = this.lastFocus && this.lastFocus.hasNode() || this.hasNode();
+c && c.focus();
+}
 },
 keydownHandler: function(a, b, c) {
 switch (b.keyCode) {
@@ -5213,7 +5314,10 @@ password: this.password
 },
 isFailure: function(a) {
 var b = this.xhr;
-return !b || !b.status || b.status < 200 || b.status >= 300;
+return !b || !this.isSuccess(b.status);
+},
+isSuccess: function(a) {
+return !a || a >= 200 && a < 300;
 },
 receive: function(a, b) {
 this.xhr = b, this.inherited(arguments, [ b ]);
@@ -5322,7 +5426,15 @@ enyo.paths({"kernel":"$enyo/kernel/","g11n":"$enyo/g11n/","g11n-base":"$enyo/g11
 
 // palm/system/system.js
 
-enyo.fittingClassName = "enyo-fit", enyo.logTimers = function(a) {
+enyo.fittingClassName = "enyo-fit", enyo.fetchConfigFile = function(a) {
+if (a) {
+var b = enyo.windows.getRootWindow();
+if (b.enyo) return b.enyo.xhr.request({
+url: a,
+sync: !0
+}).responseText;
+}
+}, enyo.logTimers = function(a) {
 var b = a ? " (" + a + ")" : "";
 console.log("*** Timers " + b + " ***");
 var c = enyo.time.timed;
@@ -5350,19 +5462,21 @@ if (window.PalmSystem) return PalmSystem.identifier.split(" ")[0];
 var a = enyo.windows.getRootWindow(), b = a.document, c = b.baseURI.match(new RegExp(".*://[^#]*/"));
 if (c) return c[0];
 }, enyo.fetchAppInfo = function() {
-var a = enyo.windows.getRootWindow();
-if (a.enyo) {
-var b = a.enyo.xhr.request({
-url: "appinfo.json",
-sync: !0
-}).responseText;
+var a = enyo.fetchConfigFile("appinfo.json");
 try {
-b = enyo.json.parse(b);
-return b;
-} catch (c) {
-console.warn("Could not parse appInfo: " + c);
+return enyo.json.parse(a);
+} catch (b) {
+console.warn("Could not parse appInfo: " + b);
 }
+}, enyo.fetchFrameworkConfig = function() {
+var a = enyo.fetchConfigFile("framework_config.json");
+try {
+return enyo.json.parse(a);
+} catch (b) {
+console.warn("Could not parse framework_config: " + b);
 }
+}, enyo.fetchRootFrameworkConfig = function() {
+var a = enyo.fetchConfigFile("$enyo/framework_config.json");
 }, enyo.fetchDeviceInfo = function() {
 if (window.PalmSystem) return JSON.parse(PalmSystem.deviceInfo);
 return undefined;
@@ -5420,7 +5534,9 @@ getCaretPosition: function() {
 if (window.caretRect) {
 var a = window.caretRect();
 if (a.x != 0 || a.y != 0) return a;
-console.log("window.caretRect failed");
+var b = enyo.dispatcher.findDispatchTarget(document.activeElement);
+(!b.caretRect || b.caretRect.x == 0 || b.caretRect.y == 0) && console.log("window.caretRect failed");
+return b.caretRect;
 }
 return this.getSimulatedCaretPosition();
 },
@@ -5474,10 +5590,12 @@ openDashboard: function(a, b, c, d) {
 d = d || {}, d.window = "dashboard";
 return this.openWindow(a, b, c, d);
 },
-openPopup: function(a, b, c, d) {
-return this.openWindow(a, b, c, {
+openPopup: function(a, b, c, d, e) {
+var f = this.openWindow(a, b, c, {
 window: "popupalert"
 }, "height=" + (d || 200));
+e && f.PalmSystem && f.PalmSystem.addNewContentIndicator();
+return f;
 },
 activate: function(a, b, c, d, e) {
 var f = this.fetchWindow(a);
@@ -6141,7 +6259,7 @@ onSearch: ""
 },
 components: [ {
 kind: "Image",
-src: "$palm-themes-Onyx/images/search-icon.png",
+src: "$palm-themes-Onyx/images/search-input-search.png",
 style: "display: block",
 onclick: "fireSearch"
 } ],
@@ -6378,32 +6496,34 @@ this.data[a] = [];
 }, enyo.sizeableMixin = {
 zoom: 1,
 centeredZoomStart: function(a) {
-var b = this.getOffset(), c = this.fetchScrollPosition();
+var b = enyo.dom.calcNodeOffset(this.hasNode()), c = this.fetchScrollPosition();
 this._zoomStart = {
 scale: a.scale,
-centerX: a.centerX,
-centerY: a.centerY,
+centerX: a.centerX - (b.left + c.l),
+centerY: a.centerY - (b.top + c.t),
 scrollX: c.l,
 scrollY: c.t,
+offsetLeft: b.left + c.l,
+offsetTop: b.top + c.t,
 zoom: this.zoom
 };
 },
 centeredZoomChange: function(a) {
 var b = this._zoomStart;
-a.scale = a.scale || b.scale, a.centerX = a.centerX || b.centerX, a.centerY = a.centerY || b.centerY;
-var c = Math.round(a.scale * 100) / 100, d = b.zoom * c;
-d > this.maxZoom && (c = this.maxZoom / b.zoom);
-var e = (c - 1) * b.centerX;
-e += c * b.scrollX, e += c * (b.centerX - a.centerX);
-var f = (c - 1) * b.centerY + c * b.scrollY + c * (b.centerY - a.centerY);
+a.scale = a.scale || b.scale;
+var c = a.centerX - b.offsetLeft || b.centerX, d = a.centerY - b.offsetTop || b.centerY, e = Math.round(a.scale * 100) / 100, f = b.zoom * e;
+f > this.getMaxZoom() && (e = this.getMaxZoom() / b.zoom);
+var g = (e - 1) * b.centerX;
+g += e * b.scrollX, g += e * (b.centerX - c);
+var h = (e - 1) * b.centerY + e * b.scrollY + e * (b.centerY - d);
 return {
-zoom: d,
-x: e,
-y: f
+zoom: f,
+x: g,
+y: h
 };
 },
 resetZoom: function() {
-this.setZoom(this.minZoom);
+this.setZoom(this.getMinZoom());
 },
 findScroller: function() {
 if (this._scroller) return this._scroller;
@@ -6440,27 +6560,21 @@ top: b - c.top - d.t
 }, enyo.kind({
 name: "enyo.BasicWebView",
 kind: enyo.Control,
-mixins: [ enyo.sizeableMixin ],
 published: {
 identifier: "",
 url: "",
 minFontSize: 16,
-autoFit: !1,
-fitRender: !1,
-zoom: 1,
 enableJavascript: !0,
 blockPopups: !0,
 acceptCookies: !0,
 redirects: [],
-accelerated: !1,
-networkInterface: ""
+networkInterface: "",
+ignoreMetaTags: !1
 },
 domAttributes: {
 tabIndex: 0
 },
 requiresDomMousedown: !0,
-minZoom: 1,
-maxZoom: 4,
 events: {
 onResized: "",
 onPageTitleChanged: "",
@@ -6487,27 +6601,20 @@ onError: ""
 lastUrl: "",
 style: "display: block",
 nodeTag: "object",
-chrome: [ {
-kind: "Animator",
-onAnimate: "stepAnimation",
-onEnd: "endAnimation"
-} ],
 create: function() {
-this.inherited(arguments), this.history = [], this.callQueue = [], this.gestureEvent = {}, this.dispatcher = enyo.dispatcher, this.domAttributes.type = "application/x-palm-browser";
-var a = enyo.fetchControlSize(this).w, b = enyo.fetchControlSize(this).h;
-this.setAttribute("viewportwidth", a), this.setAttribute("viewportheight", b), this._mouseInInteractive = !1, this._mouseInFlash = !1, this._flashGestureLock = !1;
+this.inherited(arguments), this.history = [], this.callQueue = [], this.dispatcher = enyo.dispatcher, this.domAttributes.type = "application/x-palm-browser";
 },
 destroy: function() {
 this.callQueue = null, this.inherited(arguments);
 },
 rendered: function() {
-this.inherited(arguments), this.hasNode() && (this.transitionEndHandler = enyo.bind(this, "webkitTransitionEndHandler"), this.node.addEventListener("webkitTransitionEnd", this.transitionEndHandler, !1), this.node.eventListener = this, this.history = [], this.lastUrl = "", this._viewInited = !1, this.connect());
+this.inherited(arguments), this.hasNode() && (this.node.eventListener = this, this.history = [], this.lastUrl = "", this._viewInited = !1, this.connect());
 },
 hasView: function() {
 return this.hasNode() && this.node.openURL;
 },
 adapterInitialized: function() {
-this.log("adapterInitialized"), this.connect();
+this.log("adapterInitialized"), this._viewInited = this._serverConnected = !1, this.connect();
 },
 serverConnected: function() {
 this.log(), this._serverConnected = !0, this._viewInited = !1, this.initView(), this.flushCallQueue(), this.doConnected();
@@ -6517,30 +6624,22 @@ connect: function() {
 },
 _connect: function() {
 try {
-this.node.connectBrowserServer();
+this.node.setPageIdentifier(this.identifier || this.id), this.node.connectBrowserServer();
 } catch (a) {}
 },
 initView: function() {
-this.hasView() && !this._viewInited && this._serverConnected && (this.cacheBoxSize(), this.node.setPageIdentifier(this.identifier || this.id), this.node.interrogateClicks(!1), this.node.setShowClickedLink(!0), this.node.pageFocused(!0), this.blockPopupsChanged(), this.acceptCookiesChanged(), this.enableJavascriptChanged(), this.redirectsChanged(), this.updateViewportSize(), this.fitRenderChanged(), this.urlChanged(), this.minFontSizeChanged(), this._viewInited = !0);
+this.hasView() && !this._viewInited && this._serverConnected && (this.cacheBoxSize(), this.node.interrogateClicks(!1), this.node.setShowClickedLink(!0), this.node.pageFocused(!0), this.blockPopupsChanged(), this.acceptCookiesChanged(), this.enableJavascriptChanged(), this.redirectsChanged(), this.updateViewportSize(), this.urlChanged(), this.minFontSizeChanged(), this._viewInited = !0);
 },
 resize: function() {
 var a = enyo.fetchControlSize(this);
-if (this._boxSize && (this._boxSize.w != a.w || this._boxSize.h != a.h)) {
-var b = a.w / this._boxSize.w;
-this.cacheBoxSize(), this.minZoom = this.calcMinZoom(), this.autoFit && (this.log(b * this.zoom), this.setZoom(b * this.zoom)), this.history = {};
-if (!this.fitRender) {
-var c = this.fetchScrollPosition();
-this.setScrollPositionDirect(b * c.l, b * c.t), this.setScrollPosition(b * c.l, b * c.t);
-}
-this.fitRenderChanged(), this.updateViewportSize();
-}
+this._boxSize && (this._boxSize.w != a.w || this._boxSize.h != a.h) && this.cacheBoxSize(), this.updateViewportSize();
 },
 cacheBoxSize: function() {
-this._boxSize = enyo.fetchControlSize(this);
+this._boxSize = enyo.fetchControlSize(this), this.applyStyle("width", this._boxSize.w + "px"), this.applyStyle("height", this._boxSize.h + "px");
 },
 updateViewportSize: function() {
-var a = this._boxSize;
-a.h = Math.min(window.innerHeight, a.h), this.callBrowserAdapter("setViewportSize", [ a.w, a.h ]);
+var a = enyo.getVisibleControlBounds(this);
+this.callBrowserAdapter("setVisibleSize", [ a.width, a.height ]);
 },
 urlChanged: function() {
 this.url && (this.callBrowserAdapter("openURL", [ this.url ]), this.log(this.url));
@@ -6548,123 +6647,11 @@ this.url && (this.callBrowserAdapter("openURL", [ this.url ]), this.log(this.url
 minFontSizeChanged: function() {
 this.callBrowserAdapter("setMinFontSize", [ Number(this.minFontSize) ]);
 },
-fitRenderChanged: function() {
-if (this._boxSize) {
-var a = enyo.fetchControlSize(this);
-if (this.fitRender) this.callBrowserAdapter("setDefaultLayoutWidth", [ a.w, a.h ]); else {
-var b = 1024 / a.w * a.h;
-this.callBrowserAdapter("setDefaultLayoutWidth", [ 1024, b ]);
-}
-}
-},
-dispatchDomEvent: function(a) {
-var b = !0, c = a.type == "gesturechange" || a.type == "gesturestart" || a.type == "gestureend", d = a.centerX || a.clientX || a.pageX, e = a.centerY || a.clientY || a.pageY;
-if (a.preventDefault && (d < 0 || e < 0)) {
-a.preventDefault();
-return !0;
-}
-if (c || !this._flashGestureLock && !this._mouseInInteractive || this._flashGestureLock && !this._mouseInFlash) b = this.inherited(arguments);
-return b;
-},
-clickHandler: function(a, b) {
-enyo.job(this.id + "-webviewClick", enyo.bind(this, "_click", b), 400);
+dragstartHandler: function() {
 return !0;
 },
-_click: function(a) {
-var b = a.centerX || a.clientX || a.pageX, c = a.centerY || a.clientY || a.pageY, d = this.toContentOffset(b, c);
-this.callBrowserAdapter("clickAt", [ d.left, d.top, 1 ]);
-},
-gesturestartHandler: function(a, b) {
-if (!this._metaViewport || this._metaViewport.userScalable) enyo.dispatcher.capture(this), this.callBrowserAdapter("enableFastScaling", [ !0 ]), this.centeredZoomStart(b);
-},
-gesturechangeHandler: function(a, b) {
-if (!this._metaViewport || this._metaViewport.userScalable) {
-enyo.stopEvent(b);
-var c = this.centeredZoomChange(b);
-this.setZoom(c.zoom), c.zoom == this.getZoom() && this.setScrollPositionDirect(Math.round(c.x), Math.round(c.y));
-}
-},
-gestureendHandler: function(a, b) {
-if (!this._metaViewport || this._metaViewport.userScalable) {
-enyo.dispatcher.release(this);
-var c = this.fetchScrollPosition();
-this.setScrollPosition(c.l, c.t), this.callBrowserAdapter("enableFastScaling", [ !1 ]);
-}
-},
-zoomChanged: function(a) {
-if (this._pageWidth && this._pageHeight) {
-var b = this.maxZoom, c = this.minZoom;
-this._metaViewport && (b = this.maxZoom > this._metaViewport.maximumScale ? this._metaViewport.maximumScale : this.maxZoom, c = this.minZoom < this._metaViewport.minimumScale ? this._metaViewport.minimumScale : this.minZoom), this.zoom = Math.max(c, Math.min(this.zoom, b));
-var d = Math.round(this.zoom * this._pageWidth), e = Math.round(this.zoom * this._pageHeight);
-this.applyStyle("width", d + "px"), this.applyStyle("height", e + "px");
-var f = this.findScroller();
-f && f.calcBoundaries(), this.doResized(d, e);
-}
-},
-fetchDefaultZoom: function() {
-return this.autoFit ? this.minZoom : 1;
-},
-calcMinZoom: function() {
-return this._boxSize.w / this._pageWidth;
-},
-dblclickHandler: function(a, b) {
-enyo.job.stop(this.id + "-webviewClick");
-var c = b.centerX || b.clientX || b.pageX, d = b.centerY || b.clientY || b.pageY, e = this.toContentOffset(c, d);
-this.callBrowserAdapter("smartZoom", [ e.left, e.top ]);
-},
-smartZoomAreaFound: function(a, b, c, d, e, f, g) {
-var h = this._boxSize.w / (c - a + 20), i;
-h == this.zoom ? (h = this.fetchDefaultZoom(), i = 0) : i = (a - 10) * h;
-var j = b - 10;
-this.log(g);
-if (g) {
-var k = c - a, l = d - b, m = this._boxSize.h / (d - b + 20);
-if (k * h > this._boxSize.w || l * h > this._boxSize.h) k * m <= this._boxSize.w && l * m <= this._boxSize.h && (h = m);
-i = a * h - (this._boxSize.w - h * k) / 2, j = b * h - (this._boxSize.h - h * l) / 2;
-} else this.log(), j = f * h - this._boxSize.h / 2;
-j < 0 && (j = 0), i < 0 && (i = 0), this.accelerated ? this.smartZoomAreaFoundAccelerated(h, i, j, e, f) : this.smartZoomAreaFoundUnaccelerated(h, i, j), this._spotlight = g;
-},
-smartZoomAreaFoundUnaccelerated: function(a, b, c) {
-var d = this.fetchScrollPosition();
-this.$.animator.setDuration(500), this.$.animator.setTick(15);
-var e = 500 / 15;
-this._f = {
-zoom: a
-}, this._c = {
-zoom: this.zoom,
-left: d.l,
-top: d.t
-}, this._s = {
-zoom: (a - this._c.zoom) / e,
-left: (b - this._c.left) / e,
-top: (c - this._c.top) / e
-}, this.callBrowserAdapter("enableFastScaling", [ !0 ]), this.$.animator.play(0, e);
-},
-stepAnimation: function(a, b) {
-var c = this._c.zoom + this._s.zoom * b, d = this._c.left + this._s.left * b, e = this._c.top + this._s.top * b;
-this.setZoom(c), this.setScrollPositionDirect(d, e);
-},
-endAnimation: function() {
-this.setZoom(this._f.zoom), this.callBrowserAdapter("enableFastScaling", [ !1 ]), this._flashGestureLock && this.showFlashLockedMessage();
-},
-smartZoomAreaFoundAccelerated: function(a, b, c, d, e) {
-var f = d, g = e, h, i = this.fetchScrollPosition();
-a == this.zoom ? h = -i.l : h = b - i.l;
-var j = c - i.t, k = a / this.zoom, l = (k - 1) * f - h, m = (k - 1) * g - j;
-this.callBrowserAdapter("enableFastScaling", [ !0 ]), this.addClass("enyo-webview-animate"), this.applyStyle("-webkit-transform-origin", f + "px " + g + "px");
-var n = "matrix3d(";
-n += k + ",0,0,0,", n += "0," + k + ",0,0,", n += "0,0," + k + ",0,", n += l + "," + m + ",0,1)", this.node.style.webkitTransform = n, this._smartZoomInfo = {
-zoom: a,
-zoomChanged: a != this.zoom,
-left: b,
-top: c,
-scrollChanged: b != i.l || c != i.t
-};
-},
-webkitTransitionEndHandler: function() {
-this.removeClass("enyo-webview-animate"), this.applyStyle("-webkit-transform-origin", null);
-var a = enyo.dom.calcNodeOffset(this.hasNode()), b = this.fetchScrollPosition(), c = this._smartZoomInfo;
-this.callBrowserAdapter("skipPaintHack", [ c.zoomChanged, c.scrollChanged, -c.left + a.left + b.l, -c.top + a.top + b.t ]), this.setScrollPosition(c.left, c.top), this.setZoom(c.zoom), this.callBrowserAdapter("enableFastScaling", [ !1 ]);
+flickHandler: function(a, b) {
+this.callBrowserAdapter("handleFlick", [ b.xVel, b.yVel ]);
 },
 enableJavascriptChanged: function() {
 this.callBrowserAdapter("setEnableJavaScript", [ this.enableJavascript ]);
@@ -6682,6 +6669,9 @@ for (var b = 0, c; c = this.redirects[b]; b++) this.callBrowserAdapter("addUrlRe
 networkInterfaceChanged: function() {
 this.networkInterface && this.callBrowserAdapter("setNetworkInterface", [ this.networkInterface ]);
 },
+ignoreMetaTagsChanged: function() {
+this.callBrowserAdapter("ignoreMetaTags", [ this.ignoreMetaTags ]);
+},
 clearHistory: function() {
 this.callBrowserAdapter("clearHistory");
 },
@@ -6696,23 +6686,6 @@ this.callBrowserAdapter("paste");
 },
 selectAllHandler: function() {
 this.callBrowserAdapter("selectAll");
-},
-storeToHistory: function() {
-var a = this.lastUrl;
-if (a) {
-var b = this.fetchScrollPosition();
-b.zoom = this.zoom, this.history[a] = b;
-}
-},
-restoreFromHistory: function() {
-var a = this.fetchScrollPosition();
-a.zoom = this.fetchDefaultZoom(), a = enyo.mixin(a, this.history[this.url]), this.setZoom(a.zoom), this._scroller && this._scroller.setScrollTop(a.t);
-},
-getTextCaret: function() {
-this.callBrowserAdapter("getTextCaret", [ enyo.hitch(this, "getTextCaretResponse") ]);
-},
-getTextCaretResponse: function(a, b, c, d) {
-this.log(a, b, c, d);
 },
 callBrowserAdapter: function(a, b) {
 this.hasNode() && this.node[a] && this._serverConnected ? (this.log(a, b), this.node[a].apply(this.node, b)) : (this.log("queued!", a, b), this.callQueue.push({
@@ -6735,7 +6708,7 @@ style: "text-align:center",
 components: [ {
 content: $L("Dragging works in Flash, until you<br>pinch to zoom out")
 } ]
-}), this.flashPopup.render(), this.flashPopup.hasNode() && (this.flashTransitionEndHandler = enyo.bind(this, "flashPopupTransitionEndHandler"), this.flashPopup.node.addEventListener("webkitTransitionEnd", this.flashTransitionEndHandler, !1))), this.flashPopup.applyStyle("opacity", 1), this.flashPopup.openAtCenter(), enyo.job(this.id + "-hideFlashPopup", enyo.bind(this, "hideFlashLockedMessage"), 2e3);
+}), this.flashPopup.render(), this.flashPopup.hasNode() && (this.flashTransitionEndHandler = enyo.bind(this, "flashPopupTransitionEndHandler"))), this.flashPopup.applyStyle("opacity", 1), this.flashPopup.openAtCenter(), enyo.job(this.id + "-hideFlashPopup", enyo.bind(this, "hideFlashLockedMessage"), 2e3);
 },
 hideFlashLockedMessage: function() {
 this.flashPopup.addClass("enyo-webview-flashpopup-animate"), this.flashPopup.applyStyle("opacity", 0);
@@ -6743,28 +6716,20 @@ this.flashPopup.addClass("enyo-webview-flashpopup-animate"), this.flashPopup.app
 flashPopupTransitionEndHandler: function() {
 this.flashPopup.removeClass("enyo-webview-flashpopup-animate"), this.flashPopup.close();
 },
-pageDimensionsChanged: function(a, b) {
-if (a != 0 || b != 0) this.log(a, b), this._pageWidth = a, this._pageHeight = b, this.minZoom = this.calcMinZoom(), this._resetScroll ? (this._resetScroll = !1, this.setZoom(this.fetchDefaultZoom()), this.setScrollPosition(0, 0)) : this.setZoom(this.zoom);
-},
-scrollPositionChanged: function(a, b) {
-this.setScrollPosition(a, b);
-},
 urlTitleChanged: function(a, b, c, d) {
 this.lastUrl = this.url, this.url = a, this.doPageTitleChanged(enyo.string.escapeHtml(b), a, c, d);
 },
 loadStarted: function() {
-this.log(), this.storeToHistory(), this.doLoadStarted(), this._resetScroll = !0, this._spotlight = !1, this._metaViewport = null;
+this.log(), this.doLoadStarted();
 },
 loadProgressChanged: function(a) {
 this.doLoadProgress(a);
 },
 loadStopped: function() {
-this.log();
-var a = this.fetchScrollPosition();
-this.doLoadStopped();
+this.log(), this.doLoadStopped();
 },
 documentLoadFinished: function() {
-this.doLoadComplete(), this.log();
+this.log(), this.doLoadComplete();
 },
 mainDocumentLoadFailed: function(a, b, c, d) {
 this.doError(b, d + ": " + c);
@@ -6811,24 +6776,15 @@ this._flashGestureLock = a;
 createPage: function(a) {
 this.doNewPage(a);
 },
-scrollTo: function(a, b) {
-var c = enyo.dom.calcNodeOffset(this.node), d = this.fetchScrollPosition(), e = a, f = b;
-a != 0 && (e = a + d.l - c.left * -1), b != 0 && (f = b + d.t - c.top * -1), this.setScrollPosition(e, f);
-},
-metaViewportSet: function(a, b, c, d, e, f) {
-this._metaViewport = {
-initialScale: a,
-minimumScale: b,
-maximumScale: c,
-userScalable: f
-};
-},
+scrollTo: function(a, b) {},
+metaViewportSet: function(a, b, c, d, e, f) {},
 browserServerDisconnected: function() {
 this.log(), this._serverConnected = !1, this._viewInited = !1, this.doDisconnected();
 },
 showPrintDialog: function() {
 this.doPrint();
 },
+textCaretRectUpdate: function(a, b, c, d) {},
 showPopupMenu: function(a, b) {
 this.doOpenSelect(a, b);
 },
@@ -6845,17 +6801,10 @@ this.firstPaintCompleted();
 loadProgress: function(a) {
 this.loadProgressChanged(a);
 },
-pageDimensions: function(a, b) {
-this.pageDimensionsChanged(a, b);
-},
-smartZoomCalculateResponseSimple: function(a, b, c, d, e, f, g) {
-this.smartZoomAreaFound(a, b, c, d, e, f, g);
-},
+pageDimensions: function(a, b) {},
+smartZoomCalculateResponseSimple: function(a, b, c, d, e, f, g) {},
 titleURLChange: function(a, b, c, d) {
 this.urlTitleChanged(b, a, c, d);
-},
-urlChange: function(a, b, c) {
-this.url = a;
 }
 });
 
@@ -6868,14 +6817,12 @@ published: {
 identifier: "",
 url: "",
 minFontSize: 16,
-autoFit: !0,
-fitRender: !1,
 enableJavascript: !0,
 blockPopups: !0,
 acceptCookies: !0,
 redirects: [],
-accelerated: !1,
-networkInterface: ""
+networkInterface: "",
+ignoreMetaTags: !1
 },
 events: {
 onResized: "",
@@ -6901,7 +6848,7 @@ chrome: [ {
 name: "view",
 kind: enyo.BasicWebView,
 onResized: "doResized",
-onPageTitleChanged: "doPageTitleChanged",
+onPageTitleChanged: "pageTitleChanged",
 onUrlRedirected: "doUrlRedirected",
 onSingleTap: "doSingleTap",
 onLoadStarted: "doLoadStarted",
@@ -6931,9 +6878,10 @@ name: "spinner",
 kind: "SpinnerLarge"
 } ]
 } ],
+_freeSelectPopups: [],
 _cachedSelectPopups: {},
 create: function() {
-this.inherited(arguments), this.identifierChanged(), this.minFontSizeChanged(), this.autoFitChanged(), this.fitRenderChanged(), this.enableJavascriptChanged(), this.blockPopupsChanged(), this.acceptCookiesChanged(), this.redirectsChanged(), this.acceleratedChanged(), this.networkInterfaceChanged(), this.urlChanged();
+this.inherited(arguments), this.identifierChanged(), this.minFontSizeChanged(), this.enableJavascriptChanged(), this.blockPopupsChanged(), this.acceptCookiesChanged(), this.redirectsChanged(), this.networkInterfaceChanged(), this.ignoreMetaTagsChanged(), this.urlChanged();
 },
 identifierChanged: function() {
 this.$.view.setIdentifier(this.identifier);
@@ -6943,12 +6891,6 @@ this.$.view.setUrl(this.url);
 },
 minFontSizeChanged: function() {
 this.$.view.setMinFontSize(this.minFontSize);
-},
-autoFitChanged: function() {
-this.$.view.setAutoFit(this.autoFit);
-},
-fitRenderChanged: function() {
-this.$.view.setFitRender(this.fitRender);
 },
 enableJavascriptChanged: function() {
 this.$.view.setEnableJavascript(this.enableJavascript);
@@ -6962,30 +6904,26 @@ this.$.view.setAcceptCookies(this.acceptCookies);
 redirectsChanged: function(a) {
 this.$.view.setRedirects(this.redirects);
 },
-acceleratedChanged: function() {
-this.$.view.setAccelerated(this.accelerated);
-},
 networkInterfaceChanged: function() {
 this.$.view.setNetworkInterface(this.networkInterface);
 },
+ignoreMetaTagsChanged: function() {
+this.$.view.setIgnoreMetaTags(this.ignoreMetaTags);
+},
 openSelect: function(a, b, c) {
-if (this._cachedSelectPopups[b]) this._cachedSelectPopups[b]._response = -1, this._cachedSelectPopups[b].openAtCenter(); else {
-if (Object.keys(this._cachedSelectPopups).length > 4) {
-var d = Object.keys(this._cachedSelectPopups)[0], e = this._cachedSelectPopups[d];
-e.destroy(), delete this._cachedSelectPopups[d];
-}
-this.showSpinner(), enyo.asyncMethod(this, "createSelectPopup", b, c);
-}
+this._cachedSelectPopups[b] ? (this._cachedSelectPopups[b]._response = -1, this._cachedSelectPopups[b].openAtCenter()) : (this.showSpinner(), enyo.asyncMethod(this, "createSelectPopup", b, c));
 },
 createSelectPopup: function(a, b) {
-var c = this.createComponent({
+var c = this._freeSelectPopups.pop();
+c || (c = this.createComponent({
 kind: "PopupList",
 name: "select-" + a,
 _webviewId: a,
 _response: -1,
 onSelect: "selectPopupSelect",
 onClose: "selectPopupClose"
-}), d = [], e = enyo.json.parse(b);
+}));
+var d = [], e = enyo.json.parse(b);
 for (var f = 0, g; g = e.items[f]; f++) d.push({
 caption: g.text,
 disabled: !g.isEnabled
@@ -7015,6 +6953,10 @@ this.$.spinner.show(), this.$.spinnerPopup.openAtCenter();
 },
 hideSpinner: function() {
 this.$.spinnerPopup.close(), this.$.spinner.hide();
+},
+pageTitleChanged: function(a, b, c, d, e) {
+for (var f in this._cachedSelectPopups) this._freeSelectPopups.push(this._cachedSelectPopups[f]);
+this._cachedSelectPopups = {}, this.doPageTitleChanged(b, c, d, e);
 },
 activate: function() {
 this.$.view.callBrowserAdapter("pageFocused", [ !0 ]);
@@ -7092,9 +7034,6 @@ this.$.view.callBrowserAdapter("getImageInfoAtPoint", [ a, b, c ]);
 setHTML: function(a, b) {
 this.$.view.callBrowserAdapter("setHTML", [ a, b ]);
 },
-ignoreMetaTags: function(a) {
-this.$.view.callBrowserAdapter("ignoreMetaTags", [ a ]);
-},
 printFrame: function(a, b, c, d, e, f, g) {
 this.$.view.callBrowserAdapter("printFrame", [ a, b, c, d, e, f, g ]);
 },
@@ -7171,6 +7110,12 @@ this.log(a);
 },
 maxZoomRatioChanged: function() {
 this.maxZoom = this.minZoom * this.maxZoomRatio;
+},
+getMaxZoom: function() {
+return this.maxZoom;
+},
+getMinZoom: function() {
+return this.minZoom;
 },
 adjustSize: function() {
 var a = this._imageWidth = this.bufferImage.width, b = this._imageHeight = this.bufferImage.height, c = this._boxSize = enyo.fetchControlSize(this);
@@ -7928,7 +7873,6 @@ autoVertical: !0,
 vertical: !1,
 layoutKind: "OrderedLayout"
 } ],
-scrim: !0,
 defaultKind: "MenuItem",
 removeControl: function(a) {
 this.inherited(arguments), a == this._lastItem && (this._lastItem = null);
@@ -7955,7 +7899,7 @@ flow: function() {
 this.inherited(arguments), this.styleLastItem();
 },
 _locateLastItem: function(a) {
-if (a.collapsed) return a;
+if (a.getOpen && !a.getOpen()) return a;
 var b = a.getControls(), c = b.length;
 return c ? this._locateLastItem(b[c - 1]) : a;
 },
@@ -8197,6 +8141,35 @@ this.scrollIntoView(c.top);
 }
 });
 
+// palm/controls/popup/ModalDialog.js
+
+enyo.kind({
+name: "enyo.ModalDialog",
+kind: enyo.Popup,
+className: "enyo-popup enyo-modaldialog",
+scrim: !0,
+modal: !0,
+published: {
+caption: ""
+},
+chrome: [ {
+className: "enyo-modaldialog-container",
+components: [ {
+name: "modalDialogTitle",
+className: "enyo-text-ellipsis enyo-modaldialog-title"
+}, {
+name: "client",
+className: "enyo-modaldialog-content"
+} ]
+} ],
+create: function() {
+this.inherited(arguments), this.caption = this.caption || this.label || this.content, this.captionChanged();
+},
+captionChanged: function() {
+this.$.modalDialogTitle.setContent(this.caption);
+}
+});
+
 // palm/controls/ListSelector.js
 
 enyo.kind({
@@ -8227,7 +8200,7 @@ name: "client"
 } ]
 }, {
 name: "label",
-className: "enyo-listselector-label"
+className: "enyo-listselector-label enyo-label"
 }, {
 name: "arrow",
 className: "enyo-listselector-arrow"
@@ -8369,6 +8342,7 @@ name: "enyo.AppMenu",
 kind: enyo.Menu,
 className: "enyo-appmenu",
 defaultKind: "AppMenuItem",
+scrim: !1,
 create: function() {
 this.inherited(arguments), this.$.client.addClass("enyo-appmenu-inner");
 },
@@ -8410,7 +8384,7 @@ this.inherited(arguments), this.$.item.addClass("enyo-appmenu-item");
 
 enyo.kind({
 name: "enyo.HelpMenu",
-kind: enyo.MenuItem,
+kind: enyo.AppMenuItem,
 caption: enyo._$L("Help"),
 published: {
 target: ""
@@ -8493,8 +8467,7 @@ mousedownHandler: function(a, b) {
 b.preventDefault();
 },
 send: function(a) {
-var b = a.command;
-b = b.charAt(0).toUpperCase() + b.substr(1), this["do" + b](), enyo.dispatch({
+this["do" + enyo.cap(a.command)](), enyo.dispatch({
 type: a.command,
 target: document.activeElement
 });
@@ -8607,8 +8580,7 @@ kind: enyo.PickerButton,
 published: {
 value: "",
 textAlign: "center",
-items: [],
-scrim: !0
+items: []
 },
 events: {
 onChange: ""
@@ -8700,7 +8672,7 @@ onChange: ""
 },
 components: [ {
 name: "label",
-className: "enyo-picker-label"
+className: "enyo-picker-label enyo-label"
 }, {
 kind: "Picker"
 } ],
@@ -8745,7 +8717,7 @@ defaultKind: "enyo.Picker",
 chrome: [ {
 name: "label",
 kind: "Control",
-className: "enyo-picker-label"
+className: "enyo-picker-label enyo-label"
 }, {
 name: "client",
 kind: "Control",
@@ -8757,7 +8729,6 @@ this.inherited(arguments), this.pickers = [];
 create: function() {
 this.inherited(arguments), this.labelClassChanged(), this.labelChanged(), this.createChrome([ {
 kind: "Popup",
-scrim: !0,
 style: "border-width: 0; -webkit-border-image: none;"
 } ]);
 },
@@ -8864,20 +8835,29 @@ kind: enyo.PickerGroup,
 published: {
 label: enyo._$L("date"),
 value: null,
+hideDay: !1,
+hideMonth: !1,
+hideYear: !1,
 minYear: 1900,
 maxYear: 2099
 },
 components: [],
 initComponents: function() {
 this.inherited(arguments), this._tf = new enyo.g11n.Fmts;
-var a = {
+var a = {};
+this.hideDay || (a.d = "day"), this.hideMonth || (a.m = "month"), this.hideYear || (a.y = "year");
+var b = {
 d: "day",
 m: "month",
 y: "year"
-}, b = this._tf.getDateFieldOrder(), c = b.split(""), d, e, f;
-for (e = 0, f = c.length; e < f; e++) d = c[e], this.createComponent({
-name: a[d]
+}, c = this._tf.getDateFieldOrder(), d = c.split(""), e, f, g;
+for (f = 0, g = d.length; f < g; f++) {
+e = d[f];
+var h = this.createComponent({
+name: b[e]
 });
+a[e] || h.setShowing(!1);
+}
 },
 create: function() {
 this.inherited(arguments), this.value = this.value || new Date, this.setupMonth(), this.yearRangeChanged(), this.valueChanged();
@@ -8907,13 +8887,22 @@ var a = [];
 for (var b = this.minYear; b <= this.maxYear; b++) a.push(String(b));
 this.$.year.setItems(a);
 },
+hideDayChanged: function() {
+this.$.day.setShowing(!this.hideDay);
+},
+hideMonthChanged: function() {
+this.$.month.setShowing(!this.hideMonth);
+},
+hideYearChanged: function() {
+this.$.year.setShowing(!this.hideYear);
+},
 valueChanged: function() {
 var a = this.value, b = a.getMonth(), c = a.getDate(), d = a.getFullYear();
 this.setupDay(d, b, c), this.$.month.setValue(b), this.$.year.setValue(d);
 },
 pickerChange: function(a) {
-var b = parseInt(this.$.month.getValue()), c = parseInt(this.$.day.getValue()), d = parseInt(this.$.year.getValue());
-a != this.$.day && this.setupDay(d, b, c), this.value.setMonth(b), this.value.setDate(c), this.value.setYear(d), this.doChange(this.value);
+var b, c, d;
+this.hideDay || (b = parseInt(this.$.month.getValue()), this.value.setMonth(b)), this.hideMonth || (d = parseInt(this.$.year.getValue()), this.value.setYear(d)), this.hideYear || (c = parseInt(this.$.day.getValue()), a != this.$.day && !this.hideDay && this.setupDay(d, b, c), this.value.setDate(c)), this.doChange(this.value);
 }
 });
 
@@ -8948,6 +8937,9 @@ this.inherited(arguments), this.contentChanged();
 },
 contentChanged: function() {
 this.$.client.setContent(this.content);
+},
+layoutKindChanged: function() {
+this.$.client.align = this.align, this.$.client.pack = this.pack, this.$.client.setLayoutKind(this.layoutKind);
 },
 setPositionImmediate: function(a) {
 var b = this.animatePosition;
@@ -9014,7 +9006,6 @@ enyo.kind({
 name: "enyo.ProgressButton",
 kind: enyo.ProgressBar,
 className: "enyo-progress-button",
-layoutKind: "HFlexLayout",
 events: {
 onCancel: ""
 },
@@ -9032,6 +9023,9 @@ onStop: "stopAnimation"
 name: "bar",
 className: "enyo-progress-button-inner"
 }, {
+className: "enyo-fit",
+kind: "HFlexBox",
+components: [ {
 name: "client",
 flex: 1,
 align: "center",
@@ -9042,6 +9036,7 @@ name: "cancelButton",
 className: "enyo-progress-button-cancel",
 requiresDomMousedown: !0,
 onclick: "doCancel"
+} ]
 } ],
 create: function() {
 this.inherited(arguments), this.cancelableChanged();
@@ -9316,8 +9311,7 @@ executable: "",
 params: [],
 alphaBlend: !1,
 height: 0,
-width: 0,
-readyCallbackName: "ready"
+width: 0
 },
 events: {
 onPluginReady: "",
@@ -9346,9 +9340,9 @@ heightChanged: function() {
 this.setAttribute("height", this.height);
 },
 rendered: function() {
-this.inherited(arguments), this.hasNode() && (this.node.__PDL_PluginStatusChange__ = enyo.bind(this, this.pluginStatusChangedCallback), this.node[this.readyCallbackName] = enyo.bind(this, this.pluginReadyCallback), this.deferredCallbacks.forEach(function(a) {
+this.inherited(arguments), this.pluginReady = !1, this.hasNode() && (this.node.__PDL_PluginStatusChange__ = enyo.bind(this, this.pluginStatusChangedCallback), this.deferredCallbacks.forEach(function(a) {
 this.node[a.name] = a.callback;
-}, this), this.deferredCallbacks = []);
+}, this));
 },
 pluginStatusChangedCallback: function(a) {
 switch (a) {
@@ -9356,10 +9350,10 @@ case "ready":
 this.pluginReadyCallback();
 break;
 case "connected":
-this.doPluginConnected();
+this.pluginReady = !1, this.doPluginConnected();
 break;
 case "disconnected":
-this.doPluginDisconnected();
+this.pluginReady = !1, this.doPluginDisconnected();
 }
 },
 pluginReadyCallback: function() {
@@ -9387,7 +9381,7 @@ var d;
 c ? d = function() {
 var a = Array.prototype.slice.call(arguments);
 a.unshift(b), a.unshift(this), enyo.nextTick.apply(enyo, a);
-} : d = b, this.hasNode() ? this.node[a] = d : this.deferredCallbacks.push({
+} : d = b, this.hasNode() && (this.node[a] = d), this.deferredCallbacks.push({
 name: a,
 callback: d
 });
@@ -9487,7 +9481,8 @@ className: "enyo-collapsible-arrow"
 }, {
 name: "client",
 kind: "enyo.BasicDrawer",
-onOpenChanged: "doOpenChanged"
+onOpenChanged: "doOpenChanged",
+onOpenAnimationComplete: "doOpenAnimationComplete"
 } ],
 create: function() {
 this.inherited(arguments), this.iconChanged();
@@ -10296,6 +10291,9 @@ this.addStyles("top: " + a.top + "px; left: " + a.left + "px; width: " + a.width
 unlockClipRegion: function() {
 this._unlockedDomStyles && this.setDomStyles(this._unlockedDomStyles);
 },
+start: function() {
+this.$.scroll.start();
+},
 adjustTop: function(a) {},
 adjustBottom: function(a) {},
 unshiftPage: function() {
@@ -10690,11 +10688,11 @@ this.$.selection.setMulti(a);
 getSelection: function() {
 return this.$.selection;
 },
-resizeHandler: function() {
-this.$.scroller.measure(), this.refresh();
-},
 selectionChanged: function() {
 this.refresh();
+},
+resizeHandler: function() {
+this.hasNode() && (this.$.scroller.measure(), this.refresh(), this.$.scroller.start());
 },
 rowToPage: function(a) {
 return Math.floor(a / this.pageSize);
@@ -10755,7 +10753,7 @@ this.pages = [], this.handles = [], this.inherited(arguments);
 },
 reset: function(a) {
 var b = a;
-while (b <= this.max && this.handles[b] == undefined && b) b++;
+while (b <= this.max && this.handles[b] === undefined && b) b++;
 var c = this.handles[b];
 this.handles = [], b > this.max ? (enyo.vizLog && enyo.vizLog.log("DbPages: reset: saving no handles, returning to 'special 0' page"), b = 0) : (enyo.vizLog && enyo.vizLog.log("DbPages: reset: retaining handle for page " + b), this.handles[b] = c);
 },
@@ -10787,12 +10785,10 @@ request: b
 }, this.min = Math.min(this.min, c), this.max = Math.max(this.max, c), this.setHandle(c, a.handle), this.setHandle(c + 1, a.next), this.doReceive(c)) : this.pages[c] = {};
 },
 setHandle: function(a, b) {
-if (b != undefined) {
+if (b !== undefined) {
 this.handles[a] = b;
 var c = this.pages[a];
-c && c.pending && (c.inflight = !0, this.acquireNext(a, b));
-var c = this.pages[a - 1];
-c && c.pending && (c.inflight = !0, this.acquirePrevious(a - 1, b));
+c && c.pending && (c.inflight = !0, this.acquireNext(a, b)), c = this.pages[a - 1], c && c.pending && (c.inflight = !0, this.acquirePrevious(a - 1, b));
 }
 },
 acquireNext: function(a, b) {
@@ -10804,7 +10800,7 @@ var c = this.queryBack(b);
 this._acquire(c, a);
 },
 _acquire: function(a, b) {
-a && (a.index = b);
+a && (a.index = b), this.pages[b].request = a;
 },
 require: function(a) {
 enyo.vizLog && enyo.vizLog.log("DbPages: require: " + a);
@@ -10813,7 +10809,7 @@ if (b) return b.pending ? null : b;
 b = this.pages[a] = {
 pending: !0
 };
-if (this.handles[a] !== undefined) this.acquireNext(a, this.handles[a]); else if (this.handles[a + 1] !== undefined) this.acquirePrevious(a, this.handles[a + 1]); else if (a == 0) {
+if (this.handles[a] !== undefined) this.acquireNext(a, this.handles[a]); else if (this.handles[a + 1] !== undefined) this.acquirePrevious(a, this.handles[a + 1]); else if (a === 0) {
 for (var c = -1; c >= this.min; c--) if (this.pages[c] && this.pages[c].inflight) return;
 this.acquireNext(0, null);
 }
@@ -11042,7 +11038,7 @@ setTimeout(enyo.bind(this, a), this.latency());
 },
 query: function(a) {
 var b = a.params.query || {};
-b.page == undefined && (this.cursors = {});
+b.page === undefined && (this.cursors = {});
 var c = this.cursors[b.page] || (b.desc ? this.data.length - 1 : 0), d = b.limit ? c + b.limit : -1, e = d;
 b.desc && (d = c, c = Math.max(0, c - b.limit), e = c);
 var f = b.limit ? this.data.slice(c, d) : this.data.slice(c);
@@ -11055,18 +11051,20 @@ var h;
 do h = enyo.irand(1e4) + 1e4; while (this.cursors[h] !== undefined);
 this.cursors[h] = e, g.next = h;
 }
-enyo.vizLog && enyo.vizLog.log("MockDb.query: " + b.page + ": " + c + "/" + d + (inQqueryuery.desc ? " (desc) " : " next: ") + e + " (" + h + ")");
-var i = {
+enyo.vizLog && enyo.vizLog.log("MockDb.query: " + b.page + ": " + c + "/" + d + (b.desc ? " (desc) " : " next: ") + e + " (" + h + ")");
+var i = !1, j = {
 params: {
 query: b
 },
-destroy: enyo.nop,
+destroy: function() {
+i = !0;
+},
 isWatch: enyo.nop
 };
 setTimeout(enyo.bind(this, function() {
-this.doSuccess(g, i);
+i || this.doSuccess(g, j);
 }), this.latency());
-return i;
+return j;
 },
 watch: function(a) {
 this.doWatch();
@@ -11526,9 +11524,9 @@ button: 0
 }, g = document.createEvent("MouseEvents");
 d = b.id, e = Tellurium.getMetrics("#" + d), g.initMouseEvent("click", !0, !0, window, f.detail, e.left, e.top, e.left, e.top, f.ctrlKey, f.altKey, f.shiftKey, f.metaKey, f.button, null), b.dispatchEvent(g);
 return !0;
-}, Tellurium.queryElementValue = function(locator, arg) {
-var element = eval("document.querySelector(locator)." + arg);
-return element;
+}, Tellurium.queryElementValue = function(selector, propertyname) {
+var propertyvalue = eval("document.querySelector(selector)." + propertyname);
+return propertyvalue;
 }, Tellurium.queryElement = function(a) {
 var b = document.querySelector(a);
 return b.innerHTML;
@@ -11536,9 +11534,8 @@ return b.innerHTML;
 var c = document.querySelector(a);
 c.innerHTML = b;
 return !0;
-}, Tellurium.setElementValue = function(locator, arg, value) {
-var element = eval("document.querySelector(locator)." + arg);
-element = value;
+}, Tellurium.setElementValue = function(selector, propertyname, value) {
+eval("document.querySelector(selector)." + propertyname + "='" + value + "'");
 return !0;
 }, Tellurium.getDimensions = function(a) {
 if (a.style.display != "none") return {
@@ -11600,7 +11597,11 @@ var b = Tellurium.getElement(a);
 return b ? !0 : !1;
 }, Tellurium.isElementVisible = function(a) {
 var b = Tellurium.getElement(a);
-return b.style.display != "none";
+if (!b) return !1;
+if (b.style.display === "none") return !1;
+var c = Tellurium.getElementXPath(b, !1) + "/ancestor::*", d = document.evaluate(c, document, null, XPathResult.ANY_TYPE, null);
+while (b = d.iterateNext()) if (b.style.display === "none") return !1;
+return !0;
 }, Tellurium.revealElement = function(a) {
 var b = Tellurium.getElement(a);
 }, Tellurium.getWidth = function(a) {
@@ -11729,9 +11730,9 @@ command: a
 Mojo.Controller.stageController.sendEventToCommanders(b);
 }, Tellurium.getIndexFromList = function(a, b) {
 var c = document.querySelectorAll(a), d;
-for (i = 0; i < c.length; i++) {
-d = c[i].innerHTML;
-if (d.indexOf(b) != -1) return i + 1;
+for (var e = 0; e < c.length; e++) {
+d = c[e].innerHTML;
+if (d.indexOf(b) != -1) return e + 1;
 }
 return -1;
 }, Tellurium.getListItems = function(a, b, c) {
@@ -11783,6 +11784,31 @@ return b.mojo.getCursorPosition();
 }, Tellurium.textFieldSetCursorPosition = function(a, b, c) {
 var d = Tellurium.getElement(a);
 d.mojo.setCursorPosition(b, c);
+}, Tellurium.scrollToBottom = function(scrollerLocator) {
+var scrollerTe = Tellurium.getElement(scrollerLocator);
+if (scrollerTe.id == undefined || scrollerTe.id == null || scrollerTe.id == "") throw {
+message: "Scroller element has no associated 'id' property."
+};
+var evalText = "Tellurium.enyo.windows.getActiveWindow().enyo.$." + scrollerTe.id + ".scrollToBottom()";
+eval(evalText);
+}, Tellurium.scrollToTop = function(scrollerLocator) {
+var scrollerTe = Tellurium.getElement(scrollerLocator);
+if (scrollerTe.id == undefined || scrollerTe.id == null || scrollerTe.id == "") throw {
+message: "Scroller element has no associated 'id' property."
+};
+var evalText = "Tellurium.enyo.windows.getActiveWindow().enyo.$." + scrollerTe.id + ".scrollTo(0,0)";
+eval(evalText);
+}, Tellurium.scrollToElement = function(scrollerLocator, elementLocator) {
+var scrollerTe = Tellurium.getElement(scrollerLocator);
+if (scrollerTe.id == undefined || scrollerTe.id == null || scrollerTe.id == "") throw {
+message: "Scroller element has no associated 'id' property."
+};
+var elementTe = Tellurium.getElement(elementLocator);
+if (elementTe.offsetTop == undefined || elementTe.offsetTop == null) throw {
+message: "Unable to determine the top location of elementLocator."
+};
+var evalText = "Tellurium.enyo.windows.getActiveWindow().enyo.$." + scrollerTe.id + ".scrollTo(" + elementTe.offsetTop + ",0)";
+eval(evalText);
 };
 
 // palm/tellurium/startup.js

@@ -2,6 +2,15 @@
 //* @protected
 enyo.fittingClassName = "enyo-fit";
 
+enyo.fetchConfigFile = function(inFile) {
+	if (inFile) {
+		var root = enyo.windows.getRootWindow();
+		if (root.enyo) {
+			return root.enyo.xhr.request({url: inFile, sync: true}).responseText;
+		}
+	}
+};
+
 enyo.logTimers = function(inMessage) {
 	var m = inMessage ? " (" + inMessage + ")" : "";
 	console.log("*** Timers " + m + " ***");
@@ -11,7 +20,7 @@ enyo.logTimers = function(inMessage) {
 	}
 	//console.log("chartData:" + enyo.json.stringify(enyo.time.timed));
 	console.log("***************");
-}
+};
 
 //* @public
 /**
@@ -24,7 +33,7 @@ enyo.setAllowedOrientation = function(inOrientation) {
 	if (window.PalmSystem) {
 		PalmSystem.setWindowOrientation(inOrientation);
 	}
-}
+};
 
 /**
 	Returns the actual orientation of the window.  One of 'up', 'down', 'left' or 'right'.
@@ -33,7 +42,7 @@ enyo.getWindowOrientation = function() {
 	if (window.PalmSystem) {
 		return PalmSystem.screenOrientation;
 	}
-}
+};
 
 enyo.sendOrientationChange = function() {
 	var o = enyo.getWindowOrientation();
@@ -41,7 +50,7 @@ enyo.sendOrientationChange = function() {
 		enyo.dispatch({type: "windowRotated", orientation: o});
 	}
 	enyo.lastWindowOrientation = o;
-}
+};
 
 /**
 	On device, sets the full-screen mode of the window. If true, the system UI around the application is removed and you have
@@ -69,7 +78,7 @@ enyo.ready = function() {
 		//
 		enyo.setAllowedOrientation(enyo._allowedOrientation ? enyo._allowedOrientation : "free");
 	}
-}
+};
 
 /**
  Return a string with the current application ID, e.g. "com.example.app.myapplication"
@@ -79,7 +88,7 @@ enyo.fetchAppId = function() {
 		// PalmSystem.identifier: <appid> <processid>
 		return PalmSystem.identifier.split(" ")[0];
 	}
-}
+};
 
 /**
  Return a string with the URL that is the root path of the application.
@@ -91,23 +100,36 @@ enyo.fetchAppRootPath = function() {
 	if (match) {
 		return match[0];
 	}
-}
+};
 
 /**
  Return the contents of the application's appinfo.json as a JS object
  */
 enyo.fetchAppInfo = function() {
-	var root = enyo.windows.getRootWindow();
-	if (root.enyo) {
-		var r = root.enyo.xhr.request({url: "appinfo.json", sync: true}).responseText;
-		try {
-			r = enyo.json.parse(r);
-			return r;
-		} catch(e) {
-			console.warn("Could not parse appInfo: " + e);
-		}
+	var appInfo = enyo.fetchConfigFile("appinfo.json");
+	try {
+		return enyo.json.parse(appInfo);
+	} catch(e) {
+		console.warn("Could not parse appInfo: " + e);
 	}
-}
+};
+
+/**
+ Return the contents of the application's framework_config.json as a JS object
+ */
+
+enyo.fetchFrameworkConfig = function() {
+	var fc = enyo.fetchConfigFile("framework_config.json");
+	try {
+		return enyo.json.parse(fc);
+	} catch(e) {
+		console.warn("Could not parse framework_config: " + e);
+	}
+};
+
+enyo.fetchRootFrameworkConfig = function () {
+	var fc = enyo.fetchConfigFile("$enyo/framework_config.json");
+};
 
 /**
  Return the contents of the system's device information as a JS object.  

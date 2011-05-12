@@ -1,0 +1,67 @@
+{
+	"localeName": "Argentina",
+
+	"numberDivider": ".",
+	"numberDecimal": ",",
+	"currencyAppend": "",
+	"currency": {
+		"name": "ARS",
+		"iso": "#{sign} #{amt}",
+		"common": "#{sign}#{amt}"
+	},
+	"percentageSpace": false,
+	"titleCase": false,
+
+	"fullDate": "EEEE d 'de' MMMM 'de' yyyy",
+	"longDate": "d 'de' MMMM 'de' yyyy",
+	"mediumDate": "dd/MM/yyyy",
+	"defaultDate": "dd/MM/yyyy",
+	"shortDate": "dd/MM/yy",
+	"dateFieldOrder": "dmy",
+	"timeFieldOrder": "hma",
+
+	"fullTime24": "HH:mm:ss",
+	"fullTime12": "hh:mm:ss a",
+	"longTime24": "HH:mm:ss zzz",
+	"longTime12": "hh:mm:ss a zzz",
+	"mediumTime24": "HH:mm:ss",
+	"mediumTime12": "hh:mm:ss a",
+	"defaultTime24": "HH:mm:ss",
+	"defaultTime12": "hh:mm:ss a",
+	"shortTime24": "HH:mm",
+	"shortTime12": "hh:mm a",
+	"dateTimeFormat": "DATE TIME",
+
+	"is12HourDefault": true,
+	"firstDayOfWeek": 1,
+
+	"shortDMDate": "dd/MM",
+	"mediumDMDate": "dd/MM",
+	"longDMDate": "d 'de' MMMM",
+	"shortMYDate": "MM/yy",
+	"mediumMYDate": "MM/yyyy",
+	"longMYDate": "MMMM 'de' yyyy",
+	"shortDDate": "dd",
+	"mediumDDate": "dd",
+	"longDDate": "dd",	
+
+	"shortWeekday": "EE",
+	"mediumWeekday": "EEE",
+	"longWeekday": "EEEE",
+
+	"weekDateFormat": "WEEK DATE",
+	"timeAFormat": "TIME AM",
+	"timeZFormat": "TIME ZONE",
+	"timeAZFormat": "TIME AM ZONE",
+
+	"smallTime12": "hh:mm",
+	"bigTime12": "hh:mm:ss",
+
+	"smallTime24": "HH:mm",
+	"bigTime24": "HH:mm:ss",
+	
+	"timeH12": "hh",
+	"timeH24": "HH",
+	
+	"defaultTimeZone": "America/Buenos_Aires"
+}

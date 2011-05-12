@@ -1,18 +1,22 @@
 /* Copyright 2009-2011 Hewlett-Packard Development Company, L.P. All rights reserved. */
+/*jslint white: true, onevar: true, undef: true, eqeqeq: true, plusplus: true, bitwise: true, 
+regexp: true, newcap: true, immed: true, nomen: false, maxerr: 500 */
+/*global ContactsLib, document, enyo, console, $L */
+
 enyo.kind({
 	name		: "com.palm.library.contactsui.personListDialog",
-	kind		: enyo.Toaster,
+	kind		: "Popup",
+	layoutKind	: "VFlexLayout",
 	scrim		: true,
-	style		: "top: 0; bottom: 0;",
-	flyInFrom	: "left",
+	height		: "500px",
 
 	events:
 	{	
-		onContactClick:"",
-		onListUpdated:"",
-		onSearchCriteriaUpdated:"",
-		onSearchCriteriaCleared:"",
-		onAddClick:""
+		onContactClick: "",
+		onListUpdated: "",
+		onSearchCriteriaUpdated: "",
+		onSearchCriteriaCleared: "",
+		onAddClick: ""
 	},
 
 	published:
@@ -25,14 +29,19 @@ enyo.kind({
 		showFavStars: true	
 	},
 
-	components: [], //VFlexBox container for personListWidget did not work out; add components dynamically to component list in create() only!
+	components: [
+		{kind: "Control", content: $L("Make A Selection"), style: "text-align: center"},
+		{kind: "Control", flex: 1, layoutKind: "VFlexLayout", className: "group", components: [
+			{name: "listWrapper", flex: 1, className: "group-inner", components: [], kind: "VFlexBox"}
+		]},
+		{kind: "Button", caption: $L("Cancel")}
+	], //VFlexBox container for personListWidget did not work out; add components dynamically to component list in create() only!
 
-	create: function() {
+	create: function () {
 		this.inherited(arguments);
-
-		this.createComponent({kind: "com.palm.library.contactsui.personListWidget", 
+		this.$.listWrapper.createComponent({kind: "com.palm.library.contactsui.personListWidget", 
 			name: "personListWidget", 
-			width: "350px", 
+			width: "320px", 
 			height: "100%",
 			flex: 1,
 			mode: this.mode, 
@@ -49,11 +58,11 @@ enyo.kind({
 		});
 	},
 	
-	open: function() {
+	open: function () {
 		this.inherited(arguments);
 
 		this.$.personListWidget.punt();
-		if (this.exclusions && typeof(this.exclusions) === "array"){
+		if (this.exclusions && typeof(this.exclusions) === "array") {
 			this.$.personListWidget.setExclusions = this.exclusions;
 		}
 //		this.$.personListWidget.setMode(this.mode);
@@ -79,7 +88,7 @@ enyo.kind({
 		this.close();
 	},
 */	
-	setExclusions : function (exclusions){
+	setExclusions : function (exclusions) {
 		this.$.personListWidget.setExclusions(exclusions);
 	}
 	

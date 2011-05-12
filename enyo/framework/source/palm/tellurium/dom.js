@@ -56,53 +56,53 @@ Tellurium.clickDom = function(xpath) {
 /* Create Offset 
 */
 function createOffset(x,y){
-var offset=[x,y];offset.left=x;offset.top=y;return offset
+var offset=[x,y];offset.left=x;offset.top=y;return offset;
 }
 
 /*
- * Retrieves an value of element given its name attribute.
+ * Retrieve the value of an element property using document.querySelector(selector) to locate the first element that matches the selector.
  *
- * @param {Object} locator
- * @param {Object} element
+ * @param {Object} selector
+ * @param {Object} propertyname
 */
-
-Tellurium.queryElementValue = function(locator,arg) {
-  var element = eval("document.querySelector(locator)."+arg);
-  return element;
+Tellurium.queryElementValue = function(selector,propertyname) {
+  var propertyvalue = eval("document.querySelector(selector)."+propertyname);
+  return propertyvalue;
 };
 
 /*
- * Retrieves an element given its name attribute.
+ * Retrieve the innerHTML of an element using document.querySelector(selector) to locate the first element that matches the selector.
  *
- * @param {Object} locator
+ * @param {Object} selector
 */
-Tellurium.queryElement = function(locator) {
-  var element = document.querySelector(locator);
+Tellurium.queryElement = function(selector) {
+  var element = document.querySelector(selector);
   return element.innerHTML;
 };
 
 /*
- * Set the value to  an element .
+ * Set the innerHTML value of an element using document.querySelector(selector) to locate the first element that matches the selector.
  *
- * @param {Object} locator
+ * @param {Object} selector
+ * @param {Object} value
 */
-Tellurium.setValue = function(locator,value) {
-   var element = document.querySelector(locator);
+Tellurium.setValue = function(selector,value) {
+   var element = document.querySelector(selector);
    element.innerHTML = value;
    return true;
 };
 
 /*
- * Set the value to  an element .
- * @param {Object} locator
+ * Set the value to  an element using document.querySelector(selector) to locate the first element that matches the selector.
+ *
+ * @param {Object} selector
+ * @param {Object} propertyname
+ * @param {Object} value
  */
-
-  Tellurium.setElementValue = function(locator,arg,value) {
-  var element = eval("document.querySelector(locator)."+arg);
-  element = value;
+  Tellurium.setElementValue = function(selector,propertyname,value) {
+  eval("document.querySelector(selector)."+propertyname+"='"+value+"'");
   return true;
 };
-
 
 // Utility function copied from Mojo2
 Tellurium.getDimensions = function(inElement) {
@@ -172,7 +172,7 @@ Tellurium.viewportOffset = function(el) {
 		currentEl = currentEl.parentNode;
 	}
 	return createOffset(left, top);
-}
+};
 
 
 
@@ -260,13 +260,26 @@ Tellurium.isElementPresent = function(locator) {
 };
 
 /*
- * Returns true if an element is visible.
+ * Returns true if the element is present and the element and all its ancestors are not hidden
  * 
- * @param {Object} locator
+ * @param {Object} locator of an element
  */
 Tellurium.isElementVisible = function(locator) {
 	var element = Tellurium.getElement(locator);
-	return element.style.display != 'none';
+	if (!element) {
+		return false;
+	}
+	if (element.style.display === 'none') {
+		return false;
+	}
+	var ancestorsXPath = Tellurium.getElementXPath(element, false) + "/ancestor::*";
+	var ancestorNodes = document.evaluate(ancestorsXPath, document, null, XPathResult.ANY_TYPE, null);
+	while(element = ancestorNodes.iterateNext()) {
+		if (element.style.display === 'none') {
+			return false;
+		}
+	}
+	return true;
 };
 
 /*

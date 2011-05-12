@@ -143,7 +143,9 @@ enyo.windows = {
 	* inName {String} Name of the window. This name can be used to retrieve the window.
 	If one is not specified, a default name is supplied.
 	* inParams {Object} Data to send to the opened window. Will be available as enyo.windowParams.
-	* inAttributes {Object} Specify {webosDragMode:"manual"} to enable custom handling of drag events in dashboards.
+	* inAttributes {Object} Specify optional attributes, e.g., {webosDragMode:"manual"} to enable 
+	custom handling of drag events in dashboards, or {clickableWhenLocked:true} to make dashboards 
+	usable through the lock screen.
 	*/
 	openDashboard: function(inUrl, inName, inParams, inAttributes) {
 		inAttributes = inAttributes || {};
@@ -158,9 +160,14 @@ enyo.windows = {
 	If one is not specified, a default name is supplied.
 	* inParams {Object} Data to send to the opened window. Will be available as enyo.windowParams.
 	* inHeight {Integer} Height for the popup.
+	* throb: {Boolean} 'true' to enable the LED throbber.
 	*/
-	openPopup: function(inUrl, inName, inParams, inHeight) {
-		return this.openWindow(inUrl, inName, inParams, {window: "popupalert"}, "height=" + (inHeight || 200));
+	openPopup: function(inUrl, inName, inParams, inHeight, throb) {
+		var w = this.openWindow(inUrl, inName, inParams, {window: "popupalert"}, "height=" + (inHeight || 200));
+		if(throb && w.PalmSystem) {
+			w.PalmSystem.addNewContentIndicator();
+		}
+		return w;
 	},
 	
 	//* @public

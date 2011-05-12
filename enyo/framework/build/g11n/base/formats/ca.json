@@ -1,8 +1,11 @@
 {
 	"numberDivider": ",",
 	"numberDecimal": ".",
-	"currencyPrepend": "$",
-	"currencyAppend": "",
+	"currency": {
+		"name": "CAD",
+		"iso": "#{sign} #{amt}",
+		"common": "#{sign}#{amt}"
+	},
 	"percentageSpace": true,
 	"localeName": "Canada",
 	"titleCase": true,
@@ -15,15 +18,15 @@
 	"dateFieldOrder": "dmy",
 	"timeFieldOrder": "hma",
 
-	"fullTime24": "HH:mm:ss",
+	"fullTime24": "H:mm:ss",
 	"fullTime12": "h:mm:ss a",
-	"longTime24": "HH:mm:ss zzz",
+	"longTime24": "H:mm:ss zzz",
 	"longTime12": "h:mm:ss a zzz",
-	"mediumTime24": "HH:mm:ss",
+	"mediumTime24": "H:mm:ss",
 	"mediumTime12": "h:mm:ss a",
-	"defaultTime24": "HH:mm:ss",
+	"defaultTime24": "H:mm:ss",
 	"defaultTime12": "h:mm:ss a",
-	"shortTime24": "HH:mm",
+	"shortTime24": "H:mm",
 	"shortTime12": "h:mm a",
 	"dateTimeFormat": "DATE TIME",
 
@@ -38,6 +41,9 @@
 	"shortMYDate": "MM/yy",
 	"mediumMYDate": "MMM yyyy",
 	"longMYDate": "MMMM yyyy",
+	"shortDDate": "dd",
+	"mediumDDate": "dd",
+	"longDDate": "d",	
 
 	"shortWeekday": "EE",
 	"mediumWeekday": "EEE",
@@ -51,9 +57,14 @@
 	"smallTime12": "h:mm",
 	"bigTime12": "h:mm:ss",
 
-	"smallTime24": "HH:mm",
-	"bigTime24": "HH:mm:ss",
+	"smallTime24": "H:mm",
+	"bigTime24": "H:mm:ss",
+	
+	"timeH12": "h",
+	"timeH24": "H",
 	
 	"defaultPaperSize": "letter",
-	"defaultPhotoSize": "4x6"
+	"defaultPhotoSize": "4x6",
+	
+	"defaultTimeZone": "America/Toronto"	
 }

@@ -1,7 +1,7 @@
 /* Copyright 2009-2011 Hewlett-Packard Development Company, L.P. All rights reserved. */
 /*jslint white: true, onevar: true, undef: true, eqeqeq: true, plusplus: true, bitwise: true, 
 regexp: true, newcap: true, immed: true, nomen: false, maxerr: 500 */
-/*global ContactsLib, enyo, console, $L */
+/*global ContactsLib, enyo, console, $L, com, $contactsui_path */
 
 /* 
  * How to use this component.
@@ -18,7 +18,7 @@ enyo.depends(
  *
 	components: [
 		{name: "PseudoDetails", kind: "com.palm.library.contactsui.pseudoDetails", flex: 1,
-        onEdit: "edit", onAddToExisting: "addToExisting", onAddToNew: "addToNew", onDone: "done", showDone: false}
+		onEdit: "edit", onAddToExisting: "addToExisting", onAddToNew: "addToNew", onDone: "done", showDone: false}
 	],
 
  * The events that can be specified are:
@@ -76,7 +76,9 @@ enyo.kind({
 		onEdit: "",
 		onAddToExisting: "",
 		onAddToNew: "",
-		onDone: ""
+		onDone: "",
+		onDoneCreatingPersonObject: "",
+		onRenderPersonComplete: ""
 	},
 	components: [
 		{ kind: "PalmService", service: "palm://com.palm.applicationManager/", components: [
@@ -85,55 +87,72 @@ enyo.kind({
 			{name: "getDefaultMapApp", method: "listAllHandlersForUrl"}
 		]},
 
-		{name: "AllDetails", kind: "Scroller", showing: false, flex: 1, components: [
-			{kind: "Control", className: "details-header", onclick: "photoClick", onmousedown: "photoMousedown", onmouseup: "photoMouseup", components: [
-				{name: "photo", className: "details-header-photo", components: [
-					{name: "photoImage", kind: "Image", src: ""},
-					{name: "linkCounter", className: "details-header-link"}
-				]},
-				{kind: "Control", className: "details-header-title", components: [
-					{name: "title"},
-					{name: "nickname", className: "details-header-nickname"},
-					{name: "desc", className: "details-header-desc"}
+		{name: "AllDetails", className: "enyo-contacts-details", kind: "Scroller", horizontal: false, autoHorizontal: false, showing: false, flex: 1, components: [
+			{kind: "Control", className: "container", components: [
+				{kind: "Control", className: "content", components: [
+					{kind: "HFlexBox", className: "header", components: [
+						{name: "photo", kind: "Control", className: "avatar", components: [
+							{name: "photoImage", className: "img", kind: "Control"},
+							{kind: "Control", className: "mask"}
+						]},
+						{kind: "VFlexBox", flex: 1, pack: "start", align: "end", components: [
+							{kind: "Control", layoutKind: "HFlexLayout", flex: 1, pack: "justify", width: "100%", align: "start", components: [
+								{kind: "Control", flex: 1, components: [
+									{name: "title", className: "name"},
+									{name: "nickname", className: "nickname"},
+									{name: "desc", className: "position"}
+								]},
+								{name: "favIndicator", kind: "Control", className: "favorite", onclick: "toggleFavorite"} // addClass('true') would be good
+							]},
+							{name: "linkCounter", kind: "enyo.Button", toggling: true, caption: "", className: "enyo-button-light profiles-button", 
+								onclick: "linkedProfilesClick", onmousedown: "photoMousedown", onmouseup: "photoMouseup"}
+						]}
+					]},
+					{name: "linkPanel", kind: "enyo.Drawer", open: false},
+					{name: "emailGroup", kind: "com.palm.library.contactsui.FieldGroup", onFieldClick: "emailFieldClick"},
+					{name: "phoneGroup", kind: "com.palm.library.contactsui.FieldGroup", onFieldClick: "phoneFieldClick"},
+					{name: "imGroup", kind: "com.palm.library.contactsui.FieldGroup", onFieldClick: "imFieldClick", onShowArrow: "showImDropdownArrow"},
+					{name: "addressGroup", kind: "com.palm.library.contactsui.FieldGroup", onGetFieldValue: "getAddressFieldValue", onFieldClick: "addressFieldClick"},
+					{name: "urlGroup", kind: "com.palm.library.contactsui.FieldGroup", onFieldClick: "urlFieldClick"},
+					{name: "notesGroup", kind: "com.palm.library.contactsui.FieldGroup", onGetFieldValue: "getNotesFieldValue"},
+					{name: "moreDetailsGroup", kind: "com.palm.library.contactsui.FieldGroup", propertyName: "moredetails", onGetFieldValue: "getMoreDetailsValue"}
 				]}
-			]},
-			{name: "linkPanel", kind: "enyo.Drawer", open: false},
-			{name: "emailGroup", kind: "com.palm.library.contactsui.FieldGroup", onFieldClick: "emailFieldClick"},
-			{name: "phoneGroup", kind: "com.palm.library.contactsui.FieldGroup", onFieldClick: "phoneFieldClick"},
-			{name: "imGroup", kind: "com.palm.library.contactsui.FieldGroup", onFieldClick: "imFieldClick"},
-			{name: "addressGroup", kind: "com.palm.library.contactsui.FieldGroup", onGetFieldValue: "getAddressFieldValue", onFieldClick: "addressFieldClick"},
-			{name: "urlGroup", kind: "com.palm.library.contactsui.FieldGroup", onFieldClick: "urlFieldClick"},
-			{name: "notesGroup", kind: "com.palm.library.contactsui.FieldGroup", onGetFieldValue: "getNotesFieldValue", onGetFieldType: "getNotesFieldType"},
-			{name: "moreDetailsGroup", kind: "com.palm.library.contactsui.FieldGroup", propertyName: "moredetails", onGetFieldValue: "getMoreDetailsValue"},
-			{style: "height: 48px;"}
+			]}
+//			{style: "height: 48px;"}
 		]},
-		{name: "CommandMenu", kind: "Toolbar", className: "bottom-menu-panel", showing: false, pack: "justify", components: [
+		{name: "toolbar", kind: "Toolbar", className: "contacts-toolbar enyo-toolbar-light", showing: false, pack: "end", components: [
 			{name: "doneButton", content: $L("Done"), onclick: "doDone"},
-			{name: "favoriteBtn", icon: "$contactsui_path/images/menu-icon-favorites.png", onclick: "toggleFavorite", showing: false},
-			{kind: "Control"},
-			{name: "editButton", content: $L("Edit"), onclick: "editPerson"},
+//			{name: "favoriteBtn", icon: $contactsui_path + "/images/menu-icon-favorites.png", onclick: "toggleFavorite", showing: false},
+//			{kind: "Control"},
+//			{name: "shareButton", icon: $contactsui_path + "/images/btn_share.png", onclick: "sharePerson"},
+			{name: "editButton", className: "edit-contact", icon: $contactsui_path + "/images/btn_edit.png", onclick: "editPerson"},
 			{name: "addToContactButton", content: $L("Add to contacts"), onclick: "addToContactClick"}
 		]},
-		{name: "SelectAContact", kind: "VFlexBox", flex: 1, pack: "center", showing: true, style: "text-align: center; color: grey;", components: [
+		{name: "SelectAContact", kind: "VFlexBox", flex: 1, pack: "center", showing: true, style: "border-left:1px solid #a8a8a8;text-align: center; color: grey;", components: [
+			{kind: "Spacer", flex: 2},
 			{kind: "Image", src: "images/first-launch-contacts.png"},
-			{content: $L("Select a contact on the left")},
-			{content: $L("to see more information.")}
+			{content: $L("Select a contact on the left to see more information."), style: "width:250px;margin:0 auto;"},
+			{kind: "Spacer", flex: 5}
 		]},
 		{name: "AddToContactsDialog", kind: "Dialog", components: [
 			//{name: "DeleteDialogTitle", className: "enyo-item enyo-first", style: "padding: 12px", content: ""},
 			{kind: "Button", caption: $L("Add New Contact"), onclick: "addNewContactClick"},
 			{kind: "Button", caption: $L("Add to existing"), onclick: "addToExistingClick"},
 			{kind: "Button", className: "enyo-button-light", caption: $L("Cancel"), onclick: "cancelAction"}
-		]}
+		]},
+		{name: "skypeMenu", kind: "PopupSelect", onSelect: "onSkypeMenuSelect"}
 	],
 	create: function () 
 	{
 		this.inherited(arguments);
 
-		this.$.linkCounter.hide();
 		this.$.addToContactButton.hide();
 		if (!this.showDone)
+		{
 			this.$.doneButton.hide();
+		}
+		
+		this.personIdChanged();
 	},
 	cancelAction: function (inSender) {
 		this.$.AddToContactsDialog.toggleOpen();
@@ -172,13 +191,18 @@ enyo.kind({
 	showDetails: function (show) 
 	{
 		this.$.AllDetails.setShowing(show);
-		this.$.CommandMenu.setShowing(show);
+		this.$.toolbar.setShowing(show);
 		this.$.SelectAContact.setShowing(!show);
+		this.$.AllDetails.scrollTo(0, 0); //autoscroll to top unconditionally (useful when person being looked at previously has a long profile and user scrolls out of the range of the first page.)
 	},
 	contactChanged: function () 
 	{
 		this.$.addToContactButton.show();
 		this.$.editButton.hide();
+
+		this.$.linkCounter.setDepressed(false);
+		this.$.linkPanel.setOpen(false);
+
 		this.person = ContactsLib.PersonFactory.createPersonDisplay(this.contact);
 		this.personId = null;
 		this.renderPerson();
@@ -188,6 +212,9 @@ enyo.kind({
 
 		this.$.addToContactButton.hide();
 		this.$.editButton.show();
+
+		this.$.linkCounter.setDepressed(false);
+		this.$.linkPanel.setOpen(false);
 
 		if (!this.personId)
 		{
@@ -199,14 +226,16 @@ enyo.kind({
 		personFuture.then(this, function (personFuture) {
 			try {
 				this.person = personFuture.result || {};
-
-				this.renderPerson();
+				this.renderPerson();  //TODO: move this back into try block
+				if (enyo.windowParams && enyo.windowParams.launchType === "editContact") {
+					this.doDoneCreatingPersonObject();
+					enyo.windowParams = {}; //global
+				}
 			} catch (e) {
 				console.log("person failed: " + e);
 				this.showDetails(false);
 				return;
 			}
-
 		});
 
 	},
@@ -215,7 +244,6 @@ enyo.kind({
 	},
 	renderPerson: function () 
 	{
-		console.log("||||||||||||||||||||| PseudoDetails renderPerson" + this.person);
 		if (!this.person)
 		{
 			return;
@@ -233,16 +261,27 @@ enyo.kind({
 		this.$.imGroup.setFields(this.person.getIms().getArray());
 		this.$.addressGroup.setFields(this.person.getAddresses().getArray());
 		this.$.urlGroup.setFields(this.person.getUrls().getArray());
-		this.$.notesGroup.setFields(this.person.getNotes().getArray());
+		this.$.notesGroup.setFields(this.addTypeToNotes(this.person.getNotes().getArray()));
 
-		photoFuture = this.person.getPhotos().getPhotoPath(ContactsLib.PersonPhotos.TYPE.SQUARE);
+		photoFuture = this.person.getPhotos().getPhotoPath(ContactsLib.PersonPhotos.TYPE.BIG);
 		photoFuture.then(this, function () {
-			this.$.photoImage.setSrc(photoFuture.result);
+			this.$.photoImage.applyStyle("background-image", "url(" + photoFuture.result + ");");
 		});
 
-		this.$.favoriteBtn.setState("down", this.person.isFavorite() ? true : false);
-
+//		this.$.favoriteBtn.setState("down", this.person.isFavorite() ? true : false);
+		this.$.favIndicator.addRemoveClass("true", this.person.isFavorite() ? true : false);
 		this.showDetails(true);
+		
+		this.doRenderPersonComplete();
+	},
+	addTypeToNotes: function (array)
+	{
+		var i;
+		for (i = 0; i < array.length; i += 1)
+		{
+			array[i].x_displayType = "notes";
+		}
+		return array;
 	},
 	// returns the first one in the list that passes a truth test (iterator)
 	detect: function (obj, iterator)
@@ -261,8 +300,8 @@ enyo.kind({
 	getMoreDetailsFields: function ()
 	{
 		var array = [],
-			nickname = this.person.getNickname().getDisplayValue(),
-			birthday = this.person.getBirthday().getDisplayValue(),
+			// Note: getDisplayValue relies on Mojo.Format which we are not importing therefore we are using Utils.formatBirthday as an alternative
+			birthday = com.palm.library.contacts.Utils.formatBirthday(this.person.getBirthday()),
 			relations = this.person.getRelations().getArray(),
 			spouse = this.detect(relations, function (relation) {
 				return relation.getType() === ContactsLib.Relation.TYPE.SPOUSE;
@@ -273,48 +312,99 @@ enyo.kind({
 
 		if (birthday)
 		{
-			array.push({"value": birthday, "type": "type_BIRTHDAY"});
+			array.push({"value": birthday, "x_displayType": "BIRTHDAY"});
 		}
 		if (spouse)
 		{
-			array.push({"value": spouse.getDisplayValue(), "type": "type_SPOUSE"});
+			array.push({"value": spouse.getDisplayValue(), "x_displayType": "SPOUSE"});
 		}
 		if (child)
 		{
-			array.push({"value": child.getDisplayValue(), "type": "type_CHILDREN"});
-		}
-		if (nickname)
-		{
-			array.push({"value": nickname, "type": "type_NICKNAME"});
+			array.push({"value": child.getDisplayValue(), "x_displayType": "CHILDREN"});
 		}
 		return array;
 
 	},
 	getNickName: function (inPerson) 
 	{
-		return inPerson.nickname ? ("\"" + inPerson.nickname + '"') : "";
+		return inPerson.getNickname().getDisplayValue() || "";
 	},
-	emailFieldClick: function (inSender, inField) {
+	emailFieldClick: function (inSender, inEvent, inField) {
 		this.$.openApp.call(
-			{id: "com.palm.app.email", params: {
-				card: "compose",
-				uri: "mailto:" + inSender.getFieldValue(inField)
-			}}
+			{
+				target: "mailto:" + inSender.getFieldValue(inField)
+			}
 		);
 	},
-	phoneFieldClick: function (inSender, inField) {
-		this.$.openApp.call(
-			{id: "com.palm.app.phone", params: {
-				number: inSender.getFieldValue(inField)
-			}}
-		);
+	onSkypeMenuSelect: function (inSender, inSelected)
+	{
+		if (inSelected.getValue() === "CHAT")
+		{
+			this.$.openApp.call({
+				id: "com.palm.app.messaging", 
+				params: {
+					compose:
+					{
+						personId: this.personId,
+						ims: [inSelected.field.getDBObject()]
+					}
+				}
+			});
+		}
+		else if (inSelected.getValue() === "VOICE")
+		{
+			this.openPhoneApp(inSelected.inSender.getFieldValue(inSelected.field.getDBObject()), "com.palm.skype");
+		}
+		else if (inSelected.getValue() === "VIDEO")
+		{
+			this.openPhoneApp(inSelected.inSender.getFieldValue(inSelected.field.getDBObject()), "com.palm.skype", true);
+		}
 	},
-	imFieldClick: function (inSender, inField) {
+
+	openPhoneApp: function (address, transport, video)
+	{
+		this.$.openApp.call({
+			id: "com.palm.app.phone", 
+			params: 
+			{
+				address: address,
+				transport: transport,
+				video: video
+			}
+		});
+	},
+	phoneFieldClick: function (inSender, inEvent, inField) {
+		this.openPhoneApp(inSender.getFieldValue(inField), "com.palm.telephony");
+	},
+	showImDropdownArrow: function (inSender, inType) 
+	{
+		return (inType === ContactsLib.IMAddress.TYPE.SKYPE);
+	},
+	imFieldClick: function (inSender, inEvent, inField) {
+		var popupItems = [
+				{caption: $L("Chat"), value: "CHAT", field: inField, inSender: inSender},
+				{caption: $L("Voice Call"), value: "VOICE", field: inField, inSender: inSender},
+				{caption: $L("Video Call"), value: "VIDEO", field: inField, inSender: inSender}
+			];
+
+		if (inSender.getFieldType(inField) === ContactsLib.IMAddress.TYPE.SKYPE)
+		{
+			this.$.skypeMenu.setItems(popupItems);
+			this.$.skypeMenu.openAtEvent(inEvent);
+			return;
+		}
+
 		this.$.openApp.call(
-			//FIXME: Messaging app ID will likely revert to "com.palm.app.messaging"
-			{id: "com.palm.app.enyo-messaging", params: {
-				address: inSender.getFieldValue(inField)
-			}}
+			{
+				id: "com.palm.app.messaging", 
+				params: {
+					compose:
+					{
+						personId: this.personId,
+						ims: [inField.getDBObject()]
+					}
+				}
+			}
 		);
 	},
 	getAddressFieldValue: function (inSender, inField) {
@@ -322,29 +412,24 @@ enyo.kind({
 	},
 
 	getNotesFieldValue: function (inSender, inField) {
-		return inField;
+		return inField.getDisplayValue();
 	},
-	getNotesFieldType: function (inSender, inField) {
-		return "NOTES";
-	},
-
 	
 /*
 1. get maps app call: com.palm.applicationManager/listAllHandlersForUrl
 2. return: { "subscribed": false, "url": "mapto:", "returnValue": true, "redirectHandlers": { "activeHandler": { "url": "^mapto:", "appId": "com.palm.app.maps", "index": 24, "tag": "system-default", "schemeForm": true, "appName": "Google Maps" } } }
 3. default maps app call: {"id":"com.palm.app.maps","params":{"target":"maploc:666 HELL AVENUE, HELL, MD!!!!!"}
 */
-	addressFieldClick: function (inSender, inField) {
+	addressFieldClick: function (inSender, inEvent, inField) {
 		this.$.openApp.call(
 			{id: "com.palm.app.maps", params: { //TODO: this will need to change in the future to the system default - goog maps or carrier gps nav app
-				target: "maploc:" + inSender.getFieldValue(inField)
+				address: "" + inSender.getFieldValue(inField)
 			}}
 		);
 	},
-	urlFieldClick: function (inSender, inField) {
+	urlFieldClick: function (inSender, inEvent, inField) {
 		this.$.openApp.call(
-			//FIXME: Browser app ID will likely revert to "com.palm.app.browser"
-			{id: "com.palm.app.enyo-browser", params: {
+			{id: "com.palm.app.browser", params: {
 				url: inSender.getFieldValue(inField)
 			}}
 		);
@@ -368,7 +453,8 @@ enyo.kind({
 		this.personShouldBeFavorite = ! this.person.isFavorite();
 
 		//business logic that saves, changes appearance
-		this.$.favoriteBtn.setState("down", this.personShouldBeFavorite ? true : false);
+//		this.$.favoriteBtn.setState("down", this.personShouldBeFavorite ? true : false);
+		this.$.favIndicator.addRemoveClass("true", this.personShouldBeFavorite ? true : false);
 		if (this.personShouldBeFavorite) {
 			this.person.makeFavorite();
 		} else {
@@ -389,8 +475,9 @@ enyo.kind({
 	},
 	linkedContactsChanged: function (inSender, inPerson) {
 	},
-	photoClick: function () {
+	linkedProfilesClick: function () {
 	},
 	renderLinkDetails: function () {
+		this.$.linkCounter.setShowing(false);
 	}
 });

@@ -26,20 +26,20 @@
 
 enyo.kind({
 	name: "Accounts.accountsList",
-	kind: "VFlexBox",
+	kind: enyo.Control,
 	events: {
 		onAccountsList_AccountSelected: "",
 		onAccountsList_AddAccountTemplates: ""
 	},
 	components: [
 		{name: "accounts", kind: "Accounts.getAccounts", onGetAccounts_AccountsAvailable: "onAccountsAvailable"},
-		{name: "list", kind: "VirtualRepeater", onGetItem: "listGetItem", onclick: "accountSelected", className:"accounts-rowgroup-item", components: [
+		{name: "list", kind: "VirtualRepeater", onGetItem: "listGetItem", onSetupRow: "listGetItem", onclick: "accountSelected", className:"accounts-rowgroup-item", components: [
 			{kind: "Item", name: "Account", layoutKind: "HFlexLayout", align:"center", className:"accounts-list-item", components: [
 				{kind: "Image", name:"accountIcon", className:"icon-image"},
 				{kind:"HFlexBox", style:"width:420px", align:"center", components:[
-					{name: "accountName", className:"account-name"},
+					{name: "accountName"},
 					{name: "emailAddress", className:"email-address enyo-text-ellipsis", flex:1},
-					{kind: "Image", name:"errorIcon", src: AccountsUtil.libPath + "images/warning-icon.png"},
+					{kind: "Image", name:"errorIcon", src: AccountsUtil.libPath + "images/header-warning-icon.png", className:"warning-icon"},
 				]}
 			]}
 		]},
@@ -56,8 +56,9 @@ enyo.kind({
 	
 	// The list of accounts has been obtained.  Render the list now
 	onAccountsAvailable: function(inSender, inResponse) {
-		console.log("accountsList len=" + inResponse.accounts.length);
-		this.accounts = inResponse.accounts;		
+		//console.log("accountsList len=" + inResponse.accounts.length);
+		this.accounts = inResponse.accounts;
+		this.$.list.setStripSize(this.accounts.length);		
 		this.$.list.render();
 		
 		// PIM apps may want the list of templates for their "Add" button
@@ -156,7 +157,7 @@ enyo.kind({
 			this.accountStatus[accountId].currentError = this.accountStatus[accountId].error;
 			this.accountStatus[accountId].error = false; 
 		}
-		console.log("Accounts list error status: redraw =" + needsRedraw + "  array=" + enyo.json.stringify(this.accountStatus));
+		//console.log("Accounts list error status: redraw =" + needsRedraw + "  array=" + enyo.json.stringify(this.accountStatus));
 		
 		if (needsRedraw)
 			this.$.list.render();

@@ -1,8 +1,6 @@
 {
 	"numberDivider": ",",
 	"numberDecimal": ".",
-	"currencyPrepend": "$",
-	"currencyAppend": "",
 	"percentageSpace": false,
 	"localeName": "Taiwan",
 	"titleCase": false,
@@ -26,7 +24,7 @@
 	"defaultTime24": "HH:mm:ss",
 	"defaultTime12": "ahh:mm:ss",
 	"shortTime24": "HH:mm",
-	"shortTime12": "ah:mm",
+	"shortTime12": "ahh:mm",
 	"dateTimeFormat": "DATE TIME",
 
 	"is12HourDefault": true,
@@ -38,6 +36,9 @@
 	"shortMYDate": "yy-M",
 	"mediumMYDate": "yyyy-M",
 	"longMYDate": "yyyy年M月",
+	"shortDDate": "d",
+	"mediumDDate": "d",
+	"longDDate": "d日",	
 
 	"singleWeekday": "E",
 	"shortWeekday": "EE",
@@ -49,11 +50,20 @@
 	"timeZFormat": "TIMEZONE",
 	"timeAZFormat": "AMTIMEZONE",
 
-	"smallTime12": "h:mm",
+	"smallTime12": "hh:mm",
 	"bigTime12": "hh时mm分ss秒",
 
-	"smallTime24": "H:mm",
+	"smallTime24": "HH:mm",
 	"bigTime24": "HH时mm分ss秒",
 	
-	"defaultPhotoSize": "4x6"
+	"timeH12": "hh",
+	"timeH24": "HH",
+	
+	"defaultPhotoSize": "4x6",
+	"currency": {
+		"name": "TWD",
+		"iso": "#{sign} #{amt}",
+		"common": "#{sign}#{amt}"
+	},
+	"defaultTimeZone": "Asia/Taipei"
 }

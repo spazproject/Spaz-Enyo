@@ -23,7 +23,8 @@ the AJAX request, you can do this:
 
 (Please see the <b>Published Properties</b> section for a full list of available options.)
 
-All 2xx responses are treated as success.  To process the AJAX response:
+All 2xx responses are treated as success, as well as 0 and unknown status.
+To process the AJAX response:
 
 	gotWeather: function(inSender, inResponse, inRequest) {
 		this.results = inResponse;
@@ -153,7 +154,10 @@ enyo.kind({
 	},
 	isFailure: function(inResponse) {
 		var xhr = this.xhr;
-		return !xhr || !xhr.status || xhr.status < 200 || xhr.status >= 300;
+		return !xhr || !this.isSuccess(xhr.status);
+	},
+	isSuccess: function(inStatus) {
+		return !inStatus || (inStatus >= 200 && inStatus < 300);
 	},
 	receive: function(inText, inXhr) {
 		this.xhr = inXhr;

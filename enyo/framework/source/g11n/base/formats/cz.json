@@ -3,8 +3,6 @@
     
 	"numberDivider": " ",
 	"numberDecimal": ",",
-	"currencyPrepend": "Kč",
-	"currencyAppend": "",
 	"percentageSpace": false,
 	"localeName": "Czech Republic",
 	"titleCase": false,
@@ -17,10 +15,10 @@
 	"dateFieldOrder": "dmy",
 	"timeFieldOrder": "hma",
 
-	"fullTime24": "HH:mm:ss",
-	"fullTime12": "hh:mm:ss a",
-	"longTime24": "HH:mm:ss zzz",
-	"longTime12": "hh:mm:ss a zzz",
+	"fullTime24": "H:mm:ss",
+	"fullTime12": "h:mm:ss a",
+	"longTime24": "H:mm:ss zzz",
+	"longTime12": "h:mm:ss a zzz",
 	"mediumTime24": "H:mm:ss",
 	"mediumTime12": "h:mm:ss a",
 	"defaultTime24": "H:mm:ss",
@@ -39,6 +37,9 @@
 	"shortMYDate": "M.yy",
 	"mediumMYDate": "M.yyyy",
 	"longMYDate": "MMMM yyyy",
+	"shortDDate": "d",
+	"mediumDDate": "d",
+	"longDDate": "d.",	
 
 	"shortWeekday": "EE",
 	"mediumWeekday": "EEE",
@@ -50,8 +51,18 @@
 	"timeAZFormat": "TIME AM ZONE",
 
 	"smallTime12": "h:mm",
-	"bigTime12": "hh:mm:ss",
+	"bigTime12": "h:mm:ss",
 
 	"smallTime24": "H:mm",
-	"bigTime24": "HH:mm:ss"
+	"bigTime24": "H:mm:ss",
+
+	"timeH12": "h",
+	"timeH24": "H",
+	
+	"currency": {
+		"name": "CZK",
+		"iso": "#{sign} #{amt}",
+		"common": "#{sign}#{amt}"
+	},
+	"defaultTimeZone": "Europe/Prague"
 }

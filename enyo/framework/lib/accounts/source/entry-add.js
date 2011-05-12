@@ -35,7 +35,7 @@ enyo.kind({
 		{kind: "Accounts.addAccountView", name: "addAccountView", onAddAccount_AccountSelected: "addSelectedAccount", onAddAccount_Cancel: "doAccountsUI_Done"},
 		{kind: "Accounts.credentialView", name: "changeCredentialsView", onCredentials_ValidationSuccess: "validationSuccess", onCredentials_Cancel: "backHandler"},
 		{kind: "Accounts.modifyView", name: "modifyAccountView", onModifyView_Success: "doAccountsUI_Done", onModifyView_Cancel: "doAccountsUI_Done"},
-		{kind: "CrossAppUI", name:"customAccountsUI", onResult: "handleCustomUIResult"}
+		{kind: "Accounts.crossAppUI", name:"customAccountsUI", onResult: "handleCustomUIResult"}
 	],
 	
 	// "Add Account" button was tapped
@@ -53,7 +53,7 @@ enyo.kind({
 		this.template = template;
 		// Does this template have custom UI?
 		if (template.validator.customUI) {
-			AccountsUtil.setCrossAppParameters(this.$.customAccountsUI, template.validator.customUI, {mode:"create", template: template, capability: this.capability});
+			this.$.customAccountsUI.launchCrossAppUI(template.validator.customUI, {mode:"create", template: template, capability: this.capability});
 			this.selectViewByName("customAccountsUI");
 		}
 		else {
@@ -65,7 +65,8 @@ enyo.kind({
 	// Handle the validation response from the custom UI
 	handleCustomUIResult: function(inSender, msg) {
 		//console.log("handleCustomUIResult:" + enyo.json.stringify(msg));
-		if (msg && msg.returnValue && msg.template) {
+		if (msg && msg.returnValue) {
+			msg.template =  msg.template || this.template;
 			msg.templateId = msg.template.templateId;
 			this.$.modifyAccountView.displayCreateView(msg, msg.template, this.capability);
 			this.selectViewByName("modifyAccountView");

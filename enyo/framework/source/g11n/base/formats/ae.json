@@ -3,8 +3,6 @@
 
 	"numberDivider": " ",
 	"numberDecimal": ",",
-	"currencyPrepend": "Dhs ",
-	"currencyAppend": "",
 	"percentageSpace": true,
 	"titleCase": false,
 
@@ -37,6 +35,9 @@
 	"shortMYDate": "M/yyyy",
 	"mediumMYDate": "MM/yyyy",
 	"longMYDate": "MMMM, yyyy",
+	"shortDDate": "d",
+	"mediumDDate": "d",
+	"longDDate": "d",	
 
 	"singleWeekday": "E",
 	"shortWeekday": "EE",
@@ -52,5 +53,15 @@
 	"bigTime12": "h:mm:ss",
 
 	"smallTime24": "H:mm",
-	"bigTime24": "H:mm:ss"
+	"bigTime24": "H:mm:ss",
+	"currency": {
+		"name": "AED",
+		"iso": "#{sign} #{amt}",
+		"common": "#{sign} #{amt}"
+	},
+	
+	"timeH12": "h",
+	"timeH24": "H",
+	
+	"defaultTimeZone": "Asia/Dubai"
 }

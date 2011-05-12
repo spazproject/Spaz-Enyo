@@ -19,6 +19,7 @@ var AccountError = (function() {
 		"SSL_CERT_UNTRUSTED":			rb.$L("SSL certificate untrusted"),
 		"SSL_CERT_INVALID":				rb.$L("SSL certificate invalid"),
 		"SSL_CERT_HOSTNAME_MISMATCH":	rb.$L("SSL certificate hostname mismatch"),
+		"SINGLE_ACCOUNT_ONLY":			rb.$L("Only one account of this type can exist"),
 	
 		"DUPLICATE_ACCOUNT":			rb.$L("Duplicate account"),
 		"UNSUPPORTED_CAPABILITY":		rb.$L("Your account is not configured for this service."),

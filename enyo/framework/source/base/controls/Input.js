@@ -15,6 +15,15 @@ for example, to set the value of one input to that of another:
 		var x = this.$.input1.getValue();
 		this.$.input2.setValue(x);
 	}
+
+Note, to properly style an Input in a group, use a RowGroup like this:
+
+	{kind: "RowGroup", components: [
+		{kind: "Input"},
+		{kind: "Input"},
+		{kind: "Input"}
+	]}
+
 */
 enyo.kind({
 	name: "enyo.Input", 
@@ -22,6 +31,7 @@ enyo.kind({
 	published: {
 		hint: enyo._$L("Tap Here To Type"),
 		value: "",
+		tabIndex: "",
 		// HTML5 'spellcheck' attribute
 		spellcheck: true,
 		// maps to Mobile Safari 'autocorrect' attribute
@@ -36,6 +46,7 @@ enyo.kind({
 		autoLinking: false,
 		//* Set to false to disable automatic word completion
 		autoWordComplete: true,
+		//* Specifies the 'type' attribute on the input field.  On webOS, this modifies the virtual keyboard layout, supported values are "email" and "url".
 		inputType: "",
 		//* css class to apply to the inner input control
 		inputClassName: "",
@@ -43,6 +54,8 @@ enyo.kind({
 		focusClassName: "enyo-input-focus",
 		//* css class to apply inner controls to control spacing
 		spacingClassName: "enyo-input-spacing",
+		//* Set to true to make the input look focused when it's not.
+		alwaysLooksFocused: false,
 		/**
 		The selection property is an object describing selected text. The start and end properties
 		specify the zero-based starting and ending indexes of the selection.
@@ -75,9 +88,7 @@ enyo.kind({
 		onchange: "",
 		oninput: "",
 		onmousedown: "",
-		/** The onkeypress event can be used to filter out disallowed characters.
-
-		*/
+		//** The onkeypress event can be used to filter out disallowed characters.
 		onkeypress: ""
 	},
 	className: "enyo-input",
@@ -86,17 +97,17 @@ enyo.kind({
 		{name: "input", flex: 1, kind: enyo.BasicInput, className: "enyo-input-input"}
 	],
 	clientChrome: [
-		{name: "spacer", kind: "HFlexBox", align: "center", components: [
-			{name: "client", layoutKind: "HFlexLayout", align: "center"}
-		]}
+		{name: "client", kind: "HFlexBox", align: "center"}
 	],
 	create: function() {
 		this.inherited(arguments);
 		this.updateSpacingControl();
 		this.disabledChanged();
 		this.inputTypeChanged();
+		this.tabIndexChanged();
 		this.valueChanged();
 		this.hintChanged();
+		this.alwaysLooksFocusedChanged();
 		this.inputClassNameChanged();
 		this.styledChanged();
 		this.applySmartTextOptions();
@@ -108,8 +119,7 @@ enyo.kind({
 	addControl: function(inControl) {
 		if (!inControl.isChrome && !this.$.client) {
 			this.createChrome(this.clientChrome);
-			this.$.input.prepend = true;
-			this.$.input.setParent(this.$.spacer);
+			this.$.input.setParent(this.$.client);
 			this.updateSpacingControl();
 		}
 		this.inherited(arguments);
@@ -135,7 +145,7 @@ enyo.kind({
 		return this.doMousedown(inEvent);
 	},
 	focusHandler: function(inSender, inEvent) {
-		if (this.styled) {
+		if (this.styled && !this.alwaysLooksFocused) {
 			this.addClass(this.focusClassName);
 		}
 		if (this.selectAllOnFocus) {
@@ -144,7 +154,9 @@ enyo.kind({
 		this.doFocus(inEvent);
 	},
 	blurHandler: function(inSender, inEvent) {
-		this.removeClass(this.focusClassName);
+		if (!this.alwaysLooksFocused) {
+			this.removeClass(this.focusClassName);
+		}
 		if (this.selectAllOnFocus) {
 			document.execCommand("Unselect");
 		}
@@ -161,6 +173,11 @@ enyo.kind({
 	inputClassNameChanged: function() {
 		this.$.input.addClass(this.inputClassName);
 	},
+	alwaysLooksFocusedChanged: function() {
+		if (this.alwaysLooksFocused && this.styled) {
+			this.addClass(this.focusClassName);
+		}
+	},
 	inputTypeChanged: function() {
 		this.$.input.domAttributes.type = this.inputType;
 		if (this.hasNode()) {
@@ -175,6 +192,9 @@ enyo.kind({
 	},
 	getValue: function() {
 		return this.$.input.getValue();
+	},
+	tabIndexChanged: function() {
+		this.$.input.setTabIndex(this.tabIndex);
 	},
 	// dom event handler
 	changeHandler: function(inSender, e) {
@@ -264,7 +284,7 @@ enyo.kind({
 	},
 	// control used to reclaim space, can be either input or client
 	updateSpacingControl: function() {
-		var c = this.$.spacer || this.$.input;
+		var c = this.$.client || this.$.input;
 		if (c != this.spacingControl) {
 			if (this.spacingControl) {
 				this.spacingControl.removeClass(this.spacingClassName);

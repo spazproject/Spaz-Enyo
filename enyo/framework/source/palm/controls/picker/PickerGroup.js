@@ -26,7 +26,7 @@ enyo.kind({
 	},
 	defaultKind: "enyo.Picker",
 	chrome: [
-		{name: "label", kind: "Control", className: "enyo-picker-label"},
+		{name: "label", kind: "Control", className: "enyo-picker-label enyo-label"},
 		{name: "client", kind: "Control", layoutKind: "HFlexLayout"}
 	],
 	//* @protected
@@ -38,7 +38,7 @@ enyo.kind({
 		this.inherited(arguments);
 		this.labelClassChanged();
 		this.labelChanged();
-		this.createChrome([{kind: "Popup", scrim: true, style: "border-width: 0; -webkit-border-image: none;"}]);
+		this.createChrome([{kind: "Popup", style: "border-width: 0; -webkit-border-image: none;"}]);
 	},
 	addControl: function(inControl) {
 		this.inherited(arguments);

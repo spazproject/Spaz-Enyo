@@ -17,7 +17,6 @@ var PrintDialogString = (function() {
 		"PAPER_TYPE": rb.$L("Paper Type"),
 		"COLOR_PRINTING": rb.$L("Color Printing"),
 		"PAGE_RANGE": rb.$L("Page Range"),
-		"TO": rb.$L("To"),
 		"PRINT_QUALITY": rb.$L("Print Quality"),
 		"SELECT_ANOTHER_PRINTER": rb.$L("Select Another Printer"),
 		"PHOTO_4x6": rb.$L("4x6"),
@@ -44,11 +43,12 @@ var PrintDialogString = (function() {
 		"INVALID_PAGE_RANGE": rb.$L("You have entered an invalid page range. ('#{input}')"),
 		"INVALID_PAGE_NUMBER": rb.$L("You have entered an invalid page number. ('#{input}')"),
 		"PRINTER_ALREADY_EXISTS": rb.$L("This printer already exists."),
+		"PRINTER_ALREADY_EXISTS_ZERO": rb.$L("This printer was automatically discovered and is already available."),
 		"PRINTER_IP_NOT_VALID": rb.$L("The IP address for the printer is not valid. Check the address, then re-enter it."),
 		"PRINTER_NOT_SUPPORTED": rb.$L("This printer is currently not supported.  Please select or add another printer."),
+		"PRINTER_NO_RESPONSE_MANUAL": rb.$L("Unable to communicate with the printer. Please check the address, make sure the printer is online, and try again."),
 		"PRINTING_ERROR": rb.$L("Unable to process print job."),
 		"PRINTING_ERROR_WITH_NUMBER": rb.$L("Unable to process print job. (error #{error})"),
-		"PRINTING_ERROR_TRY_AGAIN": rb.$L("Unable to process print job. Please try again. (error #{error})"),
 		"PRINTING_ERROR_TEMP_FILE_NO_ROOM": rb.$L("The printer queue is currently full. Please wait for a print job to finish before you start a new one. (error #{error})"),
 		"COMMUNICATION_ERROR": rb.$L("Unable to communicate with the printer at this time. (error #{error})")
 	};

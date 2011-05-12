@@ -37,9 +37,16 @@
 .enyo-toggle-label-off {
 	padding-left: 4px;
 	padding-right: 2px;
+	text-transform: uppercase;
 }
 
 .enyo-toggle-label-on {
 	padding-right: 4px;
 	padding-left: 2px;
+	text-transform: uppercase;
+}
+
+.enyo-tool-button.enyo-button-disabled {
+	opacity: 0.4;
+	/*color: rgba(255,254,255,0.4);*/
 }

@@ -1,8 +1,6 @@
 {
 	"numberDivider": " ",
 	"numberDecimal": ",",
-	"currencyPrepend": "Ls ",
-	"currencyAppend": "",
 	"percentageSpace": false,
 	"localeName": "Latvia",
 	"titleCase": false,
@@ -38,6 +36,9 @@
 	"shortMYDate": "yy.M",
 	"mediumMYDate": "yyyy.M",
 	"longMYDate": "yyyy. 'gada' MMMM",
+	"shortDDate": "d",
+	"mediumDDate": "d",
+	"longDDate": "d.",	
 
 	"shortWeekday": "EE",
 	"mediumWeekday": "EEE",
@@ -52,5 +53,15 @@
 	"bigTime12": "hh:mm:ss",
 
 	"smallTime24": "HH:mm",
-	"bigTime24": "HH:mm:ss"
+	"bigTime24": "HH:mm:ss",
+	
+	"timeH12": "hh",
+	"timeH24": "HH",
+	
+	"currency": {
+		"name": "LVL",
+		"iso": "#{sign} #{amt}",
+		"common": "#{sign} #{amt}"
+	},
+	"defaultTimeZone": "Europe/Riga"
 }

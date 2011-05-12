@@ -37,6 +37,10 @@ enyo.kind({
 	bottomBoundary: 0,
 	//* left snap boundary, generally 0
 	leftBoundary: 0,
+	//* animation time step
+	interval: 20,
+	//* flag to enable frame-based animation, otherwise use time-based animation
+	fixedTime: true,
 	//* @protected
 	// simulation state
 	x0: 0,
@@ -100,9 +104,6 @@ enyo.kind({
 			this.x = x;
 		}
 	},
-	/**
-		The friction function
-	*/
 	friction: function(inEx, inEx0, inCoeff) {
 		// implicit velocity
 		var dp = this[inEx] - this[inEx0];
@@ -111,8 +112,9 @@ enyo.kind({
 		// reposition using damped velocity
 		this[inEx] = this[inEx0] + c * dp;
 	},
-	//
+	// one unit of time for simulation
 	frame: 10,
+	// piece-wise constraint simulation
 	simulate: function(t) {
 		while (t >= this.frame) {
 			t -= this.frame;
@@ -125,85 +127,46 @@ enyo.kind({
 		}
 		return t;
 	},
-	interval: 20,
 	animate: function() {
 		this.stop();
 		// time tracking
 		var t0 = new Date().getTime(), t = 0;
-		// only for fps tracking
-		var fs = 0, ft = 0, dtf = [], dt;
 		// delta tracking
 		var x0, y0;
 		// animation handler
-		var fn = enyo.hitch(this, function() {
-			// schedule next frame
-			this.job = window.setTimeout(fn, this.interval);
+		var fn = enyo.bind(this, function() {
 			// wall-clock time
 			var t1 = new Date().getTime();
+			// schedule next frame
+			this.job = enyo.requestAnimationFrame(fn);
 			// delta from last wall clock time
 			var dt = t1 - t0;
 			// record the time for next delta
 			t0 = t1;
-			//
-			// Slop factor of up to 5ms is observed in Chrome, much higher on devices.
-			// One theory is that the low-level timer fires as posts some kind of message
-			// in a queue, and there is latency in queue processing.
-			// So the timer may fire every 20ms, but if the first timer message is delayed
-			// processing for 38ms, and the next message fires without delay, the perceived
-			// wall-clock delta is 2ms. Overall however, the frequency is still 20ms (that is
-			// two timer messages were processed in 40ms total).
-			// We should ask Mark Lam to verify/dispel this theory, but it's relatively unimportant
-			// as the animation algorithm can deal (although smoother timer processing will yield
-			// smoother animation). There is a conditional below (t < this.frame) to handle this situation.
-			//
-			if (dt < this.interval - 5) {
-				console.log("wall-clock delta " + dt + "ms is significantly less than timer interval " + this.interval + "ms");
-			}
-			//
-			// *********************************************
-			// for fps tracking only
-			ft += dt;
-			// keep a moving average
-			dtf.push(dt);
-			if (++fs == 20) {
-				fs--;
-				ft -= dtf.shift();
-			}
-			// make this value available to something
-			this.fps = (fs * 1000 / ft).toFixed(1) + " fps";
-			// *********************************************
-			//
 			// user drags override animation 
 			if (this.dragging) {
 				this.y0 = this.y = this.uy;
 				this.x0 = this.x = this.ux;
 			}
-			//
 			// frame-time accumulator
 			t += dt;
-			// we don't expect t to be less than frame, unless the wall-clock interval
-			// was very much less than expected (which can occur, see note above)
-			if (t < this.frame) {
-				return;
+			// alternate fixed-time step strategy:
+			if (this.fixedTime && !this.isInOverScroll()) {
+				t = this.interval;
 			}
 			// consume some t in simulation
 			t = this.simulate(t);
-			//
 			// scroll if we have moved, otherwise the animation is stalled and we can stop
 			if (y0 != this.y || x0 != this.x) {
 				this.scroll();
 			} else if (!this.dragging) {
 				this.stop(true);
-				this.fps = "stopped";
 				this.scroll();
 			}
 			y0 = this.y;
 			x0 = this.x;
 		});
-		// animation cadence
-		//console.log(">>> set interval");
-		//this.job = window.setInterval(fn, this.interval);
-		this.job = window.setTimeout(fn, this.interval);
+		this.job = enyo.requestAnimationFrame(fn);
 	},
 	//* @public
 	start: function() {
@@ -215,13 +178,9 @@ enyo.kind({
 	},
 	//* @protected
 	stop: function(inFireEvent) {
-		//console.log("<<< clear interval");
-		//window.clearInterval(this.job);
-		window.clearTimeout(this.job);
-		this.job = null;
+		this.job = enyo.cancelRequestAnimationFrame(this.job);
 		inFireEvent && this.doScrollStop();
 	},
-	//
 	startDrag: function(e) {
 		this.dragging = true;
 		//
@@ -249,10 +208,11 @@ enyo.kind({
 	},
 	dragDrop: function(e) {
 		if (this.dragging && !window.PalmSystem) {
+			var kSimulatedFlickScalar = 0.5;
 			this.y = this.uy;
-			this.y0 = this.y - (this.y - this.y0) * 1.0;
+			this.y0 = this.y - (this.y - this.y0) * kSimulatedFlickScalar;
 			this.x = this.ux;
-			this.x0 = this.x - (this.x - this.x0) * 1.0;
+			this.x0 = this.x - (this.x - this.x0) * kSimulatedFlickScalar;
 		}
 		this.dragging = false;
 	},
@@ -275,10 +235,6 @@ enyo.kind({
 		return this.job;
 	},
 	isInOverScroll: function() {
-		if (this.job) {
-			if (this.x > this.leftBoundary || this.x < this.rightBoundary || this.y > this.topBoundary || this.y < this.bottomBoundary) {
-				return true;
-			}
-		}
+		return this.job && (this.x > this.leftBoundary || this.x < this.rightBoundary || this.y > this.topBoundary || this.y < this.bottomBoundary);
 	}
 });

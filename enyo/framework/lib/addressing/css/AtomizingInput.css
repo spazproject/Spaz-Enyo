@@ -33,13 +33,13 @@
 
 .enyo-addressing-expand-button {
 	color: #1F75BF;
-	font-size: 14px;
-	margin-left: 6px;
+	font-size: 16px;
+	margin-left: 14px;
 }
 
 .enyo-addressing-showall-button {
 	float: right;
-	margin-right: 6px;
+	margin-right: 14px;
 }
 
 .enyo-addressing-showall-icon {
@@ -57,4 +57,17 @@
 	min-width: 1px;
 	/*min-height: 40px;*/
 	/*border: 1px solid black;*/
+}
+
+.enyo-atomizing-input > .enyo-input-input {
+	font-size:16px;
+}
+
+.enyo-addressing-return-button {
+	height: 32px;
+	width: 32px;
+	margin: 8px;
+	float: right;
+	margin-right: 14px;
+	background: url(../images/return_hint.png);
 }

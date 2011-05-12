@@ -16,19 +16,14 @@ enyo.kind({name: "SecurityPolicyGuard",
 			        {kind: enyo.VFlexBox, width: "320px", height: "380px", components: [                                                           	
 				        {name:"pane", flex:1, kind:"Pane", transitionKind:enyo.transitions.Simple, height:"100%", components:[
 			     			{name:"blank"},
-			     			{name:"pinUnlock", kind: "PinUnlock", onCancelClick: "cancelLogin", onSetPinSuccess: "setPinSuccess"},
-			     			{name:"passwordUnlock", kind: "PasswordUnlock", lazy:true, onCancelClick: "cancelLogin"}, 
-			     			{name:"dialpad", kind:"Dialer", limited: true, lazy:true}
+			     			{name:"pinUnlock", kind: "PinUnlock", onCancelClick: "cancelLogin", onSetPinSuccess: "setPinSuccess"}
 		     			]}
 			        ]}
 			    ]},
 			             
 	            // Dialogs
 	            {name:"securityUpgradePrompt", kind:"SecurityUpgradePrompt", onPin:"choosePin", onPassword:"choosePassword"},
-	     		{name:"setPasswordDialog", kind:"SetPasswordDialog", onDone:"setPassword", onCancel:"cancelLogin"},
-	     		
-	     		// service calls
-	     		{name:"updatePinAppState", kind: enyo.PalmService, service:"palm://com.palm.systemmanager/", method:"updatePinAppState"},
+	     		{name:"setPasswordDialog", kind:"SetPasswordDialog", onDone:"setPassword", onCancel:"cancelLogin"}
 			],
 			setSecurityPolicy: function(policyToLoad) {
 				this.$.pinUnlock.reset();
@@ -40,9 +35,9 @@ enyo.kind({name: "SecurityPolicyGuard",
 				this.pendingSecurityPolicy = this.policy;
 				
 				if (this.lockMode !== "none") {
-					this.$.securityUpgradePrompt.setTitle($L("Device Password Upgrade Required")); 
+					this.$.securityUpgradePrompt.setTitle(rb_auth.$L("Device Password Upgrade Required")); 
 				} else {
-					this.$.securityUpgradePrompt.setTitle($L("Device Password Required"));
+					this.$.securityUpgradePrompt.setTitle(rb_auth.$L("Device Password Required"));
 				}
 				this.$.securityUpgradePrompt.setPolicy(this.pendingSecurityPolicy);
 				this.$.securityUpgradePrompt.open();
@@ -50,7 +45,6 @@ enyo.kind({name: "SecurityPolicyGuard",
 			
 			cancelLogin: function() {
 				this.$.secPops.close();
-				this.$.updatePinAppState.call({state:"cancel"});
 				this.doFailure()
 			},			
 			choosePin: function() {
@@ -74,8 +68,5 @@ enyo.kind({name: "SecurityPolicyGuard",
 			setPassword: function(inSender, response) {
 				this.doSuccess()
 				this.$.secPops.close();
-				this.$.updatePinAppState.call({
-					state: 'unlock'
-				});
 			}
 });

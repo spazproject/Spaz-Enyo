@@ -1,8 +1,6 @@
 {
 	"numberDivider": ".",
 	"numberDecimal": ",",
-	"currencyPrepend": "",
-	"currencyAppend": " din.",
 	"percentageSpace": false,
 	"localeName": "Republic of Serbia",
 	"titleCase": false,
@@ -38,6 +36,9 @@
 	"shortMYDate": "M.yy.",
 	"mediumMYDate": "MM.yyyy.",
 	"longMYDate": "MMMM yyyy.",
+	"shortDDate": "d",
+	"mediumDDate": "dd",
+	"longDDate": "dd.",	
 
 	"shortWeekday": "EE",
 	"mediumWeekday": "EEE",
@@ -52,5 +53,15 @@
 	"bigTime12": "hh.mm.ss",
 
 	"smallTime24": "HH.mm",
-	"bigTime24": "HH.mm.ss"
+	"bigTime24": "HH.mm.ss",
+	
+	"timeH12": "hh",
+	"timeH24": "HH",
+	
+	"currency": {
+		"name": "RSD",
+		"iso": "#{amt} #{sign}",
+		"common": "#{amt} #{sign}"
+	},
+	"defaultTimeZone": "Europe/Belgrade"
 }

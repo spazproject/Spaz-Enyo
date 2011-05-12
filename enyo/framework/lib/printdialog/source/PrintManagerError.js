@@ -7,23 +7,20 @@ var PrintManagerError = (function() {
 				if (-200 >= inErrorCode && inErrorCode > -300) 
 				{
 					switch (inErrorCode) {
+					case -203:	// PM_ERR_PRINTER_NO_RESPONSE_MANUAL
+						return PrintDialogString.load("PRINTER_NO_RESPONSE_MANUAL");
 					case -204:	// PM_ERR_PRINTER_DUPLICATE_ID
 					case -205:	// PM_ERR_PRINTER_DUPLICATE_IP
 						return PrintDialogString.load("PRINTER_ALREADY_EXISTS");
 					case -206:	// PM_ERR_PRINTER_IP_NOT_VALID
 						return PrintDialogString.load("PRINTER_IP_NOT_VALID");
 					case -233:	// PM_ERR_JOB_TEMP_FILE_NO_ROOM
-						return PrintDialogString.load("PRINTING_ERROR_TEMP_FILE_NO_ROOM", {error: inErrorCode});
 					case -243:	// PM_ERR_JOB_NO_JOB_HANDLES
-						return PrintDialogString.load("PRINTING_ERROR_TRY_AGAIN", {error: inErrorCode});
+						return PrintDialogString.load("PRINTING_ERROR_TEMP_FILE_NO_ROOM", {error: inErrorCode});
 					case -238:	// PM_ERR_PRINTER_NOT_SUPPORTED
 						return PrintDialogString.load("PRINTER_NOT_SUPPORTED");
-
-					// Errors to be depracated
-					case -203:	// PM_ERR_PRINTER_NO_RESPONSE
-					case -207:	// PM_ERR_PRINTER_GET_CAPS
-					case -215:	// PM_ERR_JOB_ADDRESS_NOT_VALID
-						return PrintDialogString.load("COMMUNICATION_ERROR", {error: inErrorCode});
+					case -245:	// PM_ERR_PRINTER_DUPLICATE_IP_ZERO
+						return PrintDialogString.load("PRINTER_ALREADY_EXISTS_ZERO");
 					}
 				}
 				
