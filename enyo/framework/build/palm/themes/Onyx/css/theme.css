@@ -15,7 +15,7 @@ body, html {
 	height: 100%;
 }
 
-body, input, button {
+html, body, input, button {
 	font-family: Prelude, Prelude Medium, Segoe UI, Arial, Helvetica, Sans-Serif;
 	font-size: 20px;
 	cursor: default;
@@ -33,4 +33,35 @@ body, input, button {
 
 .enyo-text-filter-highlight {
 	background: url(../images/filter-highlight.png) bottom left repeat-x;
+}
+
+.enyo-label {
+	color: #1f75bf;
+	text-transform: uppercase;
+}
+
+.enyo-header {
+	font-size: 1rem;
+}
+
+.enyo-subheader {
+	font-size: .9rem;
+}
+
+.enyo-body,
+.enyo-paragraph {
+	font-size: .8rem;
+}
+
+.enyo-paragraph {
+	margin: .5em 0;
+}
+
+.enyo-subtext {
+	font-size: .8rem;
+	color: #696969;
+}
+
+.enyo-footnote {
+	font-size: .7rem;
 }

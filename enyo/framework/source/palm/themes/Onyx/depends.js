@@ -46,5 +46,6 @@ enyo.depends(
 	"css/SlidingView.css",
 	"css/ImageView.css",
 	"css/CroppableImage.css",
-	"css/WebView.css"
+	"css/WebView.css",
+	"css/ModalDialog.css"
 );

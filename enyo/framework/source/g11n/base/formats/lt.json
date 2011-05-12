@@ -1,8 +1,6 @@
 {
 	"numberDivider": ".",
 	"numberDecimal": ",",
-	"currencyPrepend": "Lt",
-	"currencyAppend": "",
 	"percentageSpace": true,
 	"localeName": "Lithuania",
 	"titleCase": false,
@@ -37,6 +35,9 @@
     "shortMYDate": "yy.MM",
     "mediumMYDate": "yyyy.MM",
     "longMYDate": "yyyy 'm'. MMMM",
+	"shortDDate": "dd",
+	"mediumDDate": "dd",
+	"longDDate": "d",	
 
     "shortWeekday": "EE",
     "mediumWeekday": "EEE",
@@ -51,5 +52,15 @@
     "bigTime12": "hh:mm:ss",
 
     "smallTime24": "HH:mm",
-    "bigTime24": "HH:mm:ss"
+    "bigTime24": "HH:mm:ss",
+	
+	"timeH12": "hh",
+	"timeH24": "HH",
+	
+	"currency": {
+		"name": "LTL",
+		"iso": "#{sign} #{amt}",
+		"common": "#{sign}#{amt}"
+	},
+	"defaultTimeZone": "Europe/Vilnius"
 }

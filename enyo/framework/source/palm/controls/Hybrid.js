@@ -5,11 +5,6 @@
   In order to have mouse events passed to the hybrid plugin, you need to add your 
   own _requiresDomMousedown_ property to the control with the value true.
   
-  If you want to call methods on the plugin, you must call `PDL_CallJS()` from your PDK code
-  with a "ready" method name after initialization of the methods and the call to 
-  `PDL_JSRegistrationComplete()`.  You can change the name of that callback by modifying the 
-  _readyCallbackName_ property.
-
   Non-visible plugins are supported with width and height of 0.  They are still in the 
   DOM of the page, and re-rendering them will cause the plugin executable to be shutdown 
   and restarted.  The enyo.Hybrid code will automatically apply a "float: left" style to 0-size
@@ -34,8 +29,6 @@ enyo.kind({
 		height: 0,
 		/** width of the plugin object */
 		width: 0,
-		/** name of callback to set on plugin object that will signal that it's ready for use */
-		readyCallbackName: "ready"
 	},
 	events: {
 		/** sent when the plugin has is ready to allow method calls.  This is either signaled directly by
@@ -93,14 +86,13 @@ enyo.kind({
 	
 	rendered: function() {
 		this.inherited(arguments);
+		this.pluginReady = false; // when re-rendered, we need to wait for ready again
 		if (this.hasNode()) {
 			// once we have a plugin node created, we can add our callback functions to it
 			this.node.__PDL_PluginStatusChange__ = enyo.bind(this, this.pluginStatusChangedCallback);
-			this.node[this.readyCallbackName] = enyo.bind(this, this.pluginReadyCallback);
 			this.deferredCallbacks.forEach(function(cb) {
 					this.node[cb.name] = cb.callback;
 				}, this);
-			this.deferredCallbacks = [];
 		}
 	},
 
@@ -110,9 +102,13 @@ enyo.kind({
 				this.pluginReadyCallback(); 
 				break;
 			case "connected":
+				// we don't allow calls in the time between connection and ready
+				this.pluginReady = false;
 				this.doPluginConnected();
 				break;
 			case "disconnected":
+				// don't allow calls into adapter once it disconnects
+				this.pluginReady = false;
 				this.doPluginDisconnected();
 				break;
 		}
@@ -124,7 +120,7 @@ enyo.kind({
 		 * schedule a timeout to be called immediately where we will send our event and call any
 		 * deferred method calls. */
 		enyo.nextTick(this, function() {
-				if (this.pluginReady) return; /* only can go ready once */
+				if (this.pluginReady) { return; } /* only can go ready once per connection */
 				this.pluginReady = true;
 				this.doPluginReady(); /* send event to owner */
 
@@ -200,8 +196,9 @@ enyo.kind({
 		if (this.hasNode()) {
 			this.node[name] = fn;
 		}
-		else {
-			this.deferredCallbacks.push({ "name": name, "callback": fn });
-		}
+
+		// also add to the deferredCallbacks list, even if we just set it, since if the plugin is
+		// re-rendered, we'll need to set these up again.
+		this.deferredCallbacks.push({ "name": name, "callback": fn });
 	}
 });

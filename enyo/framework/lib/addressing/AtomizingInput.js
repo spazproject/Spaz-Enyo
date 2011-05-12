@@ -7,14 +7,15 @@ enyo.kind({
 	events: {
 		onFilterStringChanged: "",
 		onAtomize: "",
-		onAtomGetContact: "",
+		onGetContact: "",
 		onEditContact: "",
 		onShowAllButtonClick: "",
-		onExpandButtonClick: ""
+		onExpandButtonClick: "",
+		onFilterCleared: ""
 	},
 	published: {
 		contacts: null,
-		expandButtonCaption: enyo.addressing._$L("TO"),
+		expandButtonCaption: "",
 		hint: enyo.addressing._$L("Name or email address"),
 		inputType: "",
 		filterDelay: 200,
@@ -27,6 +28,7 @@ enyo.kind({
 			{name: "client", className: "enyo-atomizing-input-wrapper", components: [
 				{name: "expandButton", kind: "Button", className: "enyo-contact-atom enyo-addressing-expand-button", onclick: "doExpandButtonClick"},
 				{name: "showallButton", showing: false, kind: "IconButton", className: "enyo-addressing-showall-button",  icon: "enyo-addressing-showall-icon", iconIsClassName: true, onclick: "doShowAllButtonClick"},
+				{name: "returnButton", showing: false, kind:"CustomButton", className: "enyo-addressing-return-button", onclick:"returnAtomize"},
 				// FIXME: RichText is a BasicInput, so it does not have changeOnKeypress
 				{
 					name: "input",
@@ -47,7 +49,7 @@ enyo.kind({
 	],
 	constructor: function() {
 		// Semicolon **webOS NON-STANDARD**
-		var semicolon = window.PalmSystem ? 0 : 186;
+		var semicolon = window.PalmSystem ? 59 : 186;
 		this.atomizingKeyCodes = [
 			semicolon,
 			13,		// Enter
@@ -93,7 +95,7 @@ enyo.kind({
 		return this.inputValue = this.$.input.getValue();
 	},
 	inputTypeChanged: function() {
-		this.$.input.domAttributes.type = this.inputType;
+		this.$.input.setInputType(this.inputType);
 		if (this.hasNode()) {
 			this.$.input.render();
 		}
@@ -154,12 +156,13 @@ enyo.kind({
 		}
 		return atom;
 	},
+	returnAtomize: function() {
+		this.atomizeInput();
+	},
 	atomizeInput: function(inContact) {
-		var contact = inContact || {};
-		var dn = contact.displayName = contact.displayName || this.$.input.getValue();
-		var address = contact.value = contact.value || dn;
+		var contact = inContact || this.$.input.getValue();
 		if (this.editingAtom) {
-			if (address) {
+			if (contact) {
 				this.editingAtom.setContact(contact);
 				this.editingAtom.show();
 				this.doAtomize(this.editingAtom);
@@ -167,13 +170,14 @@ enyo.kind({
 				this.editingAtom.destroy();
 			}
 			this.editingAtom = null;
-		} else if (address) {
+		} else if (contact) {
 			var atom = this.addAtom(contact, true);
 			this.doAtomize(atom);
 		} else {
 			return false;
 		}
 		this.$.input.setValue("");
+		this.$.returnButton.hide();
 		this.$.showallButton.show();
 		return true;
 	},
@@ -198,15 +202,13 @@ enyo.kind({
 			a.setIsButtony(true);
 		}
 		this.$.showallButton.addClass("enyo-button");
-		this.$.expandButton.addClass("enyo-button");
 	},
 	unbuttonize: function(inSender, inEvent) {
 		for (var i = 0, a; a=this.atoms[i]; i++) {
 			a.setIsButtony(false);
-			a.setSeparator(i < this.atoms.length-1 ? ", " : "");
+			a.setSeparator(i < this.atoms.length-1 ? "; " : "");
 		}
 		this.$.showallButton.removeClass("enyo-button");
-		this.$.expandButton.removeClass("enyo-button");
 	},
 	editAtom: function(inSender, inEvent) {
 		if (!this.$.input.hasFocus()) {
@@ -215,14 +217,14 @@ enyo.kind({
 		this.atomizeInput();
 		inSender.hide();
 		this.editingAtom = inSender;
-		this.$.input.setValue(inSender.getContact().value);
+		this.$.input.setValue(inSender.getContact().value || inSender.getContact().displayName);
 		this.$.input.forceSelect();
 		// FIXME: why an event?
 		this.doEditContact(inSender);
 	},
 	// prevent internal mousedowns not on input from blurring it
 	mousedownHandler: function(inSender, inEvent) {
-		if (inSender != this.$.input) {
+		if (!inSender.isDescendantOf(this.$.input)) {
 			inEvent.preventDefault();
 			if (!this.$.input.hasFocus()) {
 				this.forceFocus();
@@ -255,6 +257,15 @@ enyo.kind({
 			return true;
 		}
 	},
+	// if we are deleting the last character, we need to not search
+	isDeletingLastChar: function(inKeyCode) {
+		if (inKeyCode == 8) {
+			// maybe a bit paranoid, but w/e
+			var v = this.$.input.getValue()||"";
+			// only true when deletion kills last character (or won't do anything)
+			return !(v.length > 1);
+		}
+	},
 	inputKeydown: function(inSender, inEvent) {
 		var keyCode = inEvent.keyCode;
 		if (this.keyShouldAtomize(keyCode)) {
@@ -270,28 +281,39 @@ enyo.kind({
 				if (this.atoms.length) {
 					this.removeLastAtom();
 				}
-				// Deleting characters changes the filter string and should kick off a new filter
-				this.startFilterJob();
 			// 32 == space
 			// disallow leading space
 			} else if (keyCode == 32) {
 				inEvent.preventDefault();
 			}
 		} else if (!this.isExcludedFilterKey(keyCode)) {
-			this.startFilterJob();
+			if (this.isDeletingLastChar(keyCode)) {
+				this.stopFilterJob();
+			} else {
+				this.startFilterJob();
+			}
 		}
 	},
 	inputKeypress: function(inSender, inEvent) {
 		var kc = inEvent.keyCode;
-		if (!this.keyShouldAtomize(kc) && !this.isExcludedFilterKey(kc)) {
+		if (!this.keyShouldAtomize(kc) && !this.isExcludedFilterKey(kc) && !this.isDeletingLastChar(kc)) {
 			this.startFilterJob();
 		}
 	},
 	inputInputEvent: function(inSender, inEvent) {
-		this.$.showallButton.setShowing(inSender.isEmpty());
+		var showAllOrReturn = inSender.isEmpty();
+		this.$.showallButton.setShowing(showAllOrReturn);
+		this.$.returnButton.setShowing(!showAllOrReturn);
+		if (showAllOrReturn) {
+			this.stopFilterJob();
+			this.doFilterCleared();
+		}
 	},
 	startFilterJob: function() {
 		enyo.job(this.id + "filter", enyo.bind(this, "fireFilterStringChanged"), this.filterDelay);
+	},
+	stopFilterJob: function() {
+		enyo.job.stop(this.id + "filter");
 	},
 	fireFilterStringChanged: function() {
 		var v = this.$.input.getValue();

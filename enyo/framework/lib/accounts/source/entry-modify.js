@@ -40,30 +40,33 @@ enyo.kind({
 	className:"accounts-modify",
 	components: [
 		{},		// Empty view so that nothing is shown when switching to the Credentials view from a "bad credentials" dashboard
-		{name: "accountModificationFromPIMApp", kind: "enyo.VFlexBox", className:"enyo-bg", components: [
-			{kind:"Header", className:"accounts-header", pack:"center", components: [
+		{name: "accountModificationFromPIMApp", kind: "VFlexBox", className:"enyo-bg", components: [
+			{kind:"Toolbar", className:"enyo-toolbar-light accounts-header", pack:"center", components: [
 				{kind: "Image", src: AccountsUtil.libPath + "images/acounts-48x48.png"},
-		        {content: AccountsUtil.PAGE_TITLE_ACCOUNT_SETTINGS}
+		        {content: AccountsUtil.PAGE_TITLE_ACCOUNT_SETTINGS, className:""}
 			]},
+			{className:"accounts-header-shadow"},
 			{kind: "Scroller", flex: 1, components: [
-				{kind: "enyo.VFlexBox", className:"box-center accounts-body", components: [
-					{kind: "RowGroup", caption: AccountsUtil.GROUP_TITLE_ACCOUNT_NAME, components: [
+				{kind: "Control", className:"box-center", components: [
+					{kind: "RowGroup", caption: AccountsUtil.GROUP_TITLE_ACCOUNT_NAME, className:"accounts-group", components: [
 						{kind: "Input", name: "accountName", spellcheck: false, autocorrect:false}
 					]},
 					{kind: "Accounts.credentials", name: "credentials", onCredentials_ValidationSuccess: "saveAccountCredentials"},
 					{kind: "ActivityButton", name: "removeAccountButton", label: AccountsUtil.BUTTON_REMOVE_ACCOUNT, className: "enyo-button-negative accounts-btn", onclick: "confirmAccountRemoval"}
 				]}
 			]},
-			{name: "removeConfirmDialog", kind: "Popup", modal: true, scrim: true, className: "accounts-dialog-width", components: [
-				{content: AccountsUtil.BUTTON_REMOVE_ACCOUNT},
-				{content: AccountsUtil.TEXT_REMOVE_CONFIRM},
-				{kind: "Button", caption: AccountsUtil.BUTTON_REMOVE_ACCOUNT, className: "enyo-button-negative", onclick: "removeAccount"},
-				{kind: "Button", caption: AccountsUtil.BUTTON_KEEP_ACCOUNT, onclick: "keepAccount"}
+			{name: "removeConfirmDialog", kind: "ModalDialog", caption: AccountsUtil.BUTTON_REMOVE_ACCOUNT, modal: true, scrim: true, components: [
+				{content: AccountsUtil.TEXT_REMOVE_CONFIRM, className:"enyo-paragraph"},
+				{kind:"HFlexBox", components:[
+					{kind: "Button", caption: AccountsUtil.BUTTON_KEEP_ACCOUNT, id:"button-entrymodify-keep", flex:0.8, className:"enyo-button-light", onclick: "keepAccount"},
+					{kind: "Button", caption: AccountsUtil.BUTTON_REMOVE_ACCOUNT, id:"button-entrymodify-remove", flex:1, className: "enyo-button-negative", onclick: "removeAccount"}
+				]}
 			]},
 			{name: "client"},
 			// {name: "Spacer", flex:1},
-			{kind:"Toolbar", components:[
-				{kind: "enyo.Button", label: AccountsUtil.BUTTON_BACK, className:"enyo-button-dark accounts-toolbar-btn", onclick: "saveAccountName"}
+			{className:"accounts-footer-shadow"},
+			{kind:"Toolbar", className:"enyo-toolbar-light", components:[
+				{kind: "Button", label: AccountsUtil.BUTTON_BACK, className:"accounts-toolbar-btn", onclick: "saveAccountName"}
 			]},
 			
 			{name: "modifyAccount", kind: "PalmService", service: enyo.palmServices.accounts, method: "modifyAccount", onResponse: "doAccountsModify_Done"},
@@ -72,47 +75,59 @@ enyo.kind({
 		
 		{kind: "Accounts.credentialView", name: "changeCredentialsView", onCredentials_ValidationSuccess: "saveAccountCredentials", onCredentials_Cancel: "backHandler"},
 		{kind: "Accounts.modifyView", name: "modifyAccountView", onModifyView_ChangeLogin: "editCredentials", onModifyView_Cancel: "doAccountsModify_Done", onModifyView_Success: "doAccountsModify_Done"},
-		{kind: "CrossAppUI", name:"customAccountsUI", onResult: "doAccountsModify_Done"}
+		{kind: "Accounts.crossAppUI", name:"customAccountsUI", onResult: "backHandler"}
 	],
 	
 	// Account to modify was tapped on
 	ModifyAccount: function(account, template, capability) {
-		// If no capability is provided then Accounts.modifyView provides the necessary functionality
-		// Typically only the Accounts app won't provide a capability; all PIM apps must provide a capability
-		
-		// If there is a credentials error then go straight to the Credentials screen
-		if (account.credentialError) {
-			this.ModifyCredentials(account);
-			return;
-		}
 		this.account = account;
 		this.template = template || account;
 		this.capability = capability || this.capability;
-		if (!this.capability) {
+		
+		// Return to "Prefs & Accounts" from cross-app UI
+		if (this.capability)
+			this.$.customAccountsUI.onResult = "doAccountsModify_Done";
+
+		// It is not possible to edit the Profile account
+		if (this.account.templateId === "com.palm.palmprofile") {
+			throw "Not possible to edit com.palm.palmprofile account";
+		}
+		else if (account.credentialError) {
+			// There is a credentials error.  Go straight to the Credentials screen
+			if (this.template.validator.customUI) {
+				// This template has custom UI.  Launch it now
+				this.$.customAccountsUI.launchCrossAppUI(this.template.validator.customUI, {mode:"modify", account: this.account, capability: this.capability});
+				this.selectViewByName("customAccountsUI");
+			}
+			else
+				this.ModifyCredentials(account);
+		}
+		else if (!this.capability) {
+			// If no capability is provided then Accounts.modifyView provides the necessary functionality
+			// Typically only the Accounts app won't provide a capability; all PIM apps must provide a capability
 			this.$.modifyAccountView.displayModifyView(account);
 			this.selectViewByName("modifyAccountView");
 		}
-		else if (this.account.templateId === "com.palm.palmprofile"){
-			throw "Not possible to edit com.palm.palmprofile account";
-		}
-		else if (this.template.validator.customUI) {
-			// This template has custom UI
-			AccountsUtil.setCrossAppParameters(this.$.customAccountsUI, this.template.validator.customUI, {mode:"modify", account: this.account, capability: this.capability});
-			this.selectViewByName("customAccountsUI");
-		}
 		else {
-			this.selectViewByName("accountModificationFromPIMApp");
-			this.capability = capability || this.capability;
-			// Display the account credentials 
-			this.$.credentials.displayCredentialsView(account, capability);
-			
-			// Set the account name
-			this.$.accountName.value = account.alias || account.loc_name;
-			this.$.accountName.valueChanged();
-			
-			// Stop the spinner on the "Remove Account" button
-			this.$.removeAccountButton.active = false;
-			this.$.removeAccountButton.activeChanged();
+			if (this.template.validator.customUI) {
+				this.$.customAccountsUI.launchCrossAppUI(this.template.validator.customUI, {mode:"modify", account: this.account, capability: this.capability});
+				this.selectViewByName("customAccountsUI");
+			}
+			else {
+				this.selectViewByName("accountModificationFromPIMApp");
+				this.capability = capability || this.capability;
+				// Display the account credentials 
+				this.$.credentials.displayCredentialsView(account, capability);
+				
+				// Set the account name
+				this.$.accountName.value = account.alias || account.loc_name;
+				this.$.accountName.valueChanged();
+				
+				// Stop the spinner on the "Remove Account" button and enable it
+				this.$.removeAccountButton.active = false;
+				this.$.removeAccountButton.activeChanged();
+				AccountsUtil.disableControl(this.$.removeAccountButton, false);
+			}
 		}
 	},
 	
@@ -160,9 +175,10 @@ enyo.kind({
 		// Close the dialog
 		this.$.removeConfirmDialog.close();
 
-		// Start the spinner on the button
+		// Start the spinner on the button and disable it
 		this.$.removeAccountButton.active = true;
 		this.$.removeAccountButton.activeChanged();
+		AccountsUtil.disableControl(this.$.removeAccountButton, true);
 
 		// Reduce the array of capabilities to only those that are enabled
 		var enabledCapabilities = [];
@@ -206,7 +222,7 @@ enyo.kind({
 		// If this template has custom UI then switch to it
 		if (account.validator && account.validator.customUI) {
 			// This template has custom UI
-			AccountsUtil.setCrossAppParameters(this.$.customAccountsUI, account.validator.customUI, {mode: "modify", account: account, capability: this.capability});
+			this.$.customAccountsUI.launchCrossAppUI(account.validator.customUI, {mode: "modify", account: account, capability: this.capability});
 			this.selectViewByName("customAccountsUI");
 		}
 		else {

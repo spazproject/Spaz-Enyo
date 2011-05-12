@@ -1,30 +1,32 @@
 /* Copyright 2009-2011 Hewlett-Packard Development Company, L.P. All rights reserved. */
 /*jslint white: true, onevar: true, undef: true, eqeqeq: true, plusplus: true, bitwise: true, 
 regexp: true, newcap: true, immed: true, nomen: false, maxerr: 500 */
-/*global ContactsLib, document, enyo, console */
+/*global ContactsLib, document, enyo, console, PersonList, $L */
 
 
 /*
 	=======instantiation params=======
 	onContactClick: <fxn> - function to call back when person is tapped
-	mode: <string> - one of "all", "favorites", "nofavorites". Defaults to "all"
+	mode: <string> - one of "noFilter", "favoritesOnly", "noFavoritesOnly". Defaults to "noFilter"
 	exclusions: <array of <str>> - array of strings containing mojodb person _id's. Defaults to no exclusions : []
 	sortOrder: <str> - "sortKey" - contacts sort default setting
 	showModeButtons: <bool>,
-	showSearchBar: <bool>
+	showSearchBar: <bool> //only works when mode = noFilter
 
 */
 
 enyo.kind({
 	name: "com.palm.library.contactsui.personListWidget",
 	kind: "VFlexBox",
-	className: "enyo-bg",
+	className: "enyo-contacts-list",
 	published: {
 		mode: "noFilter", 
 		showSearchBar: true, 
 		showAddButton: true,
 		showIMStatuses: false,
 		showFavStars: true,
+		showToggle: false,
+		enableGAL: false,
 		exclusions: [] //need to propagate these to list by this.filterList() and need to change item decorator to hide items that are exclusions
 	},
 	events: {
@@ -35,31 +37,33 @@ enyo.kind({
 		onSearchCriteriaCleared: ""
 	},
 	components: [
-		{kind: "Control", name:"modeButtonsContainer", style: "padding: 4px; font-size: 16px; font-weight: bold;", components: [
-			{kind: "RadioGroup", name: "radioGroup", onChange: "toggleList", value: "all", components: [
+		{kind: "Header", className: "contacts-header", layoutKind: "VFlexLayout", name: "modeButtonsContainer", components: [
+			{kind: "RadioGroup", width: "100%", name: "radioGroup", onChange: "toggleList", value: "all", components: [
 				{label: $L("All"), value: "all"},
-				{label: $L("Favorites"), value: "favorites"},
+				{label: $L("Favorites"), value: "favorites"}
 			]}
 		]},
-		{name: "searchField", className: "search-field", kind: "Input", onchange: "filterList", hint: $L("Search"), 
-			autoCapitalize: "lowercase", autocorrect: false, spellcheck: false, disabled: false, changeOnKeypress: true, components: [
-			{kind: "Image", src: "images/search.png"}
+		{name: "searchField", kind: "RoundedInput", className: "contacts-search", hint: $L("Search"), onSearch: "onSearch", onchange: "filterList", // change to SearchInput when fw implements x swap
+		autoCapitalize: "lowercase", autocorrect: false, autoWordComplete: false, changeOnInput: true, changeOnEnterKey: true, disabled: false, spellcheck: false,
+		components: [
+			{name: "searchImg", kind: "Image", src: "$palm-themes-Onyx/images/search-input-search.png", style: "display: block", onclick: "onSearchIconClicked"}
 		]},
-		{name:'listWrapper', components:[], flex:1, kind: enyo.VFlexBox},
-		{name: "emptyContacts", kind: "VFlexBox", showing: false, style: "text-align: center; color: grey; font-size: 18px;", components: [
+		{name: 'listWrapper', style: "position:relative", components: [], height: "100%", flex: 1, kind: enyo.VFlexBox},
+		{name: "emptyContacts", kind: "VFlexBox", showing: false, style: "text-align: center; color: #555; font-size: 20px;", components: [
 			{kind: "Image", src: "images/first-launch-contacts.png"},
 			{content: $L("Your contact list is empty.")},
 			{content: $L("Tap the menu button to create a contact.")}
 		]},
-		{kind: "Toolbar", name:"bottomButtonPane", className: "bottom-menu-panel", pack: "start", components: [
-			{icon: "images/menu-icon-new-contact.png", onclick: "doAddClick"}
+		{kind: "Toolbar", name: "bottomButtonPane", className: "contacts-toolbar enyo-toolbar-light", pack: "center", width: "100%", components: [
+			{name: "addContactsButton", kind: "ToolButton", caption: $L("Add Contact"), onclick: "doAddClick"},
+			{name: "addFavoriteButton", kind: "ToolButton", caption: $L("Add Favorite"), showing: false}// this needs to bring up a PersonList popup filtered to show non-favorites only
 		]}
 	],
-	setExclusions: function (exclusionsArray){
-		console.log("||||||||||PERSON LIST WIDGET - SET EXCLUSIONS : running this.$.PersonList.setExclusions with array" + JSON.stringify(this.exclusions));
+	setExclusions: function (exclusionsArray) {
+//		console.log("||||||||||PERSON LIST WIDGET - SET EXCLUSIONS : running this.$.PersonList.setExclusions with array" + JSON.stringify(this.exclusions));
 		this.$.list.setExclusions(exclusionsArray);
 	},
-	create: function() {
+	create: function () {
 		this.inherited(arguments);
 	
 		this.$.listWrapper.createComponent({name: "list", 
@@ -67,73 +71,125 @@ enyo.kind({
 			flex: 1, 
 			onContactClick: "doContactClick", 
 			onListUpdated: "doListUpdated", 
-			mode: this.mode, 
-			showSearchBar: this.showSearchBar, 
 			showAddButton: this.showAddButton, 
 			showIMStatuses: this.showIMStatuses, 
 			showFavStars: this.showFavStars,
+			enableGAL: this.enableGAL,
 			owner: this}
 		);
+		
+		this.showSearchBarChanged();
+		this.modeChanged();
+		this.enableGALChanged();
 	},
 	rendered: function () {
 		this.inherited(arguments);
 		this.renderContacts();
-		if (!this.showSearchBar){
+
+//		console.log("PERSON LIST WIDGET - RENDERED - calling changemode on personList with " + this.mode);
+		
+	},
+	showSearchBarChanged: function () {
+		if (!this.showSearchBar) {
 			this.$.searchField.hide();
 		}
-		console.log("PERSON LIST WIDGET - RENDERED - calling changemode on personList with " + this.mode);
-		this.$.list.changeMode(this.mode);
 	},
-	refresh: function(){
+	modeChanged: function () {
+		// TODO: Enyo.require
+
+		if (this.mode === "favoritesOnly") {
+			this.curMode = PersonList.FAVORITES_ONLY;
+		} else if (this.mode === "noFavoritesOnly") {
+			this.curMode = PersonList.NO_FAVORITES_ONLY;
+		} else {
+			this.curMode = PersonList.NOFILTER;
+		}
+
+		if (this.showSearchBar) {
+			this.curMode += 1;
+		}
+
+		this.$.list.changeMode(this.curMode);
+	},
+	enableGALChanged: function () {
+		this.$.list.setEnableGAL(this.enableGAL);
+	},
+	refresh: function () {
 		this.$.list.refresh();
 	},
-	punt: function() {
+	punt: function () {
 		this.$.list.punt();
 	},
-	ready: function() {
-		console.log("|||||||| PERSON LIST WIDGET IN READY");
-		if (this.exclusions && Array.isArray(this.exclusions)){
-			console.log("||||||||||PERSON LIST WIDGET - READY : this.exclusions is an array, running this.$.PersonList.setExclusions with array" + JSON.stringify(this.exclusions));
+	ready: function () {
+//		console.log("|||||||| PERSON LIST WIDGET IN READY");
+		if (this.exclusions && Array.isArray(this.exclusions)) {
+//			console.log("||||||||||PERSON LIST WIDGET - READY : this.exclusions is an array, running this.$.PersonList.setExclusions with array" + JSON.stringify(this.exclusions));
 			this.$.list.setExclusions(this.exclusions);
 		}
 //		console.log("|||||||||||||||||MODE : " + this.mode);
-		if (this.mode !== "dualMode"){
+		if (this.showToggle === false) {
 			this.$.modeButtonsContainer.hide();
 			//this.toggleList(null, "favorites");
 			//this.$.radioGroup.setValue("favorites");
 		} 
-		if (!this.showAddButton){
+		if (!this.showAddButton) {
 			this.$.bottomButtonPane.hide();
 		}
 		this.$.list.setShowIMStatuses(this.showIMStatuseses);
 		this.$.list.setShowFavStars(this.showFavStars);
 	},
-	filterList: function (inSender) {
+	filterList: function (inSender, inEvent) {
 		this.filterString = this.$.searchField.getValue();
 		if (this.filterString) {
+			this.$.searchImg.setSrc("$palm-themes-Onyx/images/search-input-cancel.png");
 			this.doSearchCriteriaUpdated();
 		} else {
+			this.$.searchImg.setSrc("$palm-themes-Onyx/images/search-input-search.png");
 			this.doSearchCriteriaCleared();
 		}
 
 //		console.log("THE SEARCH TERM IS: " + this.filterString);
-		this.$.searchField.applyStyle("background-color", this.filterString ? "#E9AB17" : "white");	
+//		this.$.searchField.applyStyle("background-color", this.filterString ? "#E9AB17" : "white");	
 
 		this.$.list.setSearchString(this.filterString || undefined);
 		this.renderContacts();
 	},
 	renderContacts: function (showFavorites) {
-		this.$.list.toggleFavorites(showFavorites);
-		this.$.list.refresh();
+		this.$.list.changeMode(showFavorites ? PersonList.FAVORITES_ONLY : this.curMode);
 	},
 	toggleList: function (inSender, inValue) {
 		this.$.list.setShowFavStars(this.showFavStars);
 		this.showFavorites = (inValue === "favorites");
 		if (this.showFavorites) {
 			this.$.searchField.hide();
+			this.$.addContactsButton.hide();
+			this.$.addFavoriteButton.show();
+			this.$.modeButtonsContainer.addClass("favorites");
+			this.$.listWrapper.addClass("favorites");
 		} else {
+			this.$.addContactsButton.show();
+			this.$.addFavoriteButton.hide();
+			this.$.modeButtonsContainer.removeClass("favorites"); 
+			this.$.listWrapper.removeClass("favorites"); // i don't like this, if you don't like it either, please make bettur.
 			this.$.searchField.show();
 		}
 		this.renderContacts(this.showFavorites);
+	},
+	selectContact: function (inPersonId) {
+		this.$.list.selectContact(inPersonId);
+	},
+	enableButtons: function (inEnable) {
+		this.$.addContactsButton.setDisabled(!inEnable);
+		this.$.addFavoriteButton.setDisabled(!inEnable);
+	},
+	onSearchIconClicked: function (inSrc, inEvent) {
+		if (this.$.searchField.getValue()) {
+			this.$.searchField.setValue(null);
+			// If the searchField isn't currently focused then prevent it from gaining focus
+			if (!this.$.searchField.hasFocus()) {
+				enyo.stopEvent(inEvent);
+			}
+			this.filterList();
+		}
 	}
 });

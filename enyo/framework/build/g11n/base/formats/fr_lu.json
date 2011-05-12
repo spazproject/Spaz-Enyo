@@ -3,8 +3,6 @@
 
 	"numberDivider": " ",
 	"numberDecimal": ",",
-	"currencyPrepend": "",
-	"currencyAppend": " €",
 	"percentageSpace": true,
 	"localeName": "Luxembourg",
 	"titleCase": false,
@@ -41,6 +39,9 @@
 	"shortMYDate": "MM/yy",
 	"mediumMYDate": "MMM yyyy",
 	"longMYDate": "MMMM yyyy",
+	"shortDDate": "dd",
+	"mediumDDate": "d",
+	"longDDate": "d",	
 
 	"shortWeekday": "EE",
 	"mediumWeekday": "EEE",
@@ -55,5 +56,15 @@
 	"bigTime12": "hh:mm:ss",
 
 	"smallTime24": "HH:mm",
-	"bigTime24": "HH:mm:ss"
+	"bigTime24": "HH:mm:ss",
+	
+	"timeH12": "hh",
+	"timeH24": "HH",
+	
+	"currency": {
+		"name": "EUR",
+		"iso": "#{amt} #{sign}",
+		"common": "#{amt} #{sign}"
+	},
+	"defaultTimeZone": "Europe/Luxembourg"
 }

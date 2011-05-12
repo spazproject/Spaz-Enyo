@@ -1,8 +1,6 @@
 {
 	"numberDivider": " ",
 	"numberDecimal": ",",
-	"currencyPrepend": "$",
-	"currencyAppend": "",
 	"percentageSpace": false,
 	"localeName": "Jamaica",
 	"titleCase": true,
@@ -38,6 +36,9 @@
 	"shortMYDate": "MM/yyyy",
 	"mediumMYDate": "MMM yyyy",
 	"longMYDate": "MMMM yyyy",
+	"shortDDate": "dd",
+	"mediumDDate": "d",
+	"longDDate": "d",	
 
 	"shortWeekday": "EE",
 	"mediumWeekday": "EEE",
@@ -52,5 +53,15 @@
 	"bigTime12": "hh:mm:ss",
 
 	"smallTime24": "HH:mm",
-	"bigTime24": "HH:mm:ss"
+	"bigTime24": "HH:mm:ss",
+	
+	"timeH12": "hh",
+	"timeH24": "HH",
+	
+	"currency": {
+		"name": "JMD",
+		"iso": "#{sign} #{amt}",
+		"common": "#{sign}#{amt}"
+	},
+	"defaultTimeZone": "America/Jamaica"
 }

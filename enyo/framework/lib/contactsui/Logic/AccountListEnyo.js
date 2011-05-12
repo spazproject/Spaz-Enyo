@@ -1,22 +1,23 @@
 /* Copyright 2009-2011 Hewlett-Packard Development Company, L.P. All rights reserved. */
 /*jslint white: true, onevar: true, undef: true, eqeqeq: true, plusplus: true, bitwise: true, 
 regexp: true, newcap: true, immed: true, nomen: false, maxerr: 500 */
-/*global ContactsLib, document, enyo, console, Mojo */
+/*global ContactsLib, document, enyo, console, Mojo, _, com */
 
 enyo.kind({
 	name: "com.palm.library.contacts.AccountList",
 	kind: "Component",
 	published: {},
-	events: {},
+	events: {
+	},
 	components: [
-		{ name:"getAccounts", kind:"Accounts.getAccounts", onGetAccounts_AccountsAvailable:"_accountsChanged" }
+		{name: "getAccounts", kind: "Accounts.getAccounts", onGetAccounts_AccountsAvailable: "_accountsChanged"}
 	],
 	
 	create: function () {
 		this.inherited(arguments);
 	},
 	
-	ready: function (){
+	ready: function () {
 		console.log("------------in AccountList ready method-------------");     
 		this.refresh();
 	},
@@ -34,8 +35,8 @@ enyo.kind({
 	//		filterBy: {
 	//			capability: 'CONTACTS'
 	//		}, 
-			subscribe: true}
-		);
+			subscribe: true
+		});
 	},
 
 	constructor : function (onReady) {
@@ -258,8 +259,8 @@ enyo.kind({
 	*/
 	_accountsChanged : function (inSender, inResponse) {
 		var that = this,
-			oldDefaultAccountsList = this.defaultAccountsList;
-		var accounts = inResponse.accounts;
+			oldDefaultAccountsList = this.defaultAccountsList,
+			accounts = inResponse.accounts;
 		this.list = accounts;
 		console.info("ContactsApp._accountsChanged: accounts #:" + accounts.length);
 	

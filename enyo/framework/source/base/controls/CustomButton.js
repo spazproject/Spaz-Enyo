@@ -32,6 +32,7 @@ enyo.kind({
 		this.disabledChanged();
 		this.isDefaultChanged();
 		this.downChanged();
+		this.depressedChanged();
 	},
 	captionChanged: function() {
 		this.setContent(this.caption);

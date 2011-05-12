@@ -2,8 +2,8 @@ enyo.kind({
 	name: "Spaz",
 	kind: enyo.HFlexBox,
 	components: [
-		{name: "sidebar", kind: "Spaz.Sidebar", onColumnsFunction: "columnsFunction"},
-		{name: "container", kind: "Spaz.Container", onShowEntryView: "showEntryView"},
+		{name: "sidebar", kind: "Spaz.Sidebar", onRefreshAll: "refreshAll", onCreateColumn: "createColumn"},
+		{name: "container", kind: "Spaz.Container", onShowEntryView: "showEntryView", onRefreshAllFinished: "refreshAllFinished"},
 	],
 	
 	twit: new SpazTwit(),
@@ -150,6 +150,7 @@ enyo.kind({
 		//self.inherited(arguments);
 	},
 	showEntryView: function(inSender, inEntry){
+		console.log("showing entryView");
 		if(!this.$.entryview){
 			
 			this.createComponent({name: "entryview", kind: "Spaz.EntryView", onDestroy: "destroyEntryView"}, {owner: this});
@@ -167,10 +168,18 @@ enyo.kind({
 		//this.render();
 		//this.$.container.refreshList();
 	},
-	columnsFunction: function(inSender, functionName, opts){
-		this.$.container.columnsFunction(functionName, opts);	
+	createColumn: function(inSender, inAccountId, inColumn){
+		this.$.container.createColumn(inAccountId, inColumn);	
 	},
 	resizeHandler: function() {
 		this.$.container.resizeHandler();
+	},
+	
+	refreshAll: function() {
+		this.$.container.refreshAll();
+	},
+	
+	refreshAllFinished: function() {
+		this.$.sidebar.refreshAllFinished();
 	}
 });

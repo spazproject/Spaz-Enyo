@@ -1,8 +1,6 @@
 {
 	"numberDivider": "，",
 	"numberDecimal": ".",
-	"currencyPrepend": "$",
-	"currencyAppend": "",
 	"percentageSpace": true,
 	"localeName": "Hong Kong",
 	"titleCase": true,
@@ -23,8 +21,8 @@
 	"mediumTime12": "ahh:mm:ss",
 	"defaultTime24": "HH:mm:ss",
 	"defaultTime12": "ahh:mm:ss",
-	"shortTime24": "aH:mm",
-	"shortTime12": "ah:mm",
+	"shortTime24": "aHH:mm",
+	"shortTime12": "ahh:mm",
 	"dateTimeFormat": "DATE TIME",
 
 	"is12HourDefault": false,
@@ -38,6 +36,9 @@
 	"shortMYDate": "MM/yyyy",
 	"mediumMYDate": "MMM yyyy",
 	"longMYDate": "MMMM yyyy",
+	"shortDDate": "dd",
+	"mediumDDate": "dd",
+	"longDDate": "d",	
 
 	"shortWeekday": "EE",
 	"mediumWeekday": "EEE",
@@ -48,11 +49,20 @@
 	"timeZFormat": "TIME ZONE",
 	"timeAZFormat": "TIME AM ZONE",
 
-	"smallTime12": "h:mm",
+	"smallTime12": "hh:mm",
 	"bigTime12": "hh:mm:ss",
 
-	"smallTime24": "H:mm",
+	"smallTime24": "HH:mm",
 	"bigTime24": "HH:mm:ss",
 	
-	"defaultPhotoSize": "4x6"
+	"timeH12": "hh",
+	"timeH24": "HH",
+	
+	"defaultPhotoSize": "4x6",
+	"currency": {
+		"name": "HKD",
+		"iso": "#{sign} #{amt}",
+		"common": "#{sign}#{amt}"
+	},
+	"defaultTimeZone": "Asia/Hong_Kong"
 }

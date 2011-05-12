@@ -103,9 +103,9 @@ a routine calls releaseAllJsonFiles, and the garbage collector runs.
 
 Params can contain:
 
-* *root* - absolute path to which the path section is relative
-* *path* - relative path to the json file from the root, including the file name
-* *cache* - if set to false, don't cache the resulting json. Default is true to cache the json.
+* root: absolute path to which the path section is relative
+* path: relative path to the json file from the root, including the file name
+* cache: if set to false, don't cache the resulting json. Default is true to cache the json.
 */
 enyo.g11n.Utils.getNonLocaleFile = function getNonLocaleFile(params) {
 	var json, rootPath, fullPath;
@@ -159,12 +159,13 @@ a routine calls releaseAllJsonFiles, and the garbage collector runs.
 
 Params can contain:
 
-* *root* - root of the package, app, or library where the json files can be found. 
-* *path* - path relative to the root underneath which the resources dir can be found
-* *locale* - a locale instance that names which locale to load the json file for.
-* *prefix* - an optional prefix for the file name. File names will be calculated as prefix + locale name + ".json"
-* *cache* - if set to false, don't cache the resulting json. Default is true to cache the json.
-* *merge* - if set to true, will merge the variant, region and language json files according to rules defined in (define rules). Default is set to false.
+* root: root of the package, app, or library where the json files can be found. 
+* path: path relative to the root underneath which the resources dir can be found
+* locale: a locale instance that names which locale to load the json file for.
+* prefix: an optional prefix for the file name. File names will be calculated as prefix + locale name + ".json"
+* cache: if set to false, don't cache the resulting json. Default is true to cache the json.
+* *merge: if set to true, will merge the variant, region and language json files according to rules defined in (define rules). Default is set to false.
+* type: one of "language", "region", or "either". Default is "either". This loads files specific to the language name, the region name, or either one if they are available.
 
 */
 enyo.g11n.Utils.getJsonFile = function getJsonFile(params) {
@@ -200,12 +201,16 @@ enyo.g11n.Utils.getJsonFile = function getJsonFile(params) {
 		if (!params.merge) {
 			path = rootPath + params.locale.toString() + ".json";
 			json = this._loadFile(path);
-			if (!json && params.locale.language) {
+			if (!json && params.type !== "region" && params.locale.language) {
 				path = rootPath + params.locale.language + ".json";
 				json = this._loadFile(path);
 			}
-			if (!json && params.locale.region) {
+			if (!json && params.type !== "language" && params.locale.region) {
 				path = rootPath + params.locale.region + ".json";
+				json = this._loadFile(path);
+			}
+			if (!json && params.type !== "language" && params.locale.region) {
+				path = rootPath + "_" + params.locale.region + ".json";
 				json = this._loadFile(path);
 			}
 		} else {

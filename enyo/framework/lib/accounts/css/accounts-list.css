@@ -1,60 +1,106 @@
 /* Copyright 2009-2011 Hewlett-Packard Development Company, L.P. All rights reserved. */
 .box-center {
 	width:500px;
-	margin-left: auto;
-	margin-right: auto;
+	margin:23px auto 0;
 }
 .box-center .enyo-spinner{
 	margin-right:8px;
 }
+.box-center.enyo-scroller-scrollee {
+	padding-bottom:30px;
+}
+
+/* Header footer*/
 .accounts-header img {
-	margin-right: 13px;
+	display:block;
+	margin-right: 10px;
 }
-.accounts-header .enyo-header-inner {
-	padding: 2px 16px 1px;
+.accounts-header-shadow,
+.accounts-footer-shadow {
+	position: absolute; 
+	z-index: 100;
+	height: 3px;
+	width: 100%;
+	pointer-events: none;
 }
-.error-box img {
-	margin-right:7px;
+.accounts-header-shadow {
+	top: 54px;
+	background:transparent url('../images/light_chrome_drop_shadow_header.png') bottom repeat-x;
 }
-.accounts-body {
-	margin-top:14px;
+.accounts-footer-shadow {
+	bottom: 0;
+	height: 57px; 
+	background:transparent url('../images/light_chrome_drop_shadow_footer.png') top repeat-x;
 }
-.accounts-body-text {
-	font-size:16px;
-	color:#667;
+
+/* Instructional text */
+.accounts-body-title {
+	font-size:18px;
+	color:#333333;
 	margin:0 5px;
 }
-.enyo-button + .accounts-body-text {
-	margin-top:6px;
-}
-.accounts-body-title {
-	font-size:0.9em;
-	color:#667;
-	margin:2px 5px 5px;
-}
 .enyo-button + .accounts-body-title {
-	margin-top:9px;
+	margin-top:8px;
+}
+.enyo-group + .accounts-body-title {
+	margin-top:-2px;
+}
+.accounts-body-title + .enyo-button{
+	margin-top:8px;
+}
+.accounts-body-title + .enyo-group{
+	margin-top:7px;
+}
+
+/* Footnote text */
+.accounts-body-text {
+	font-size:16px;
+	color:#666;
+	margin:0 5px;
+}
+.enyo-group + .accounts-body-text {
+	margin-top:-7px;
+}
+.accounts-body-text + .enyo-button {
+	margin-top:20px;
+}
+.accounts-body-text + .enyo-group {
+	margin-top:19px;
+}
+
+/* Group Box */
+.accounts-group + .accounts-group {
+	margin-top:15px;
+}
+/* Button */
+.enyo-group + .accounts-btn {
+	margin-top:16px;
+}
+.accounts-btn + .enyo-group {
+	margin-top:17px;
+}
+.accounts-btn + .accounts-btn {
+	margin-top:12px;
+}
+.accounts-toolbar-btn {
+	width:300px;
 }
 .icon-image {
 	display:block;
 	margin-right:10px;
 }
+.warning-icon {
+	display:block;
+}
+
+/* Accounts App */
 .email-address {
-	font-size:0.9em;
+	font-size:18px;
 	color:#666666;
 	margin-left:10px
 }
-.accounts-btn {
-	line-height:32px;
-	min-height:32px;
-	margin-top:8px;
-	margin-bottom: 8px;
-}
-.accounts-btn-icon {
-	line-height:inherit;
-}
-.accounts-btn+.accounts-btn {
-	margin-top:5px;
+.accounts-btn-list .accounts-btn {
+	margin-top:12px;
 }
 div:first-child > .accounts-list-item {
 	border-top:none;
@@ -62,16 +108,26 @@ div:first-child > .accounts-list-item {
 div:last-child > .accounts-list-item {
 	border-bottom:none;
 }
-.accounts-toolbar-btn {
-	width:314px;
-	-webkit-box-sizing:border-box;
-}
 .accounts-rowgroup-item {
 	margin: -10px;
 }
+.error-box {
+	width:500px;
+}
+.error-box img {
+	margin:0 7px;
+}
 .error-text {
+	font-size:18px;
 	color: #d70000;
 }
-.accounts-dialog-width { 
-	width: 320px;
+.enyo-group + .error-box {
+	margin-top:-2px;
+	margin-bottom:-8px;
+}
+.error-box + .enyo-group {
+	margin-top:15px;
+}
+.error-box + .accounts-btn {
+	margin-top:16px;
 }

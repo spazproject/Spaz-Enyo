@@ -41,7 +41,6 @@ enyo.kind({
 	chrome: [
 		{name: "client", className: "enyo-popup-inner", kind: "BasicScroller", autoVertical: true, vertical: false, layoutKind: "OrderedLayout"}
 	],
-	scrim: true,
 	defaultKind: "MenuItem",
 	//* @protected
 	removeControl: function(inControl) {
@@ -84,7 +83,7 @@ enyo.kind({
 		this.styleLastItem();
 	},
 	_locateLastItem: function(inControl) {
-		if (inControl.collapsed) {
+		if (inControl.getOpen && !inControl.getOpen()) {
 			return inControl;
 		} else {
 			var controls = inControl.getControls();

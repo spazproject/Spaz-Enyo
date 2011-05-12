@@ -656,6 +656,7 @@ enyo.g11n.PhoneNumber.prototype = {
 			field,
 			norm,
 			temp,
+			tempRegion,
 			homeLocale,
 			currentLocale,
 			destinationLocale;
@@ -663,21 +664,22 @@ enyo.g11n.PhoneNumber.prototype = {
 		// clone this number, so we don't mess with it
 		norm = new enyo.g11n.PhoneNumber(this); 
 
-		homeLocale = enyo.g11n.phoneLocale();
+		// homeLocale is for debugging/unit testing
+		homeLocale = (options && options.homeLocale) ? new enyo.g11n.PhoneLoc({locale: options.homeLocale}) : enyo.g11n.phoneLocale();
 		currentLocale = options ? new enyo.g11n.PhoneLoc(options) : homeLocale;
 		destinationLocale = (norm.countryCode && new enyo.g11n.PhoneLoc({countryCode: norm.countryCode})) || norm.locale || currentLocale;
 
 		// console.log("normalize: homeLocale is " + JSON.stringify(homeLocale));
-		// console.log("normalize: currentLocale is " + JSON.stringify(currentLocale) + " and type is " + (currentLocale instanceof PhoneLoc));
+		// console.log("normalize: currentLocale is " + JSON.stringify(currentLocale));
 		// console.log("normalize: destinationLocale is " + JSON.stringify(destinationLocale));
-		
+		// console.log("normalize: normalization of " + JSON.stringify(norm));
 		currentPlan = new enyo.g11n.NumPlan({locale: currentLocale});
 		destinationPlan = new enyo.g11n.NumPlan({locale: destinationLocale});
 		
 		if (options &&
 				options.assistedDialing &&
-				options.networkType === "cdma" && 
-				destinationPlan.fieldLengths && 
+				destinationPlan.fieldLengths &&
+				typeof(destinationPlan.fieldLengths.maxLocalLength) !== 'undefined' &&
 				!norm.trunkAccess && 
 				!norm.iddPrefix &&
 				norm.subscriberNumber && 
@@ -685,11 +687,20 @@ enyo.g11n.PhoneNumber.prototype = {
 			// not a valid number, so attempt to reparse with a + in the front to see if we get a valid international number
 			// console.log("Attempting to reparse with +" + this._join());
 			temp = new enyo.g11n.PhoneNumber("+" + this._join(), {locale: this.locale});
-			if (temp.countryCode && enyo.g11n.PhoneUtils.mapCCtoRegion(temp.countryCode) !== "unknown") {
-				// only use it if it is a recognized country code
+			tempRegion = (temp.countryCode && enyo.g11n.PhoneUtils.mapCCtoRegion(temp.countryCode));
+			// console.log("new region code is " + tempRegion);
+			if (tempRegion && tempRegion !== "unknown" && tempRegion !== "sg") {
+				// only use it if it is a recognized country code. Singapore (sg) is a special case.
 				norm = temp;
 				destinationLocale = (norm.countryCode && new enyo.g11n.PhoneLoc({countryCode: norm.countryCode})) || norm.locale || currentLocale;
 				destinationPlan = new enyo.g11n.NumPlan({locale: destinationLocale});
+			}
+		} else if (options && options.assistedDialing && norm.invalid && currentLocale.region !== norm.locale.region) {
+			// if this number is not valid for the locale it was parsed with, try again with the current locale
+			// console.log("norm is invalid. Attempting to reparse with the current locale");
+			temp = new enyo.g11n.PhoneNumber(this._join(), {locale: currentLocale});
+			if (temp && !temp.invalid) {
+				norm = temp;
 			}
 		}
 		
@@ -702,9 +713,13 @@ enyo.g11n.PhoneNumber.prototype = {
 					 norm.countryCode ||
 					 norm.trunkAccess)) {
 				// console.log("normalize: assisted dialling normalization of " + JSON.stringify(norm));
-				if (!currentLocale.equals(destinationLocale) ) {
+				if (currentLocale.region !== destinationLocale.region) {
 					// we are currently calling internationally
-					if (!norm._hasPrefix() && options.defaultAreaCode && destinationLocale.equals(homeLocale)) {
+					if (!norm._hasPrefix() && 
+							options.defaultAreaCode && 
+							destinationLocale.region === homeLocale.region &&
+							(!destinationPlan.fieldLengths.minLocalLength || 
+								norm.subscriberNumber.length >= destinationPlan.fieldLengths.minLocalLength)) {
 						// area code is required when dialling from international, but only add it if we are dialing
 						// to our home area. Otherwise, the default area code is not valid!
 						norm.areaCode = options.defaultAreaCode;
@@ -719,37 +734,38 @@ enyo.g11n.PhoneNumber.prototype = {
 						delete norm.trunkAccess;
 					}
 					
-					// for CDMA, make sure to get the international dialling access code for the current region, not the destination region
-					if (options.networkType && options.networkType === "cdma") {
-						norm.iddPrefix = currentPlan.iddCode;
-					} else {
-						// all umts carriers support plus dialing
-						norm.iddPrefix = "+";
-					}
-	
 					// make sure to get the country code for the destination region, not the current region!
 					if (options.sms) {
-						if (homeLocale.region === "us" && 
-								currentLocale.region !== "us" &&
-								destinationLocale.region !== "us") {
-							norm.iddPrefix = "+011"; // make it go through the US first
+						if (homeLocale.region === "us" && currentLocale.region !== "us") {
+							if (destinationLocale.region !== "us") {
+								norm.iddPrefix = "011"; // non-standard code to make it go through the US first
+								norm.countryCode = norm.countryCode || enyo.g11n.PhoneUtils.mapRegiontoCC(destinationLocale.region);
+							} else if (options.networkType === "cdma") {
+								delete norm.iddPrefix;
+								delete norm.countryCode;
+								if (norm.areaCode) {
+									norm.trunkAccess = "1";
+								}
+							} else if (norm.areaCode) {
+								norm.iddPrefix = "+";
+								norm.countryCode = "1";
+								delete norm.trunkAccess;
+							}
+						} else {
+							norm.iddPrefix = (options.networkType === "cdma") ? currentPlan.iddCode : "+";
+							norm.countryCode = norm.countryCode || enyo.g11n.PhoneUtils.mapRegiontoCC(destinationLocale.region);
 						}
-						norm.countryCode = norm.countryCode || enyo.g11n.PhoneUtils.mapRegiontoCC(destinationLocale.region);
 					} else if (norm._hasPrefix() && !norm.countryCode) {
 						norm.countryCode = enyo.g11n.PhoneUtils.mapRegiontoCC(destinationLocale.region);
 					}
+
+					if (norm.countryCode && !options.sms) {
+						// for CDMA, make sure to get the international dialling access code for the current region, not the destination region
+						// all umts carriers support plus dialing
+						norm.iddPrefix = (options.networkType === "cdma") ? currentPlan.iddCode : "+";
+					}
 				} else {
 					// console.log("normalize: dialing within the country");
-					// we are in our destination country, so strip the international dialling prefixes
-					if (norm.iddPrefix || norm.countryCode) {
-						delete norm.iddPrefix;
-						delete norm.countryCode;
-						
-						if (destinationPlan.skipTrunk && destinationPlan.trunkCode) {
-							norm.trunkAccess = destinationPlan.trunkCode;
-						}
-					}
-					
 					if (options.defaultAreaCode) {
 						if (destinationPlan.dialingPlan === "open") {
 							if (!norm.trunkAccess && norm._hasPrefix() && destinationPlan.trunkCode) {
@@ -759,7 +775,7 @@ enyo.g11n.PhoneNumber.prototype = {
 						} else {
 							// In closed plans, you always have to dial the area code, even if the call is local.
 							if (!norm._hasPrefix()) {
-								if (destinationLocale.equals(homeLocale)) {
+								if (destinationLocale.region === homeLocale.region) {
 									norm.areaCode = options.defaultAreaCode;
 									if (destinationPlan.trunkCode) {
 										norm.trunkAccess = norm.trunkAccess || destinationPlan.trunkCode;
@@ -770,11 +786,28 @@ enyo.g11n.PhoneNumber.prototype = {
 							}
 						}
 					}
+					
+					if (options.sms &&
+							homeLocale.region === "us" && 
+							currentLocale.region !== "us") {
+						norm.iddPrefix = "011"; // make it go through the US first
+						if (destinationPlan.skipTrunk && norm.trunkAccess) {
+							delete norm.trunkAccess;
+						}
+					} else if (norm.iddPrefix || norm.countryCode) {
+						// we are in our destination country, so strip the international dialling prefixes
+						delete norm.iddPrefix;
+						delete norm.countryCode;
+						
+						if (destinationPlan.skipTrunk && destinationPlan.trunkCode) {
+							norm.trunkAccess = destinationPlan.trunkCode;
+						}
+					}
 				}
 			}
 		} else if (!norm.invalid) {
 			// console.log("normalize: non-assisted normalization");
-			if (!norm._hasPrefix() && options && options.defaultAreaCode && destinationLocale.equals(homeLocale)) {
+			if (!norm._hasPrefix() && options && options.defaultAreaCode && destinationLocale.region === homeLocale.region) {
 				norm.areaCode = options.defaultAreaCode;
 			}
 			

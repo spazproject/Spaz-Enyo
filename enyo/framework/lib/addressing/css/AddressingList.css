@@ -1,16 +1,31 @@
 /* Copyright 2009-2011 Hewlett-Packard Development Company, L.P. All rights reserved. */
-.enyo-addressing-list, .enyo-addressing-item-divider, .enyo-addressing-item-addresses {
+.enyo-addressing-list {
 }
 
-.enyo-addressing-type {
-	float: right;
-	font-size: 14px;
-	color: #1F75BF;
-	text-transform: uppercase;
+.enyo-addressing-item-divider {
+	text-transform:uppercase;
+}
+
+.enyo-addressing-item-addresses {
+}
+
+.enyo-addressing-padding {
+	margin-top:5px;
+	margin-bottom:5px;
+}
+
+.enyo-addressing-address {
+	margin-left:20px;
 }
 
 .enyo-addressing-item-selected {
 	background: lightblue;
+}
+
+.enyo-addressing-type {
+	float: right;
+	margin-right: 14px;
+	font-size: 14px;
 }
 
 .enyo-addressing-favorite {
@@ -22,7 +37,29 @@
 	margin-left: 4px;
 }
 
-.enyo-addressing-list-spinner {
-	position: absolute;
-	bottom: 0;
+.enyo-addressing-GAL {
+	border-top: 1px solid rgba(0,0,0,0.2);
+}
+.enyo-addressing-GAL-message {
+	margin-left:14px;
+	color:gray;
+}
+
+.enyo-addressing-GAL-message:after {
+	color:gray;
+	content:"...";
+}
+
+.enyo-addressing-GAL-padding {
+	margin-top:10px;
+	margin-bottom:10px;
+}
+
+.enyo-addressing-GAL-spinner {
+	margin-right:14px;
+}
+
+.enyo-addressing-noresults {
+	color: gray;
+	text-align: center;
 }

@@ -23,9 +23,11 @@
 	height: 24px;
 	width: 30px;
 	background: url(../images/menuitem-arrow.png) center 0px;
+	margin-right: -5px
+	;
 }
 
-.enyo-menuitem.enyo-checked .enyo-menucheckitem-caption {
+.enyo-menuitem.enyo-checked.enyo-menucheckitem-caption, .enyo-menuitem.enyo-checked .enyo-menucheckitem-caption {
 	background: url(../images/checkmark.png) center right no-repeat;
 }
 
@@ -33,5 +35,5 @@
 	text-overflow: ellipsis;
 	white-space:nowrap;
 	overflow: hidden;
-	padding: 2px 34px 2px 0;
+	padding-right: 34px;
 }

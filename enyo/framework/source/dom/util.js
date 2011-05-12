@@ -204,6 +204,23 @@ enyo.job.stop = function(inJobName) {
 	}
 };
 
+// TODOC
+(function(){
+	// API is non-standard, so what enyo exposes may vary from 
+	// web documentation for various browsers
+	// in particular, requestAnimationFrame takes no arguments, and the callback receives no arguments
+	// and we name the complement clearAnimationFrame (as opposed to cancelRequestAnimationFrame)
+	var builtin = window.webkitRequestAnimationFrame;
+	enyo.requestAnimationFrame = builtin ? enyo.bind(window, builtin) :
+		function(inCallback) {
+			return window.setTimeout(inCallback, Math.round(1000/60));
+		};
+	//
+	var builtin = window.webkitCancelRequestAnimationFrame || window.clearTimeout;
+	// API 
+	enyo.cancelRequestAnimationFrame = enyo.bind(window, builtin);
+})();
+
 //* @public
 /**
 	Start a timer with the given name
@@ -249,12 +266,12 @@ enyo.string = {
 		return inString;
 	},
 	/** return string where _inSearchText_ is case-insensitively matched and wrapped in a &lt;span&gt; tag with
-	    CSS class _inClassName_ */
+		CSS class _inClassName_ */
 	applyFilterHighlight: function(inText, inSearchText, inClassName) {	
 		return inText.replace(new RegExp(inSearchText, "i"), '<span class="' + inClassName + '">$&</span>');
 	},
 	/** return string with ampersand, less-than, and greater-than characters replaced with HTML entities, 
-	    e.g. <code>"This & That"</code> becomes <code>"This &amp;amp; That"</code> */
+		e.g. '<code>"This & That"</code>' becomes '&lt;code&gt;"This &amp;amp; That"&lt;/code&gt;' */
 	escapeHtml: function(inHtml) {
 		return inHtml ? inHtml.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;') : '';
 	},
@@ -328,6 +345,11 @@ enyo._$L = function(inText) {
 	}
 	return this._enyoG11nResources.$L(inText);
 };
+
+//* @protected
+enyo.reloadG11nResources = function(){
+	this._enyoG11nResources = new enyo.g11n.Resources({root:"$enyo"});
+}
 
 // return visible control dimensions unobscured by other content
 enyo.getVisibleControlBounds = function(inControl) {

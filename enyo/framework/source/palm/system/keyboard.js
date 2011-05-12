@@ -97,7 +97,11 @@ enyo.keyboard = {
 			if (r.x != 0 || r.y != 0) {
 				return r;
 			} else {
-				console.log("window.caretRect failed");
+				var c = enyo.dispatcher.findDispatchTarget(document.activeElement);
+				if (!c.caretRect || c.caretRect.x == 0 || c.caretRect.y == 0) {
+					console.log("window.caretRect failed");
+				}
+				return c.caretRect;
 			}
 		}
 		return this.getSimulatedCaretPosition();

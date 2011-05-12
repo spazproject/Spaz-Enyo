@@ -163,18 +163,16 @@ var AccountsUtil = (function () {
 			return (where.length > 0) ? where : undefined;
 		},
 	
-		annotateAccount: function (account, templates) {
+		annotateAccount: function (account) {
 			// net effect is totally stitched together acct+template obj,
 			// where template props override acct props at both the top level
 			// and per-capability
 			// (but extra acct props are still present in case accounts need to store supplemental data)
 
-			if (this.templates)
-				templates = this.templates;
 			var result,
 				phoneNumber,
 				usernameTemplate,
-			    template = getTemplateById(templates, account.templateId);
+			    template = getTemplateById(this.allTemplates, account.templateId);
 
 			result = enyo.clone(account);
 
@@ -185,19 +183,14 @@ var AccountsUtil = (function () {
 
 			enyo.mixin(result, template);
 
-			// Copy the capability providers from the template
+			// Return all account capabilities given in the template, annotated by the information in the template
 			result.capabilityProviders = template.capabilityProviders.map(function (c) {
-				var clone = enyo.clone(c), accountCap;
-				
-				// Find the capability in the template
+				// Find the capability in the account
 				for (var i=0, l=account.capabilityProviders.length; i<l; i++) {
-					if (account.capabilityProviders[i].id === c.id) {
-						accountCap = account.capabilityProviders[i];
-						break;
-					}
-				}    
-
-				return enyo.mixin(clone, accountCap);
+					if (account.capabilityProviders[i].id === c.id)
+						return enyo.mixin(account.capabilityProviders[i], c);
+				}
+				return c;    
 			});
 			
 			if (account.templateId === "com.palm.sim" && result.username && result.username.indexOf("SIMREMOVED ") === 0) {
@@ -211,6 +204,29 @@ var AccountsUtil = (function () {
 			}
 
 			return result;
+		},
+		
+		// Promote the capability icons to the main account icons
+		promoteCapabilityIcons: function(accounts, capability) {
+			if (!capability || !accounts)
+				return;
+			// Loop through all the accounts
+			for (i in accounts) {
+				var account = accounts[i];
+				// Find the required capability in the account
+				for (cp in account.capabilityProviders) {
+					var c = account.capabilityProviders[cp];
+					if (c.capability !== capability)
+						continue;
+					// Does the capability have icons?
+					if (!c.icon)
+						continue;
+					console.log("Promoting icons for " + account.templateId);
+					// Promote the icons for this capability
+					account.icon = enyo.mixin(account.icon, c.icon); 
+					break;
+				}
+			}
 		},
 		
 		// Dedupe an array, based on the specifies property.  The array passed in is modified by this call.
@@ -249,17 +265,6 @@ var AccountsUtil = (function () {
 			return capability || rawName; 
 		},
 		
-		setCrossAppParameters: function(crossAppObj, ui, params) {
-			// Special case email
-			if (ui.appId === "com.palm.app.email") {
-				ui.name = "accounts/wizard.html";
-			}
-			console.log("Custom UI: Opening iFrame " + ui.appId + "/" + ui.name);			
-			crossAppObj.setPath(ui.name);
-			crossAppObj.setApp(ui.appId);
-			crossAppObj.setParams(params);
-		},
-		
 		getSynergyTitle: function(capability) {
 			if (!capability || enyo.isArray(capability))
 				return this.TITLE_SYNERGY_SEARCH;
@@ -273,25 +278,26 @@ var AccountsUtil = (function () {
 		
 		// Localized strings
 		PAGE_TITLE_ACCOUNTS:		rb.$L("Accounts"),
-		PAGE_TITLE_ADD_ACCOUNT:		rb.$L("Add an account"),
-		PAGE_TITLE_SIGN_IN:			rb.$L("Sign in"),
-		PAGE_TITLE_ACCOUNT_SETTINGS:rb.$L("Account settings"),
-		BUTTON_ADD_ACCOUNT:			rb.$L("Add account"),
+		PAGE_TITLE_ADD_ACCOUNT:		rb.$L("Add an Account"),
+		PAGE_TITLE_SIGN_IN:			rb.$L("Sign In"),
+		PAGE_TITLE_ACCOUNT_SETTINGS:rb.$L("Account Settings"),
+		BUTTON_ADD_ACCOUNT:			rb.$L("Add an Account"),
 		BUTTON_BACK:				rb.$L("Back"),
 		BUTTON_CANCEL:				rb.$L("Cancel"),
-		BUTTON_SIGN_IN:				rb.$L("Sign in"),
-		BUTTON_SIGNING_IN:			rb.$L("Signing in..."),
-		BUTTON_CHANGE_LOGIN:		rb.$L("Change login settings"),
-		BUTTON_REMOVE_ACCOUNT:		rb.$L("Remove account"),
-		BUTTON_CREATE_ACCOUNT:		rb.$L("Create account"),
-		BUTTON_CREATING_ACCOUNT:	rb.$L("Creating account..."),
+		BUTTON_SIGN_IN:				rb.$L("Sign In"),
+		BUTTON_SIGNING_IN:			rb.$L("Signing In..."),
+		BUTTON_CHANGE_LOGIN:		rb.$L("Change Login Settings"),
+		BUTTON_REMOVE_ACCOUNT:		rb.$L("Remove Account"),
+		BUTTON_CREATE_ACCOUNT:		rb.$L("Create Account"),
+		BUTTON_CREATING_ACCOUNT:	rb.$L("Creating Account..."),
 		BUTTON_GO:					rb.$L("Go"),
+		BUTTON_DONE:				rb.$L("Done"),
 		BUTTON_REMOVE_ACCOUNT:		rb.$L("Remove Account"),
 		BUTTON_KEEP_ACCOUNT:		rb.$L("Cancel"),
-		LIST_TITLE_USERNAME:		rb.$L("Username"),
-		LIST_TITLE_PASSWORD:		rb.$L("Password"),
-		GROUP_TITLE_ACCOUNT_NAME:	rb.$L("Account name"),
-		GROUP_TITLE_USE_ACCOUNT_WITH: rb.$L("Use account with"),
+		LIST_TITLE_USERNAME:		rb.$L("USERNAME"),
+		LIST_TITLE_PASSWORD:		rb.$L("PASSWORD"),
+		GROUP_TITLE_ACCOUNT_NAME:	rb.$L("ACCOUNT NAME"),
+		GROUP_TITLE_USE_ACCOUNT_WITH: rb.$L("USE ACCOUNT WITH"),
 		LOADING_ACCOUNTS:			rb.$L("Loading Accounts..."),
 		SIM_REMOVED_TEMPLATE:		rb.$L("#{phoneNumber} - SIM Removed"),
 		TEXT_WELCOME:				rb.$L("Welcome!"),

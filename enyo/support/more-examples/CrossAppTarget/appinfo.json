@@ -1,9 +1,0 @@
-{
-    "id": "com.palmdts.crossapptarget",
-    "version": "1.0.0",
-    "vendor": "HP",
-    "type": "web",
-    "main": "index.html",
-    "title": "Enyo Cross App Target",
-    "uiRevision": 2
-}

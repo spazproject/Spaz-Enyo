@@ -19,17 +19,19 @@ enyo.kind({
 			{kind: "Spacer"},
 			{kind: "ToolButton", icon: "source/images/icon-close.png", style: "position: relative; bottom: 7px;", onclick: "doClose"}
 		]},
-		{kind: "InputBox", style: "min-height: 50px", components: [
-		    //{kind: "Input", hint: "entry...", className: "enyo-input-inner", onchange: "inputChange", onfocus: "inputFocus"},
-		    {name:"postTextBox", kind: "BasicRichText", richContent: false, multiline: true, flex: 1, className: "enyo-input-inner"},
-		    {content: "140"}
+		{kind: "HFlexBox", style: "min-height: 50px", components: [
+			{name:"postTextBox", kind: "RichText", alwaysLooksFocused: true, richContent: false, multiline: true, flex: 1, oninput: "postTextBoxInput", onkeydown: "postTextBoxKeydown", components: [
+				{name: "remaining", style: "color: grey; padding-left: 5px;", content: "140"},
+			]},
 		]},
 		{name: "controls", layoutKind: "HFlexLayout", style: "padding-top: 5px", components: [
-			{"kind":"Button","style":"padding: 0px 5px; position: relative; bottom: 7px;","components":[
+			{kind: "Button", style: "padding: 0px 5px;", components: [
 			   {name: "accountSelection", "kind":"ListSelector", onChange: "onChangeAccount", className: "accountSelection"}
 			]},
 			{kind: "Spacer", style: "min-width: 50px"},
-			{kind: "Button", label: "Send", onclick: "onSendClick"}
+			{kind: "Button", style: "padding-top: 6px;", label: enyo._$L("Shorten Text"), onclick: "onShortenTextClick"},
+			{kind: "Button", style: "padding-top: 6px;", label: enyo._$L("Shorten URLs"), onclick: "onShortenURLsClick"},
+			{name: "sendButton", kind: "Button", style: "padding-top: 6px;", label: enyo._$L("Send"), onclick: "onSendClick"}
 		]}
 	],
 	create: function(){
@@ -53,6 +55,9 @@ enyo.kind({
 		var last_posting_account_id = App.Prefs.get('last_posting_account_id');
 		if (last_posting_account_id) {
 			this.setPostingAccount(last_posting_account_id);
+		}
+		else {
+			this.setPostingAccount(this.accounts[0].value);
 		}
 	},
 	"showAtCenter": function(){
@@ -91,22 +96,70 @@ enyo.kind({
 		this.setPostingAccount(inValue);
 	},
 
-	updateCharCount:function() {
-		//@TODO	
-	},
-
 	onSendClick: function(inSender) {
-		var self = this;
-
-		this.twit.update(this.$.postTextBox.value, null, this.inReplyToId,
-			function() {
-				self.$.postTextBox.setValue('');
-				self.close();
-			},
+		this.twit.update(this.$.postTextBox.getValue(), null, this.inReplyToId,
+			enyo.bind(this, function() {
+				this.$.postTextBox.setValue('');
+				this.close();
+			}),
 			function() {
 				//@TODO report error info
 				alert('failed');
 			}
 		);
+	},
+
+	onShortenTextClick: function(inSender) {
+		this.$.postTextBox.setValue(new SpazShortText().shorten(this.$.postTextBox.getValue()));
+		this.$.postTextBox.forceFocus();
+		this.postTextBoxInput();
+	},
+	
+	onShortenURLsClick: function(inSender) {
+		//@TODO Hardcoding to use jmp for now, we should grab this from a pref
+		var urls = sc.helpers.extractURLs(this.$.postTextBox.getValue());
+		new SpazShortURL(SPAZCORE_SHORTURL_SERVICE_JMP).shorten(urls, {
+			apiopts: {
+				version:'2.0.1',
+				format:'json',
+				login: 'spazcore',
+				apiKey: 'R_f3b86681a63a6bbefc7d8949fd915f1d'
+			},
+			onSuccess: enyo.bind(this, function(inData) {
+				this.$.postTextBox.setValue(this.$.postTextBox.getValue().replace(inData.longurl, inData.shorturl));
+				this.$.postTextBox.forceFocus();
+				this.postTextBoxInput();
+			})
+		});
+	},
+	
+	postTextBoxInput: function(inSender, inEvent, inValue) {
+		if (!inValue) {
+			var inValue = this.$.postTextBox.getValue();
+		}
+		var remaining = 140 - inValue.length;
+		this.$.remaining.setContent(remaining);
+		if(remaining > 0){
+			this.$.remaining.applyStyle("color", "grey");
+			this.$.sendButton.setDisabled(false);
+		} else if(remaining === 0){
+			this.$.remaining.applyStyle("color", "black");
+			this.$.sendButton.setDisabled(false);
+		} else {
+			this.$.remaining.applyStyle("color", "red");
+			this.$.sendButton.setDisabled(true);
+		}
+	},
+	
+	postTextBoxKeydown: function(inSender, inEvent) {
+		if (inEvent.keyCode === 13) {
+			if(this.$.sendButton.disabled === false){
+				// Enter to send - this should be a pref evenutally.
+				this.onSendClick();
+			}
+			inEvent.preventDefault();	
+			
+		}
 	}
 });
+

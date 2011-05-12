@@ -14,7 +14,7 @@
 	border-radius: 5px;
 	margin: 3px;
 	color: #292929;
-	background-color: rgba(240,242,242,0.5);
+	background-color: rgba(255,255,255,0.8);
 }
 
 .enyo-button.enyo-button-down, .enyo-button.enyo-button-depressed {
@@ -34,7 +34,7 @@
 }
 
 .enyo-activity-button-inner {
-	min-height: 32px;
+
 }
 
 .enyo-button img {
@@ -100,11 +100,9 @@
 
 /* notification button (negative) */
 
-
 .enyo-notification-button-negative {
 	background-color: #c01b1e;
 }
-
 
 /* notification button (alternate) */
 

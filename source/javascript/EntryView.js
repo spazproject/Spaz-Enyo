@@ -60,6 +60,12 @@ enyo.kind({
 			this.$.username.setContent(this.entry.author_username+"@"+this.entry.service);
 			this.$.bio.setContent(this.entry.author_description||'');
 			this.$.timeFrom.setContent(sch.getRelativeTime(this.entry.publish_date) + " from <span class='link'>" + this.entry._orig.source + "</span>");
+			if(this.entry.user.name){
+				this.$.realname.setContent(this.entry.user.name);			
+			}
+			this.$.username.setContent("@" + this.entry.user.screen_name);
+			this.$.bio.setContent(this.entry.user.description);
+			this.$.timeFrom.setContent(sch.getRelativeTime(this.entry.created_at) + " from <span class='link'>" + this.entry.source + "</span>");
 			this.$.entry.setContent(this.entry.text);
 		} else {
 			this.doDestroy();

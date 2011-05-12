@@ -13,6 +13,9 @@
 	It's common to render an entire application into a document body like this:
 
 		new MyApp().renderInto(document.body);
+		
+	On any DomNodeBuilder-derived object, you can set the canGenerate property to false to
+	inhibit HTML generation.  It defaults to undefined.
 */
 enyo.kind({
 	name: "enyo.AbstractDomNodeBuilder",

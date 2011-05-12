@@ -4,7 +4,10 @@ enyo.kind({
 	width: "322px",
 	style: "margin: 3px;", 
 	events: {
-		onShowEntryView: ""
+		onShowEntryView: "",
+		onDeleteClicked: "",
+		onLoadStarted: "",
+		onLoadFinished: ""
 	},
 	published: {
 		info: {
@@ -20,30 +23,18 @@ enyo.kind({
 		{layoutKind: "VFlexLayout", components: [
 			{kind: "Toolbar", defaultKind: "Control", content: "Home", style: "color: white;", components: [
 				//gotta do this crap to get the header title to center and not be a button. "defaultKind" in Toolbar is key.
+				{name: "topLeftButton", kind: "ToolButton", style: "display: none"},
+				{name: "header", style: "padding: 0px 0px 5px 10px;", className: "truncating-text", content: ""},
 				{kind: "Spacer", flex: 1},
-				{name: "header", flex: 1, content: ""},
-				{kind: "Spacer", flex: 1},
-				{kind: "ToolButton", icon: "source/images/icon-close.png"},
+				{name: "accountName", style: "color: grey; font-size: 12px"},
+				{name: "topRightButton", kind: "ToolButton", icon: "source/images/icon-close.png", onclick: "doDeleteClicked"},
 			]},
 			{name: "list", kind: "Spaz.VirtualList", flex: 1, style: "background-color: #D8D8D8; margin: 0px 3px; min-height: 200px;", horizontal: false, className: "timeline list", onSetupRow: "setupRow", components: [
-				{kind: "Item", tapHighlight: true, className: "entry", style: "padding-right: 5px;", layoutKind: "HFlexLayout", onclick: "entryClick", components: [
-					{kind: "VFlexBox", components: [
-						{kind: "Image", width: "50px", height: "50px", className: "avatar"},
-					]},
-					{kind: "VFlexBox", flex: 1, components: [
-						{name: "entry", className: "text"},
-						{name: "timeFrom", className: "small"},
-					]},		
-					//{kind: "VFlexBox", width: "24px", components: [
-					//	{kind: "Image", src: "source/images/action-icon-favorite.png"},
-					//	{kind: "Image", src: "source/images/action-icon-share.png"},
-					//	{kind: "Image", src: "source/images/action-icon-reply.png"},
-					//]}		
-				]}
+				{name: "item", kind: "Spaz.Entry", onclick: "entryClick"}
 			]},
 			{kind: "Toolbar", style: "color: white;", components: [
 				{kind: "ToolButton", icon: "source/images/icon-clear.png"},
-				{kind: "ToolButton", icon: "source/images/icon-refresh.png", onclick:"loadNewer"}
+				{name: "refresh", kind: "ToolButton", icon: "source/images/icon-refresh.png", onclick:"loadNewer"}
 			]}
 		]},
 
@@ -59,13 +50,12 @@ enyo.kind({
 	create: function(){
 		this.inherited(arguments);
      	this.infoChanged();
-
      	setTimeout(enyo.bind(this, this.resizeHandler), 1);
-
-     	this.loadData();
 	},
+	
 	infoChanged: function(){
-		this.$.header.setContent(this.info.display);
+		this.$.header.setContent(_.capitalize(this.info.type));
+		this.$.accountName.setContent(App.Users.getLabel(this.info.accounts[0]));
 	},
 
 	loadNewer:function() {
@@ -119,35 +109,54 @@ enyo.kind({
 				since_id = 1;
 			}
 
-
+			function loadStarted() {
+				self.$.refresh.addClass("spinning");
+				self.doLoadStarted();
+			}
+			function loadFinished() {
+				self.$.refresh.removeClass("spinning");
+				self.doLoadFinished();
+			}
 			switch (self.info.type) {
 				case 'home':
+					loadStarted();
 					self.twit.getHomeTimeline(since_id, 200, null, null,
 						function(data) {
 							self.processData(data);
-						}
+							loadFinished();
+						},
+						loadFinished
 					);
 					break;
 				case 'mentions':
 					// this method would consistently 502 if we tried to get 200. limit to 100
+					loadStarted();
 					self.twit.getReplies(since_id, 100, null, null,
 						function(data) {
 							self.processData(data);
-						}
+							loadFinished();
+						},
+						loadFinished
 					);
 					break;
 				case 'dms':
+					loadStarted();
 					self.twit.getDirectMessages(since_id, 200, null, null,
 						function(data) {
 							self.processData(data);
-						}
+							loadFinished();
+						},
+						loadFinished
 					);
 					break;
 				case 'search':
+					loadStarted();
 					self.twit.search(self.info.query, since_id, 200, null, null, null,
 						function(data) {
 							self.processData(data);
-						}
+							loadFinished();
+						},
+						loadFinished
 					);
 					break;
 			}
@@ -185,6 +194,7 @@ enyo.kind({
 					});
 
 					this.$.list.refresh();
+					this.resizeHandler();
 					break;
 			}			
 		}
@@ -195,6 +205,7 @@ enyo.kind({
 			this.$.entry.setContent("<span class='username'>" + entry.author_username + "</span><br>" + AppUtils.makeItemsClickable(enyo.string.runTextIndexer(entry.text)));
 			this.$.timeFrom.setContent(sch.getRelativeTime(entry.publish_date) + " from <span class='link'>" + entry._orig.source + "</span>");
 			this.$.image.setSrc(entry.author_avatar);
+			this.$.item.setEntry(entry);
 			
 			//this.$.item.applyStyle("background-color", inSender.isSelected(inIndex) ? "rgba(218,235,251,0.4)" : null);
 
@@ -202,9 +213,24 @@ enyo.kind({
 		}
 	},
 	entryClick: function(inSender, inEvent, inRowIndex) {
-		this.$.entryClickPopup.showAtEvent(this.entries[inRowIndex], inEvent);
-		//this.doEntryClick(this.entries[inRowIndex]);
-		//this.$.list.select(inRowIndex);
+		switch(inEvent.target.className){
+			case "username":
+
+				break;
+			case "hashtag":
+
+				break;
+			case "small":
+				this.doShowEntryView(this.entries[inRowIndex]);
+				break;
+			case "avatar": //we may want to move toward a default situation.
+			case "text":
+			case "enyo-vflexbox":
+			case "enyo-item entry enyo-hflexbox":
+				this.$.entryClickPopup.showAtEvent(this.entries[inRowIndex], inEvent);
+				break;
+
+		}
 	},
 	resizeHandler: function(inHeight) {
 		this.$.list.applyStyle("height", window.innerHeight - 117 + "px");

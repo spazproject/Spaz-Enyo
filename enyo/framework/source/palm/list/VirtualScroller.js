@@ -98,6 +98,10 @@ enyo.kind({
 		}
 	},
 	//* @public
+	// prompt the scroller to start.
+	start: function() {
+		this.$.scroll.start();
+	},
 	//
 	// FIXME: Scroller's shiftPage/unshiftPage/pushPage/popPage are implemented via adjustTop/adjustBottom
 	// Conversely, Buffer's adjustTop/adjustBottom are implemented via shift/unshift/push/pop

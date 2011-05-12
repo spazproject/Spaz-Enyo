@@ -37,8 +37,10 @@ enyo.kind({
 	createBridge: function() {
 		this.bridge = {cancel: enyo.nop};
 	},
+	// skip a failed contact query, others may return results
 	gotFailure: function(inSender, inResponse) {
-		this.receive(inResponse);
+		this.inflight--;
+		this.maybeSendResults({returnValue:true});
 	},
 	gotNoAccounts: function() {
 		this.receive({returnValue: false, errorText: enyo.addressing._$L("No Accounts")});
@@ -78,11 +80,15 @@ enyo.kind({
 			}
 		}
 	},
-	// wait until we get all responses, so we can sort them before returning
-	// deliver each response right away.... (need to subscribe to get all the responses)
 	gotResults: function(inSender, inResponse) {
 		this.inflight--;
 		this.results = this.results.concat(this.filterResults(inResponse.results));
+		this.maybeSendResults(inResponse);
+	},
+
+	// wait until we get all responses, so we can sort them before returning
+	// deliver each response right away.... (need to subscribe to get all the responses)
+	maybeSendResults: function(inResponse) {
 		if (this.inflight == 0) {
 			this.results.sort(this.sortComparator);
 			inResponse.results = this.results;

@@ -1,6 +1,6 @@
 /* Copyright 2009-2011 Hewlett-Packard Development Company, L.P. All rights reserved. */
 /**
-A control that shows web content.
+A control that shows web content with built-in scroller.
 
 	{kind: "WebView"}
 
@@ -19,14 +19,12 @@ enyo.kind({
 		identifier: "",
 		url: "",
 		minFontSize: 16,
-		autoFit: true,
-		fitRender: false,
 		enableJavascript: true,
 		blockPopups: true,
 		acceptCookies: true,
 		redirects: [],
-		accelerated: false,
-		networkInterface: ""
+		networkInterface: "",
+		ignoreMetaTags: false
 	},
 	events: {
 		onResized: "",
@@ -51,7 +49,7 @@ enyo.kind({
 	chrome: [
 		{name: "view", kind: enyo.BasicWebView,
 			onResized: "doResized",
-			onPageTitleChanged: "doPageTitleChanged",
+			onPageTitleChanged: "pageTitleChanged",
 			onUrlRedirected: "doUrlRedirected",
 			onSingleTap: "doSingleTap",
 			onLoadStarted: "doLoadStarted",
@@ -76,20 +74,19 @@ enyo.kind({
 			{name: "spinner", kind: "SpinnerLarge"}
 		]}
 	],
+	_freeSelectPopups: [],
 	_cachedSelectPopups: {},
 	//* @protected
 	create: function() {
 		this.inherited(arguments);
 		this.identifierChanged();
 		this.minFontSizeChanged();
-		this.autoFitChanged();
-		this.fitRenderChanged();
 		this.enableJavascriptChanged();
 		this.blockPopupsChanged();
 		this.acceptCookiesChanged();
 		this.redirectsChanged();
-		this.acceleratedChanged();
 		this.networkInterfaceChanged();
+		this.ignoreMetaTagsChanged();
 		this.urlChanged();
 	},
 	identifierChanged: function() {
@@ -100,12 +97,6 @@ enyo.kind({
 	},
 	minFontSizeChanged: function() {
 		this.$.view.setMinFontSize(this.minFontSize);
-	},
-	autoFitChanged: function() {
-		this.$.view.setAutoFit(this.autoFit);
-	},
-	fitRenderChanged: function() {
-		this.$.view.setFitRender(this.fitRender);
 	},
 	enableJavascriptChanged: function() {
 		this.$.view.setEnableJavascript(this.enableJavascript);
@@ -119,29 +110,26 @@ enyo.kind({
 	redirectsChanged: function(inOldRedirects) {
 		this.$.view.setRedirects(this.redirects);
 	},
-	acceleratedChanged: function() {
-		this.$.view.setAccelerated(this.accelerated);
-	},
 	networkInterfaceChanged: function() {
 		this.$.view.setNetworkInterface(this.networkInterface);
+	},
+	ignoreMetaTagsChanged: function() {
+		this.$.view.setIgnoreMetaTags(this.ignoreMetaTags);
 	},
 	openSelect: function(inSender, inId, inItemsJson) {
 		if (this._cachedSelectPopups[inId]) {
 			this._cachedSelectPopups[inId]._response = -1;
 			this._cachedSelectPopups[inId].openAtCenter();
 		} else {
-			if (Object.keys(this._cachedSelectPopups).length > 4) {
-				var del = Object.keys(this._cachedSelectPopups)[0];
-				var c = this._cachedSelectPopups[del];
-				c.destroy();
-				delete this._cachedSelectPopups[del];
-			}
 			this.showSpinner();
 			enyo.asyncMethod(this, "createSelectPopup", inId, inItemsJson);
 		}
 	},
 	createSelectPopup: function(inId, inItemsJson) {
-		var p = this.createComponent({kind: "PopupList", name: "select-" + inId, _webviewId: inId, _response: -1, onSelect: "selectPopupSelect", onClose: "selectPopupClose"});
+		var p = this._freeSelectPopups.pop();
+		if (!p) {
+			p = this.createComponent({kind: "PopupList", name: "select-" + inId, _webviewId: inId, _response: -1, onSelect: "selectPopupSelect", onClose: "selectPopupClose"});
+		}
 		var listItems = [];
 		var items = enyo.json.parse(inItemsJson);
 		for (var i = 0, c; c = items.items[i]; i++) {
@@ -185,6 +173,13 @@ enyo.kind({
 	hideSpinner: function() {
 		this.$.spinnerPopup.close();
 		this.$.spinner.hide();
+	},
+	pageTitleChanged: function(inSender, inTitle, inUrl, inBack, inForward) {
+		for (var p in this._cachedSelectPopups) {
+			this._freeSelectPopups.push(this._cachedSelectPopups[p]);
+		}
+		this._cachedSelectPopups = {};
+		this.doPageTitleChanged(inTitle, inUrl, inBack, inForward);
 	},
 	//* @public
 	activate: function() {
@@ -264,9 +259,6 @@ enyo.kind({
 	},
 	setHTML: function(inUrl, inBody) {
 		this.$.view.callBrowserAdapter("setHTML", [inUrl, inBody]);
-	},
-	ignoreMetaTags: function(inIgnore) {
-		this.$.view.callBrowserAdapter("ignoreMetaTags", [inIgnore]);
 	},
 	printFrame: function(inName, inJobId, inWidth, inHeight, inDpi, inLandscape, inReverseOrder) {
 		this.$.view.callBrowserAdapter("printFrame", [inName, inJobId, inWidth, inHeight, inDpi, inLandscape, inReverseOrder]);

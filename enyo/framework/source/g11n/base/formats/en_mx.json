@@ -2,8 +2,6 @@
 	"is12HourDefault": true,
 	"numberDivider": ",",
 	"numberDecimal": ".",
-	"currencyPrepend": "$ ",
-	"currencyAppend": "",
 	"percentageSpace": false,
 	"localeName": "Mexico",
 	"titleCase": true,
@@ -38,6 +36,9 @@
 	"shortMYDate": "MM/yy",
 	"mediumMYDate": "MM/yyyy",
 	"longMYDate": "MMMM/yyyy",
+	"shortDDate": "dd",
+	"mediumDDate": "dd",
+	"longDDate": "d",	
 
 	"shortWeekday": "EE",
 	"mediumWeekday": "EEE",
@@ -54,5 +55,14 @@
 	"smallTime24": "HH:mm",
 	"bigTime24": "HH:mm:ss",
 	
-	"defaultPaperSize": "letter"
+	"timeH12": "h",
+	"timeH24": "HH",
+	
+	"defaultPaperSize": "letter",
+	"currency": {
+		"name": "MXN",
+		"iso": "#{sign} #{amt}",
+		"common": "#{sign} #{amt}"
+	},
+	"defaultTimeZone": "America/Mexico_City"
 }

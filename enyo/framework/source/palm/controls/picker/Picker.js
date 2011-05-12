@@ -26,8 +26,7 @@ enyo.kind({
 		value: "",
 		textAlign: "center",
 		/** An array of simple strings representing items. */
-		items: [],
-		scrim: true
+		items: []
 	},
 	events: {
 		onChange: ""

@@ -84,12 +84,16 @@ enyo.kind({
 	//},
 	__console: function(inMethod, inArgs) {
 		if (window.console) {
-			if (console.firebug) {
-				// let firebug be fancy
+			if (window.PalmSystem) {
+				// at least in early versions of webos, console.* only accept a single argument
+				inArgs = [inArgs.join(" ")];
+			}
+			if (console[inMethod]) {
+				// let some consoles be fancy
 				console[inMethod].apply(console, inArgs);
 			} else {
 				// let others be plain
-				console.log(inArgs.join(" "));
+				console.log(inArgs);
 			}
 		}
 	},

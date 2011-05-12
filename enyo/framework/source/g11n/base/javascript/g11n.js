@@ -190,5 +190,8 @@ enyo.g11n.setLocale = function setLocale(params) {
 		if (params.sourceLocale) {
 			enyo.g11n._sourceLocale = new enyo.g11n.Locale(params.sourceLocale);
 		}
+		if (enyo.g11n._enyoAvailable){
+			enyo.reloadG11nResources();
+		}
 	}
 };

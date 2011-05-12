@@ -1,8 +1,6 @@
 {
 	"numberDivider": ",",
 	"numberDecimal": ".",
-	"currencyPrepend": "₩",
-	"currencyAppend": "",
 	"percentageSpace": false,
 	"localeName": "Republic of Korea",
 	"titleCase": false,
@@ -37,6 +35,9 @@
     "shortMYDate": "yy. M.",
     "mediumMYDate": "yyyy. M.",
     "longMYDate": "yyyy년 M월",
+	"shortDDate": "d.",
+	"mediumDDate": "d.",
+	"longDDate": "d일",	
 
     "shortWeekday": "EE",
     "mediumWeekday": "EEE",
@@ -53,5 +54,14 @@
     "smallTime24": "a H:mm",
     "bigTime24": "a H:mm:ss",
 	
-	"defaultPhotoSize": "4x6"
+	"timeH12": "h",
+	"timeH24": "H",
+	
+	"defaultPhotoSize": "4x6",
+	"currency": {
+		"name": "KRW",
+		"iso": "#{sign} #{amt}",
+		"common": "#{sign}#{amt}"
+	},
+	"defaultTimeZone": "Asia/Seoul"
 }

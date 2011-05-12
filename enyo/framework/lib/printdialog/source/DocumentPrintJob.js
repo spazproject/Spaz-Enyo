@@ -89,8 +89,11 @@ enyo.kind({
 				case 0:		// RENDER_STATUS_DONE
 					this.$.closeJob.call({jobID: this.jobID});
 					break;
-				case -219:	// PM_ERR_JOB_ADD_PAGE_FAILED
-				case -703:
+				case -502:	// PM_ERR_JOB_CANCEL_REQUESTED
+					this.jobCanceled = true;
+					this.$.closeJob.call({jobID: this.jobID});
+					break;
+				case -703:	// PM_ERR_JOB_ADD_PAGE_FAILED
 					if (!this.jobFailed) {
 						this.jobFailed = true;
 						this.jobErrorText = PrintManagerError.getErrorText(inResponse.renderResultCode);

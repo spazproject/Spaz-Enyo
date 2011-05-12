@@ -4,7 +4,7 @@ An application menu that appears in the upper left corner of the screen when the
 user taps the left-hand side of the status bar.
 
 By default, an application menu's items are instances of
-<a href="#enyo.MenuItem">MenuItem</a>.
+<a href="#enyo.AppMenuItem">AppMenuItem</a>.
 
 Example menu with two items and a submenu:
 
@@ -35,6 +35,7 @@ enyo.kind({
 	kind: enyo.Menu,
 	className: "enyo-appmenu",
 	defaultKind: "AppMenuItem",
+	scrim: false,
 	create: function() {
 		this.inherited(arguments);
 		this.$.client.addClass("enyo-appmenu-inner");

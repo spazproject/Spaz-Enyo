@@ -8,11 +8,12 @@ enyo.dispatcher = {
 	handlerName: "dispatchDomEvent",
 	captureHandlerName: "captureDomEvent",
 	mouseOverOutEvents: {mouseover: 1, mouseout: 1},
+	// these events are handled on document
 	events: ["mousedown", "mouseup", "mouseover", "mouseout", "mousemove", "click", "dblclick", "change", "keydown", "keyup", "keypress", "input"],
-	// NOTE: resize must be handled on window
+	// thes events are handled on window
 	windowEvents: ["resize", "load", "unload"],
 	connect: function() {
-		var d= enyo.dispatcher;
+		var d = enyo.dispatcher;
 		for (var i=0, e; e=d.events[i]; i++) {
 			document.addEventListener(e, enyo.dispatch, false);
 		}
@@ -51,6 +52,7 @@ enyo.dispatcher = {
 		// Cache the original target
 		e.dispatchTarget = c;
 		// support pluggable features
+		var fn;
 		for (var i=0, fs; fn=this.features[i]; i++) {
 			if (fn.call(this, e)) {
 				return true;
@@ -124,11 +126,6 @@ enyo.dispatcher = {
 		};
 		// Bubble up through the control tree
 		while (c) {
-			//
-			if (e.type == "click" && e.ctrlKey && e.altKey) {
-				console.log(e.type + ": " + c.name + " [" + c.kindName + "]");
-			}
-			//
 			// Stop processing if dispatch returns true
 			if (this.dispatchToTarget(e, c) === true) {
 				return true;
@@ -158,14 +155,18 @@ enyo.dispatcher = {
 		}
 	},
 	handleMouseOverOut: function(e, c) {
-		var isMouseOverOut = this.mouseOverOutEvents[e.type];
-		if (isMouseOverOut) {
+		if (this.mouseOverOutEvents[e.type]) {
 			if (this.isInternalMouseOverOut(e, c)) {
 				return true;
 			}
+			// FIXME: no code in framework is using this facility
+			// and it's not performant, consider removal
+			/*
+			console.log("handleMouseOverOut: ", e.target.id, c.name);
 			// Bubble synthetic childmouseover/out
 			var synth = {type: "child" + e.type, dispatchTarget: e.dispatchTarget};
 			this.dispatchBubble(synth, c.parent);
+			*/
 		}
 	},
 	isInternalMouseOverOut: function(e, c) {
@@ -210,6 +211,7 @@ enyo.dispatcher.features = [];
 
 // squelching feature
 
+/*
 enyo.mixin(enyo.dispatcher, {
 	_squelch: [],
 	// FIXME: this timeout is a point of brittleness; it was previously 50ms, but we
@@ -236,11 +238,13 @@ enyo.dispatcher.features.push(function(e) {
 		}
 	}
 });
+*/
 
 // capturing feature
 
-//* @public
-/**
+//* @protected
+
+/*
 	NOTE: This object is a plug-in; these methods should 
 	be called on _enyo.dispatcher_, and not on the plug-in itself.
 */
@@ -264,8 +268,6 @@ enyo.dispatcher.captureFeature = {
 	}
 };
 
-//* @protected
-
 enyo.mixin(enyo.dispatcher, enyo.dispatcher.captureFeature);
 
 enyo.dispatcher.features.push(function(e) {
@@ -274,10 +276,6 @@ enyo.dispatcher.features.push(function(e) {
 		if (!c || !c.isDescendantOf(this.captureTarget)) {
 			e.filterTarget = this.captureTarget;
 			e.forward = this.autoForwardEvents[e.type] || this.forwardEvents;
-			/*if (e.forward) {
-				console.log('forwarding: ', e.type);
-			}*/
-			//return true;
 		}
 	}
 });

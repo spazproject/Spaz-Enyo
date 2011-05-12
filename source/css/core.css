@@ -2,22 +2,14 @@
 truncating-text {
 	text-overflow: ellipsis;
 }
+body, input, button {
+	font-size: 20px;
+}
 
-
-/* Entries */
-.timeline.list .entry .avatar {
-	padding-right: 10px;
-	/*-webkit-border-radius: 5px;*/
-}
-.timeline.list .entry .username {
-	font-weight: bold;
-}
-.timeline.list .entry .text {
-	font-size: 15px;
-}
 a,
-.link,
-.timeline.list .entry .action {
+.username,
+.hashtag,
+.link {
 	color: #2D76B9;
 }
 .timeline.list .entry .small {
@@ -26,11 +18,24 @@ a,
 	font-size: 11px;
 }
 a:active,
+.hashtag:active,
 .link:active,
-.username:active,
-.timeline.list .entry .time:active,
-.timeline.list .entry .action:active {
+.username:active {
 	text-decoration: underline;
+}
+
+
+/* Entries */
+.timeline.list .entry .avatar {
+	padding-right: 10px;
+	/*-webkit-border-radius: 5px;*/
+}
+.timeline.list .entry .username.author {
+	font-weight: bold;
+	color: black;
+}
+.timeline.list .entry .text {
+	font-size: 14px;
 }
 .timeline.list .entry .action-separator {
 	width: 12px;
@@ -47,7 +52,7 @@ a:active,
 
 }
 .entry-view .header {
-	padding: 10px;
+	padding: 5px 10px 10px 10px;
 }
 .entry-view .username,
 .entry-view .realname {
@@ -71,26 +76,30 @@ a:active,
     position: relative;
     min-height: 54px;
     -webkit-box-sizing: border-box;
-    -webkit-border-image: url(source/images/toolbar.png) 1 1 repeat stretch;
+    -webkit-border-image: "none";
+   /* -webkit-border-image: url(../images/toolbar.png) 1 1 repeat stretch;*/
     border-width: 1px 1px;
     background-color: #343434;
-}
-
-/* AvatarButton */
-.enyo-button-avatar {
-	height: 30px;
-	width: 30px;
-	border-width: 2px;
-	border-style: solid;
-	border-color: transparent;
-}
-
-.enyo-button-avatar.enyo-button-down, 
-.enyo-button-avatar.enyo-button-depressed {
-	border-color: yellow;
 }
 
 /* Columns Popup */
 .accountSelection .enyo-menucheckitem-caption {
 	padding-right: 0px;
+}
+
+/* Spinning animation while the column is reloading */
+@-webkit-keyframes spinning {
+	from {
+		-webkit-transform: rotate(0deg);
+	}
+	to { 
+		-webkit-transform: rotate(360deg);
+	}
+}
+
+.spinning {
+	-webkit-animation-name: spinning;
+	-webkit-animation-duration: 2.0s;
+	-webkit-animation-iteration-count: infinite;
+	-webkit-animation-timing-function: linear;
 }

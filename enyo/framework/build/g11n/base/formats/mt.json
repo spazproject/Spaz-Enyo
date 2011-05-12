@@ -1,8 +1,11 @@
 {
 	"numberDivider": ",",
 	"numberDecimal": ".",
-	"currencyPrepend": "€",
-	"currencyAppend": "",
+	"currency": {
+		"name": "EUR",
+		"iso": "#{sign} #{amt}",
+		"common": "#{sign}#{amt}"
+	},
 	"percentageSpace": false,
 	"localeName": "Malta",
 	"titleCase": true,
@@ -38,6 +41,9 @@
 	"shortMYDate": "MM/yyyy",
 	"mediumMYDate": "MMM yyyy",
 	"longMYDate": "MMMM yyyy",
+	"shortDDate": "dd",
+	"mediumDDate": "d",
+	"longDDate": "d",	
 
 	"shortWeekday": "EE",
 	"mediumWeekday": "EEE",
@@ -52,5 +58,10 @@
 	"bigTime12": "h:mm:ss",
 
 	"smallTime24": "H:mm",
-	"bigTime24": "H:mm:ss"
+	"bigTime24": "H:mm:ss",
+
+	"timeH12": "h",
+	"timeH24": "H",
+	
+	"defaultTimeZone": "Europe/Malta"
 }

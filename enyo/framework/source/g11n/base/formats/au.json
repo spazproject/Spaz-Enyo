@@ -3,8 +3,12 @@
 
 	"numberDivider": ",",
 	"numberDecimal": ".",
-	"currencyPrepend": "$",
-	"currencyAppend": "",
+	"currency": {
+		"name": "AUD",
+		"iso": "#{sign} #{amt}",
+		"common": "#{sign}#{amt}"
+	},
+
 	"percentageSpace": false,
 	"titleCase": true,
 
@@ -37,6 +41,9 @@
 	"shortMYDate": "MM/yy",
 	"mediumMYDate": "MM/yyyy",
 	"longMYDate": "MMMM yyyy",
+	"shortDDate": "d",
+	"mediumDDate": "dd",
+	"longDDate": "d",	
 
 	"shortWeekday": "EE",
 	"mediumWeekday": "EEE",
@@ -51,5 +58,10 @@
 	"bigTime12": "h:mm:ss",
 
 	"smallTime24": "H:mm",
-	"bigTime24": "H:mm:ss"
+	"bigTime24": "H:mm:ss",
+
+	"timeH12": "h",
+	"timeH24": "H",
+	
+	"defaultTimeZone": "Australia/Sydney"
 }

@@ -1,19 +1,23 @@
 /* Copyright 2009-2011 Hewlett-Packard Development Company, L.P. All rights reserved. */
 .enyo-progress-button {
-	height: 34px;
-	border-width: 0px 5px;
-	-webkit-border-image: url(../images/progress-button.png) 0 5 0 5 repeat repeat;
-	-webkit-box-sizing: border-box;
+	min-height: 34px;
+	border-width: 4px;
+	border-radius: 5px;
+	-webkit-border-image: url(../images/button-down.png) 4 4 4 4 stretch stretch;
 	color: white;
+	background-color: rgba(23,23,23,0.5);
+	margin: 3px;
 	position:relative;
 }
 
 .enyo-progress-button-inner {
-	height: 34px;
-	margin: 0 -5px;
-	border-width: 0 5px;
+	margin: -4px;
+	top: 0;
+	bottom: 0;
+	border-width: 4px;
+	border-radius: 5px;
 	position: absolute;
-	-webkit-border-image: url(../images/button.png) 0 5 1052 5 repeat repeat;
+	-webkit-border-image: url(../images/button.png) 4 4 4 4 stretch stretch;
 }
 
 .enyo-progress-button-client {
@@ -31,23 +35,28 @@
 }
 
 .enyo-progress-button.affirmative > .enyo-progress-button-inner {
-	-webkit-border-image: url(../images/button.png) 315 5 737 5 repeat repeat;
+	color: white;
+	background-color: #2aa100;
 }
 
 .enyo-progress-button.negative > .enyo-progress-button-inner {
-	-webkit-border-image: url(../images/button.png) 420 5 632 5 repeat repeat;
+	color: white;
+	background-color: #be0003;
 }
 
 .enyo-progress-button.light > .enyo-progress-button-inner {
-	-webkit-border-image: url(../images/button.png) 105 5 947 5 repeat repeat;
+	background-color: rgba(255,255,255,0.8);
+	color: #292929;
 }
 
 .enyo-progress-button.dark > .enyo-progress-button-inner {
-	-webkit-border-image: url(../images/button.png) 210 5 842 5 repeat repeat;
+	color: white;
+	background-color: rgba(23,23,23,0.5);
 }
 
 .enyo-progress-button.blue > .enyo-progress-button-inner {
-	-webkit-border-image: url(../images/button.png) 525 5 527 5 repeat repeat;
+	color: white;
+	background-color: #2071bb;
 }
 
 

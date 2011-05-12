@@ -34,5 +34,8 @@ enyo.kind({
 	},
 	srcChanged: function() {
 		this.setAttribute("src", enyo.path.rewrite(this.src));
+	},
+	renderDomContent: function() {
+		// No-op... <img> cannot contain any DOM content.
 	}
 });

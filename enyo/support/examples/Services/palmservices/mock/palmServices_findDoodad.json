@@ -1,8 +1,0 @@
-{
-	"returnValue": true,
-	"results": [{
-		"_id": "1",
-		"_kind": "com.palm.doodad:1",
-		"name": "doodad000"
-	}]
-}

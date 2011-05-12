@@ -1,8 +1,6 @@
 {
 	"numberDivider": ".",
 	"numberDecimal": ",",
-	"currencyPrepend": "PHP ",
-	"currencyAppend": "",
 	"percentageSpace": false,
 	"localeName": "Philippines",
 	"titleCase": false,
@@ -38,6 +36,9 @@
 	"shortMYDate": "MM/yy",
 	"mediumMYDate": "MM/yyyy",
 	"longMYDate": "MMMM 'de' yyyy",
+	"shortDDate": "dd",
+	"mediumDDate": "dd",
+	"longDDate": "d",	
 
 	"shortWeekday": "EE",
 	"mediumWeekday": "EEE",
@@ -54,5 +55,14 @@
 	"smallTime24": "HH:mm",
 	"bigTime24": "HH:mm:ss",
 	
-	"defaultPhotoSize": "4x6"
+	"timeH12": "hh",
+	"timeH24": "HH",
+	
+	"defaultPhotoSize": "4x6",
+	"currency": {
+		"name": "PHP",
+		"iso": "#{sign} #{amt}",
+		"common": "#{sign} #{amt}"
+	},
+	"defaultTimeZone": "Asia/Manila"
 }

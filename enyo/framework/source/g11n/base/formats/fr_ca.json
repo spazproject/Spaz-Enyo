@@ -1,8 +1,11 @@
 {
 	"numberDivider": " ",
 	"numberDecimal": ",",
-	"currencyPrepend": "",
-	"currencyAppend": " $",
+	"currency": {
+		"name": "CAD",
+		"iso": "#{amt} #{sign}",
+		"common": "#{amt} #{sign}"
+	},
 	"percentageSpace": true,
 	"localeName": "Canada",
 	"titleCase": false,
@@ -38,6 +41,9 @@
 	"shortMYDate": "MM/yy",
 	"mediumMYDate": "MMM yyyy",
 	"longMYDate": "MMMM yyyy",
+	"shortDDate": "dd",
+	"mediumDDate": "d",
+	"longDDate": "d",	
 
 	"shortWeekday": "EE",
 	"mediumWeekday": "EEE",
@@ -54,6 +60,10 @@
 	"smallTime24": "HH:mm",
 	"bigTime24": "HH:mm:ss",
 	
+	"timeH12": "hh",
+	"timeH24": "HH",
+	
 	"defaultPaperSize": "letter",
-	"defaultPhotoSize": "4x6"
+	"defaultPhotoSize": "4x6",
+	"defaultTimeZone": "America/Montreal"
 }

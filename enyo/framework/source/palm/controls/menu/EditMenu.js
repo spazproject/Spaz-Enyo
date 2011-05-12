@@ -46,9 +46,7 @@ enyo.kind({
 		e.preventDefault();
 	},
 	send: function(inSender) {
-		var c = inSender.command;
-		c = c.charAt(0).toUpperCase() + c.substr(1);
-		this["do" + c]();
+		this["do" + enyo.cap(inSender.command)]();
 		enyo.dispatch({type: inSender.command, target: document.activeElement});
 	},
 	selectAllDisabledChanged: function() {

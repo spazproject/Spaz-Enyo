@@ -1,4 +1,9 @@
 {
+	"dateRangeMultipleYears": "#{startMonthYear}-#{endMonthYear}",
+	"dateRangeWithinConsecutiveYears": "#{start}-#{end}",
+	"dateRangeWithinDay": "#{date}#{startTime}-#{endTime}",
+	"dateRangeWithinMonth": "#{year}#{month}#{startDate}-#{endDate}",
+	"dateRangeWithinYear": "#{year}#{start}-#{end}",
 	"dateTimeSeparatorFull": "",
 	"dateTimeSeparatorLong": "",
 	"dateTimeSeparatorMedium": " ",
