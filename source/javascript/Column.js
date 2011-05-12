@@ -50,15 +50,12 @@ enyo.kind({
 	create: function(){
 		this.inherited(arguments);
      	this.infoChanged();
-
      	setTimeout(enyo.bind(this, this.resizeHandler), 1);
-
-     	this.loadData();
 	},
+	
 	infoChanged: function(){
 		this.$.header.setContent(_.capitalize(this.info.type));
 		this.$.accountName.setContent(App.Users.getLabel(this.info.accounts[0]));
-
 	},
 
 	loadNewer:function() {
