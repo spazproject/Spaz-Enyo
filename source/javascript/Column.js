@@ -45,7 +45,7 @@ enyo.kind({
 			]},
 			{kind: "Toolbar", style: "color: white;", components: [
 				{kind: "ToolButton", icon: "source/images/icon-clear.png"},
-				{kind: "ToolButton", icon: "source/images/icon-refresh.png", onclick:"loadNewer"}
+				{name: "refresh", kind: "ToolButton", icon: "source/images/icon-refresh.png", onclick:"loadNewer"}
 			]}
 		]},
 
@@ -127,31 +127,51 @@ enyo.kind({
 
 			switch (self.info.type) {
 				case 'home':
+					self.$.refresh.addClass("spinning");
 					self.twit.getHomeTimeline(since_id, 200, null, null,
 						function(data) {
 							self.processData(data);
+							self.$.refresh.removeClass("spinning");
+						},
+						function() {
+							self.$.refresh.removeClass("spinning");
 						}
 					);
 					break;
 				case 'mentions':
 					// this method would consistently 502 if we tried to get 200. limit to 100
+					self.$.refresh.addClass("spinning");
 					self.twit.getReplies(since_id, 100, null, null,
 						function(data) {
 							self.processData(data);
+							self.$.refresh.removeClass("spinning");
+						},
+						function() {
+							self.$.refresh.removeClass("spinning");
 						}
 					);
 					break;
 				case 'dms':
+					self.$.refresh.addClass("spinning");
 					self.twit.getDirectMessages(since_id, 200, null, null,
 						function(data) {
 							self.processData(data);
+							self.$.refresh.removeClass("spinning");
+						},
+						function() {
+							self.$.refresh.removeClass("spinning");
 						}
 					);
 					break;
 				case 'search':
+					self.$.refresh.addClass("spinning");
 					self.twit.search(self.info.query, since_id, 200, null, null, null,
 						function(data) {
 							self.processData(data);
+							self.$.refresh.removeClass("spinning");
+						},
+						function() {
+							self.$.refresh.removeClass("spinning");
 						}
 					);
 					break;

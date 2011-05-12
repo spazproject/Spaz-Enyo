@@ -86,3 +86,20 @@ a:active,
 .accountSelection .enyo-menucheckitem-caption {
 	padding-right: 0px;
 }
+
+/* Spinning animation while the column is reloading */
+@-webkit-keyframes spinning {
+	from {
+		-webkit-transform: rotate(0deg);
+	}
+	to { 
+		-webkit-transform: rotate(360deg);
+	}
+}
+
+.spinning {
+	-webkit-animation-name: spinning;
+	-webkit-animation-duration: 2.0s;
+	-webkit-animation-iteration-count: infinite;
+	-webkit-animation-timing-function: linear;
+}
