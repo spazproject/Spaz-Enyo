@@ -2,8 +2,8 @@ enyo.kind({
 	name: "Spaz",
 	kind: enyo.HFlexBox,
 	components: [
-		{name: "sidebar", kind: "Spaz.Sidebar", onColumnsFunction: "columnsFunction", onCreateColumn: "createColumn"},
-		{name: "container", kind: "Spaz.Container", onShowEntryView: "showEntryView"},
+		{name: "sidebar", kind: "Spaz.Sidebar", onRefreshAll: "refreshAll", onCreateColumn: "createColumn"},
+		{name: "container", kind: "Spaz.Container", onShowEntryView: "showEntryView", onRefreshAllFinished: "refreshAllFinished"},
 	],
 	
 	twit: new SpazTwit(),
@@ -171,10 +171,15 @@ enyo.kind({
 	createColumn: function(inSender, inAccountId, inColumn){
 		this.$.container.createColumn(inAccountId, inColumn);	
 	},
-	columnsFunction: function(inSender, functionName, opts){
-		this.$.container.columnsFunction(functionName, opts);	
-	},
 	resizeHandler: function() {
 		this.$.container.resizeHandler();
+	},
+	
+	refreshAll: function() {
+		this.$.container.refreshAll();
+	},
+	
+	refreshAllFinished: function() {
+		this.$.sidebar.refreshAllFinished();
 	}
 });

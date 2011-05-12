@@ -4,13 +4,13 @@ enyo.kind({
 	kind: "VFlexBox",
 	className: "enyo-toolbar-vertical",
 	events: {
-		onColumnsFunction: "",
+		onRefreshAll: "",
 		onCreateColumn: ""
 	},
 	components: [
 		{kind: "ToolButton", icon: "source/images/icon-compose.png", onclick: "openPopup", popup:"composePopup"},
 		{kind: "ToolButton", icon: "source/images/icon-search.png", onclick: "openPopup", popup: "searchPopup"},
-		{kind: "ToolButton", icon: "source/images/icon-refresh.png", onclick: "refreshAll"},
+		{name: "refreshAll", kind: "ToolButton", icon: "source/images/icon-refresh.png", onclick: "refreshAll"},
 		{kind: "Spacer"},
 		{kind: "ToolButton", icon: "source/images/icon-new-column.png", onclick: "openPopup", popup: "columnsPopup"},
 		{kind: "ToolButton", icon: "source/images/icon-new-account.png", onclick: "openPopup", popup:"accountsPopup"},
@@ -33,6 +33,10 @@ enyo.kind({
 		inSender.close();
 	},
 	refreshAll: function(inSender, inEvent){
-		this.doColumnsFunction("loadNewer");
+		this.$.refreshAll.addClass("spinning");
+		this.doRefreshAll();
+	},
+	refreshAllFinished: function() {
+		this.$.refreshAll.removeClass("spinning");
 	}
 });

@@ -5,7 +5,9 @@ enyo.kind({
 	style: "margin: 3px;", 
 	events: {
 		onShowEntryView: "",
-		onDeleteClicked: ""
+		onDeleteClicked: "",
+		onLoadStarted: "",
+		onLoadFinished: ""
 	},
 	published: {
 		info: {
@@ -124,49 +126,54 @@ enyo.kind({
 				since_id = 1;
 			}
 
-			function removeSpinning(){
+			function loadStarted() {
+				self.$.refresh.addClass("spinning");
+				self.doLoadStarted();
+			}
+			function loadFinished() {
 				self.$.refresh.removeClass("spinning");
+				self.doLoadFinished();
 			}
 			switch (self.info.type) {
 				case 'home':
-					self.$.refresh.addClass("spinning");
+					loadStarted();
 					self.twit.getHomeTimeline(since_id, 200, null, null,
 						function(data) {
 							self.processData(data);
-							removeSpinning();
+							loadFinished();
 						},
-						removeSpinning
+						loadFinished
 					);
 					break;
 				case 'mentions':
 					// this method would consistently 502 if we tried to get 200. limit to 100
-					self.$.refresh.addClass("spinning");
+					loadStarted();
 					self.twit.getReplies(since_id, 100, null, null,
 						function(data) {
 							self.processData(data);
-							removeSpinning();
+							loadFinished();
 						},
-						removeSpinning
+						loadFinished
 					);
 					break;
 				case 'dms':
-					self.$.refresh.addClass("spinning");
+					loadStarted();
 					self.twit.getDirectMessages(since_id, 200, null, null,
 						function(data) {
 							self.processData(data);
-							removeSpinning();
+							loadFinished();
 						},
-						removeSpinning
+						loadFinished
 					);
 					break;
 				case 'search':
-					self.$.refresh.addClass("spinning");
+					loadStarted();
 					self.twit.search(self.info.query, since_id, 200, null, null, null,
 						function(data) {
 							self.processData(data);
-							removeSpinning();
+							loadFinished();
 						},
-						removeSpinning
+						loadFinished
 					);
 					break;
 			}
