@@ -56,9 +56,7 @@ enyo.kind({
 		if(this.$.entry.content !== this.entry.message){
 			this.$.image.setSrc(this.entry.author_avatar);
 			this.$.image.applyStyle("display", "");			
-			if(this.entry.author_fullname){
-				this.$.realname.setContent(this.entry.author_fullname);			
-			}
+			this.$.realname.setContent(this.entry.author_fullname||this.entry.author_username);
 			this.$.username.setContent("@" + this.entry.author_username);
 			this.$.bio.setContent(this.entry.author_description||'');
 			this.$.timeFrom.setContent(sch.getRelativeTime(this.entry.publish_date) + " from <span class='link'>" + this.entry._orig.source + "</span>");
