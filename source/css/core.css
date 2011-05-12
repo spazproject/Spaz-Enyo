@@ -12,11 +12,7 @@ a,
 .link {
 	color: #2D76B9;
 }
-.timeline.list .entry .small {
-	color: #969696;
-	padding-top: 2px;
-	font-size: 11px;
-}
+
 a:active,
 .hashtag:active,
 .link:active,
@@ -26,19 +22,24 @@ a:active,
 
 
 /* Entries */
-.timeline.list .entry .avatar {
+.entry .avatar {
 	padding-right: 10px;
 	/*-webkit-border-radius: 5px;*/
 }
-.timeline.list .entry .username.author {
+.entry .username.author {
 	font-weight: bold;
 	color: black;
 }
-.timeline.list .entry .text {
+.entry .text {
 	font-size: 14px;
 }
-.timeline.list .entry .action-separator {
+.entry .action-separator {
 	width: 12px;
+}
+.entry .small {
+	color: #969696;
+	padding-top: 2px;
+	font-size: 11px;
 }
 
 
