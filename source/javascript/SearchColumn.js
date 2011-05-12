@@ -24,7 +24,13 @@ enyo.kind({
 	optionsPopup: function(inSender, inEvent){
 		this.$.popupList.openAtEvent(inEvent);
 	},
-	popupSelect: function(inSender, inEvent){
-		
+	popupSelect: function(inSender, inIndex){
+		switch(inSender.items[inIndex]){
+			case "Remove Column":
+				this.doDeleteClicked();
+				break;
+
+		}
+		this.close();
 	}
 });

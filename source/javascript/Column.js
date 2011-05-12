@@ -24,26 +24,13 @@ enyo.kind({
 			{kind: "Toolbar", defaultKind: "Control", content: "Home", style: "color: white;", components: [
 				//gotta do this crap to get the header title to center and not be a button. "defaultKind" in Toolbar is key.
 				{name: "topLeftButton", kind: "ToolButton", style: "display: none"},
-				{name: "header", style: "padding: 0px 0px 5px 10px;", class: "truncating-text", content: ""},
+				{name: "header", style: "padding: 0px 0px 5px 10px;", className: "truncating-text", content: ""},
 				{kind: "Spacer", flex: 1},
 				{name: "accountName", style: "color: grey; font-size: 12px"},
 				{name: "topRightButton", kind: "ToolButton", icon: "source/images/icon-close.png", onclick: "doDeleteClicked"},
 			]},
 			{name: "list", kind: "Spaz.VirtualList", flex: 1, style: "background-color: #D8D8D8; margin: 0px 3px; min-height: 200px;", horizontal: false, className: "timeline list", onSetupRow: "setupRow", components: [
-				{kind: "Item", tapHighlight: true, className: "entry", style: "padding-right: 5px;", layoutKind: "HFlexLayout", onclick: "entryClick", components: [
-					{kind: "VFlexBox", components: [
-						{kind: "Image", width: "50px", height: "50px", className: "avatar"},
-					]},
-					{kind: "VFlexBox", flex: 1, components: [
-						{name: "entry", className: "text"},
-						{name: "timeFrom", className: "small"},
-					]},		
-					//{kind: "VFlexBox", width: "24px", components: [
-					//	{kind: "Image", src: "source/images/action-icon-favorite.png"},
-					//	{kind: "Image", src: "source/images/action-icon-share.png"},
-					//	{kind: "Image", src: "source/images/action-icon-reply.png"},
-					//]}		
-				]}
+				{name: "item", kind: "Spaz.Entry", onclick: "entryClick"}
 			]},
 			{kind: "Toolbar", style: "color: white;", components: [
 				{kind: "ToolButton", icon: "source/images/icon-clear.png"},
@@ -213,9 +200,7 @@ enyo.kind({
 	setupRow: function(inSender, inIndex) {
 		if (this.entries[inIndex]) {
 			var entry = this.entries[inIndex];
-			this.$.entry.setContent("<span class='username author'>" + entry.user.screen_name + "</span><br>" + AppUtils.makeItemsClickable(enyo.string.runTextIndexer(entry.text)));
-			this.$.timeFrom.setContent(sch.getRelativeTime(entry.created_at) + " from <span class='link'>" + entry.source + "</span>");
-			this.$.image.setSrc(entry.user.profile_image_url);
+			this.$.item.setEntry(entry);
 			
 			//this.$.item.applyStyle("background-color", inSender.isSelected(inIndex) ? "rgba(218,235,251,0.4)" : null);
 
@@ -230,17 +215,17 @@ enyo.kind({
 			case "hashtag":
 
 				break;
+			case "small":
+				this.doShowEntryView(this.entries[inRowIndex]);
+				break;
 			case "avatar": //we may want to move toward a default situation.
 			case "text":
 			case "enyo-vflexbox":
 			case "enyo-item entry enyo-hflexbox":
-			case "small":
 				this.$.entryClickPopup.showAtEvent(this.entries[inRowIndex], inEvent);
 				break;
 
 		}
-		//this.doEntryClick(this.entries[inRowIndex]);
-		//this.$.list.select(inRowIndex);
 	},
 	resizeHandler: function(inHeight) {
 		this.$.list.applyStyle("height", window.innerHeight - 117 + "px");
