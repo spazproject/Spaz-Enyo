@@ -8,7 +8,8 @@ enyo.kind({
 		onDeleteClicked: "",
 		onLoadStarted: "",
 		onLoadFinished: "",
-		onReply: ""
+		onReply: "",
+		onDirectMessage: ""
 	},
 	published: {
 		info: {
@@ -39,7 +40,7 @@ enyo.kind({
 			]}
 		]},
 
-		{name: "entryClickPopup", kind: "Spaz.EntryClickPopup", onShowEntryView: "doShowEntryView", onReply: "doReply"}
+		{name: "entryClickPopup", kind: "Spaz.EntryClickPopup", onShowEntryView: "doShowEntryView", onReply: "doReply", onDirectMessage: "doDirectMessage",}
 	],
 	entries: [
 		 //{user: {screen_name: "Tibfib"}, realname: "Will Honey", from: "Spaz", avatar: "http://a3.twimg.com/profile_images/1281983040/simpsons_profile.png", time: "10 minutes ago", text: "dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."},

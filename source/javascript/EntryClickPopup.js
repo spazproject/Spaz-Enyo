@@ -7,6 +7,7 @@ enyo.kind({
 		onClose: "",
 		onShowEntryView: "",
 		onReply: "",
+		onDirectMessage: "",
 		onShare: ""
 	},
 	components: [
@@ -28,10 +29,19 @@ enyo.kind({
 				this.$.popup.close();
 				break;
 			case "Reply":
-				this.doReply({
-					'entry':this.entry,
-					'account_id':this.entry.account_id
-				});
+				if (this.entry.is_private_message) {
+					this.doDirectMessage({
+						'to':this.entry.author_username,
+						'text':null,
+						'entry':this.entry,
+						'account_id':this.entry.account_id
+					});
+				} else {
+					this.doReply({
+						'entry':this.entry,
+						'account_id':this.entry.account_id
+					});			
+				}
 				this.$.popup.close();
 				break;
 			case "Share":
