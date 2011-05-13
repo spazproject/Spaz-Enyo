@@ -37,7 +37,9 @@ enyo.kind({
 				{kind: "VFlexBox", className: "header", style: "", components: [
 						//{kind: "Divider", className: "divider", style: "display: none", caption: ""},
 						{name: "entry", className: "entry"},
-						{name: "timeFrom", className: "small", style: "padding-top: 10px"}
+						{name: "timeFrom", className: "small", style: "padding-top: 10px"},
+						{kind: "Spacer", flex: 1},
+						{kind: "Spaz.Conversation", name: "conversation"}
 				]},
 				//]},
 				
@@ -65,6 +67,7 @@ enyo.kind({
 				this.$.timeFrom.setContent(sch.getRelativeTime(this.entry.publish_date));
 			}
 			this.$.entry.setContent(AppUtils.makeItemsClickable(this.entry.text));
+			this.loadConversation();
 		} else {
 			this.doDestroy();
 			//this.$.image.applyStyle("display", "none");
@@ -74,5 +77,8 @@ enyo.kind({
 			//this.$.timeFrom.setContent("");
 			//this.$.entry.setContent("");
 		}
+	},
+	loadConversation: function() {
+	    this.$.conversation.loadConversation();
 	}
 });
