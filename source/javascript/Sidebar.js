@@ -8,7 +8,7 @@ enyo.kind({
 		onCreateColumn: ""
 	},
 	components: [
-		{kind: "ToolButton", icon: "source/images/icon-compose.png", onclick: "openPopup", popup:"composePopup"},
+		{kind: "ToolButton", icon: "source/images/icon-compose.png", onclick: "compose", popup:"composePopup"},
 		{kind: "ToolButton", icon: "source/images/icon-search.png", onclick: "openPopup", popup: "searchPopup"},
 		{name: "refreshAll", kind: "ToolButton", icon: "source/images/icon-refresh.png", onclick: "refreshAll"},
 		{kind: "Spacer"},
@@ -22,6 +22,9 @@ enyo.kind({
 		{name: "settingsPopup", kind: "Spaz.SettingsPopup", onClose: "closePopup" },
 		{name: "accountsPopup", kind: "Spaz.AccountsPopup", onClose: "closePopup" }
 	],
+	compose: function(inSender) {
+		this.$.composePopup.compose();
+	},
 	openPopup: function(inSender) {
 		// inSender is the component that triggers this; .popup is the property in the def above
 		var popup = this.$[inSender.popup]; // find the component with the passed name
