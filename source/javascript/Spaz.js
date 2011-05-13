@@ -3,7 +3,7 @@ enyo.kind({
 	kind: enyo.HFlexBox,
 	components: [
 		{name: "sidebar", kind: "Spaz.Sidebar", onRefreshAll: "refreshAll", onCreateColumn: "createColumn"},
-		{name: "container", kind: "Spaz.Container", onShowEntryView: "showEntryView", onRefreshAllFinished: "refreshAllFinished"},
+		{name: "container", kind: "Spaz.Container", onShowEntryView: "showEntryView", onReply: "reply", onRefreshAllFinished: "refreshAllFinished"},
 	],
 	
 	twit: new SpazTwit(),
@@ -181,5 +181,9 @@ enyo.kind({
 	
 	refreshAllFinished: function() {
 		this.$.sidebar.refreshAllFinished();
+	},
+	
+	reply: function(inSender, inOpts) {
+		this.$.sidebar.$.composePopup.replyTo(inOpts);
 	}
 });

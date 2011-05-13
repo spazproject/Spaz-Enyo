@@ -6,7 +6,8 @@ enyo.kind({
 	style: "background-color: black",
 	events: {
 		onShowEntryView: "",
-		onRefreshAllFinished: ""
+		onRefreshAllFinished: "",
+		onReply: ""
 	},
 	components: [
 		{name:"columnsScroller", kind: "SnapScroller", flex: 1, vertical: false, autoVertical: false, style: "background-color: black; padding: 2px;" , components:[
@@ -70,6 +71,7 @@ enyo.kind({
 				onDeleteClicked: "deleteColumn",
 				onLoadStarted: "loadStarted",
 				onLoadFinished: "loadFinished",
+				onReply: "doReply",
 				owner: this //@TODO there is an issue here with scope. when we create kinds like this dynamically, the event handlers passed is the scope `this.$.columnsScroller` rather than `this` which is what we want in this case since `doShowEntryView` belongs to `this`. It won't be a big deal here, because if we need the column kinds, we can call this.getComponents() and filter out the scroller itself.
 			}; 
 			if(col.info.type === "search"){

@@ -7,7 +7,8 @@ enyo.kind({
 		onShowEntryView: "",
 		onDeleteClicked: "",
 		onLoadStarted: "",
-		onLoadFinished: ""
+		onLoadFinished: "",
+		onReply: ""
 	},
 	published: {
 		info: {
@@ -38,7 +39,7 @@ enyo.kind({
 			]}
 		]},
 
-		{name: "entryClickPopup", kind: "Spaz.EntryClickPopup", onShowEntryView: "doShowEntryView"}
+		{name: "entryClickPopup", kind: "Spaz.EntryClickPopup", onShowEntryView: "doShowEntryView", onReply: "doReply"}
 	],
 	entries: [
 		 //{user: {screen_name: "Tibfib"}, realname: "Will Honey", from: "Spaz", avatar: "http://a3.twimg.com/profile_images/1281983040/simpsons_profile.png", time: "10 minutes ago", text: "dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."},
@@ -192,7 +193,12 @@ enyo.kind({
 					this.entries.sort(function(a,b){
 						return b.service_id - a.service_id; // newest first
 					});
-
+					
+					// add in the account used to get this entry. this seems sloppy here.
+					for (var j = this.entries.length - 1; j >= 0; j--){
+						this.entries[j].account_id = this.info.accounts[0];
+					}
+					
 					this.$.list.refresh();
 					this.resizeHandler();
 					break;

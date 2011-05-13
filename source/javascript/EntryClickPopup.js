@@ -5,7 +5,9 @@ enyo.kind({
 	//modal: true,
 	events: {
 		onClose: "",
-		onShowEntryView: ""
+		onShowEntryView: "",
+		onReply: "",
+		onShare: ""
 	},
 	components: [
 		{name: "popup", kind: "PopupList", onSelect: "itemSelect"}
@@ -26,7 +28,11 @@ enyo.kind({
 				this.$.popup.close();
 				break;
 			case "Reply":
-
+				this.doReply({
+					'entry':this.entry,
+					'account_id':this.entry.account_id
+				});
+				this.$.popup.close();
 				break;
 			case "Share":
 

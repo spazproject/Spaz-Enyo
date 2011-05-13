@@ -9,7 +9,7 @@ enyo.kind({
 	},
 	published: {
 		dmUser: "", // use this to show the user we are direct messaging
-		inReplyTweet: "" // use this to display the tweet being replied to
+		inReplyEntryText: "" // use this to display the tweet being replied to
 	},
 	inReplyToId:null, // set this when making a reply to a specific entry
 	style: "min-width: 400px;",
@@ -160,6 +160,121 @@ enyo.kind({
 			inEvent.preventDefault();	
 			
 		}
+	},
+	
+	
+	
+	replyTo: function(opts) {
+		
+		this.showAtCenter();
+		
+		opts = sch.defaults({
+			'to':null,
+			'text':null,
+			'entry':null,
+			'account_id':null,
+			'all':false
+		}, opts);
+		
+		var text = '';
+		var skip_usernames = [];
+		
+		if (opts.account_id) {
+			this.setPostingAccount(opts.account_id);
+		}
+		
+		if (opts.entry) {
+			
+			this.inReplyEntryText = opts.entry.text_raw;
+			
+			this.inReplyToId = opts.entry.service_id;
+			
+			if (opts.account_id) {
+				skip_usernames.push(App.Users.get(opts.account_id).username);
+			}
+			
+			skip_usernames.push(opts.entry.author_username);
+			
+			var usernames = sch.extractScreenNames(opts.entry.text_raw, skip_usernames);
+
+			// get entry id
+			var irt_status_id = opts.entry.service_id;
+
+			var usernames_str = usernames.join(' @');
+			if (usernames_str.length > 0) {
+				usernames_str = '@'+usernames_str;
+			}
+			
+			text = ['@'+opts.entry.author_username, usernames_str, opts.text].join(' ') + ' ';
+			
+
+			
+		} else if (opts.to) {
+			text = '@'+opts.to;
+		} else {
+			text = '@';
+		}
+		
+		this.$.postTextBox.setValue(text);
+		this.$.postTextBox.forceFocus();
+
+		// try to select the text in order to position the cursor at the end
+		var textlen = this.$.postTextBox.getValue().length;
+		var selection = {start:textlen-1, end:textlen};
+		this.$.postTextBox.setSelection(selection);
+		this.postTextBoxInput();
+		
+		
+	
+	},
+	
+	
+	directMessage: function(opts) {
+		
+		this.showAtCenter();
+		
+		opts = sch.defaults({
+			'to':null,
+			'text':null,
+			'message':null,
+			'account_id':null
+		}, opts);
+		
+	},
+	
+	
+	retweet: function(opts) {
+		
+		this.showAtCenter();
+		
+		opts = sch.defaults({
+			'message':null,
+			'account_id':null
+		}, opts);
+	},
+	
+	
+	retweetOldSchool: function(opts) {
+		
+		this.showAtCenter();
+		
+		opts = sch.defaults({
+			'message':null,
+			'account_id':null
+		}, opts);
+	},
+	
+	
+	quoteMessage: function(opts) {
+		
+		this.showAtCenter();
+		
+		opts = sch.defaults({
+			'message':null,
+			'account_id':null
+		}, opts);
 	}
+	
+	
 });
 
