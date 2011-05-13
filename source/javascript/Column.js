@@ -51,8 +51,6 @@ enyo.kind({
 		this.inherited(arguments);
      	this.infoChanged();
      	setTimeout(enyo.bind(this, this.resizeHandler), 1);
-
-     	this.loadNewer();
 	},
 	
 	infoChanged: function(){
