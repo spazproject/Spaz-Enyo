@@ -26,8 +26,13 @@ enyo.kind({
 	],
 	entryChanged: function(){
 		
+		
 		this.$.text.setContent("<span class='username author'>" + this.entry.author_username + "</span><br>" + AppUtils.makeItemsClickable(enyo.string.runTextIndexer(this.entry.text)));
-		this.$.timeFrom.setContent(sch.getRelativeTime(this.entry.publish_date) + " from <span class='link'>" + this.entry._orig.source + "</span>");
+		if (this.entry._orig.source) {
+			this.$.timeFrom.setContent(sch.getRelativeTime(this.entry.publish_date) + " from <span class='link'>" + this.entry._orig.source + "</span>");
+		} else {
+			this.$.timeFrom.setContent(sch.getRelativeTime(this.entry.publish_date));
+		}		
 		this.$.image.setSrc(this.entry.author_avatar);
 			
 	}
