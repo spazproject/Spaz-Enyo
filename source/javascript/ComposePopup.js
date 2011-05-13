@@ -5,7 +5,7 @@ enyo.kind({
 	modal: true, //yes/no?
 	//width: "400px",
 	events: {
-		onClose: "",
+		onClose: ""
 	},
 	published: {
 		dmUser: "", // use this to show the user we are direct messaging
@@ -16,15 +16,15 @@ enyo.kind({
 	style: "min-width: 400px;",
 	components: [
 		{layoutKind: "HFlexLayout", components: [
-			{content: "New Entry", style: "padding-bottom: 0px"},
+			{name: "composeHeader", content: "New Entry", style: "padding-bottom: 0px"},
 			{kind: "Spacer"},
 			{kind: "ToolButton", icon: "source/images/icon-close.png", style: "position: relative; bottom: 7px;", onclick: "doClose"}
 		]},
 		{kind: "HFlexBox", name: "inReplyEntryText", content: "", style: "color:#666666; font-size:14px; padding-bottom:1em;" },
 		{kind: "HFlexBox", style: "min-height: 50px", components: [
 			{name:"postTextBox", kind: "RichText", alwaysLooksFocused: true, richContent: false, multiline: true, flex: 1, oninput: "postTextBoxInput", hint: "Type message here...", onkeydown: "postTextBoxKeydown", components: [
-				{name: "remaining", style: "color: grey; padding-left: 5px;", content: "140"},
-			]},
+				{name: "remaining", style: "color: grey; padding-left: 5px;", content: "140"}
+			]}
 		]},
 		{name: "controls", layoutKind: "HFlexLayout", style: "padding-top: 5px", components: [
 			{kind: "Button", style: "padding: 0px 5px;", components: [
@@ -73,9 +73,35 @@ enyo.kind({
 		//this can be set by calling this.$.composePopup.setDmUser({}); (from parent) 
 		//this should be cleared on send
 		//set flag?
+		if (!this.dmUser) {
+			this.isDM = false;
+		} else {
+			this.$.composeHeader.setContent('Message to '+this.dmUser);
+			this.isDM = true;
+		}
+		
 	},
+	
 	inReplyEntryChanged: function(){
 		this.$.inReplyEntryText.setContent(this.inReplyEntryText);
+		
+		if (!this.isDM) { // we can set the irtText when it's a DM too, so check
+			if (!this.inReplyToId) {
+				this.$.inReplyEntryText.hide();
+			} else {
+				this.$.composeHeader.setContent('Reply');
+				this.$.inReplyEntryText.show();
+			}		
+		}
+		
+		
+		if (this.inReplyEntryText) {
+			this.$.inReplyEntryText.show();
+		} else {
+			this.$.inReplyEntryText.hide();
+		}
+		
+		
 	},
 	setPostingAccount: function(account_id) {
 
@@ -97,16 +123,30 @@ enyo.kind({
 	},
 
 	onSendClick: function(inSender) {
-		this.twit.update(this.$.postTextBox.getValue(), null, this.inReplyToId,
-			enyo.bind(this, function() {
-				this.$.postTextBox.setValue('');
-				this.close();
-			}),
-			function() {
-				//@TODO report error info
-				alert('failed');
-			}
-		);
+		
+		if (this.isDM) {
+			this.twit.sendDirectMessage('@'+this.dmUser, this.$.postTextBox.getValue(),
+				enyo.bind(this, function() {
+					this.$.postTextBox.setValue('');
+					this.close();
+				}),
+				function() {
+					//@TODO report error info
+					alert('failed');
+				}
+			);			
+		} else {
+			this.twit.update(this.$.postTextBox.getValue(), null, this.inReplyToId,
+				enyo.bind(this, function() {
+					this.$.postTextBox.setValue('');
+					this.close();
+				}),
+				function() {
+					//@TODO report error info
+					alert('failed');
+				}
+			);			
+		}
 	},
 
 	onShortenTextClick: function(inSender) {
@@ -135,7 +175,7 @@ enyo.kind({
 	
 	postTextBoxInput: function(inSender, inEvent, inValue) {
 		if (!inValue) {
-			var inValue = this.$.postTextBox.getValue();
+			inValue = this.$.postTextBox.getValue();
 		}
 		var remaining = 140 - inValue.length;
 		this.$.remaining.setContent(remaining);
@@ -154,9 +194,10 @@ enyo.kind({
 	
 	clear: function() {
 		this.$.postTextBox.setValue('');
-		this.dmUser = "",
+		this.dmUser = "";
 		this.inReplyEntryText = "";
 		this.inReplyToId = null;
+		this.$.composeHeader.setContent('New Entry');
 		this.postTextBoxInput();
 		this.dmUserChanged();
 		this.inReplyEntryChanged();
@@ -261,13 +302,41 @@ enyo.kind({
 		this.showAtCenter();
 		
 		this.clear();
+
+		this.isDM = true;
 		
 		opts = sch.defaults({
 			'to':null,
 			'text':null,
-			'message':null,
+			'entry':null,
 			'account_id':null
 		}, opts);
+		
+		if (opts.account_id) {
+			this.setPostingAccount(opts.account_id);
+		}
+		
+		this.dmUser = opts.to;
+		
+		var text = opts.text || '';
+		
+		if (opts.entry) {
+			this.inReplyEntryText = opts.entry.text_raw;
+		}
+		
+		this.$.postTextBox.setValue(text);
+		this.$.postTextBox.forceFocus();
+
+		// try to select the text in order to position the cursor at the end
+		var textlen = this.$.postTextBox.getValue().length;
+		var selection = {start:textlen-1, end:textlen};
+		this.$.postTextBox.setSelection(selection);
+
+		this.postTextBoxInput();
+		this.inReplyEntryChanged();
+		this.dmUserChanged();
+		
+		// alert('NYI!');
 		
 	},
 	
