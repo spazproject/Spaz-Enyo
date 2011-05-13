@@ -81,8 +81,8 @@ enyo.kind({
 		this.$.columnsScroller.render();
 		setTimeout(enyo.bind(this, this.refreshAll), 1);
 	},
-	createColumn: function(inAccountId, inColumn){
-		this.columnData.push({type: inColumn, accounts: [inAccountId]});
+	createColumn: function(inAccountId, inColumn, inQuery){
+		this.columnData.push({type: inColumn, accounts: [inAccountId], query: inQuery});
 
 		// save the column set
 		App.Prefs.set('columns', this.columnData);

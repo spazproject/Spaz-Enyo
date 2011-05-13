@@ -168,8 +168,8 @@ enyo.kind({
 		//this.render();
 		//this.$.container.refreshList();
 	},
-	createColumn: function(inSender, inAccountId, inColumn){
-		this.$.container.createColumn(inAccountId, inColumn);	
+	createColumn: function(inSender, inAccountId, inColumn, inQuery){
+		this.$.container.createColumn(inAccountId, inColumn, inQuery);	
 	},
 	resizeHandler: function() {
 		this.$.container.resizeHandler();

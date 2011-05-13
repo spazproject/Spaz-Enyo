@@ -5,7 +5,8 @@ enyo.kind({
 	modal: true,
 	width: "400px",
 	events: {
-		onClose: ""
+		onClose: "",
+		onCreateColumn: ""
 	},
 	components: [
 		{layoutKind: "HFlexLayout", components: [
@@ -14,14 +15,14 @@ enyo.kind({
 			{kind: "ToolButton", icon: "source/images/icon-close.png", style: "position: relative; bottom: 7px;", onclick: "doClose"}
 		]},	
 		{kind: "HFlexBox", components: [
-			{name:"postTextBox", kind: "RichText", alwaysLooksFocused: true, richContent: false, hint: "Enter query here...", multiline: false, flex: 1, onkeydown: "searchBoxKeydown", components: [
-				{kind: "Button", content: "Search", onclick: "search"}
-			]},
+			{name:"searchTextBox", kind: "RichText", alwaysLooksFocused: true, selectAllOnFocus: true, richContent: false, hint: "Enter query here...", multiline: false, flex: 1, onkeydown: "searchBoxKeydown"},
 		]},
-		{kind: "Scroller", height: "0px", horizontal: false, autoHorizontal: false, components: [
-			{name: "searchResultsList", kind: "VirtualRepeater", onGetItem: "getItem", components: [
-		        {name: "item", kind: "Spaz.Entry"}
-		    ]}	
+		{kind: "HFlexBox", style: "padding-top: 5px", components: [
+			{kind: "Button", style: "padding: 0px 5px;", components: [
+			   {name: "accountSelection", "kind":"ListSelector", className: "accountSelection"}
+			]},
+			{kind: "Spacer", style: "min-width: 50px"},
+			{name: "searchButton", kind: "Button", style: "padding-top: 6px;", label: enyo._$L("Search"), onclick: "createColumn"}
 		]}
 		
 	],
@@ -29,62 +30,37 @@ enyo.kind({
 		this.inherited(arguments);
 	},
 	"showAtCenter": function(){
-		 this.openAtCenter();
+		this.$.searchTextBox.forceFocus();
+
+		this.openAtCenter();
+		this.buildAccounts();
+	},
+	buildAccounts: function() {
+
+		var allusers = App.Users.getAll();
+		this.accounts = [];
+		for (var key in allusers) {
+			this.accounts.push({
+				id:allusers[key].id,
+				value: allusers[key].id,
+				caption:App.Users.getLabel(allusers[key].id),
+				type:allusers[key].type
+			});
+		}
+		this.$.accountSelection.setItems(this.accounts);
+		this.$.accountSelection.setValue(this.accounts[0].value);
+
 	},
 	searchBoxKeydown: function(inSender, inEvent) {
 		if (inEvent.keyCode === 13) {
 			// Enter to send - this should be a pref evenutally.
-			this.search();
+			this.createColumn();
 			inEvent.preventDefault();	
-			
 		}
 	},
-	search: function(inValue){
-		var searchTerm = inValue || this.$.postTextBox.getValue()
-			, self = this;
-		var account = App.Users.get(App.Users.getAll()[0].id);
-		var auth = new SpazAuth(account.type);
-		auth.load(account.auth);
-
-		self.twit = new SpazTwit();
-		self.twit.setBaseURLByService(account.type);
-		self.twit.setSource(App.Prefs.get('twitter-source'));
-		self.twit.setCredentials(auth);
-
-		self.twit.search(searchTerm, 1, 200, null, null, null,
-			function(data) {
-				data = _.reject(data, function(item) {
-					for (var i = 0; i < self.entries.length; i++) {
-						if (item.id === self.entries[i].service_id) {
-							return true;
-						}
-					};
-				});
-
-				/* convert to our internal format */
-				data = AppUtils.convertToEntries(data);
-				
-
-				self.entries = [].concat(data.reverse(), self.entries);
-				self.entries.sort(function(a,b){
-					return b.service_id - a.service_id; // newest first
-				});
-				self.$.scroller.applyStyle("height", "400px");
-				self.$.searchResultsList.render();
-				self.resizeHandler();
-			}
-			//onFail loadFinished
-		);
-	},
-	entries: [],
-	getItem: function(inSender, inIndex) {
-		if (this.entries[inIndex]) {
-			var entry = this.entries[inIndex];
-			this.$.item.setEntry(entry);
-			
-			//this.$.item.applyStyle("background-color", inSender.isSelected(inIndex) ? "rgba(218,235,251,0.4)" : null);
-
-			return true;
-		}
-	},
+	createColumn: function(){
+		this.doCreateColumn(this.$.accountSelection.getValue(), SPAZ_COLUMN_SEARCH, this.$.searchTextBox.getValue());
+		this.doClose();
+	}
+	
 });

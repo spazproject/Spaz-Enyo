@@ -17,7 +17,7 @@ enyo.kind({
 		{kind: "ToolButton", icon: "source/images/icon-settings.png", onclick: "openPopup", popup:"settingsPopup"},
 		
 		{name: "composePopup", kind: "Spaz.ComposePopup", onClose: "closePopup" },
-		{name: "searchPopup", kind: "Spaz.SearchPopup", onClose: "closePopup" },
+		{name: "searchPopup", kind: "Spaz.SearchPopup", onCreateColumn: "doCreateColumn", onClose: "closePopup" },
 		{name: "columnsPopup", kind: "Spaz.ColumnsPopup", onCreateColumn: "doCreateColumn", onClose: "closePopup" },
 		{name: "settingsPopup", kind: "Spaz.SettingsPopup", onClose: "closePopup" },
 		{name: "accountsPopup", kind: "Spaz.AccountsPopup", onClose: "closePopup" }
