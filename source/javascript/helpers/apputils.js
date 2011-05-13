@@ -301,6 +301,8 @@ AppUtils.convertToEntry = function(item) {
 				entry.recipient_fullname = item.recipient.name;
 				entry.recipient_id  = item.recipient.id;
 				entry.recipient_avatar = item.recipient.profile_image_url;
+				
+				entry.is_private_message = true;
 
 			} else {
 
