@@ -141,7 +141,7 @@ enyo.kind({
 						loadFinished
 					);
 					break;
-				case 'dms':
+				case 'messages':
 					loadStarted();
 					self.twit.getDirectMessages(since_id, 200, null, null,
 						function(data) {
