@@ -5,12 +5,13 @@ enyo.kind({
 	modal: true, //yes/no?
 	//width: "400px",
 	events: {
-		onClose: ""
+		onClose: "",
 	},
 	published: {
 		dmUser: "", // use this to show the user we are direct messaging
 		inReplyEntryText: "" // use this to display the tweet being replied to
 	},
+	isDM: false,
 	inReplyToId:null, // set this when making a reply to a specific entry
 	style: "min-width: 400px;",
 	components: [
@@ -19,6 +20,7 @@ enyo.kind({
 			{kind: "Spacer"},
 			{kind: "ToolButton", icon: "source/images/icon-close.png", style: "position: relative; bottom: 7px;", onclick: "doClose"}
 		]},
+		{kind: "HFlexBox", name: "inReplyEntryText", content: "", style: "color:#666666; font-size:14px; padding-bottom:1em;" },
 		{kind: "HFlexBox", style: "min-height: 50px", components: [
 			{name:"postTextBox", kind: "RichText", alwaysLooksFocused: true, richContent: false, multiline: true, flex: 1, oninput: "postTextBoxInput", hint: "Type message here...", onkeydown: "postTextBoxKeydown", components: [
 				{name: "remaining", style: "color: grey; padding-left: 5px;", content: "140"},
@@ -72,10 +74,8 @@ enyo.kind({
 		//this should be cleared on send
 		//set flag?
 	},
-	inReplyTweetChanged: function(){
-		//this should be cleared on send
-		//set flag?
-
+	inReplyEntryChanged: function(){
+		this.$.inReplyEntryText.setContent(this.inReplyEntryText);
 	},
 	setPostingAccount: function(account_id) {
 
@@ -151,6 +151,17 @@ enyo.kind({
 		}
 	},
 	
+	
+	clear: function() {
+		this.$.postTextBox.setValue('');
+		this.dmUser = "",
+		this.inReplyEntryText = "";
+		this.inReplyToId = null;
+		this.postTextBoxInput();
+		this.dmUserChanged();
+		this.inReplyEntryChanged();
+	},
+	
 	postTextBoxKeydown: function(inSender, inEvent) {
 		if (inEvent.keyCode === 13) {
 			if(this.$.sendButton.disabled === false){
@@ -163,10 +174,24 @@ enyo.kind({
 	},
 	
 	
+	compose: function(opts) {
+		
+		this.showAtCenter();
+		
+		this.clear();
+		
+		opts = sch.defaults({
+			'text':null,
+			'account_id':null
+		}, opts);
+	},
+	
 	
 	replyTo: function(opts) {
 		
 		this.showAtCenter();
+		
+		this.clear();
 		
 		opts = sch.defaults({
 			'to':null,
@@ -222,16 +247,20 @@ enyo.kind({
 		var textlen = this.$.postTextBox.getValue().length;
 		var selection = {start:textlen-1, end:textlen};
 		this.$.postTextBox.setSelection(selection);
+
+
 		this.postTextBoxInput();
-		
-		
-	
+		this.dmUserChanged();
+		this.inReplyEntryChanged();
+			
 	},
 	
 	
 	directMessage: function(opts) {
 		
 		this.showAtCenter();
+		
+		this.clear();
 		
 		opts = sch.defaults({
 			'to':null,
@@ -258,6 +287,8 @@ enyo.kind({
 		
 		this.showAtCenter();
 		
+		this.clear();
+		
 		opts = sch.defaults({
 			'message':null,
 			'account_id':null
@@ -268,6 +299,8 @@ enyo.kind({
 	quoteMessage: function(opts) {
 		
 		this.showAtCenter();
+		
+		this.clear();
 		
 		opts = sch.defaults({
 			'message':null,
