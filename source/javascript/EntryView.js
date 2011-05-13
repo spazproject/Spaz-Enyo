@@ -59,7 +59,11 @@ enyo.kind({
 			this.$.realname.setContent(this.entry.author_fullname||this.entry.author_username);
 			this.$.username.setContent("@" + this.entry.author_username);
 			this.$.bio.setContent(this.entry.author_description||'');
-			this.$.timeFrom.setContent(sch.getRelativeTime(this.entry.publish_date) + " from <span class='link'>" + this.entry._orig.source + "</span>");
+			if (this.entry._orig.source) {
+				this.$.timeFrom.setContent(sch.getRelativeTime(this.entry.publish_date) + " from <span class='link'>" + this.entry._orig.source + "</span>");
+			} else {
+				this.$.timeFrom.setContent(sch.getRelativeTime(this.entry.publish_date));
+			}
 			this.$.entry.setContent(AppUtils.makeItemsClickable(this.entry.text));
 		} else {
 			this.doDestroy();

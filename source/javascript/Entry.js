@@ -26,7 +26,6 @@ enyo.kind({
 	],
 	entryChanged: function(){
 		
-		
 		this.$.text.setContent("<span class='username author'>" + this.entry.author_username + "</span><br>" + AppUtils.makeItemsClickable(enyo.string.runTextIndexer(this.entry.text)));
 		if (this.entry._orig.source) {
 			this.$.timeFrom.setContent(sch.getRelativeTime(this.entry.publish_date) + " from <span class='link'>" + this.entry._orig.source + "</span>");
