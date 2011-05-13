@@ -19,7 +19,12 @@ enyo.kind({
 			{kind: "ToolButton", icon: "source/images/icon-close.png", style: "position: relative; bottom: 7px;", onclick: "doClose"},
 		
 		]},
-		{name: "newColumnsContainer", onNewColumn: "newColumn", selectedAccount: "", kind: "Spaz.NewColumnsContainer"}
+		{name: "newColumnsContainer", onNewColumn: "newColumn", selectedAccount: "", kind: "Spaz.NewColumnsContainer"},
+		{name: "searchBox", kind: "HFlexBox", components: [
+			{name:"searchTextBox", kind: "RichText", alwaysLooksFocused: true, selectAllOnFocus: true, richContent: false, hint: "Enter query here...", multiline: false, flex: 1, onkeydown: "searchBoxKeydown", components: [
+				{kind: "Button", content: "Add", onclick: "newSearchColumn"}
+			]},
+		]}
 	],
 	create: function(){
 		this.inherited(arguments);
@@ -41,16 +46,31 @@ enyo.kind({
 		this.onAccountSelected(this, this.accounts[0].value);
 	},
 	onAccountSelected: function(inSender, inValue){
+		this.$.searchBox.setShowing(false);
 		this.$.newColumnsContainer.setSelectedAccount(inValue);	//build columnSelection
 	},
 	"showAtCenter": function(){
+		this.$.searchBox.setShowing(false);
 		//this.$.avatarList.buildList();
 		this.buildAccounts();
 		this.openAtCenter();
 	},
-	newColumn: function(inSender, inCaption){
-		console.log("new column");
-		this.doCreateColumn(this.$.accountSelection.getValue(), inCaption.toLowerCase());
+	newSearchColumn: function(inSender, inEvent){
+		this.doCreateColumn(this.$.accountSelection.getValue(), "search", this.$.searchTextBox.getValue());
 		this.doClose();
+	},
+	newColumn: function(inSender, inCaption){
+		if(inCaption === "search"){
+			if(this.$.searchBox.getShowing() === false){
+				this.$.searchBox.setShowing(true);
+			} else {
+				this.$.searchBox.setShowing(false);				
+			}
+		} else {
+			console.log("new column");
+			this.doCreateColumn(this.$.accountSelection.getValue(), inCaption);
+			this.doClose();	
+		}
+		
 	}
 });

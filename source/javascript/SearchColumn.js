@@ -8,12 +8,12 @@ enyo.kind({
      
 	},
 	modify: function(){
-		this.$.topRightButton.setIcon("source/images/icon-settings.png");
+		/*this.$.topRightButton.setIcon("source/images/icon-settings.png");
 		this.$.topRightButton.onclick = "optionsPopup";
 		this.createComponent({kind: "PopupList", onSelect: "popupSelect", items: [
 			"Change Query",
 			"Remove Column"
-		]});		
+		]});*/		
 	},
 	infoChanged: function(){
 		this.$.topLeftButton.setStyle("");
