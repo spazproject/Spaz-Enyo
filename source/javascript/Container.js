@@ -80,9 +80,8 @@ enyo.kind({
 			cols.push(col);
 		};
 		this.$.columnsScroller.createComponents(cols);
-
-		this.render();
-
+		this.$.columnsScroller.render();
+		setTimeout(enyo.bind(this, this.refreshAll), 1);
 	},
 	createColumn: function(inAccountId, inColumn){
 		this.columnData.push({type: inColumn, accounts: [inAccountId]});
