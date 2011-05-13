@@ -13,7 +13,8 @@ enyo.kind({
 	},
 	isDM: false,
 	inReplyToId:null, // set this when making a reply to a specific entry
-	style: "min-width: 400px;",
+	width: "600px",
+	//style: "min-width: 400px;",
 	components: [
 		{layoutKind: "HFlexLayout", components: [
 			{name: "composeHeader", content: "New Entry", style: "padding-bottom: 0px"},
@@ -21,7 +22,7 @@ enyo.kind({
 			{kind: "ToolButton", icon: "source/images/icon-close.png", style: "position: relative; bottom: 7px;", onclick: "doClose"}
 		]},
 		{kind: "HFlexBox", name: "inReplyEntryText", content: "", style: "color:#666666; font-size:14px; padding-bottom:1em;" },
-		{kind: "HFlexBox", style: "min-height: 50px", components: [
+		{kind: "Control", style: "min-height: 50px", components: [
 			{name:"postTextBox", kind: "RichText", alwaysLooksFocused: true, richContent: false, multiline: true, flex: 1, oninput: "postTextBoxInput", hint: "Type message here...", onkeydown: "postTextBoxKeydown", components: [
 				{name: "remaining", style: "color: grey; padding-left: 5px;", content: "140"}
 			]}
@@ -63,10 +64,20 @@ enyo.kind({
 		}
 	},
 	"showAtCenter": function(){
-		 this.buildAccounts();
-		 this.$.postTextBox.forceFocus();
-		 this.openAtCenter();
-		 this.applyStyle("width", this.getBounds().width + "px");
+		this.buildAccounts();
+		
+		var width = 0;
+		_.each(this.accounts, function(account){
+			if(account.caption.length > width){
+				width = account.caption.length;			
+			}
+		});
+		this.applyStyle("width", 590 + width + "px");
+
+		this.$.postTextBox.forceFocus();
+		this.openAtCenter();
+		//var width = this.getBounds().width + "px"
+
 	},
 
 	dmUserChanged: function(){
@@ -104,7 +115,6 @@ enyo.kind({
 		
 	},
 	setPostingAccount: function(account_id) {
-
 		for (var i = 0; i < this.$.accountSelection.items.length; i++) {
 			if (this.$.accountSelection.items[i].id === account_id) {
 				this.$.accountSelection.setValue(this.$.accountSelection.items[i].value);
