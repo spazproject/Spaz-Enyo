@@ -1,4 +1,4 @@
-/*********** Built 2011-05-10 23:13:54 EDT ***********/
+/*********** Built 2011-05-12 19:54:12 EDT ***********/
 /*jslint 
 browser: true,
 nomen: false,
@@ -710,7 +710,7 @@ Date.CultureInfo = {
     
     /**
      * Get the week number. Week one (1) is the week which contains the first Thursday of the year. Monday is considered the first day of the week.
-     * This algorithm is a JavaScript port of the work presented by Claus T?ndering at http://www.tondering.dk/claus/cal/node8.html#SECTION00880000000000000000
+     * This algorithm is a JavaScript port of the work presented by Claus T�ndering at http://www.tondering.dk/claus/cal/node8.html#SECTION00880000000000000000
      * .getWeek() Algorithm Copyright (c) 2008 Claus Tondering.
      * The .getWeek() function does NOT convert the date to UTC. The local datetime is used. Please use .getISOWeek() to get the week of the UTC converted date.
      * @return {Number}  1 to 53
@@ -7411,15 +7411,10 @@ sc.helpers.stripTags = function(str) {
  */
 sc.helpers.fromHTMLSpecialChars = function(str) {
 	str = str.replace(/&lt;/gi, '<');
-	sc.helpers.dump(str);
 	str = str.replace(/&gt;/gi, '>');
-	sc.helpers.dump(str);
 	str = str.replace(/&quot;/gi, '"');
-	sc.helpers.dump(str);
 	str = str.replace(/&apos;/gi, '\'');
-	sc.helpers.dump(str);
 	str = str.replace(/&amp;/gi, '&');
-	sc.helpers.dump(str);
 	return str;
 };
 
@@ -8024,10 +8019,19 @@ sc.helpers.error = function(obj) {
  * @member sc.helpers
  */
 sc.helpers.dump = function(obj, level, cb) {
+
+	if (!level) { level = SPAZCORE_DUMPLEVEL_DEBUG; }
+	
+	if (sc.dumplevel < level ) {
+		return;
+	}
+	
 	if (sc.helpers.isString(obj)) {
 		obj = sch.truncate(obj, SPAZCORE_DUMP_MAXLEN, '…[TRUNC]');
 	}
+	
 	console.log(obj);
+	
 	if (cb) {
 		cb(obj, level);
 	}
@@ -13003,8 +13007,6 @@ SpazTwit.prototype.getPublicTimeline = function(onSuccess, onFailure) {
 /**
  * Initiates retrieval of the home timeline (all the people you are following)
  * 
- * parameters can also be passed as a single opts hash
- * 
  * @param {integer} since_id default is 1. If a negative number is passed, Math.abs(since_id) is used as the max_id
  * @param {integer} count default is 200 
  * @param {integer} page default is null (ignored if null)
@@ -16159,7 +16161,7 @@ if (!window.localStorage) { // if localStorage is not available, we fall back to
 		if (prefsval) {
 			sch.debug('prefsval exists');
 			for (var key in prefsval) {
-				sc.helpers.dump('Copying loaded pref "' + key + '":"' + this._prefs[key] + '" (' + typeof(this._prefs[key]) + ')');
+				sch.debug('Copying loaded pref "' + key + '":"' + this._prefs[key] + '" (' + typeof(this._prefs[key]) + ')');
 				this._prefs[key] = prefsval[key];
 			}
 		} else { // init the file
@@ -16192,7 +16194,7 @@ if (!window.localStorage) { // if localStorage is not available, we fall back to
 			var prefsval = sch.deJSON(prefsjson);
 			sch.debug('prefsval exists');
 			for (var key in prefsval) {
-				sc.helpers.dump('Copying loaded pref "' + key + '":"' + prefsval[key] + '" (' + typeof(prefsval[key]) + ')');
+				sch.debug('Copying loaded pref "' + key + '":"' + prefsval[key] + '" (' + typeof(prefsval[key]) + ')');
 				this._prefs[key] = prefsval[key];
 			}
 		} else { // init the file
