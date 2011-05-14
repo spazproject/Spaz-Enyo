@@ -76,6 +76,8 @@ enyo.kind({
 				onLoadFinished: "loadFinished",
 				onReply: "doReply",
 				onDirectMessage: "doDirectMessage",
+				onMoveColumnLeft: "moveColumnLeft",
+				onMoveColumnRight: "moveColumnRight",
 				owner: this //@TODO there is an issue here with scope. when we create kinds like this dynamically, the event handlers passed is the scope `this.$.columnsScroller` rather than `this` which is what we want in this case since `doShowEntryView` belongs to `this`. It won't be a big deal here, because if we need the column kinds, we can call this.getComponents() and filter out the scroller itself.
 			}; 
 			if(col.info.type === "search"){
@@ -94,6 +96,20 @@ enyo.kind({
 		App.Prefs.set('columns', this.columnData);
 
 		this.createColumns();
+	},
+	moveColumnLeft: function(inSender){
+		var del_idx = parseInt(inSender.name.replace('Column', ''), 10);
+		var column = this.columnData.splice(del_idx, 1)[0];
+		this.columnData.splice(del_idx-1, 0, column);
+
+		this.createColumns();
+	},
+	moveColumnRight: function(inSender){
+		var del_idx = parseInt(inSender.name.replace('Column', ''), 10);
+		var column = this.columnData.splice(del_idx, 1)[0];
+		this.columnData.splice(del_idx+1, 0, column);
+
+		this.createColumns();	
 	},
 	deleteColumn: function(inSender) {
 		this.columnToDelete = inSender;
