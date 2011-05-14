@@ -103,6 +103,9 @@ enyo.kind({
 		this.columnData.splice(del_idx-1, 0, column);
 
 		this.createColumns();
+
+		App.Prefs.set('columns', this.columnData);
+
 	},
 	moveColumnRight: function(inSender){
 		var del_idx = parseInt(inSender.name.replace('Column', ''), 10);
@@ -110,6 +113,9 @@ enyo.kind({
 		this.columnData.splice(del_idx+1, 0, column);
 
 		this.createColumns();	
+
+		App.Prefs.set('columns', this.columnData);
+
 	},
 	deleteColumn: function(inSender) {
 		this.columnToDelete = inSender;
