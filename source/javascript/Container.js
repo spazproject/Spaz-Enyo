@@ -6,6 +6,7 @@ enyo.kind({
 	style: "background-color: black",
 	events: {
 		onShowEntryView: "",
+		onShowUserView: "",
 		onRefreshAllFinished: "",
 		onReply: "",
 		onDirectMessage: ""
@@ -40,7 +41,7 @@ enyo.kind({
 		var firstAccount = App.Users.getAll()[0];
 
 		if (!firstAccount || !firstAccount.id) {
-			App.showBanner('no accounts! you should add one');
+			AppUtils.showBanner('no accounts! you should add one');
 			return [];
 		}
 
@@ -69,6 +70,7 @@ enyo.kind({
 				info: this.columnData[i],
 				kind: "Spaz.Column",
 				onShowEntryView: "doShowEntryView",
+				onShowUserView: "doShowUserView",
 				onDeleteClicked: "deleteColumn",
 				onLoadStarted: "loadStarted",
 				onLoadFinished: "loadFinished",

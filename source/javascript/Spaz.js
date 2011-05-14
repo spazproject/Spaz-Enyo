@@ -3,7 +3,7 @@ enyo.kind({
 	kind: enyo.HFlexBox,
 	components: [
 		{name: "sidebar", kind: "Spaz.Sidebar", onRefreshAll: "refreshAll", onCreateColumn: "createColumn"},
-		{name: "container", kind: "Spaz.Container", onShowEntryView: "showEntryView", onReply: "reply", onDirectMessage: "directMessage", onRefreshAllFinished: "refreshAllFinished"},
+		{name: "container", kind: "Spaz.Container", onShowUserView: "showUserView", onShowEntryView: "showEntryView", onReply: "reply", onDirectMessage: "directMessage", onRefreshAllFinished: "refreshAllFinished"},
 	],
 	
 	twit: new SpazTwit(),
@@ -155,7 +155,7 @@ enyo.kind({
 			
 		});
 		
-		AppUtils.showBanner('Bound global listeners', '{}');
+		AppUtils.showBanner('Bound global listeners');
 		
 	},
 
@@ -186,8 +186,29 @@ enyo.kind({
 		this.$.entryview.setEntry(inEntry);
 		
 	},
+
 	"destroyEntryView": function(inSender, inEvent){
 		this.$.entryview.destroy();
+
+		//this.render();
+		//this.$.container.refreshList();
+	},
+	showUserView: function(inSender, inUser){
+		console.log("showing entryView");
+		if(!this.$.userview){
+			
+			this.createComponent({name: "userview", kind: "Spaz.UserView", onDestroy: "destroyUserView"}, {owner: this});
+			this.$.userview.render();
+			
+			//this.$.container.refreshList();
+
+		} 
+		this.$.userview.setUser(inUser);
+		
+	},
+	
+	"destroyUserView": function(inSender, inEvent){
+		this.$.userview.destroy();
 
 		//this.render();
 		//this.$.container.refreshList();

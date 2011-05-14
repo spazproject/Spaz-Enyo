@@ -4,6 +4,7 @@ enyo.kind({
 	width: "322px",
 	style: "margin: 3px;", 
 	events: {
+		onShowUserView: "",
 		onShowEntryView: "",
 		onDeleteClicked: "",
 		onLoadStarted: "",
@@ -166,7 +167,7 @@ enyo.kind({
 
 		} catch(e) {
 			console.error(e);
-			App.showBanner('you probably need to make an account')
+			AppUtils.showBanner('you probably need to make an account')
 		}
 	},
 	processData: function(data) {
@@ -219,7 +220,9 @@ enyo.kind({
 	entryClick: function(inSender, inEvent, inRowIndex) {
 		switch(inEvent.target.className){
 			case "username":
-
+			case "username author":
+			case "username clickable":
+				this.doShowUserView(this.entries[inRowIndex]);
 				break;
 			case "hashtag":
 
