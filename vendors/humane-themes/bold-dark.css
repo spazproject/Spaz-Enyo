@@ -1,0 +1,55 @@
+/* recommended base settings */
+html, body { height: 100%; }
+.humane {
+  position              : fixed;
+  -webkit-transition    : all .5s;
+  transition            : all .5s;
+  visibility            : hidden;
+  z-index               : 100000;
+}
+.humane.humane-show { visibility : visible; }
+/* ie hover state, recommended */
+.humane:hover {
+}
+/* standards hover state, recommended */
+div.humane.humane-show:hover { opacity: 0.2; }
+
+/* custom settings */
+.humane {
+  font-size             : 25px;
+  letter-spacing        : -1px;
+  top                   : 75%;
+  left                  : 25%;
+  opacity               : 0;
+  width                 : 50%;
+  color                 : #fff;
+  padding               : 10px;
+  text-align            : center;
+  background-color      : rgba(0,0,0,0.7);
+  -webkit-border-radius : 1em;
+  border-radius         : 1em;
+  text-shadow           : 1px 1px 0px #000;
+  -webkit-box-shadow    : 0px 1px 4px #000;
+  box-shadow            : 0px 1px 4px #000;
+}
+
+/* custom animation for css transition supported browsers */
+.humane.humane-show { opacity: 1; }
+
+/* other customizations */
+.humane p {
+  margin                : 1em;
+  display               : inline;
+}
+.humane ul {
+  list-style            : none;
+  margin                : 0;
+  padding               : 0;
+}
+.humane .error {
+  color                 : red;
+  text-shadow           : 0 1px 1px #f33;
+  list-style            : none;
+  margin                : .3em;
+  padding               : .3em;
+}

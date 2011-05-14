@@ -149,7 +149,7 @@ enyo.kind({
 				}),
 				function() {
 					//@TODO report error info
-					alert('failed');
+					App.showBanner('Sending failed');
 					this.$.sendButton.setActive(false);
 					this.$.sendButton.setDisabled(false);
 				}
@@ -164,7 +164,7 @@ enyo.kind({
 				}),
 				function() {
 					//@TODO report error info
-					alert('failed');
+					App.showBanner('Sending failed');
 					this.$.sendButton.setActive(false);
 					this.$.sendButton.setDisabled(false);
 				}
@@ -374,7 +374,7 @@ enyo.kind({
 		this.inReplyEntryChanged();
 		this.dmUserChanged();
 		
-		// alert('NYI!');
+		// App.showBanner('NYI!');
 		
 	},
 	
