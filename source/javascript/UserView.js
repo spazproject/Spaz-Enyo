@@ -15,7 +15,7 @@ enyo.kind({
 	},
 	components: [
 		{className: "user-view", width: "322px", height: "100%", layoutKind: "VFlexLayout", components: [
-			{kind: "Header", width: "322px", components: [
+			//{kind: "Header", width: "322px", components: [
 				{kind: "VFlexBox", className: "header", components: [
 					{kind: "HFlexBox", width: "322px", components: [
 						{kind: "Image", width: "75px",  height: "75px", className: "avatar"},
@@ -31,22 +31,19 @@ enyo.kind({
 					{name: "bio", width: "305px", style: "padding-right: 10px", className: "small"},
 
 				]},
-			]},
-			{kind: "RadioGroup", onChange: "radioButtonSelected", components: [
+			//]},
+			{kind: "RadioGroup", onChange: "radioButtonSelected", width: "320px", components: [
 			    {label: "Tweets", style: "font-size: 12px"},
-			    {label: "Following", style: "font-size: 12px"},
 			    {label: "Followers", style: "font-size: 12px"},
+			    {label: "Following", style: "font-size: 12px"},
 			    {label: "Favorites", style: "font-size: 12px"}
 			    //lists
 			]},
 			//{layoutKind: "HFlexLayout", pack: "center", components: [
 		    {kind: "Scroller", flex: 1, className: "entry-view", components: [
 				{kind: "VFlexBox", className: "header", style: "", components: [
-						//{kind: "Divider", className: "divider", style: "display: none", caption: ""},
-						{name: "entry", className: "entry"},
-						{name: "timeFrom", className: "small", style: "padding-top: 10px"}
+				
 				]},
-				//]},
 				
 	        ]},
 	        {kind: "Toolbar", components: [
@@ -58,18 +55,12 @@ enyo.kind({
 		]}
 	],
 	userChanged: function(){
-		/*if(this.$.entry.content !== this.entry.message){
-			this.$.image.setSrc(this.entry.author_avatar);
-			this.$.image.applyStyle("display", "");			
-			this.$.realname.setContent(this.entry.author_fullname||this.entry.author_username);
-			this.$.username.setContent("@" + this.entry.author_username);
-			this.$.bio.setContent(this.entry.author_description||'');
-			if (this.entry._orig.source) {
-				this.$.timeFrom.setContent(sch.getRelativeTime(this.entry.publish_date) + " from <span class='link'>" + this.entry._orig.source + "</span>");
-			} else {
-				this.$.timeFrom.setContent(sch.getRelativeTime(this.entry.publish_date));
-			}
-			this.$.entry.setContent(AppUtils.makeItemsClickable(this.entry.text));
+		if(this.$.username.getContent() !== "@" + this.user.author_username){
+			this.$.image.setSrc(this.user.author_avatar);
+			this.$.image.applyStyle("display", null);			
+			this.$.realname.setContent(this.user.author_fullname||this.user.author_username);
+			this.$.username.setContent("@" + this.user.author_username);
+			this.$.bio.setContent(this.user.author_description||'');
 		} else {
 			this.doDestroy();
 			//this.$.image.applyStyle("display", "none");
@@ -78,6 +69,6 @@ enyo.kind({
 			//this.$.bio.setContent("");
 			//this.$.timeFrom.setContent("");
 			//this.$.entry.setContent("");
-		}*/
+		}
 	}
 });
