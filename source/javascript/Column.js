@@ -167,7 +167,7 @@ enyo.kind({
 
 		} catch(e) {
 			console.error(e);
-			App.showBanner('you probably need to make an account')
+			AppUtils.showBanner('you probably need to make an account')
 		}
 	},
 	processData: function(data) {
