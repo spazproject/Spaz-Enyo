@@ -255,7 +255,7 @@ AppUtils.makeTwitObj = function(account_id) {
 			}
 		}		
 	} else {
-		// alert('NOT seetting credentials for!');
+		// App.showBanner('NOT seetting credentials for!');
 	}
 
 	return twit;
@@ -344,4 +344,14 @@ AppUtils.convertToEntries = function(item_array) {
 	};
 
 	return item_array;
+};
+
+
+
+
+AppUtils.showBanner = function() {
+	window.humane.timeout = 1500;
+	window.humane.waitForMove = false;
+	enyo.windows.addBannerMessage(arguments);
+	humane(arguments[0]);
 };

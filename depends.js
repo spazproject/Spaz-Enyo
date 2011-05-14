@@ -1,5 +1,7 @@
 enyo.depends(
 	//vendors
+	"vendors/humane.js",
+	"vendors/humane-themes/bold-dark.css",
 	"vendors/jquery.min.js",
 	"vendors/spazcore-standard.js", // includes underscore, underscore.string
 

@@ -137,6 +137,27 @@ enyo.kind({
 		// App.versionCookie.init();
 
 	},
+	
+	/**
+	 * this binds DOM event listeners
+	 * used throughout the app 
+	 */
+	bindGlobalListeners: function() {
+		
+		
+		$('a[href]').live('click', function(e) {
+			sc.helpers.openInBrowser(this.getAttribute('href'));
+			event.preventDefault();
+			return false;
+		});
+		
+		$('span.username.clickable').live('click', function(e) {
+			
+		});
+		
+		AppUtils.showBanner('Bound global listeners', '{}');
+		
+	},
 
 	create: function(){
 		var self = this
@@ -146,6 +167,9 @@ enyo.kind({
 		self.initAppObject(function() {
 		    self.inherited(inheritedArgs);
 		});
+
+		self.bindGlobalListeners();
+
 
 		//self.inherited(arguments);
 	},
