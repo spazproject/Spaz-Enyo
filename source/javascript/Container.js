@@ -6,6 +6,7 @@ enyo.kind({
 	style: "background-color: black",
 	events: {
 		onShowEntryView: "",
+		onShowUserView: "",
 		onRefreshAllFinished: "",
 		onReply: "",
 		onDirectMessage: ""
@@ -69,6 +70,7 @@ enyo.kind({
 				info: this.columnData[i],
 				kind: "Spaz.Column",
 				onShowEntryView: "doShowEntryView",
+				onShowUserView: "doShowUserView",
 				onDeleteClicked: "deleteColumn",
 				onLoadStarted: "loadStarted",
 				onLoadFinished: "loadFinished",
