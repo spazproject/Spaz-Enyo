@@ -32,9 +32,12 @@ enyo.kind({
 			   {name: "accountSelection", "kind":"ListSelector", onChange: "onChangeAccount", className: "accountSelection"}
 			]},
 			{kind: "Spacer", style: "min-width: 50px"},
-			{kind: "Button", style: "padding-top: 6px;", label: enyo._$L("Shorten Text"), onclick: "onShortenTextClick"},
-			{kind: "Button", style: "padding-top: 6px;", label: enyo._$L("Shorten URLs"), onclick: "onShortenURLsClick"},
-			{name: "sendButton", kind: "Button", style: "padding-top: 6px;", label: enyo._$L("Send"), onclick: "onSendClick"}
+			{name: "shortenButton", kind: "ActivityButton", style: "min-width: 100px; padding-top: 6px;", label: enyo._$L("Shorten"), onclick: "onShortenClick"},
+			{name: "sendButton", kind: "ActivityButton", style: "min-width: 100px; padding-top: 6px;", label: enyo._$L("Send"), onclick: "onSendClick"}
+		]},
+		{name: "shortenPopup", kind: "PopupSelect", components: [
+			{caption: enyo._$L("Shorten URLs"), onclick: "onShortenURLsClick"},
+			{caption: enyo._$L("Shorten Text"), onclick: "onShortenTextClick"}
 		]}
 	],
 	create: function(){
@@ -133,32 +136,46 @@ enyo.kind({
 	},
 
 	onSendClick: function(inSender) {
+		this.$.sendButton.setActive(true);
+		this.$.sendButton.setDisabled(true);
 		
 		if (this.isDM) {
 			this.twit.sendDirectMessage('@'+this.dmUser, this.$.postTextBox.getValue(),
 				enyo.bind(this, function() {
 					this.$.postTextBox.setValue('');
+					this.$.sendButton.setActive(false);
+					this.$.sendButton.setDisabled(false);
 					this.close();
 				}),
 				function() {
 					//@TODO report error info
 					alert('failed');
+					this.$.sendButton.setActive(false);
+					this.$.sendButton.setDisabled(false);
 				}
 			);			
 		} else {
 			this.twit.update(this.$.postTextBox.getValue(), null, this.inReplyToId,
 				enyo.bind(this, function() {
 					this.$.postTextBox.setValue('');
+					this.$.sendButton.setActive(false);
+					this.$.sendButton.setDisabled(false);
 					this.close();
 				}),
 				function() {
 					//@TODO report error info
 					alert('failed');
+					this.$.sendButton.setActive(false);
+					this.$.sendButton.setDisabled(false);
 				}
 			);			
 		}
 	},
 
+	onShortenClick: function(inSender) {
+		this.$.shortenPopup.openAroundControl(inSender);
+	},
+	
 	onShortenTextClick: function(inSender) {
 		this.$.postTextBox.setValue(new SpazShortText().shorten(this.$.postTextBox.getValue()));
 		this.$.postTextBox.forceFocus();
@@ -168,19 +185,30 @@ enyo.kind({
 	onShortenURLsClick: function(inSender) {
 		//@TODO Hardcoding to use jmp for now, we should grab this from a pref
 		var urls = sc.helpers.extractURLs(this.$.postTextBox.getValue());
-		new SpazShortURL(SPAZCORE_SHORTURL_SERVICE_JMP).shorten(urls, {
-			apiopts: {
-				version:'2.0.1',
-				format:'json',
-				login: 'spazcore',
-				apiKey: 'R_f3b86681a63a6bbefc7d8949fd915f1d'
-			},
-			onSuccess: enyo.bind(this, function(inData) {
-				this.$.postTextBox.setValue(this.$.postTextBox.getValue().replace(inData.longurl, inData.shorturl));
-				this.$.postTextBox.forceFocus();
-				this.postTextBoxInput();
-			})
-		});
+		if (urls.length > 0) {
+			this.$.shortenButton.setActive(true);
+			this.$.shortenButton.setDisabled(true);
+			
+			new SpazShortURL(SPAZCORE_SHORTURL_SERVICE_JMP).shorten(urls, {
+				apiopts: {
+					version:'2.0.1',
+					format:'json',
+					login: 'spazcore',
+					apiKey: 'R_f3b86681a63a6bbefc7d8949fd915f1d'
+				},
+				onSuccess: enyo.bind(this, function(inData) {
+					this.$.postTextBox.setValue(this.$.postTextBox.getValue().replace(inData.longurl, inData.shorturl));
+					this.$.postTextBox.forceFocus();
+					this.postTextBoxInput();
+					this.$.shortenButton.setActive(false);
+					this.$.shortenButton.setDisabled(false);
+				}),
+				onFailure: enyo.bind(this, function() {
+					this.$.shortenButton.setActive(false);
+					this.$.shortenButton.setDisabled(false);
+				})
+			});
+		}
 	},
 	
 	postTextBoxInput: function(inSender, inEvent, inValue) {
