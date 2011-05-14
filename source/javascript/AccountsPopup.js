@@ -83,7 +83,7 @@ enyo.kind({
 				//]},
 				{kind: "Group", caption: "Options", components: [
 					{name: "removeAccountFlexBox", kind: "HFlexBox", components: [
-						{name: "promptRemoveAccount", kind: "Button", content: "Remove", onclick: "promptRemoveAccount", flex: 1, owner: this}
+						{name: "promptRemoveAccount", kind: "Button", content: "Remove Account", className: "enyo-button-negative", onclick: "promptRemoveAccount", flex: 1, owner: this}
 						//{kind: "Button", flex: 1, content: "Change Credentials", account_id: account_id, onclick: "changeCredentials"},
 						// ^this may be more pain than it is worth. we would need to flesh out goDownLevel to be able to go down more than one level and so forth.
 					]},
@@ -115,7 +115,7 @@ enyo.kind({
 			{name: "secondLevel", components: [
 				{kind: "Group", components: [
 					{kind: "Item", components: [
-						{name: "username", kind: "Input", hint: "username"},
+						{name: "username", kind: "Input", hint: "username", autoCapitalize: "lowercase", autocorrect: false, spellcheck: false},
 					]},
 					{kind: "Item", components: [
 						{name: "password", kind: "PasswordInput", hint: "password"},
@@ -134,7 +134,7 @@ enyo.kind({
 				]},
 				{kind: "HFlexBox", components: [
 					{kind: "Button", flex: 1, caption: "Cancel", onclick: "goTopLevel"},
-					{kind: "Button", flex: 1, caption: "Save", onclick: "saveAccount"}
+					{name: "saveButton", kind: "ActivityButton", flex: 1, caption: "Save", onclick: "saveAccount"}
 				]}
 			]}
 		]);
@@ -192,6 +192,8 @@ enyo.kind({
 			
 			sch.error('authorizing…');
 			
+			self.$.saveButton.setActive(true);
+			self.$.saveButton.setDisabled(true);
 			auth.authorize(
 				username,
 				password,
@@ -209,8 +211,12 @@ enyo.kind({
 							var newaccid = App.Users.add(username.toLowerCase(), auth_pickle, type);
 							App.Users.setMeta(newaccid, 'twitter-api-base-url', api_base_url);
 						}
+						self.$.saveButton.setActive(false);
+						self.$.saveButton.setDisabled(false);
 						self.goTopLevel(); //this re-renders the accounts list.
-					} else {					
+					} else {
+						self.$.saveButton.setActive(false);
+						self.$.saveButton.setDisabled(false);
 						AppUtils.showBanner($L('Verification failed!'));
 					}
 				}
@@ -224,9 +230,9 @@ enyo.kind({
 		this.$.promptRemoveAccount.destroy();
 		this.$.removeAccountFlexBox.createComponents([
 			{kind: "Button", flex: 1, content: "Cancel", onclick: "goBackToViewAccount", owner: this},
-			{kind: "Button", flex: 1, content: "Are you Sure?", onclick: "removeAccount", owner: this}
+			{kind: "Button", flex: 1, content: "Are you Sure?", className: "enyo-button-negative", onclick: "removeAccount", owner: this}
 		]);
-		this.render();
+		this.$.removeAccountFlexBox.render();
 
 	},
 	removeAccount: function(inSender, inEvent){
