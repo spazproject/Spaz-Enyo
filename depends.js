@@ -28,6 +28,7 @@ enyo.depends(
 	
 	//popouts
 	"source/javascript/EntryView.js",
+	"source/javascript/UserView.js",
 	
 	//popups
 	"source/javascript/ComposePopup.js",

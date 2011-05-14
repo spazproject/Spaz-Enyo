@@ -52,20 +52,25 @@ a:active,
 	
 
 }
-.entry-view .header {
+.entry-view .header,
+.user-view .header {
 	padding: 5px 10px 10px 10px;
 }
 .entry-view .username,
-.entry-view .realname {
+.entry-view .realname,
+.user-view .username,
+.user-view .realname {
 	padding-left: 10px;
 }
-.entry-view .realname {
+.entry-view .realname,
+.user-view .realname {
 	font-weight: bold;
 	font-size: 20px;
 
 }
 
-.entry-view .small {
+.entry-view .small,
+.user-view .small {
 	/*padding-top: 2px;*/
 	font-size: 11px;
 }
