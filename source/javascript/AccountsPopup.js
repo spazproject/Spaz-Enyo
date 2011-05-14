@@ -211,7 +211,7 @@ enyo.kind({
 						}
 						self.goTopLevel(); //this re-renders the accounts list.
 					} else {					
-						App.showBanner($L('Verification failed!'));
+						AppUtils.showBanner($L('Verification failed!'));
 					}
 				}
 			);

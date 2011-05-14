@@ -155,7 +155,7 @@ enyo.kind({
 			
 		});
 		
-		AppUtils.showBanner('Bound global listeners', '{}');
+		AppUtils.showBanner('Bound global listeners');
 		
 	},
 

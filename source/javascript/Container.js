@@ -41,7 +41,7 @@ enyo.kind({
 		var firstAccount = App.Users.getAll()[0];
 
 		if (!firstAccount || !firstAccount.id) {
-			App.showBanner('no accounts! you should add one');
+			AppUtils.showBanner('no accounts! you should add one');
 			return [];
 		}
 
