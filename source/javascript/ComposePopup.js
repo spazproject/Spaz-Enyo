@@ -147,12 +147,12 @@ enyo.kind({
 					this.$.sendButton.setDisabled(false);
 					this.close();
 				}),
-				function() {
+				enyo.bind(this, function() {
 					//@TODO report error info
 					AppUtils.showBanner('Sending failed');
 					this.$.sendButton.setActive(false);
 					this.$.sendButton.setDisabled(false);
-				}
+				})
 			);			
 		} else {
 			this.twit.update(this.$.postTextBox.getValue(), null, this.inReplyToId,
@@ -162,12 +162,12 @@ enyo.kind({
 					this.$.sendButton.setDisabled(false);
 					this.close();
 				}),
-				function() {
+				enyo.bind(this, function() {
 					//@TODO report error info
 					AppUtils.showBanner('Sending failed');
 					this.$.sendButton.setActive(false);
 					this.$.sendButton.setDisabled(false);
-				}
+				})
 			);			
 		}
 	},
