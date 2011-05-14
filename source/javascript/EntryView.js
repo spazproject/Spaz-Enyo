@@ -38,8 +38,9 @@ enyo.kind({
 						//{kind: "Divider", className: "divider", style: "display: none", caption: ""},
 						{name: "entry", className: "entry"},
 						{name: "timeFrom", className: "small", style: "padding-top: 10px"},
-						{kind: "Spacer", flex: 1},
-						{kind: "Spaz.Conversation", name: "conversation"}
+						{kind: "DividerDrawer", name: "conversation_drawer", caption: "Conversation", open: false, onOpenChanged: "onConversationOpenChanged", components: [
+						    {kind: "Spaz.Conversation", name: "conversation"}
+						]}
 				]},
 				//]},
 				
@@ -67,7 +68,17 @@ enyo.kind({
 				this.$.timeFrom.setContent(sch.getRelativeTime(this.entry.publish_date));
 			}
 			this.$.entry.setContent(AppUtils.makeItemsClickable(this.entry.text));
-			this.loadConversation();
+			
+			this.$.conversation.setEntry(this.entry);
+			
+			if(!this.entry.in_reply_to_id) {
+			    this.$.conversation_drawer.hide();
+			    this.$.conversation.clearConversationMessages();
+			} else {
+			    this.$.conversation_drawer.show();
+			    this.$.conversation_drawer.close();
+    			this.$.conversation.setEntry(this.entry);
+			}
 		} else {
 			this.doDestroy();
 			//this.$.image.applyStyle("display", "none");
@@ -77,6 +88,10 @@ enyo.kind({
 			//this.$.timeFrom.setContent("");
 			//this.$.entry.setContent("");
 		}
+	},
+	onConversationOpenChanged: function(inSender, inEvent) {
+	    if(this.$.conversation_drawer.open)
+	        this.loadConversation();
 	},
 	loadConversation: function() {
 	    this.$.conversation.loadConversation();
