@@ -10,7 +10,10 @@ enyo.kind({
 		onLoadStarted: "",
 		onLoadFinished: "",
 		onReply: "",
-		onDirectMessage: ""
+		onDirectMessage: "",
+
+		onMoveColumnRight: "",
+		onMoveColumnLeft: ""
 	},
 	published: {
 		info: {
@@ -36,24 +39,30 @@ enyo.kind({
 				{name: "item", kind: "Spaz.Entry", onclick: "entryClick"}
 			]},
 			{kind: "Toolbar", style: "color: white;", components: [
+				{name: "moveColumnLeftButton", onclick: "doMoveColumnLeft", kind: "ToolButton", icon: "source/images/icon-back.png"},
+				{kind: "Spacer"},
+				{name: "refresh", kind: "ToolButton", icon: "source/images/icon-refresh.png", onclick:"loadNewer"},
+				{kind: "Spacer"},
+				{name: "moveColumnRightButton", onclick: "doMoveColumnRight", kind: "ToolButton", icon: "source/images/icon-forward.png"}
+
 				//{kind: "ToolButton", icon: "source/images/icon-clear.png"}, @TODO. make this clear the current tweets, or remove it completely
-				{name: "refresh", kind: "ToolButton", icon: "source/images/icon-refresh.png", onclick:"loadNewer"}
 			]}
 		]},
 
 		{name: "entryClickPopup", kind: "Spaz.EntryClickPopup", onShowEntryView: "doShowEntryView", onReply: "doReply", onDirectMessage: "doDirectMessage",}
 	],
-	entries: [
-		 //{user: {screen_name: "Tibfib"}, realname: "Will Honey", from: "Spaz", avatar: "http://a3.twimg.com/profile_images/1281983040/simpsons_profile.png", time: "10 minutes ago", text: "dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."},
-		 //{user: {screen_name: "Tibfib"}, realname: "Will Honey", from: "Spaz", avatar: "http://a3.twimg.com/profile_images/1281983040/simpsons_profile.png", time: "10 minutes ago", text: "dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."},
-		 //{user: {screen_name: "Tibfib"}, realname: "Will Honey", from: "Spaz", avatar: "http://a3.twimg.com/profile_images/1281983040/simpsons_profile.png", time: "10 minutes ago", text: "dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."},
-		// {user: {screen_name: "Tibfib"}, realname: "Will Honey", from: "Spaz", avatar: "http://a3.twimg.com/profile_images/1281983040/simpsons_profile.png", time: "10 minutes ago", text: "dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."},
-		 //{user: {screen_name: "Tibfib"}, realname: "Will Honey", from: "Spaz", avatar: "http://a3.twimg.com/profile_images/1281983040/simpsons_profile.png", time: "10 minutes ago", text: "dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."},
-	],
+	entries: [],
 	create: function(){
 		this.inherited(arguments);
      	this.infoChanged();
      	setTimeout(enyo.bind(this, this.resizeHandler), 1);
+
+     	if(this.name === "Column0"){
+     		this.$.moveColumnLeftButton.setDisabled(true);
+     	}
+		if(this.name === "Column" + (this.owner.columnData.length-1)){
+     		this.$.moveColumnRightButton.setDisabled(true);			
+		}
 	},
 	
 	infoChanged: function(){
