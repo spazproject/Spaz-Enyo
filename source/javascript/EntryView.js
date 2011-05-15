@@ -36,9 +36,10 @@ enyo.kind({
 		    {kind: "Scroller", flex: 1, className: "entry-view", components: [
 				{kind: "VFlexBox", className: "header", style: "", components: [
 						//{kind: "Divider", className: "divider", style: "display: none", caption: ""},
-						{name: "entry", className: "entry"},
-						{name: "timeFrom", className: "small", style: "padding-top: 10px"},
-						{kind: "DividerDrawer", name: "conversation_drawer", caption: "Conversation", open: false, onOpenChanged: "onConversationOpenChanged", components: [
+						{name: "entry", className: "message"},
+						{name: "timeFrom", className: "small", style: "padding: 5px 0px"},
+						{kind: "Button", name: "conversation_button", onclick: "toggleDrawer", toggling: true, content: "View Conversation"},
+						{kind: "Drawer", name: "conversation_drawer", /*caption: "Conversation",*/ open: false, onOpenChanged: "onConversationOpenChanged", components: [
 						    {kind: "Spaz.Conversation", name: "conversation"}
 						]}
 				]},
@@ -72,10 +73,10 @@ enyo.kind({
 			this.$.conversation.setEntry(this.entry);
 			
 			if(!this.entry.in_reply_to_id) {
-			    this.$.conversation_drawer.hide();
+			    this.$.conversation_button.hide();
 			    this.$.conversation.clearConversationMessages();
 			} else {
-			    this.$.conversation_drawer.show();
+			    this.$.conversation_button.show();
 			    this.$.conversation_drawer.close();
     			this.$.conversation.setEntry(this.entry);
 			}
@@ -89,9 +90,14 @@ enyo.kind({
 			//this.$.entry.setContent("");
 		}
 	},
+	toggleDrawer: function(inSender, inEvent){
+		this.$.conversation_drawer.toggleOpen();	
+	},
 	onConversationOpenChanged: function(inSender, inEvent) {
-	    if(this.$.conversation_drawer.open)
-	        this.loadConversation();
+	    if(this.$.conversation_drawer.open){
+	        this.loadConversation();	
+	        console.log("opening drawer");    	
+	    }
 	},
 	loadConversation: function() {
 	    this.$.conversation.loadConversation();
