@@ -193,7 +193,7 @@ enyo.kind({
 		//this.render();
 		//this.$.container.refreshList();
 	},
-	showUserView: function(inSender, inUser){
+	showUserView: function(inSender, inUsername, inService, inAccountId) {
 		console.log("showing entryView");
 		if(!this.$.userview){
 			
@@ -203,7 +203,7 @@ enyo.kind({
 			//this.$.container.refreshList();
 
 		} 
-		this.$.userview.setUser(inUser);
+		this.$.userview.showUser(inUsername, inService, inAccountId);
 		
 	},
 	

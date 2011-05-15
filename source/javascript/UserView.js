@@ -8,7 +8,7 @@ enyo.kind({
 	//style: "background-color: #D8D8D8;",
 	//flex: 1,
 	published: {
-		user: {}
+		username: ''
 	},
 	events: {
 		onDestroy: ""
@@ -54,13 +54,29 @@ enyo.kind({
 			]}
 		]}
 	],
+	
+	showUser: function(inUsername, inService, inAccountId) {
+		var self = this;
+		window.AppCache.getUser(inUsername, inService, inAccountId,
+			function(user) {
+				self.user = user;
+				self.userChanged();
+			},
+			function() {
+				AppUtils.showBanner("Error loading user info for "+inUsername);
+				self.doDestroy();
+			}
+		);
+	},
+	
 	userChanged: function(){
-		if(this.$.username.getContent() !== "@" + this.user.author_username){
-			this.$.image.setSrc(this.user.author_avatar);
+		
+		if(this.$.username.getContent() !== "@" + this.user.username){
+			this.$.image.setSrc(this.user.avatar);
 			this.$.image.applyStyle("display", null);			
-			this.$.realname.setContent(this.user.author_fullname||this.user.author_username);
-			this.$.username.setContent("@" + this.user.author_username);
-			this.$.bio.setContent(this.user.author_description||'');
+			this.$.realname.setContent(this.user.fullname||this.user.username);
+			this.$.username.setContent("@" + this.user.username);
+			this.$.bio.setContent(this.user.description||'');
 		} else {
 			this.doDestroy();
 			//this.$.image.applyStyle("display", "none");

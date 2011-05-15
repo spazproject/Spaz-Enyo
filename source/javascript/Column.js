@@ -49,7 +49,7 @@ enyo.kind({
 			]}
 		]},
 
-		{name: "entryClickPopup", kind: "Spaz.EntryClickPopup", onShowEntryView: "doShowEntryView", onReply: "doReply", onDirectMessage: "doDirectMessage",}
+		{name: "entryClickPopup", kind: "Spaz.EntryClickPopup", onShowEntryView: "doShowEntryView", onReply: "doReply", onDirectMessage: "doDirectMessage"}
 	],
 	entries: [],
 	create: function(){
@@ -176,7 +176,7 @@ enyo.kind({
 
 		} catch(e) {
 			console.error(e);
-			AppUtils.showBanner('you probably need to make an account')
+			AppUtils.showBanner('you probably need to make an account');
 		}
 	},
 	processData: function(data) {
@@ -231,7 +231,7 @@ enyo.kind({
 			case "username":
 			case "username author":
 			case "username clickable":
-				this.doShowUserView(this.entries[inRowIndex]);
+				this.doShowUserView(inEvent.target.getAttribute('data-user-screen_name'), App.Users.get(this.info.accounts[0]).type, this.info.accounts[0]);
 				break;
 			case "hashtag":
 
