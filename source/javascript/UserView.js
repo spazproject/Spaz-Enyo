@@ -32,7 +32,7 @@ enyo.kind({
 
 				]},
 			//]},
-			{kind: "RadioGroup", onChange: "radioButtonSelected", width: "320px", components: [
+			{kind: "RadioGroup", onChange: "radioButtonSelected", width: "318px", style: "padding-left: 4px", components: [
 			    {label: "Tweets", style: "font-size: 12px"},
 			    {label: "Followers", style: "font-size: 12px"},
 			    {label: "Following", style: "font-size: 12px"},

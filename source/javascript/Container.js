@@ -69,6 +69,7 @@ enyo.kind({
 				name:'Column'+i,
 				info: this.columnData[i],
 				kind: "Spaz.Column",
+				onSearch: "search",
 				onShowEntryView: "doShowEntryView",
 				onShowUserView: "doShowUserView",
 				onDeleteClicked: "deleteColumn",
@@ -96,6 +97,9 @@ enyo.kind({
 		App.Prefs.set('columns', this.columnData);
 
 		this.createColumns();
+
+		this.$.columnsScroller.snapTo(this.columnData.length-1);
+
 	},
 	moveColumnLeft: function(inSender){
 		var del_idx = parseInt(inSender.name.replace('Column', ''), 10);
@@ -140,6 +144,9 @@ enyo.kind({
 			this.columnToDelete.destroy();
 			this.columnToDelete = null;
             this.$.columnsScroller.resizeHandler();
+
+            this.columnsFunction("checkArrows");
+
 		}
 	},
 	columnsFunction: function(functionName, opts){
@@ -173,5 +180,9 @@ enyo.kind({
 		if (this.loadingColumns <= 0) {
 			this.doRefreshAllFinished();
 		}
+	},
+
+	search: function(inSender, inQuery){
+		this.createColumn(inSender.info.accounts[0], "search", inQuery);
 	}
 });

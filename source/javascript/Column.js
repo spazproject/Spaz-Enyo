@@ -4,6 +4,7 @@ enyo.kind({
 	width: "322px",
 	style: "margin: 3px;", 
 	events: {
+		onSearch: "",
 		onShowUserView: "",
 		onShowEntryView: "",
 		onDeleteClicked: "",
@@ -57,14 +58,16 @@ enyo.kind({
      	this.infoChanged();
      	setTimeout(enyo.bind(this, this.resizeHandler), 1);
 
-     	if(this.name === "Column0"){
+		this.checkArrows();     
+	},
+	checkArrows: function(){
+		if(this.name === "Column0"){
      		this.$.moveColumnLeftButton.setDisabled(true);
      	}
 		if(this.name === "Column" + (this.owner.columnData.length-1)){
      		this.$.moveColumnRightButton.setDisabled(true);			
 		}
 	},
-	
 	infoChanged: function(){
 		this.$.header.setContent(_.capitalize(this.info.type));
 		this.$.accountName.setContent(App.Users.getLabel(this.info.accounts[0]));
@@ -230,11 +233,14 @@ enyo.kind({
 		switch(inEvent.target.className){
 			case "username":
 			case "username author":
+				this.doShowUserView(inEvent.target.innerText.replace("@", ""), App.Users.get(this.info.accounts[0]).type, this.info.accounts[0]);			
+				break;
 			case "username clickable":
 				this.doShowUserView(inEvent.target.getAttribute('data-user-screen_name'), App.Users.get(this.info.accounts[0]).type, this.info.accounts[0]);
 				break;
 			case "hashtag":
-
+			case "hashtag clickable":
+				this.doSearch(inEvent.target.innerText);
 				break;
 			case "small":
 				this.doShowEntryView(this.entries[inRowIndex]);
