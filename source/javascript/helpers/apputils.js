@@ -328,11 +328,15 @@ AppUtils.convertToEntry = function(item) {
 				entry.author_id  = item.user.id;
 				entry.author_avatar = item.user.profile_image_url;
 
+				if (item.SC_is_reply) {
+					entry.is_mention = true; // mentions the authenticated user
+				}
+
 				if (item.in_reply_to_screen_name) {
 					entry.recipient_username = item.in_reply_to_screen_name;
 					entry.recipient_id  = item.in_reply_to_user_id;
 				}
-				
+
 				if (item.in_reply_to_status_id) {
 					entry.in_reply_to_id = item.in_reply_to_status_id;
 				}				
