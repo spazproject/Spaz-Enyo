@@ -52,20 +52,8 @@ enyo.kind({
 				break;
 		}		
 	},
-	showAtEvent: function(inEntry, inEvent){
-		// I believe this is what you'd call a "hack."
-		// Would be nice if Enyo would calculate offset for us so the popup is shown fully onscreen.
-		var rightEdge = inEvent.screenX + this.$.popup.calcSize().width;
-		var rootWindow = enyo.windows.getRootWindow();
-		var offset = {
-			left: 0,
-			top: 0
-		};
-		if (rightEdge > rootWindow.innerWidth) {
-			offset.left -= (rightEdge - rootWindow.innerWidth);
-		}
-		
+	"showAtEvent": function(inEntry, inEvent){
 		this.entry = inEntry;
-		this.$.popup.openAtEvent(inEvent, offset);
+		this.$.popup.openAtEvent(inEvent);
 	}
 });
