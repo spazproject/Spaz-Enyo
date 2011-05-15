@@ -11,6 +11,7 @@ enyo.kind({
 		onReply: "",
 		onDirectMessage: ""
 	},
+	columnData: [],
 	components: [
 		{name:"columnsScroller", kind: "SnapScroller", flex: 1, vertical: false, autoVertical: false, style: "background-color: black; padding: 2px;" , components:[
 			{kind: "ScrollFades"}
@@ -32,7 +33,7 @@ enyo.kind({
 		this.loadingColumns = 0;
 		
 		// load the column set
-		this.columnData = App.Prefs.get('columns') || [];
+		// this.columnData = App.Prefs.get('columns') || [];
 		this.createColumns();
 	},
 
@@ -46,7 +47,8 @@ enyo.kind({
 		}
 
 		var default_columns = [
-			{type: SPAZ_COLUMN_HOME, accounts: [firstAccount.id]},
+			// {type: SPAZ_COLUMN_HOME, accounts: [firstAccount.id]},
+			{type: SPAZ_COLUMN_UNIFIED, accounts: [firstAccount.id]},
 			{type: SPAZ_COLUMN_MENTIONS, accounts: [firstAccount.id]},
 			// {type: "dms", display: "Messages", accounts: [App.Users.getAll()[0].id]},
 			{type: SPAZ_COLUMN_SEARCH, query: 'webos', accounts: [firstAccount.id]},
@@ -80,8 +82,11 @@ enyo.kind({
 				onMoveColumnRight: "moveColumnRight",
 				owner: this //@TODO there is an issue here with scope. when we create kinds like this dynamically, the event handlers passed is the scope `this.$.columnsScroller` rather than `this` which is what we want in this case since `doShowEntryView` belongs to `this`. It won't be a big deal here, because if we need the column kinds, we can call this.getComponents() and filter out the scroller itself.
 			}; 
-			if(col.info.type === "search"){
+			if(col.info.type === SPAZ_COLUMN_SEARCH){
 				col.kind = "Spaz.SearchColumn";
+			}
+			if(col.info.type === SPAZ_COLUMN_UNIFIED){
+				col.kind = "Spaz.UnifiedColumn";
 			}
 			cols.push(col);
 		};
@@ -144,14 +149,17 @@ enyo.kind({
 	},
 	columnsFunction: function(functionName, opts){
 		_.each(this.getComponents(), function(column){
-			try {
-				if(column.kind === "Spaz.Column" || column.kind === "Spaz.SearchColumn"){
+			// try {
+				if(column.kind === "Spaz.Column"
+					|| column.kind === "Spaz.SearchColumn"
+					|| column.kind === "Spaz.UnifiedColumn"
+				  ){
 					this.$[column.name][functionName]()				
 				}
-			} 
-			catch (e) {
-				console.error(e);
-			}
+			// } 
+			// catch (e) {
+			// 	console.error(e);
+			// }
 		}, this);
 	},
 

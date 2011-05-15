@@ -27,6 +27,7 @@ enyo.depends(
 	"source/javascript/Container.js", //container for columns
 		"source/javascript/Column.js",
 		"source/javascript/SearchColumn.js",
+		"source/javascript/UnifiedColumn.js",
 	
 	//popouts
 	"source/javascript/EntryView.js",
