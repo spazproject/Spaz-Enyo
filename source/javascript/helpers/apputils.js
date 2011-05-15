@@ -264,6 +264,22 @@ AppUtils.makeTwitObj = function(account_id) {
 
 
 
+AppUtils.convertToUser = function(srvc_user) {
+	
+	var user = {};
+	
+	user.spaz_id     = sch.UUID();	
+	user.username    = srvc_user.screen_name;
+	user.description = srvc_user.description;
+	user.fullname    = srvc_user.name;
+	user.service_id  = srvc_user.id;
+	user.avatar      = srvc_user.profile_image_url;
+	user._orig       = _.extend({},srvc_user);
+	
+	return user;
+};
+
+
 /**
  * This converts an item from a given service into 
  * a common structure we use for everything internally

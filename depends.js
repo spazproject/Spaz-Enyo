@@ -2,6 +2,7 @@ enyo.depends(
 	//vendors
 	"vendors/humane.js",
 	"vendors/humane-themes/bold-dark.css",
+	"vendors/cache.js",
 	"vendors/jquery.min.js",
 	"vendors/spazcore-standard.js", // includes underscore, underscore.string
 
@@ -16,6 +17,7 @@ enyo.depends(
 	"source/javascript/helpers/apputils.js",
 
 	// models
+	"source/javascript/models/cache.js",
 
 	//core
 	"source/javascript/Spaz.js",
