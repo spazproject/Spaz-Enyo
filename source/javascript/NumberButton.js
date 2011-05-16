@@ -5,7 +5,7 @@ enyo.kind({
 		number: "",
 	},
 	components: [
-		{name: "number", className: "enyo-button-number ", showing: false},
+		{name: "number", className: "enyo-button-number ", showing: true},
 		{name: "caption", className: "enyo-button-icon-text", style: "font-size: 11px"}
 	],
 	create: function() {
@@ -14,9 +14,10 @@ enyo.kind({
 		this.numberChanged();
 	},
 	numberChanged: function(inOldValue) {
-		if(this.number !== undefined && !isNaN(this.number)){
-			this.$.number.setShowing(Boolean(this.number));		
+		if(!isNaN(this.number)){
 			this.$.number.setContent(this.number)
+		} else {
+			this.$.number.setContent(0)			
 		}
 	},
 	captionChanged: function() {
