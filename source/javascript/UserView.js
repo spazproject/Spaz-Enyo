@@ -55,11 +55,12 @@ enyo.kind({
 		]}
 	],
 	
-	showUser: function(inUsername, inService, inAccountId) {
+	showUser: function(inUsername, inService, inAccountId, callback) {
 		var self = this;
 		window.AppCache.getUser(inUsername, inService, inAccountId,
 			function(user) {
 				self.setUser(user);
+				callback();
 			},
 			function() {
 				AppUtils.showBanner("Error loading user info for "+inUsername);

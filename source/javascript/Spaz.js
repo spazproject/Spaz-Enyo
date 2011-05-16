@@ -196,14 +196,17 @@ enyo.kind({
 	showUserView: function(inSender, inUsername, inService, inAccountId) {
 		console.log("showing entryView");
 		if(!this.$.userview){
-			
+			var noUserView = true;
 			this.createComponent({name: "userview", kind: "Spaz.UserView", onDestroy: "destroyUserView"}, {owner: this});
-			this.$.userview.render();
 			
 			//this.$.container.refreshList();
 
 		} 
-		this.$.userview.showUser(inUsername, inService, inAccountId);
+		this.$.userview.showUser(inUsername, inService, inAccountId, enyo.bind(this, function(){
+			if(noUserView){
+				this.$.userview.render();			
+			}
+		}));
 		
 	},
 	
