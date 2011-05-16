@@ -179,9 +179,28 @@ enyo.kind({
 		var twit = new SpazTwit();
 
 		/*
+			prevent duplicate account
+		*/
+
+		var dupAcct = false;
+		var allUsers = App.Users.getAll();
+		
+		for (i=0;i<allUsers.length;i++) {
+			if ((username == allUsers[i].username) && (type == allUsers[i].type)) {
+				dupAcct=true;
+			}
+		}
+
+		if (dupAcct) {
+			self.$.saveButton.setActive(false);
+			self.$.saveButton.setDisabled(false);
+			AppUtils.showBanner($L('Add account failed!<br>Reason: duplicate'));
+		}
+
+		/*
 			now verify credentials against the Service API
 		*/
-		if (username && password) {
+		if (username && password && !dupAcct) {
 			if (type !== SPAZCORE_SERVICE_CUSTOM) {
 				twit.setBaseURLByService(type);
 			} else {
