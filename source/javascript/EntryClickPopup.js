@@ -54,6 +54,6 @@ enyo.kind({
 	},
 	"showAtEvent": function(inEntry, inEvent){
 		this.entry = inEntry;
-		this.$.popup.openAtEvent(inEvent);
+		this.$.popup.openNear({left: inEvent.x, top: inEvent.y});
 	}
 });
