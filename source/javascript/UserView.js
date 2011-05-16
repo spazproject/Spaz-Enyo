@@ -32,11 +32,11 @@ enyo.kind({
 
 				]},
 			//]},
-			{kind: "RadioGroup", onChange: "radioButtonSelected", width: "318px", style: "padding-left: 4px", components: [
-			    {label: "Entries", style: "font-size: 12px"},
-			    {label: "Followers", style: "font-size: 12px"},
-			    {label: "Following", style: "font-size: 12px"},
-			    {label: "Favorites", style: "font-size: 12px"}
+			{kind: "RadioGroup", onChange: "radioButtonSelected", width: "310px", style: "padding-left: 10px", components: [
+			    {kind: "Spaz.RadioButton", label: "Entries", number: 1444},
+			    {kind: "Spaz.RadioButton", label: "Followers", number: 233},
+			    {kind: "Spaz.RadioButton", label: "Following", number: 118}
+			    //{kind: "Spaz.RadioButton", label: "Favorites", number: 12}
 			    //lists
 			]},
 			//{layoutKind: "HFlexLayout", pack: "center", components: [

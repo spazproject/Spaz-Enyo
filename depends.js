@@ -48,6 +48,9 @@ enyo.depends(
 	"source/javascript/VirtualList.js",
 	"source/javascript/Entry.js",
 	"source/javascript/Conversation.js",
+	"source/javascript/NumberButton.js",
+	"source/javascript/RadioButton.js",
+
 
 	//css
 	"source/css/core.css"

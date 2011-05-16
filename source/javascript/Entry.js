@@ -38,7 +38,8 @@ enyo.kind({
 			this.applyStyle("background-color", "rgba(255, 0, 0, .1)");
 		} else if(this.entry.is_mention === true){
 			this.applyStyle("background-color", "rgba(0, 95, 200, .1)");
-			
+		} else {
+			this.applyStyle("background-color", null);			
 		}
 			
 	}
