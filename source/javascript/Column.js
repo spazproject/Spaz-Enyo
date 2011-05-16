@@ -36,7 +36,7 @@ enyo.kind({
 				{name: "accountName", style: "color: grey; font-size: 12px"},
 				{name: "topRightButton", kind: "ToolButton", icon: "source/images/icon-close.png", onclick: "doDeleteClicked"},
 			]},
-			{name: "list", kind: "Spaz.VirtualList", flex: 1, style: "background-color: #D8D8D8; margin: 0px 3px; min-height: 200px;", horizontal: false, className: "timeline list", onSetupRow: "setupRow", components: [
+			{name: "list", kind: "Spaz.VirtualList", flex: 1, style: "background-color: #D8D8D8; margin: 0px 3px; min-height: 200px;", horizontal: false, className: "timeline list", onAcquirePage:'acquirePage', onSetupRow: "setupRow", components: [
 				{name: "item", kind: "Spaz.Entry", onclick: "entryClick"}
 			]},
 			{kind: "Toolbar", style: "color: white;", components: [
@@ -75,12 +75,21 @@ enyo.kind({
 
 	loadNewer:function() {
 		this.loadData({'mode':'newer'});
+		sch.debug('Loading newer entries');
 	},
 
 	loadOlder:function() {
 		this.loadData({'mode':'older'});
+		sch.debug('Loading older entries');
 	},
 
+	acquirePage:function(inSender, inPage) {
+		var index = inPage * inSender.pageSize;
+		console.log(inPage, index);
+		if (index > -1 && !this.entries[index] && this.entries.length > 0) {
+			this.loadOlder();
+		}
+	},
 
 	/**
 	 * @param string [opts.mode] newer or older
@@ -112,12 +121,6 @@ enyo.kind({
 				}
 
 				if (opts.mode === 'older') {
-					if (self.info.type === 'search') {
-						throw {
-							message:'Search columns do not yet support loading older messages',
-							name:'UserException'
-						};
-					}
 					since_id = (_.last(self.entries).service_id)*-1;
 				}
 			} else {
@@ -132,10 +135,11 @@ enyo.kind({
 				self.$.refresh.removeClass("spinning");
 				self.doLoadFinished();
 			}
+
 			switch (self.info.type) {
 				case 'home':
 					loadStarted();
-					self.twit.getHomeTimeline(since_id, 200, null, null,
+					self.twit.getHomeTimeline(since_id, 50, null, null,
 						function(data) {
 							self.processData(data);
 							loadFinished();
@@ -146,7 +150,7 @@ enyo.kind({
 				case 'mentions':
 					// this method would consistently 502 if we tried to get 200. limit to 100
 					loadStarted();
-					self.twit.getReplies(since_id, 100, null, null,
+					self.twit.getReplies(since_id, 50, null, null,
 						function(data) {
 							self.processData(data);
 							loadFinished();
@@ -156,7 +160,7 @@ enyo.kind({
 					break;
 				case 'messages':
 					loadStarted();
-					self.twit.getDirectMessages(since_id, 200, null, null,
+					self.twit.getDirectMessages(since_id, 50, null, null,
 						function(data) {
 							self.processData(data);
 							loadFinished();
@@ -166,7 +170,7 @@ enyo.kind({
 					break;
 				case 'search':
 					loadStarted();
-					self.twit.search(self.info.query, since_id, 200, null, null, null,
+					self.twit.search(self.info.query, since_id, 50, null, null, null,
 						function(data) {
 							self.processData(data);
 							loadFinished();
@@ -179,7 +183,7 @@ enyo.kind({
 
 		} catch(e) {
 			console.error(e);
-			AppUtils.showBanner('you probably need to make an account');
+			// AppUtils.showBanner('you probably need to make an account');
 		}
 	},
 	processData: function(data) {
@@ -216,7 +220,7 @@ enyo.kind({
 					this.$.list.refresh();
 					this.resizeHandler();
 					break;
-			}			
+			}
 		}
 	},
 	setupRow: function(inSender, inIndex) {
@@ -224,11 +228,10 @@ enyo.kind({
 			var entry = this.entries[inIndex];
 			this.$.item.setEntry(entry);
 			
-			//this.$.item.applyStyle("background-color", inSender.isSelected(inIndex) ? "rgba(218,235,251,0.4)" : null);
-
 			return true;
 		}
 	},
+	
 	entryClick: function(inSender, inEvent, inRowIndex) {
 		switch(inEvent.target.className){
 			case "username":
