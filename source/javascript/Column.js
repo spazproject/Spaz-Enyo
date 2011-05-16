@@ -28,10 +28,10 @@ enyo.kind({
 	},
 	components: [
 		{layoutKind: "VFlexLayout", components: [
-			{kind: "Toolbar", defaultKind: "Control", content: "Home", style: "color: white;", components: [
+			{kind: "Toolbar", defaultKind: "Control", content: "Home", style: "color: white; padding-left: 5px;", components: [
 				//gotta do this crap to get the header title to center and not be a button. "defaultKind" in Toolbar is key.
 				{name: "topLeftButton", kind: "ToolButton", style: "display: none"},
-				{name: "header", style: "padding: 0px 0px 5px 10px;", className: "truncating-text", content: ""},
+				{name: "header", style: "padding: 0px 0px 5px 5px;", className: "truncating-text", content: ""},
 				{kind: "Spacer", flex: 1},
 				{name: "accountName", style: "color: grey; font-size: 12px"},
 				{name: "topRightButton", kind: "ToolButton", icon: "source/images/icon-close.png", onclick: "doDeleteClicked"},
@@ -69,7 +69,8 @@ enyo.kind({
 		}
 	},
 	infoChanged: function(){
-		this.$.header.setContent(_.capitalize(this.info.type));
+		// don't set header contents here - wait until the column is
+		// rendered and then manually resize header to fit.
 		this.$.accountName.setContent(App.Users.getLabel(this.info.accounts[0]));
 	},
 
@@ -260,5 +261,15 @@ enyo.kind({
 	resizeHandler: function(inHeight) {
 		this.$.list.applyStyle("height", window.innerHeight - 117 + "px");
 		this.$.list.resizeHandler();
+	},
+	rendered: function() {
+		this.inherited(arguments);
+		if (this.hasNode()) {
+			this.$.header.setContent("");
+			var headerBounds = this.$.header.getBounds();
+			var accountNameBounds = this.$.accountName.getBounds();
+			this.$.header.applyStyle("width", accountNameBounds.left - headerBounds.left + "px");
+			this.$.header.setContent(_.capitalize(this.info.type));
+		}
 	}
 });

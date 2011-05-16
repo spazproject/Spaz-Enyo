@@ -16,10 +16,9 @@ enyo.kind({
 		]});*/		
 	},
 	infoChanged: function(){
+		this.inherited(arguments);
 		this.$.topLeftButton.setStyle("");
 		this.$.topLeftButton.setIcon("source/images/icon-search.png");
-		this.$.header.setContent(this.info.query);
-		this.$.accountName.setContent(App.Users.getLabel(this.info.accounts[0]));
 	},
 	optionsPopup: function(inSender, inEvent){
 		this.$.popupList.openAtEvent(inEvent);
@@ -32,5 +31,13 @@ enyo.kind({
 
 		}
 		this.close();
+	},
+	rendered: function() {
+		this.inherited(arguments);
+		if (this.hasNode()) {
+			// The actual resizing work is done by Column.rendered(), but
+			// we need to set different content for SearchColumns.
+			this.$.header.setContent(this.info.query);
+		}
 	}
 });
