@@ -1,4 +1,4 @@
-/*********** Built 2011-05-12 21:21:04 EDT ***********/
+/*********** Built 2011-05-15 23:15:39 EDT ***********/
 /*jslint 
 browser: true,
 nomen: false,
@@ -13421,7 +13421,13 @@ SpazTwit.prototype.search = function(query, since_id, results_per_page, page, la
 	var data = {};
 	data['q']        = query;
 	data['rpp']      = results_per_page;
-	// data['since_id'] = since_id;
+	if (since_id) {
+		if (since_id < -1) {
+			data['max_id'] = Math.abs(since_id);
+		} else {
+			data['since_id'] = since_id;
+		}
+	}
 	data['page']     = page;
 	if (lang) {
 		data['lang'] = lang;
