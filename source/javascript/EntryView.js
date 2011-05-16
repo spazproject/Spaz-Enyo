@@ -33,7 +33,7 @@ enyo.kind({
 				]},
 			]},
 			//{layoutKind: "HFlexLayout", pack: "center", components: [
-		    {kind: "Scroller", flex: 1, className: "entry-view", components: [
+		    {kind: "Scroller", name: "detail_scroller", flex: 1, className: "entry-view", components: [
 				{kind: "VFlexBox", className: "header", style: "", components: [
 						//{kind: "Divider", className: "divider", style: "display: none", caption: ""},
 						{name: "entry", className: "message"},
@@ -58,6 +58,8 @@ enyo.kind({
 	],
 	entryChanged: function(){
 		if(this.$.entry.content !== this.entry.message){
+		    this.$.detail_scroller.setScrollPositionDirect(0,0);
+		    
 			this.$.image.setSrc(this.entry.author_avatar);
 			this.$.image.applyStyle("display", "");			
 			this.$.realname.setContent(this.entry.author_fullname||this.entry.author_username);
@@ -70,13 +72,12 @@ enyo.kind({
 			}
 			this.$.entry.setContent(AppUtils.makeItemsClickable(this.entry.text));
 			
-			this.$.conversation.setEntry(this.entry);
-			
 			if(!this.entry.in_reply_to_id) {
 			    this.$.conversation_button.hide();
 			    this.$.conversation.clearConversationMessages();
 			} else {
 			    this.$.conversation_button.show();
+			    this.$.conversation_button.setDepressed(false);
 			    this.$.conversation_drawer.close();
     			this.$.conversation.setEntry(this.entry);
 			}
