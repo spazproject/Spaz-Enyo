@@ -14,55 +14,75 @@ enyo.kind({
 		onDestroy: ""
 	},
 	components: [
-		{className: "user-view", width: "322px", height: "100%", layoutKind: "VFlexLayout", components: [
-			//{kind: "Header", width: "322px", components: [
-				{kind: "VFlexBox", className: "header", components: [
-					{kind: "HFlexBox", width: "322px", components: [
-						{kind: "Image", width: "75px",  height: "75px", className: "avatar"},
-						{kind: "VFlexBox", height: "75px", flex: 1, components: [
-							{kind: "Spacer"},
-							{name: "realname", flex: 3, className: "realname truncating-text"},
-							{name: "username", flex: 3, className: "link username"},
-							{kind: "Spacer"}
+		{name: "user_view", className: "user-view", width: "322px", height: "100%", layoutKind: "VFlexLayout", components: [
+		    {name: "content", layoutKind: "VFlexLayout", flex: 1, components: [
+		        //{kind: "Header", width: "322px", components: [
+        			{kind: "VFlexBox", className: "header", components: [
+        				{kind: "HFlexBox", width: "322px", components: [
+        					{kind: "Image", width: "75px",  height: "75px", className: "avatar"},
+        					{kind: "VFlexBox", height: "75px", flex: 1, components: [
+        						{kind: "Spacer"},
+        						{name: "realname", flex: 3, className: "realname truncating-text"},
+        						{name: "username", flex: 3, className: "link username"},
+        						{kind: "Spacer"}
 
-						]},	
-						{kind: "ToolButton", icon: "source/images/icon-close.png", style: "position: relative; bottom: 10px; right: 10px; float: right;", onclick: "doDestroy"}	
-					]},
-					{name: "bio", width: "305px", style: "padding-right: 10px", className: "small"},
+        					]},	
+        					{kind: "ToolButton", icon: "source/images/icon-close.png", style: "position: relative; bottom: 10px; right: 10px; float: right;", onclick: "doDestroy"}	
+        				]},
+        				{name: "bio", width: "305px", style: "padding-right: 10px", className: "small"},
 
-				]},
-			//]},
-			{kind: "RadioGroup", onChange: "radioButtonSelected", width: "310px", style: "padding-left: 10px", components: [
-			    {name: "entries", kind: "Spaz.RadioButton", label: "Entries", number: ""},
-			    {name: "followers", kind: "Spaz.RadioButton", label: "Followers", number: ""},
-			    {name: "friends", kind: "Spaz.RadioButton", label: "Following", number: ""}
-			    //{kind: "Spaz.RadioButton", label: "Favorites", number: 12}
-			    //lists
-			]},
-			//{layoutKind: "HFlexLayout", pack: "center", components: [
-		    {kind: "Scroller", flex: 1, className: "entry-view", components: [
-				{kind: "VFlexBox", className: "header", style: "", components: [
+        			]},
+        		//]},
+    			{kind: "RadioGroup", onChange: "radioButtonSelected", width: "310px", style: "padding-left: 10px", components: [
+    			    {name: "entries", kind: "Spaz.RadioButton", label: "Entries", number: ""},
+    			    {name: "followers", kind: "Spaz.RadioButton", label: "Followers", number: ""},
+    			    {name: "friends", kind: "Spaz.RadioButton", label: "Following", number: ""}
+    			    //{kind: "Spaz.RadioButton", label: "Favorites", number: 12}
+    			    //lists
+    			]},
+    			//{layoutKind: "HFlexLayout", pack: "center", components: [
+    		    {kind: "Scroller", flex: 1, className: "entry-view", components: [
+    				{kind: "VFlexBox", className: "header", style: "", components: [
 				
-				]},
+    				]},
 				
-	        ]},
+    	        ]}
+		    ]},
+		    
+        	{name: "loading", layoutKind: "VFlexLayout", align: "center", pack: "center", flex: 1, components: [
+    			{kind: "SpinnerLarge"}
+    		]},
+    		
 	        {kind: "Toolbar", components: [
 				//{kind: "GrabButton"},
 				{kind: "Spacer"},
-				{kind: "ToolButton", disabled: false, content: "Follow"},
+				{kind: "ToolButton", name: "follow", disabled: false, content: "Follow"},
 				{kind: "Spacer"}
 			]}
 		]}
 	],
 	
+	
+	showLoading: function(inShowing) {
+	    this.$.content.setShowing(!inShowing);
+	    this.$.follow.setShowing(!inShowing);
+		this.$.loading.setShowing(inShowing);
+		this.$.spinnerLarge.setShowing(inShowing);
+	},
+	
 	showUser: function(inUsername, inService, inAccountId) {
 		var self = this;
+		
+		self.showLoading(true);
+		
 		window.AppCache.getUser(inUsername, inService, inAccountId,
 			function(user) {
 				self.setUser(user);
+        		self.showLoading(false);
 			},
 			function() {
 				AppUtils.showBanner("Error loading user info for "+inUsername);
+        		self.showLoading(false);
 				self.doDestroy();
 			}
 		);
