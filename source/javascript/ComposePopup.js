@@ -145,6 +145,7 @@ enyo.kind({
 					this.$.postTextBox.setValue('');
 					this.$.sendButton.setActive(false);
 					this.$.sendButton.setDisabled(false);
+					AppUtils.refresh();
 					this.close();
 				}),
 				enyo.bind(this, function() {
@@ -160,6 +161,7 @@ enyo.kind({
 					this.$.postTextBox.setValue('');
 					this.$.sendButton.setActive(false);
 					this.$.sendButton.setDisabled(false);
+					AppUtils.refresh();
 					this.close();
 				}),
 				enyo.bind(this, function() {

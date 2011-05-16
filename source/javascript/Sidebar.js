@@ -7,6 +7,11 @@ enyo.kind({
 		onRefreshAll: "",
 		onCreateColumn: ""
 	},
+	create: function(){
+		this.inherited(arguments);
+		
+		AppUtils.refresh = enyo.bind(this, this.refreshAll);	
+	},
 	components: [
 		{kind: "ToolButton", icon: "source/images/icon-compose.png", onclick: "compose", popup:"composePopup"},
 		{kind: "ToolButton", icon: "source/images/icon-search.png", onclick: "openPopup", popup: "searchPopup"},
