@@ -1,6 +1,8 @@
 /* global */
-truncating-text {
+.truncating-text {
 	text-overflow: ellipsis;
+	overflow: hidden;
+	white-space: nowrap;
 }
 body, input, button {
 	font-size: 20px;
