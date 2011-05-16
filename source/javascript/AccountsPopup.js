@@ -197,7 +197,6 @@ enyo.kind({
 			AppUtils.showBanner($L('Add account failed!<br>Reason: duplicate'));
 		}
 
-
 		/*
 			now verify credentials against the Service API
 		*/
