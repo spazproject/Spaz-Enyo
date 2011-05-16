@@ -276,6 +276,16 @@ AppUtils.convertToUser = function(srvc_user) {
 	user.avatar      = srvc_user.profile_image_url;
 	user._orig       = _.extend({},srvc_user);
 	
+	try {
+		user.entries_count = srvc_user.statuses_count;
+		user.followers_count = srvc_user.followers_count
+		user.friends_count = srvc_user.friends_count;
+		user.favorites_count = srvc_user.favourites_count;	
+	} catch(e){
+		console.error("No user counts");
+	}
+	
+	//following: true
 	return user;
 };
 

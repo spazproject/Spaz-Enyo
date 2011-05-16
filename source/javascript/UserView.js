@@ -8,7 +8,7 @@ enyo.kind({
 	//style: "background-color: #D8D8D8;",
 	//flex: 1,
 	published: {
-		username: ''
+		user: ''
 	},
 	events: {
 		onDestroy: ""
@@ -33,9 +33,9 @@ enyo.kind({
 				]},
 			//]},
 			{kind: "RadioGroup", onChange: "radioButtonSelected", width: "310px", style: "padding-left: 10px", components: [
-			    {kind: "Spaz.RadioButton", label: "Entries", number: 1444},
-			    {kind: "Spaz.RadioButton", label: "Followers", number: 233},
-			    {kind: "Spaz.RadioButton", label: "Following", number: 118}
+			    {name: "entries", kind: "Spaz.RadioButton", label: "Entries", number: ""},
+			    {name: "followers", kind: "Spaz.RadioButton", label: "Followers", number: ""},
+			    {name: "friends", kind: "Spaz.RadioButton", label: "Following", number: ""}
 			    //{kind: "Spaz.RadioButton", label: "Favorites", number: 12}
 			    //lists
 			]},
@@ -59,8 +59,7 @@ enyo.kind({
 		var self = this;
 		window.AppCache.getUser(inUsername, inService, inAccountId,
 			function(user) {
-				self.user = user;
-				self.userChanged();
+				self.setUser(user);
 			},
 			function() {
 				AppUtils.showBanner("Error loading user info for "+inUsername);
@@ -77,6 +76,10 @@ enyo.kind({
 			this.$.realname.setContent(this.user.fullname||this.user.username);
 			this.$.username.setContent("@" + this.user.username);
 			this.$.bio.setContent(this.user.description||'');
+
+			this.$.followers.setNumber(this.user.followers_count);
+			this.$.friends.setNumber(this.user.friends_count);
+			this.$.entries.setNumber(this.user.entries_count);
 		} else {
 			this.doDestroy();
 			//this.$.image.applyStyle("display", "none");

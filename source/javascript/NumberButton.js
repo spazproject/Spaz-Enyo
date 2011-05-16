@@ -5,8 +5,8 @@ enyo.kind({
 		number: "",
 	},
 	components: [
-		{name: "number", className: "enyo-button-icon", showing: false},
-		{name: "caption", className: "enyo-button-icon-text", style: "font-size: 10px"}
+		{name: "number", className: "enyo-button-number ", showing: false},
+		{name: "caption", className: "enyo-button-icon-text", style: "font-size: 11px"}
 	],
 	create: function() {
 		this.inherited(arguments);

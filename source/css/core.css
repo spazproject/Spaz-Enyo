@@ -112,3 +112,11 @@ a:active,
 	-webkit-animation-iteration-count: infinite;
 	-webkit-animation-timing-function: linear;
 }
+
+.enyo-button-number {
+	display: inline-block;
+	vertical-align: baseline;
+	width: 100%;
+	height: 32px;
+	margin: -6px -6px -10px -6px;
+}
