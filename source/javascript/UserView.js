@@ -76,10 +76,17 @@ enyo.kind({
 			this.$.realname.setContent(this.user.fullname||this.user.username);
 			this.$.username.setContent("@" + this.user.username);
 			this.$.bio.setContent(this.user.description||'');
-
-			this.$.followers.setNumber(this.user.followers_count);
-			this.$.friends.setNumber(this.user.friends_count);
-			this.$.entries.setNumber(this.user.entries_count);
+			
+			switch(this.user.service){
+				case SPAZCORE_SERVICE_IDENTICA:
+				case SPAZCORE_SERVICE_CUSTOM: 
+				case SPAZCORE_SERVICE_TWITTER:
+					this.$.followers.setNumber(this.user._orig.followers_count);
+					this.$.friends.setNumber(this.user._orig.friends_count);
+					this.$.entries.setNumber(this.user._orig.statuses_count);	
+					break;
+			}
+			
 		} else {
 			this.doDestroy();
 			//this.$.image.applyStyle("display", "none");

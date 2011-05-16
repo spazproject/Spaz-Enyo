@@ -272,18 +272,10 @@ AppUtils.convertToUser = function(srvc_user) {
 	user.username    = srvc_user.screen_name;
 	user.description = srvc_user.description;
 	user.fullname    = srvc_user.name;
+	user.service 	 = srvc_user.SC_service;
 	user.service_id  = srvc_user.id;
 	user.avatar      = srvc_user.profile_image_url;
 	user._orig       = _.extend({},srvc_user);
-	
-	try {
-		user.entries_count = srvc_user.statuses_count;
-		user.followers_count = srvc_user.followers_count
-		user.friends_count = srvc_user.friends_count;
-		user.favorites_count = srvc_user.favourites_count;	
-	} catch(e){
-		console.error("No user counts");
-	}
 	
 	//following: true
 	return user;
