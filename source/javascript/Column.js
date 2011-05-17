@@ -128,7 +128,7 @@ enyo.kind({
 				}
 
 				if (opts.mode === 'older') {
-					since_id = (_.last(self.entries).service_id)*-1;
+					since_id = '-'+(_.last(self.entries).service_id);
 				}
 			} else {
 				since_id = 1;
