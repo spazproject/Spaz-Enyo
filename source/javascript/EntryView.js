@@ -21,8 +21,8 @@ enyo.kind({
 						{kind: "Image", width: "75px",  height: "75px", className: "avatar"},
 						{kind: "VFlexBox", height: "75px", flex: 1, components: [
 							{kind: "Spacer"},
-							{name: "realname", flex: 3, className: "realname truncating-text"},
-							{name: "username", flex: 3, className: "link username"},
+							{name: "realname", flex: 3, className: "author_realname truncating-text"},
+							{name: "username", flex: 3, className: "link author_username"},
 							{kind: "Spacer"}
 
 						]},	

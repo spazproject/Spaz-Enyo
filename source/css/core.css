@@ -58,14 +58,14 @@ a:active,
 .user-view .header {
 	padding: 5px 10px 10px 10px;
 }
-.entry-view .username,
-.entry-view .realname,
-.user-view .username,
-.user-view .realname {
+.entry-view .author_username,
+.entry-view .author_realname,
+.user-view .author_username,
+.user-view .author_realname {
 	padding-left: 10px;
 }
-.entry-view .realname,
-.user-view .realname {
+.entry-view .author_realname,
+.user-view .author_realname {
 	font-weight: bold;
 	font-size: 20px;
 }
