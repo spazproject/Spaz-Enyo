@@ -21,6 +21,7 @@ enyo.kind({
 	create: function(){
 		this.inherited(arguments);
 		this.$.popup.setItems(this.items);
+		this.entry = null;
 	},
 	"itemSelect": function(inSender, inIndex){
 		switch(this.items[inIndex]){
@@ -55,5 +56,11 @@ enyo.kind({
 	"showAtEvent": function(inEntry, inEvent){
 		this.entry = inEntry;
 		this.$.popup.openNear({left: inEvent.x, top: inEvent.y});
+	},
+	getEntry: function() {
+		return this.entry;
+	},
+	clearEntry: function() {
+		this.entry = null;
 	}
 });

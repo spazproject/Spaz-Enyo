@@ -253,7 +253,14 @@ enyo.kind({
 			case "text":
 			case "enyo-vflexbox":
 			case "enyo-item entry enyo-hflexbox":
-				this.$.entryClickPopup.showAtEvent(this.entries[inRowIndex], inEvent);
+				if (this.$.entryClickPopup.getEntry() === this.entries[inRowIndex]) {
+					// we've clicked on the same item as last time, so don't show the popup again
+					this.$.entryClickPopup.clearEntry();
+				}
+				else {
+					// different item than last time, show the popup
+					this.$.entryClickPopup.showAtEvent(this.entries[inRowIndex], inEvent);
+				}
 				break;
 
 		}
