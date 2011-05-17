@@ -60,7 +60,7 @@ enyo.kind({
 		if(this.$.entry.content !== this.entry.message){
 		    this.$.detail_scroller.setScrollPositionDirect(0,0);
 		    
-			this.$.image.setSrc(this.entry.author_avatar);
+			this.$.image.setSrc(this.entry.author_avatar_bigger);
 			this.$.image.applyStyle("display", "");			
 			this.$.realname.setContent(this.entry.author_fullname||this.entry.author_username);
 			this.$.username.setContent("@" + this.entry.author_username);

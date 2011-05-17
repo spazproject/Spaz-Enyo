@@ -91,7 +91,7 @@ enyo.kind({
 	userChanged: function(){
 		
 		if(this.$.username.getContent() !== "@" + this.user.username){
-			this.$.image.setSrc(this.user.avatar);
+			this.$.image.setSrc(this.user.avatar_bigger);
 			this.$.image.applyStyle("display", null);			
 			this.$.realname.setContent(this.user.fullname||this.user.username);
 			this.$.username.setContent("@" + this.user.username);
