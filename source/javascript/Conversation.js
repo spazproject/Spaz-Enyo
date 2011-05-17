@@ -1,6 +1,13 @@
 enyo.kind({
 	name: "Spaz.Conversation",
 	kind: "VFlexBox",
+	events: {
+	    onStart: "",
+	    onEntryLoaded: "",
+	    onSuccess: "",
+	    onDone: "",
+	    onError: ""
+	},
 	published: {
 		entry: {}
 	},
@@ -32,11 +39,14 @@ enyo.kind({
 		if(self.entries.length > 0) {
 		    return true; //Conversation already loaded
 	    }
+	    
+	    self.doStart();
 		
 		self.twit = AppUtils.makeTwitObj(self.entry.account_id);
         
         self.twit.getOne(self.entry.in_reply_to_id, onRetrieved, function() {
-            //On Error
+            self.doError();
+            self.doDone();
         });
         
         function onRetrieved(status_obj) {
@@ -44,10 +54,17 @@ enyo.kind({
             
             self._addEntry(child);
             
-            if(child.in_reply_to_id)
+            self.doEntryLoaded(child);
+            
+            if(child.in_reply_to_id) {
                 self.twit.getOne(child.in_reply_to_id, onRetrieved, function() {
-                    //On Error
+                    self.doError();
+                    self.doDone();
                 });
+            } else {
+                self.doSuccess();
+                self.doDone();
+            }
         };
 	},
 	

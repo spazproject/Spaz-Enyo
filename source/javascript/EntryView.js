@@ -38,9 +38,9 @@ enyo.kind({
 						//{kind: "Divider", className: "divider", style: "display: none", caption: ""},
 						{name: "entry", className: "message"},
 						{name: "timeFrom", className: "small", style: "padding: 5px 0px"},
-						{kind: "Button", name: "conversation_button", onclick: "toggleDrawer", toggling: true, content: "View Conversation"},
+						{kind: "ActivityButton", name: "conversation_button", onclick: "toggleDrawer", toggling: true, content: "View Conversation"},
 						{kind: "Drawer", name: "conversation_drawer", /*caption: "Conversation",*/ open: false, onOpenChanged: "onConversationOpenChanged", components: [
-						    {kind: "Spaz.Conversation", name: "conversation"}
+						    {kind: "Spaz.Conversation", name: "conversation", onStart: "onConversationLoadStart", onDone: "onConversationLoadDone"}
 						]}
 				]},
 				//]},
@@ -102,5 +102,13 @@ enyo.kind({
 	},
 	loadConversation: function() {
 	    this.$.conversation.loadConversation();
+	},
+	onConversationLoadStart: function () {
+	    console.log("Load Conversation Start");
+	    this.$.conversation_button.setActive(true);
+	},
+	onConversationLoadDone: function() {
+	    console.log("Load Conversation Done");
+	    this.$.conversation_button.setActive(false);
 	}
 });
