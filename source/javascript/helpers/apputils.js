@@ -275,7 +275,10 @@ AppUtils.convertToUser = function(srvc_user) {
 	user.service 	 = srvc_user.SC_service;
 	user.service_id  = srvc_user.id;
 	user.avatar      = srvc_user.profile_image_url;
+	user.avatar_bigger = AppUtils.getBiggerAvatar(user);
 	user._orig       = _.extend({},srvc_user);
+	
+	
 	
 	//following: true
 	return user;
@@ -323,27 +326,63 @@ AppUtils.convertToEntry = function(item) {
 				entry.is_private_message = true;
 
 			} else {
+				
+				if (item.SC_is_retweet) { // Twitter API retweets are a curious circumstance
+					
+					entry.is_repost = true;
+					
+					entry.service_id    = item.retweeted_status.id;
+					entry.text          = item.retweeted_status.text;
+					entry.text_raw      = item.retweeted_status.text;
+					
+					entry.author_username = item.retweeted_status.user.screen_name;
+					entry.author_description = item.retweeted_status.user.description;
+					entry.author_fullname = item.retweeted_status.user.name;
+					entry.author_id  = item.retweeted_status.user.id;
+					entry.author_avatar = item.retweeted_status.user.profile_image_url;
+					
+					entry.reposter_username = item.user.screen_name;
+					entry.reposter_description = item.user.description;
+					entry.reposter_fullname = item.user.name;
+					entry.reposter_id  = item.user.id;
+					entry.reposter_avatar = item.user.profile_image_url;
+					
+					if (item.retweeted_status.in_reply_to_screen_name) {
+						entry.recipient_username = item.retweeted_status.in_reply_to_screen_name;
+						entry.recipient_id  = item.retweeted_status.in_reply_to_user_id;
+					}
 
-				entry.author_username = item.user.screen_name;
-				entry.author_description = item.user.description;
-				entry.author_fullname = item.user.name;
-				entry.author_id  = item.user.id;
-				entry.author_avatar = item.user.profile_image_url;
+					if (item.retweeted_status.in_reply_to_status_id) {
+						entry.in_reply_to_id = item.retweeted_status.in_reply_to_status_id;
+					}
+					
+				} else {
+					
+					entry.author_username = item.user.screen_name;
+					entry.author_description = item.user.description;
+					entry.author_fullname = item.user.name;
+					entry.author_id  = item.user.id;
+					entry.author_avatar = item.user.profile_image_url;
 
-				if (item.SC_is_reply) {
-					entry.is_mention = true; // mentions the authenticated user
+					if (item.SC_is_reply) {
+						entry.is_mention = true; // mentions the authenticated user
+					}
+
+					if (item.in_reply_to_screen_name) {
+						entry.recipient_username = item.in_reply_to_screen_name;
+						entry.recipient_id  = item.in_reply_to_user_id;
+					}
+
+					if (item.in_reply_to_status_id) {
+						entry.in_reply_to_id = item.in_reply_to_status_id;
+					}					
+
 				}
 
-				if (item.in_reply_to_screen_name) {
-					entry.recipient_username = item.in_reply_to_screen_name;
-					entry.recipient_id  = item.in_reply_to_user_id;
-				}
-
-				if (item.in_reply_to_status_id) {
-					entry.in_reply_to_id = item.in_reply_to_status_id;
-				}				
 			}
-
+			
+			entry.author_avatar_bigger = AppUtils.getBiggerAvatar(entry);
+			
 			// copy to _orig
 			entry._orig = _.extend({},item);
 
@@ -357,6 +396,32 @@ AppUtils.convertToEntry = function(item) {
 
 };
 
+
+AppUtils.getBiggerAvatar = function(entry_or_user) {
+	var bigger_url, username, avatar_url;
+	
+	if (entry_or_user.author_username) { // is entry
+		username = entry_or_user.author_username;
+		avatar_url = entry_or_user.author_avatar;
+	} else { // is user
+		username = entry_or_user.username;
+		avatar_url = entry_or_user.avatar;	
+	}
+	
+	
+	switch(entry_or_user.service) {
+		case SPAZCORE_SERVICE_TWITTER:
+			bigger_url = avatar_url.replace(/_normal\.([a-zA-Z]+)$/, "_bigger.$1");
+			break;
+		case SPAZCORE_SERVICE_IDENTICA: // we abuse their API to get a 302 to the proper URL
+			bigger_url = 'http://identi.ca/api/users/profile_image/'+username+'.json?size=bigger';
+			break;
+		default: // no idea.
+			bigger_url = avatar_url;
+	}
+	
+	return bigger_url;
+};
 
 
 AppUtils.convertToEntries = function(item_array) {
