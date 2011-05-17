@@ -234,35 +234,24 @@ enyo.kind({
 	},
 	
 	entryClick: function(inSender, inEvent, inRowIndex) {
-		switch(inEvent.target.className){
-			case "username":
-			case "username author":
-				this.doShowUserView(inEvent.target.innerText.replace("@", ""), App.Users.get(this.info.accounts[0]).type, this.info.accounts[0]);			
-				break;
-			case "username clickable":
-				this.doShowUserView(inEvent.target.getAttribute('data-user-screen_name'), App.Users.get(this.info.accounts[0]).type, this.info.accounts[0]);
-				break;
-			case "hashtag":
-			case "hashtag clickable":
-				this.doSearch(inEvent.target.innerText);
-				break;
-			case "small":
-				this.doShowEntryView(this.entries[inRowIndex]);
-				break;
-			case "avatar": //we may want to move toward a default situation.
-			case "text":
-			case "enyo-vflexbox":
-			case "enyo-item entry enyo-hflexbox":
-				if (this.$.entryClickPopup.getEntry() === this.entries[inRowIndex]) {
-					// we've clicked on the same item as last time, so don't show the popup again
-					this.$.entryClickPopup.clearEntry();
-				}
-				else {
-					// different item than last time, show the popup
-					this.$.entryClickPopup.showAtEvent(this.entries[inRowIndex], inEvent);
-				}
-				break;
-
+		var className = inEvent.target.className;
+		if(_.includes(className, "username")){
+			var username = inEvent.target.getAttribute('data-user-screen_name') || inEvent.target.innerText.replace("@", "");
+			this.doShowUserView(username, App.Users.get(this.info.accounts[0]).type, this.info.accounts[0]);
+			
+		} else if(_.includes(className, "hashtag")){
+			this.doSearch(inEvent.target.innerText);
+		} else if(_.includes(className, "avatar")){
+			this.doShowUserView(inSender.entry.author_username, App.Users.get(this.info.accounts[0]).type, this.info.accounts[0]);			
+		} else if(!inEvent.target.getAttribute("href")){
+			if (this.$.entryClickPopup.getEntry() === this.entries[inRowIndex]) {
+				// we've clicked on the same item as last time, so don't show the popup again
+				this.$.entryClickPopup.clearEntry();
+			}
+			else {
+				// different item than last time, show the popup
+				this.$.entryClickPopup.showAtEvent(this.entries[inRowIndex], inEvent);
+			}
 		}
 	},
 	resizeHandler: function(inHeight) {
