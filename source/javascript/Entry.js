@@ -1,28 +1,32 @@
 enyo.kind({
 	name: "Spaz.Entry",
-	kind: "Item", 
-	tapHighlight: true, 
-	style: "padding-right: 5px;", 
-	onclick: "entryClick", 
+	kind: "HFlexBox",
+	flex: 1, 
+	events: {
+		onUserClick: "",
+		onHashtagClick: "",
+		onEntryClick: ""	
+	},
 	published: {
 		entry: ""
 	},
 	components: [
-		{className: "entry", kind: "HFlexBox", components: [
-			{kind: "VFlexBox", components: [
-				{kind: "Image", width: "50px", height: "50px", className: "avatar"},
-			]},
-			{kind: "VFlexBox", flex: 1, components: [
-				{name: "text", className: "text"},
-				{name: "timeFrom", className: "small"},
-			]},		
-			//{kind: "VFlexBox", width: "24px", components: [
-			//	{kind: "Image", src: "source/images/action-icon-favorite.png"},
-			//	{kind: "Image", src: "source/images/action-icon-share.png"},
-			//	{kind: "Image", src: "source/images/action-icon-reply.png"},
-			//]}	
+		{className: "entry", kind: "Item", onclick: "entryClick", flex: 1, tapHighlight: true, style: "padding-right: 5px;", components: [
+			{kind: "HFlexBox", components: [
+				{kind: "VFlexBox", components: [
+					{kind: "Image", width: "50px", height: "50px", className: "avatar"},
+				]},
+				{kind: "VFlexBox", flex: 1, components: [
+					{name: "text", className: "text"},
+					{name: "timeFrom", className: "small"},
+				]},		
+				//{kind: "VFlexBox", width: "24px", components: [
+				//	{kind: "Image", src: "source/images/action-icon-favorite.png"},
+				//	{kind: "Image", src: "source/images/action-icon-share.png"},
+				//	{kind: "Image", src: "source/images/action-icon-reply.png"},
+				//]}	
+				]}
 		]}
-		
 	],
 	entryChanged: function(){
 		
@@ -42,5 +46,18 @@ enyo.kind({
 			this.applyStyle("background-color", null);			
 		}
 			
-	}
+	},
+	entryClick: function(inSender, inEvent, inRowIndex) {
+		var className = inEvent.target.className;
+		if(_.includes(className, "username")){
+			var username = inEvent.target.getAttribute('data-user-screen_name') || inEvent.target.innerText.replace("@", "");
+			this.doUserClick(username, this.entry.service, this.entry.account_id);
+		} else if(_.includes(className, "avatar")){
+			this.doUserClick(this.entry.author_username, this.entry.service, this.entry.account_id);			
+		} else if(_.includes(className, "hashtag")){
+			this.doHashtagClick(inEvent.target.innerText);
+		} else if(!inEvent.target.getAttribute("href")){
+			this.doEntryClick(inEvent, inRowIndex);
+		}
+	},
 })

@@ -37,7 +37,13 @@ enyo.kind({
 				{name: "topRightButton", kind: "ToolButton", icon: "source/images/icon-close.png", onclick: "doDeleteClicked"},
 			]},
 			{name: "list", kind: "Spaz.VirtualList", flex: 1, style: "background-color: #D8D8D8; margin: 0px 3px; min-height: 200px;", horizontal: false, className: "timeline list", onAcquirePage:'acquirePage', onSetupRow: "setupRow", components: [
-				{name: "item", kind: "Spaz.Entry", onclick: "entryClick"}
+				{
+					name: "item", 
+					kind: "Spaz.Entry",
+					onUserClick: "userClick",
+					onHashtagClick: "hashtagClick",
+					onEntryClick: "entryClick"
+				}
 			]},
 			{kind: "Toolbar", style: "color: white;", components: [
 				{name: "moveColumnLeftButton", onclick: "doMoveColumnLeft", kind: "ToolButton", icon: "source/images/icon-back.png"},
@@ -232,26 +238,20 @@ enyo.kind({
 			return true;
 		}
 	},
-	
+	userClick: function(inSender, inUser, inService, inAccountId){
+		this.doShowUserView(inUser, inService, inAccountId);				
+	},
+	hashtagClick: function(inSender, inHashtag){
+		this.doSearch(inHashTag);	
+	},
 	entryClick: function(inSender, inEvent, inRowIndex) {
-		var className = inEvent.target.className;
-		if(_.includes(className, "username")){
-			var username = inEvent.target.getAttribute('data-user-screen_name') || inEvent.target.innerText.replace("@", "");
-			this.doShowUserView(username, App.Users.get(this.info.accounts[0]).type, this.info.accounts[0]);
-			
-		} else if(_.includes(className, "hashtag")){
-			this.doSearch(inEvent.target.innerText);
-		} else if(_.includes(className, "avatar")){
-			this.doShowUserView(inSender.entry.author_username, App.Users.get(this.info.accounts[0]).type, this.info.accounts[0]);			
-		} else if(!inEvent.target.getAttribute("href")){
-			if (this.$.entryClickPopup.getEntry() === this.entries[inRowIndex]) {
-				// we've clicked on the same item as last time, so don't show the popup again
-				this.$.entryClickPopup.clearEntry();
-			}
-			else {
-				// different item than last time, show the popup
-				this.$.entryClickPopup.showAtEvent(this.entries[inRowIndex], inEvent);
-			}
+		if (this.$.entryClickPopup.getEntry() === this.entries[inRowIndex]) {
+			// we've clicked on the same item as last time, so don't show the popup again
+			this.$.entryClickPopup.clearEntry();
+		}
+		else {
+			// different item than last time, show the popup
+			this.$.entryClickPopup.showAtEvent(this.entries[inRowIndex], inEvent);
 		}
 	},
 	resizeHandler: function(inHeight) {
