@@ -14,9 +14,15 @@ enyo.kind({
 		{className: "entry", kind: "Item", onclick: "entryClick", flex: 1, tapHighlight: true, style: "padding-right: 5px;", components: [
 			{kind: "HFlexBox", components: [
 				{kind: "VFlexBox", components: [
-					{kind: "Image", width: "50px", height: "50px", className: "avatar"},
+					{name: "authorAvatar", kind: "Image", width: "50px", height: "50px", className: "avatar"},
+					{name: "reposterAvatar", kind: "Image", width: "25px", height: "25px", className: "small-avatar", showing: false}
 				]},
 				{kind: "VFlexBox", flex: 1, components: [
+					{kind: "HFlexBox", height: "18px", components: [
+						{name: "username", className: "text username author"},
+						{name: "reposterIcon", kind: "Image", height: "13px", src: "source/images/reposted.png", style: "position: relative; bottom: 7px; padding: 0px 3px;", showing: false},
+						{name: "reposterUsername", className: "text username author", showing: false}
+					]},
 					{name: "text", className: "text"},
 					{name: "timeFrom", className: "small"},
 				]},		
@@ -29,15 +35,23 @@ enyo.kind({
 		]}
 	],
 	entryChanged: function(){
-		
-		this.$.text.setContent("<span class='username author'>" + this.entry.author_username + "</span><br>" + AppUtils.makeItemsClickable(enyo.string.runTextIndexer(this.entry.text)));
+		this.$.username.setContent(this.entry.author_username);
+		this.$.text.setContent(AppUtils.makeItemsClickable(enyo.string.runTextIndexer(this.entry.text)));
 		if (this.entry._orig.source) {
 			this.$.timeFrom.setContent(sch.getRelativeTime(this.entry.publish_date) + " from <span class='link'>" + this.entry._orig.source + "</span>");
 		} else {
 			this.$.timeFrom.setContent(sch.getRelativeTime(this.entry.publish_date));
 		}		
-		this.$.image.setSrc(this.entry.author_avatar);
+		this.$.authorAvatar.setSrc(this.entry.author_avatar);
 
+		if(this.entry.is_repost === true){
+			this.$.reposterUsername.setContent(this.entry.reposter_username);
+			this.$.reposterUsername.setShowing(true);
+			this.$.reposterIcon.setShowing(true);
+			
+			this.$.reposterAvatar.setSrc(this.entry.reposter_avatar);
+			this.$.reposterAvatar.setShowing(true);
+		}
 		if(this.entry.is_private_message === true){
 			this.applyStyle("background-color", "rgba(255, 0, 0, .1)");
 		} else if(this.entry.is_mention === true){

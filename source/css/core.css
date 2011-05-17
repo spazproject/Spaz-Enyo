@@ -28,6 +28,14 @@ a:active,
 	padding-right: 10px;
 	/*-webkit-border-radius: 5px;*/
 }
+.entry .small-avatar {
+	position: absolute;
+	margin-left: -30px;
+	margin-top: 30px;
+	/*right: 28px;
+	top: 8px;*/
+	/*display: ;*/
+}
 .entry .username.author {
 	font-weight: bold;
 	color: black;
@@ -58,14 +66,14 @@ a:active,
 .user-view .header {
 	padding: 5px 10px 10px 10px;
 }
-.entry-view .author_username,
-.entry-view .author_realname,
-.user-view .author_username,
-.user-view .author_realname {
+.entry-view .author-username,
+.entry-view .author-realname,
+.user-view .author-username,
+.user-view .author-realname {
 	padding-left: 10px;
 }
-.entry-view .author_realname,
-.user-view .author_realname {
+.entry-view .author-realname,
+.user-view .author-realname {
 	font-weight: bold;
 	font-size: 20px;
 }

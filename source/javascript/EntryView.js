@@ -21,8 +21,8 @@ enyo.kind({
 						{kind: "Image", width: "75px",  height: "75px", className: "avatar"},
 						{kind: "VFlexBox", height: "75px", flex: 1, components: [
 							{kind: "Spacer"},
-							{name: "realname", flex: 3, className: "author_realname truncating-text"},
-							{name: "username", flex: 3, className: "link author_username"},
+							{name: "realname", flex: 3, className: "author-realname truncating-text"},
+							{name: "username", flex: 3, className: "link author-username"},
 							{kind: "Spacer"}
 
 						]},	
@@ -81,6 +81,10 @@ enyo.kind({
 			    this.$.conversation_drawer.close();
     			this.$.conversation.setEntry(this.entry);
 			}
+
+			//if(this.entry.is_repost === true){
+			//	this.
+			//}
 		} else {
 			this.doDestroy();
 			//this.$.image.applyStyle("display", "none");
