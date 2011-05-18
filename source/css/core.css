@@ -58,8 +58,15 @@ a:active,
 	padding: 0px 5px 0px 0px;
 }
 
-.entry-view {
-	
+.entry-view .repost-outer {
+	text-align: center;
+}
+.entry-view .repost {
+	font-size: 14px;
+	text-align: center;
+	background-color: rgba(255, 255, 255, .4);
+	-webkit-border-radius: 10px;
+	padding: 3px 10px;
 
 }
 .entry-view .header,

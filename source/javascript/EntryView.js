@@ -38,6 +38,7 @@ enyo.kind({
 						//{kind: "Divider", className: "divider", style: "display: none", caption: ""},
 						{name: "entry", className: "message"},
 						{name: "timeFrom", className: "small", style: "padding: 5px 0px"},
+						{name: "repost", className: "repost-outer", showing: false},
 						{kind: "ActivityButton", name: "conversation_button", onclick: "toggleDrawer", toggling: true, content: "View Conversation"},
 						{kind: "Drawer", name: "conversation_drawer", /*caption: "Conversation",*/ open: false, onOpenChanged: "onConversationOpenChanged", components: [
 						    {kind: "Spaz.Conversation", name: "conversation", onStart: "onConversationLoadStart", onDone: "onConversationLoadDone"}
@@ -65,6 +66,7 @@ enyo.kind({
 			this.$.realname.setContent(this.entry.author_fullname||this.entry.author_username);
 			this.$.username.setContent("@" + this.entry.author_username);
 			this.$.bio.setContent(this.entry.author_description||'');
+			
 			if (this.entry._orig.source) {
 				this.$.timeFrom.setContent(sch.getRelativeTime(this.entry.publish_date) + " from <span class='link'>" + this.entry._orig.source + "</span>");
 			} else {
@@ -82,9 +84,10 @@ enyo.kind({
     			this.$.conversation.setEntry(this.entry);
 			}
 
-			//if(this.entry.is_repost === true){
-			//	this.
-			//}
+			if(this.entry.is_repost === true){
+				this.$.repost.setContent("<span class='repost'>Reposted by <span class='username clickable'>" + this.entry.reposter_username + "</span> " + sch.getRelativeTime(this.entry.publish_date) + "</span>");//@TODO
+				this.$.repost.setShowing(true);
+			}
 		} else {
 			this.doDestroy();
 			//this.$.image.applyStyle("display", "none");
