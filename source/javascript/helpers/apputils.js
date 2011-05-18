@@ -335,6 +335,8 @@ AppUtils.convertToEntry = function(item) {
 					entry.text          = item.retweeted_status.text;
 					entry.text_raw      = item.retweeted_status.text;
 					
+					entry.repost_orig_date  = sc.helpers.httpTimeToInt(item.retweeted_status.created_at);
+					
 					entry.author_username = item.retweeted_status.user.screen_name;
 					entry.author_description = item.retweeted_status.user.description;
 					entry.author_fullname = item.retweeted_status.user.name;
