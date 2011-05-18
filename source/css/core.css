@@ -138,3 +138,12 @@ a:active,
 	height: 32px;
 	margin: -6px -6px -10px -6px;
 }
+
+/* for user/entry view */
+#spaz_entryview,
+#spaz_userview {
+    position: relative;
+    -moz-box-shadow: 0px 0px 10px #000000;
+    -webkit-box-shadow: 0px 0px 10px #000000;
+    box-shadow: 0px 0px 10px #000000;
+}
