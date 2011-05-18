@@ -249,7 +249,7 @@ enyo.kind({
 		this.doShowUserView(inUser, inService, inAccountId);				
 	},
 	hashtagClick: function(inSender, inHashtag){
-		this.doSearch(inHashTag);	
+		this.doSearch(inHashtag);	
 	},
 	entryClick: function(inSender, inEvent, inRowIndex) {
 		if (this.$.entryClickPopup.getEntry() === this.entries[inRowIndex]) {
