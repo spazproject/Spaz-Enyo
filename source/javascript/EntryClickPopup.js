@@ -24,10 +24,14 @@ enyo.kind({
 		this.entry = null;
 	},
 	"itemSelect": function(inSender, inIndex){
+
 		switch(this.items[inIndex]){
 			case "Details":
 				this.doShowEntryView(this.entry);
 				this.$.popup.close();
+				
+				this.clearEntry();
+
 				break;
 			case "Reply":
 				if (this.entry.is_private_message) {
@@ -44,6 +48,9 @@ enyo.kind({
 					});			
 				}
 				this.$.popup.close();
+
+				this.clearEntry();
+
 				break;
 			case "Share":
 
