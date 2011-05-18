@@ -39,13 +39,12 @@ enyo.kind({
 		}		
 		this.$.authorAvatar.setSrc(this.entry.author_avatar);
 
+		this.$.reposterUsername.setShowing(this.entry.is_repost);
+		this.$.reposterIcon.setShowing(this.entry.is_repost);
+		this.$.reposterAvatar.setShowing(this.entry.is_repost);
 		if(this.entry.is_repost === true){
 			this.$.reposterUsername.setContent(this.entry.reposter_username);
-			this.$.reposterUsername.setShowing(true);
-			this.$.reposterIcon.setShowing(true);
-			
 			this.$.reposterAvatar.setSrc(this.entry.reposter_avatar);
-			this.$.reposterAvatar.setShowing(true);
 		}
 		if(this.entry.is_private_message === true){
 			this.applyStyle("background-color", "rgba(255, 0, 0, .1)");
