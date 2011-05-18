@@ -23,7 +23,7 @@ enyo.kind({
         					{kind: "VFlexBox", height: "75px", flex: 1, components: [
         						{kind: "Spacer"},
         						{name: "realname", flex: 3, className: "author-realname truncating-text"},
-        						{name: "username", flex: 3, className: "link author-username"},
+        						{name: "username", flex: 3, className: "author-username"},
         						{kind: "Spacer"}
 
         					]},	
@@ -33,7 +33,7 @@ enyo.kind({
 
         			]},
         		//]},
-    			{kind: "RadioGroup", onChange: "radioButtonSelected", width: "310px", style: "padding-left: 10px", components: [
+    			{kind: "RadioGroup", onChange: "switchDataType", width: "310px", style: "padding-left: 10px", components: [
     			    {name: "entries", kind: "Spaz.RadioButton", label: "Entries", number: ""},
     			    {name: "followers", kind: "Spaz.RadioButton", label: "Followers", number: ""},
     			    {name: "friends", kind: "Spaz.RadioButton", label: "Following", number: ""}
@@ -42,8 +42,14 @@ enyo.kind({
     			]},
     			//{layoutKind: "HFlexLayout", pack: "center", components: [
     		    {kind: "Scroller", flex: 1, className: "entry-view", components: [
-    				{kind: "VFlexBox", className: "header", style: "", components: [
-				
+    				{name: "list", kind: "VirtualRepeater", onGetItem: "loadItem", style: "", components: [
+						{
+							name: "item", 
+							kind: "Spaz.Entry",
+							//onUserClick: "userClick",
+							//onHashtagClick: "hashtagClick",
+							//onEntryClick: "entryClick"
+						}
     				]},
 				
     	        ]}
@@ -115,6 +121,36 @@ enyo.kind({
 			//this.$.bio.setContent("");
 			//this.$.timeFrom.setContent("");
 			//this.$.entry.setContent("");
+		}
+	},
+	items: [],
+	switchDataType: function(inSender){
+		this.dataType = this.$.radioGroup.components[inSender.getValue()].name;
+		switch(this.dataType){
+			case "entries":
+				//get Items
+				//@TODO create/delete item component based on choice.
+				break;
+			case "followers":
+
+				break;
+			case "friends":
+
+				break;
+
+		}
+		this.$.list.render();
+
+	},
+	loadItem: function(inSender, inIndex){
+		if (this.items[inIndex]) {
+			var item = this.items[inIndex];
+			switch(this.dataType){
+				case "entries":
+					this.$.item.setEntry(entry);
+					break;
+			}
+			return true;
 		}
 	}
 });

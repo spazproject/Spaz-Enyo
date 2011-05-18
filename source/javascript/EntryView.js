@@ -85,7 +85,7 @@ enyo.kind({
 			}
 
 			if(this.entry.is_repost === true){
-				this.$.repost.setContent("<span class='repost'>Reposted by <span class='username clickable'>" + this.entry.reposter_username + "</span> " + sch.getRelativeTime(this.entry.publish_date) + "</span>");//@TODO
+				this.$.repost.setContent("<span class='repost'>Reposted by <span class='username'>" + this.entry.reposter_username + "</span> " + sch.getRelativeTime(this.entry.publish_date) + "</span>");//@TODO
 				this.$.repost.setShowing(true);
 			}
 		} else {

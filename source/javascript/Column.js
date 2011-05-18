@@ -29,7 +29,7 @@ enyo.kind({
 	components: [
 		{layoutKind: "VFlexLayout", components: [
 			{kind: "Toolbar", defaultKind: "Control", content: "Home", style: "color: white; padding-left: 5px;", components: [
-				//gotta do this crap to get the header title to center and not be a button. "defaultKind" in Toolbar is key.
+				//gotta do this to get the header title to center and not be a button. "defaultKind" in Toolbar is key.
 				{name: "topLeftButton", kind: "ToolButton", style: "display: none"},
 				{name: "header", style: "padding: 0px 0px 5px 5px;", className: "truncating-text", content: ""},
 				{kind: "Spacer", flex: 1},
@@ -92,7 +92,6 @@ enyo.kind({
 
 	acquirePage:function(inSender, inPage) {
 		var index = inPage * inSender.pageSize;
-		console.log(inPage, index);
 		if (index > -1 && !this.entries[index] && this.entries.length > 0) {
 			this.loadOlder();
 		}

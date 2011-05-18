@@ -60,6 +60,7 @@ a:active,
 
 .entry-view .repost-outer {
 	text-align: center;
+	padding-bottom: 8px;
 }
 .entry-view .repost {
 	font-size: 14px;

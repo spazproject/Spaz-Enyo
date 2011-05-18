@@ -26,12 +26,7 @@ enyo.kind({
 					{name: "text", className: "text"},
 					{name: "timeFrom", className: "small"},
 				]},		
-				//{kind: "VFlexBox", width: "24px", components: [
-				//	{kind: "Image", src: "source/images/action-icon-favorite.png"},
-				//	{kind: "Image", src: "source/images/action-icon-share.png"},
-				//	{kind: "Image", src: "source/images/action-icon-reply.png"},
-				//]}	
-				]}
+			]}
 		]}
 	],
 	entryChanged: function(){
