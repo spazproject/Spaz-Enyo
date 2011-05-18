@@ -37,7 +37,13 @@ enyo.kind({
 				{kind: "VFlexBox", className: "header", style: "", components: [
 						//{kind: "Divider", className: "divider", style: "display: none", caption: ""},
 						{name: "entry", className: "message"},
-						{name: "timeFrom", className: "small", style: "padding: 5px 0px"},
+						{name: "small", kind: "HFlexBox", className: "small", style: "padding: 5px 0px",
+							components: [
+								{name: "time"},
+								{content: "from", style: "padding: 0px 3px;"},
+								{name: "from"}
+							]
+						},
 						{name: "repost", className: "repost-outer", showing: false},
 						{kind: "ActivityButton", name: "conversation_button", onclick: "toggleDrawer", toggling: true, content: "View Conversation"},
 						{kind: "Drawer", name: "conversation_drawer", /*caption: "Conversation",*/ open: false, onOpenChanged: "onConversationOpenChanged", components: [
@@ -66,12 +72,10 @@ enyo.kind({
 			this.$.realname.setContent(this.entry.author_fullname||this.entry.author_username);
 			this.$.username.setContent("@" + this.entry.author_username);
 			this.$.bio.setContent(this.entry.author_description||'');
-			
+			this.$.time.setContent(sch.getRelativeTime(this.entry.publish_date));
 			if (this.entry._orig.source) {
-				this.$.timeFrom.setContent(sch.getRelativeTime(this.entry.publish_date) + " from <span class='link'>" + this.entry._orig.source + "</span>");
-			} else {
-				this.$.timeFrom.setContent(sch.getRelativeTime(this.entry.publish_date));
-			}
+				this.$.from.setContent(this.entry._orig.source);
+			} 
 			this.$.entry.setContent(AppUtils.makeItemsClickable(this.entry.text));
 			
 			if(!this.entry.in_reply_to_id) {
@@ -87,6 +91,8 @@ enyo.kind({
 			if(this.entry.is_repost === true){
 				this.$.repost.setContent("<span class='repost'>Reposted by <span class='username'>" + this.entry.reposter_username + "</span> " + sch.getRelativeTime(this.entry.publish_date) + "</span>");//@TODO
 				this.$.repost.setShowing(true);
+
+				this.$.time.setContent(sch.getRelativeTime(this.entry.repost_orig_date));
 			}
 		} else {
 			this.doDestroy();
