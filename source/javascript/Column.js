@@ -222,6 +222,14 @@ enyo.kind({
 					// add in the account used to get this entry. this seems sloppy here.
 					for (var j = this.entries.length - 1; j >= 0; j--){
 						this.entries[j].account_id = this.info.accounts[0];
+						
+						var acc_username = App.Users.get(this.info.accounts[0]).username;
+						var acc_service  = App.Users.get(this.info.accounts[0]).type;
+						
+						if (acc_username === this.entries[j].author_username
+							&& acc_service === this.entries[j].service) {
+							this.entries[j].is_author = true;
+						}
 					}
 					
 					this.$.list.refresh();
