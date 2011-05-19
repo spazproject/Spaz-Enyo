@@ -3,7 +3,7 @@ enyo.kind({
 	kind: enyo.HFlexBox,
 	components: [
 		{name: "sidebar", kind: "Spaz.Sidebar", onRefreshAll: "refreshAll", onCreateColumn: "createColumn"},
-		{name: "container", kind: "Spaz.Container", onShowUserView: "showUserView", onShowEntryView: "showEntryView", onReply: "reply", onDirectMessage: "directMessage", onRefreshAllFinished: "refreshAllFinished"},
+		{name: "container", kind: "Spaz.Container", onShowUserView: "showUserView", onShowEntryView: "showEntryView", onReply: "reply", onRefreshAllFinished: "refreshAllFinished"},
 	],
 	
 	twit: new SpazTwit(),
@@ -180,7 +180,7 @@ enyo.kind({
 		console.log("showing entryView");
 		if(!this.$.entryview){
 			
-			this.createComponent({name: "entryview", kind: "Spaz.EntryView", onDestroy: "destroyEntryView"}, {owner: this});
+			this.createComponent({name: "entryview", kind: "Spaz.EntryView", onDestroy: "destroyEntryView", onReply: "reply"}, {owner: this});
 			this.$.entryview.render();
 			
 			//this.$.container.refreshList();
@@ -230,11 +230,22 @@ enyo.kind({
 		this.$.sidebar.refreshAllFinished();
 	},
 	
-	reply: function(inSender, inOpts) {
-		this.$.sidebar.$.composePopup.replyTo(inOpts);
-	},
-
-	directMessage: function(inSender, inOpts) {
-		this.$.sidebar.$.composePopup.directMessage(inOpts);
+	// To keep the reply/dm logic in one place, components only pass up
+	// onReply events, and we'll figure out here whether that should be
+	// handled as a reply or as a dm.
+	reply: function(inSender, inEntry) {
+		if (inEntry.is_private_message) {
+			this.$.sidebar.$.composePopup.directMessage({
+				'to':inEntry.author_username,
+				'text':null,
+				'entry':inEntry,
+				'account_id':inEntry.account_id
+			});
+		} else {
+			this.$.sidebar.$.composePopup.replyTo({
+				'entry':inEntry,
+				'account_id':inEntry.account_id
+			});			
+		}
 	}
 });

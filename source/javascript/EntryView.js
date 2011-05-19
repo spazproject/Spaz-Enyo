@@ -13,7 +13,8 @@ enyo.kind({
 	events: {
 		onDestroy: "",
 		onUserClick: "",
-		onHashtagClick: ""
+		onHashtagClick: "",
+		onReply: ""
 	},
 	components: [
 		{className: "entry-view", width: "322px", height: "100%", layoutKind: "VFlexLayout", components: [
@@ -58,7 +59,7 @@ enyo.kind({
 	        {kind: "Toolbar", components: [
 				//{kind: "GrabButton"},
 				{kind: "Spacer"},
-				{kind: "ToolButton", disabled: true, icon: "source/images/icon-reply.png"},
+				{kind: "ToolButton", icon: "source/images/icon-reply.png", onclick: "reply"},
 				{kind: "ToolButton", disabled: true, icon: "source/images/icon-share.png"},
 				{kind: "ToolButton", disabled: true, icon: "source/images/icon-favorite.png"},
 				{kind: "Spacer"}
@@ -136,5 +137,8 @@ enyo.kind({
 	onConversationLoadDone: function() {
 	    console.log("Load Conversation Done");
 	    this.$.conversation_button.setActive(false);
+	},
+	reply: function() {
+		this.doReply(this.entry);
 	}
 });

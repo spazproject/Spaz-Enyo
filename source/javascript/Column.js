@@ -11,8 +11,6 @@ enyo.kind({
 		onLoadStarted: "",
 		onLoadFinished: "",
 		onReply: "",
-		onDirectMessage: "",
-
 		onMoveColumnRight: "",
 		onMoveColumnLeft: ""
 	},
@@ -56,7 +54,7 @@ enyo.kind({
 			]}
 		]},
 
-		{name: "entryClickPopup", kind: "Spaz.EntryClickPopup", onShowEntryView: "doShowEntryView", onReply: "doReply", onDirectMessage: "doDirectMessage"}
+		{name: "entryClickPopup", kind: "Spaz.EntryClickPopup", onShowEntryView: "doShowEntryView", onReply: "doReply"}
 	],
 	entries: [],
 	create: function(){

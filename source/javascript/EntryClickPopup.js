@@ -7,7 +7,6 @@ enyo.kind({
 		onClose: "",
 		onShowEntryView: "",
 		onReply: "",
-		onDirectMessage: "",
 		onShare: ""
 	},
 	components: [
@@ -29,31 +28,14 @@ enyo.kind({
 			case "Details":
 				this.doShowEntryView(this.entry);
 				this.$.popup.close();
-				
 				this.clearEntry();
-
 				break;
 			case "Reply":
-				if (this.entry.is_private_message) {
-					this.doDirectMessage({
-						'to':this.entry.author_username,
-						'text':null,
-						'entry':this.entry,
-						'account_id':this.entry.account_id
-					});
-				} else {
-					this.doReply({
-						'entry':this.entry,
-						'account_id':this.entry.account_id
-					});			
-				}
+				this.doReply(this.entry);
 				this.$.popup.close();
-
 				this.clearEntry();
-
 				break;
 			case "Share":
-
 				break;
 			default: 
 				console.error(this.items[inIndex] + " has no handler");
