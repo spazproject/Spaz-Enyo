@@ -66,7 +66,7 @@ enyo.kind({
 			this.doUserClick(this.entry.author_username, this.entry.service, this.entry.account_id);			
 		} else if(_.includes(className, "hashtag")){
 			this.doHashtagClick(inEvent.target.innerText);
-		} else if(!inEvent.target.getAttribute("href")){
+		} else if(!inEvent.target.getAttribute("href")){ //if not a link, send out a general tap event
 			this.doEntryClick(inEvent, inRowIndex);
 		}
 	},

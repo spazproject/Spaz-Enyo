@@ -15,6 +15,7 @@ enyo.depends(
 
 	// helpers
 	"source/javascript/helpers/apputils.js",
+	"source/javascript/helpers/appui.js",
 
 	// models
 	"source/javascript/models/cache.js",
@@ -50,7 +51,6 @@ enyo.depends(
 	"source/javascript/Conversation.js",
 	"source/javascript/NumberButton.js",
 	"source/javascript/RadioButton.js",
-
 
 	//css
 	"source/css/core.css"

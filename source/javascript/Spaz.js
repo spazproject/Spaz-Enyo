@@ -170,7 +170,10 @@ enyo.kind({
 
 		self.bindGlobalListeners();
 
-
+		AppUI.viewUser = enyo.bind(this, function(inUsername, inService, inAccountId){
+			this.showUserView(this, inUsername, inService, inAccountId);
+			
+		});
 		//self.inherited(arguments);
 	},
 	showEntryView: function(inSender, inEntry){
@@ -193,6 +196,7 @@ enyo.kind({
 		//this.render();
 		//this.$.container.refreshList();
 	},
+	
 	showUserView: function(inSender, inUsername, inService, inAccountId) {
 		console.log("showing entryView");
 		if(!this.$.userview){

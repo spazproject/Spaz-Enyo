@@ -10,7 +10,7 @@ enyo.kind({
 	create: function(){
 		this.inherited(arguments);
 		
-		AppUtils.refresh = enyo.bind(this, this.refreshAll);	
+		AppUI.refresh = enyo.bind(this, this.refreshAll);	
 	},
 	components: [
 		{kind: "ToolButton", icon: "source/images/icon-compose.png", onclick: "compose", popup:"composePopup"},

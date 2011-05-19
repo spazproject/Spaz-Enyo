@@ -11,7 +11,9 @@ enyo.kind({
 		entry: {}
 	},
 	events: {
-		onDestroy: ""
+		onDestroy: "",
+		onUserClick: "",
+		onHashtagClick: ""
 	},
 	components: [
 		{className: "entry-view", width: "322px", height: "100%", layoutKind: "VFlexLayout", components: [
@@ -34,7 +36,7 @@ enyo.kind({
 			]},
 			//{layoutKind: "HFlexLayout", pack: "center", components: [
 		    {kind: "Scroller", name: "detail_scroller", flex: 1, className: "entry-view", components: [
-				{kind: "VFlexBox", className: "header", style: "", components: [
+				{kind: "VFlexBox", className: "header", style: "", onclick: "entryClick", components: [
 						//{kind: "Divider", className: "divider", style: "display: none", caption: ""},
 						{name: "entry", className: "message"},
 						{name: "small", kind: "HFlexBox", className: "small", style: "padding: 5px 0px",
@@ -102,6 +104,17 @@ enyo.kind({
 			//this.$.bio.setContent("");
 			//this.$.timeFrom.setContent("");
 			//this.$.entry.setContent("");
+		}
+	},
+	entryClick: function(inSender, inEvent) {
+		var className = inEvent.target.className;
+		if(_.includes(className, "username")){
+			var username = inEvent.target.getAttribute('data-user-screen_name') || inEvent.target.innerText.replace("@", "");
+			this.doUserClick(username, this.entry.service, this.entry.account_id);
+		} else if(_.includes(className, "avatar")){
+			this.doUserClick(this.entry.author_username, this.entry.service, this.entry.account_id);			
+		} else if(_.includes(className, "hashtag")){
+			this.doHashtagClick(inEvent.target.innerText);
 		}
 	},
 	toggleDrawer: function(inSender, inEvent){

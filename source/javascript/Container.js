@@ -34,6 +34,10 @@ enyo.kind({
 		// load the column set
 		this.columnData = App.Prefs.get('columns') || [];
 		this.createColumns();
+
+		AppUI.search = enyo.bind(this, function(inQuery, inAccountId){
+			this.createColumn(inAccountId, "search", inQuery);
+		});
 	},
 
 	getDefaultColumns: function() {
