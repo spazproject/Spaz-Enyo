@@ -46,8 +46,6 @@ enyo.kind({
 						{
 							name: "item", 
 							kind: "Spaz.Entry",
-							//onUserClick: "userClick",
-							//onHashtagClick: "hashtagClick",
 							//onEntryClick: "entryClick"
 						}
     				]},

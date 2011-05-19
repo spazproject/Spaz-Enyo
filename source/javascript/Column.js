@@ -4,13 +4,9 @@ enyo.kind({
 	width: "322px",
 	style: "margin: 3px;", 
 	events: {
-		onSearch: "",
-		onShowUserView: "",
-		onShowEntryView: "",
 		onDeleteClicked: "",
 		onLoadStarted: "",
 		onLoadFinished: "",
-		onReply: "",
 		onMoveColumnRight: "",
 		onMoveColumnLeft: ""
 	},
@@ -38,8 +34,6 @@ enyo.kind({
 				{
 					name: "item", 
 					kind: "Spaz.Entry",
-					onUserClick: "userClick",
-					onHashtagClick: "hashtagClick",
 					onEntryClick: "entryClick"
 				}
 			]},
@@ -54,7 +48,7 @@ enyo.kind({
 			]}
 		]},
 
-		{name: "entryClickPopup", kind: "Spaz.EntryClickPopup", onShowEntryView: "doShowEntryView", onReply: "doReply"}
+		{name: "entryClickPopup", kind: "Spaz.EntryClickPopup"}
 	],
 	entries: [],
 	create: function(){
@@ -242,12 +236,6 @@ enyo.kind({
 			
 			return true;
 		}
-	},
-	userClick: function(inSender, inUser, inService, inAccountId){
-		this.doShowUserView(inUser, inService, inAccountId);				
-	},
-	hashtagClick: function(inSender, inHashtag){
-		this.doSearch(inHashtag);	
 	},
 	entryClick: function(inSender, inEvent, inRowIndex) {
 		if (this.$.entryClickPopup.getEntry() === this.entries[inRowIndex]) {

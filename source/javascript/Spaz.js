@@ -2,8 +2,17 @@ enyo.kind({
 	name: "Spaz",
 	kind: enyo.HFlexBox,
 	components: [
-		{name: "sidebar", kind: "Spaz.Sidebar", onRefreshAll: "refreshAll", onCreateColumn: "createColumn"},
-		{name: "container", kind: "Spaz.Container", onShowUserView: "showUserView", onShowEntryView: "showEntryView", onReply: "reply", onRefreshAllFinished: "refreshAllFinished"},
+		{
+			name: "sidebar", 
+			kind: "Spaz.Sidebar", 
+			onRefreshAll: "refreshAll", 
+			onCreateColumn: "createColumn"
+		},
+		{
+			name: "container", 
+			kind: "Spaz.Container", 
+			onRefreshAllFinished: "refreshAllFinished"
+		},
 	],
 	
 	twit: new SpazTwit(),
@@ -170,17 +179,26 @@ enyo.kind({
 
 		self.bindGlobalListeners();
 
-		AppUI.viewUser = enyo.bind(this, function(inUsername, inService, inAccountId){
+		AppUI.addFunction("viewUser", function(inUsername, inService, inAccountId){
 			this.showUserView(this, inUsername, inService, inAccountId);
-			
-		});
+		}, this);
+		AppUI.addFunction("viewEntry", function(inEntry){
+			this.showEntryView(this, inEntry);
+		}, this);
+		AppUI.addFunction("reply", function(inEntry){
+			this.reply(this, inEntry);
+		}, this);
 		//self.inherited(arguments);
 	},
 	showEntryView: function(inSender, inEntry){
 		console.log("showing entryView");
 		if(!this.$.entryview){
 			
-			this.createComponent({name: "entryview", kind: "Spaz.EntryView", onDestroy: "destroyEntryView", onReply: "reply"}, {owner: this});
+			this.createComponent({
+				name: "entryview", 
+				kind: "Spaz.EntryView", 
+				onDestroy: "destroyEntryView" 
+			}, {owner: this});
 			this.$.entryview.render();
 			
 			//this.$.container.refreshList();

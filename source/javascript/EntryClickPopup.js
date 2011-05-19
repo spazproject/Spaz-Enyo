@@ -5,8 +5,6 @@ enyo.kind({
 	//modal: true,
 	events: {
 		onClose: "",
-		onShowEntryView: "",
-		onReply: "",
 		onShare: ""
 	},
 	components: [
@@ -26,16 +24,18 @@ enyo.kind({
 
 		switch(this.items[inIndex]){
 			case "Details":
-				this.doShowEntryView(this.entry);
+				AppUI.viewEntry(this.entry);
 				this.$.popup.close();
 				this.clearEntry();
 				break;
 			case "Reply":
-				this.doReply(this.entry);
+				AppUI.reply(this.entry);
 				this.$.popup.close();
 				this.clearEntry();
 				break;
 			case "Share":
+
+				this.clearEntry();
 				break;
 			default: 
 				console.error(this.items[inIndex] + " has no handler");

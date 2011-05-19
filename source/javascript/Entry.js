@@ -3,8 +3,6 @@ enyo.kind({
 	kind: "HFlexBox",
 	flex: 1, 
 	events: {
-		onUserClick: "",
-		onHashtagClick: "",
 		onEntryClick: ""	
 	},
 	published: {
@@ -61,11 +59,11 @@ enyo.kind({
 		var className = inEvent.target.className;
 		if(_.includes(className, "username")){
 			var username = inEvent.target.getAttribute('data-user-screen_name') || inEvent.target.innerText.replace("@", "");
-			this.doUserClick(username, this.entry.service, this.entry.account_id);
+			AppUI.viewUser(username, this.entry.service, this.entry.account_id);
 		} else if(_.includes(className, "avatar")){
-			this.doUserClick(this.entry.author_username, this.entry.service, this.entry.account_id);			
+			AppUI.viewUser(this.entry.author_username, this.entry.service, this.entry.account_id);
 		} else if(_.includes(className, "hashtag")){
-			this.doHashtagClick(inEvent.target.innerText);
+			AppUI.search(inEvent.target.innerText, this.entry.account_id);
 		} else if(!inEvent.target.getAttribute("href")){ //if not a link, send out a general tap event
 			this.doEntryClick(inEvent, inRowIndex);
 		}

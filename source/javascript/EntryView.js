@@ -1,20 +1,12 @@
 enyo.kind({
 	name: "Spaz.EntryView",
 	kind: "VFlexBox",
-	//kind: "Toaster", 
-	//flyInFrom: "right",
 	width: "322px",
-	//height: "100%",
-	//style: "background-color: #D8D8D8;",
-	//flex: 1,
 	published: {
 		entry: {}
 	},
 	events: {
 		onDestroy: "",
-		onUserClick: "",
-		onHashtagClick: "",
-		onReply: ""
 	},
 	components: [
 		{className: "entry-view", width: "322px", height: "100%", layoutKind: "VFlexLayout", components: [
@@ -57,7 +49,6 @@ enyo.kind({
 				
 	        ]},
 	        {kind: "Toolbar", components: [
-				//{kind: "GrabButton"},
 				{kind: "Spacer"},
 				{kind: "ToolButton", icon: "source/images/icon-reply.png", onclick: "reply"},
 				{kind: "ToolButton", disabled: true, icon: "source/images/icon-share.png"},
@@ -99,23 +90,17 @@ enyo.kind({
 			}
 		} else {
 			this.doDestroy();
-			//this.$.image.applyStyle("display", "none");
-			//this.$.realname.setContent("");
-			//this.$.username.setContent("");
-			//this.$.bio.setContent("");
-			//this.$.timeFrom.setContent("");
-			//this.$.entry.setContent("");
 		}
 	},
 	entryClick: function(inSender, inEvent) {
 		var className = inEvent.target.className;
 		if(_.includes(className, "username")){
 			var username = inEvent.target.getAttribute('data-user-screen_name') || inEvent.target.innerText.replace("@", "");
-			this.doUserClick(username, this.entry.service, this.entry.account_id);
+			AppUI.viewUser(username, this.entry.service, this.entry.account_id);
 		} else if(_.includes(className, "avatar")){
-			this.doUserClick(this.entry.author_username, this.entry.service, this.entry.account_id);			
+			AppUI.viewUser(this.entry.author_username, this.entry.service, this.entry.account_id);
 		} else if(_.includes(className, "hashtag")){
-			this.doHashtagClick(inEvent.target.innerText);
+			AppUI.search(inEvent.target.innerText, this.entry.account_id);
 		}
 	},
 	toggleDrawer: function(inSender, inEvent){
@@ -139,6 +124,6 @@ enyo.kind({
 	    this.$.conversation_button.setActive(false);
 	},
 	reply: function() {
-		this.doReply(this.entry);
+		AppUI.reply(this.entry);
 	}
 });
