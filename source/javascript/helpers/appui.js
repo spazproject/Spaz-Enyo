@@ -1,9 +1,6 @@
 AppUI = {
 	addFunction: function(inName, inFunction, inScope){
 		AppUI[inName] = enyo.bind(inScope || this, inFunction); //create the function with proper scope
-		AppUI[inName + "Handler"] = function(){ //create "Handler" version of function that ignores the first "inSender" argument;
-			AppUI[inName](arguments[1] || null, arguments[2] || null, arguments[3] || null);
-		}
 	}
 };
 	//setup the namespace. These are global references to component-owned functions, so they are set up in the components.
