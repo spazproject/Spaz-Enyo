@@ -46,5 +46,11 @@ enyo.kind({
 	},
 	refreshAllFinished: function() {
 		this.$.refreshAll.removeClass("spinning");
+	},
+	replyTo: function(inReplyArgs) {
+		this.$.composePopup.replyTo(inReplyArgs);
+	},
+	directMessage: function(inDMArgs) {
+		this.$.composePopup.directMessage(inDMArgs);
 	}
 });

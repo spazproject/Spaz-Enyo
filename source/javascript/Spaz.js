@@ -235,14 +235,14 @@ enyo.kind({
 	// handled as a reply or as a dm.
 	reply: function(inSender, inEntry) {
 		if (inEntry.is_private_message) {
-			this.$.sidebar.$.composePopup.directMessage({
+			this.$.sidebar.directMessage({
 				'to':inEntry.author_username,
 				'text':null,
 				'entry':inEntry,
 				'account_id':inEntry.account_id
 			});
 		} else {
-			this.$.sidebar.$.composePopup.replyTo({
+			this.$.sidebar.replyTo({
 				'entry':inEntry,
 				'account_id':inEntry.account_id
 			});			
