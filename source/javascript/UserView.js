@@ -16,7 +16,7 @@ enyo.kind({
 	components: [
 		{name: "user_view", className: "user-view", width: "322px", height: "100%", layoutKind: "VFlexLayout", components: [
 		    {name: "content", layoutKind: "VFlexLayout", flex: 1, components: [
-		        //{kind: "Header", width: "322px", components: [
+		        {kind: "Header", width: "322px", components: [
         			{kind: "VFlexBox", className: "header", components: [
         				{kind: "HFlexBox", width: "322px", components: [
         					{kind: "Image", width: "75px",  height: "75px", className: "avatar"},
@@ -32,8 +32,8 @@ enyo.kind({
         				{name: "bio", width: "305px", style: "padding-right: 10px", className: "small"},
 
         			]},
-        		//]},
-    			{kind: "RadioGroup", onChange: "switchDataType", width: "310px", style: "padding-left: 10px", components: [
+        		]},
+    			{kind: "RadioGroup", onChange: "switchDataType", width: "310px", style: "padding-left: 10px; padding-top: 7px;", components: [
     			    {name: "entries", kind: "Spaz.RadioButton", label: "Entries", number: ""},
     			    {name: "followers", kind: "Spaz.RadioButton", label: "Followers", number: ""},
     			    {name: "friends", kind: "Spaz.RadioButton", label: "Following", number: ""}
@@ -111,15 +111,15 @@ enyo.kind({
 					break;
 			}
 			
-		} else {
-			this.doDestroy();
+		}// else {
+		//	this.doDestroy();
 			//this.$.image.applyStyle("display", "none");
 			//this.$.realname.setContent("");
 			//this.$.username.setContent("");
 			//this.$.bio.setContent("");
 			//this.$.timeFrom.setContent("");
 			//this.$.entry.setContent("");
-		}
+		//}
 	},
 	items: [],
 	switchDataType: function(inSender){

@@ -17,7 +17,7 @@ enyo.kind({
 						{kind: "VFlexBox", height: "75px", flex: 1, components: [
 							{kind: "Spacer"},
 							{name: "realname", flex: 3, className: "author-realname truncating-text"},
-							{name: "username", flex: 3, className: "link author-username"},
+							{name: "username", onclick: "entryClick", flex: 3, className: "link author-username"},
 							{kind: "Spacer"}
 
 						]},	
@@ -29,9 +29,9 @@ enyo.kind({
 			]},
 			//{layoutKind: "HFlexLayout", pack: "center", components: [
 		    {kind: "Scroller", name: "detail_scroller", flex: 1, className: "entry-view", components: [
-				{kind: "VFlexBox", className: "header", style: "", onclick: "entryClick", components: [
+				{kind: "VFlexBox", className: "header", style: "", components: [
 						//{kind: "Divider", className: "divider", style: "display: none", caption: ""},
-						{name: "entry", className: "message"},
+						{name: "entry", onclick: "entryClick", className: "message"},
 						{name: "small", kind: "HFlexBox", className: "small", style: "padding: 5px 0px",
 							components: [
 								{name: "time"},

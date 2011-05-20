@@ -204,6 +204,9 @@ enyo.kind({
 			//this.$.container.refreshList();
 
 		} 
+		if(this.$.userview){
+			this.destroyUserView();
+		}
 		this.$.entryview.setEntry(inEntry);
 		
 	},
@@ -223,6 +226,9 @@ enyo.kind({
 			//this.$.container.refreshList();
 
 		} 
+		if(this.$.entryview){
+			this.destroyEntryView();
+		}
 		this.$.userview.showUser(inUsername, inService, inAccountId);
 			
 	},
