@@ -81,7 +81,8 @@ enyo.kind({
 						//{name: "accountInfo", content: App.Users.getLabel(account_id)},
 					//]},
 				//]},
-				{kind: "Group", caption: "Options", components: [
+				{kind: "Group", /*caption: "Options",*/ components: [
+					{name: "viewUser", kind: "Button", content: "View Profile", onclick: "viewProfile", flex: 1, owner: this},
 					{name: "removeAccountFlexBox", kind: "HFlexBox", components: [
 						{name: "promptRemoveAccount", kind: "Button", content: "Remove Account", className: "enyo-button-negative", onclick: "promptRemoveAccount", flex: 1, owner: this}
 						//{kind: "Button", flex: 1, content: "Change Credentials", account_id: account_id, onclick: "changeCredentials"},
@@ -261,6 +262,12 @@ enyo.kind({
 		this.editing_acc_id = null;
 
 		this.goTopLevel(); //this re-renders the accounts list.
+	},
+	viewProfile: function(inSender, inEvent){
+		var user = App.Users.get(this.editing_acc_id);
+		AppUI.viewUser(user.username, user.type, this.editing_acc_id);	
+
+		this.doClose();
 	},
 	goBackToViewAccount: function(inSender, inEvent){
 		var id = this.editing_acc_id;
