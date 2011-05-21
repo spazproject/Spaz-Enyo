@@ -22,7 +22,7 @@ enyo.kind({
 	},
 	components: [
 		{layoutKind: "VFlexLayout", components: [
-			{kind: "Toolbar", height: "42px", defaultKind: "Control", content: "Home", style: "min-height: 42px; color: white; color: white; padding-left: 5px;", components: [
+			{kind: "Toolbar", height: "42px", defaultKind: "Control", onclick: "scrollToTop", content: "Home", style: "min-height: 42px; color: white; color: white; padding-left: 5px;", components: [
 				//gotta do this to get the header title to center and not be a button. "defaultKind" in Toolbar is key.
 				{name: "topLeftButton", kind: "ToolButton", style: "display: none"},
 				{name: "header", style: "padding: 0px 0px 5px 5px;", className: "truncating-text", content: ""},
@@ -37,7 +37,7 @@ enyo.kind({
 					onEntryClick: "entryClick"
 				}
 			]},
-			{kind: "Toolbar", height: "42px", style: "min-height: 42px; color: white;", components: [
+			{kind: "Toolbar", height: "42px", onclick: "scrollToBottom", style: "min-height: 42px; color: white;", components: [
 				{name: "moveColumnLeftButton", onclick: "doMoveColumnLeft", kind: "ToolButton", icon: "source/images/icon-back.png"},
 				{kind: "Spacer"},
 				{name: "refresh", kind: "ToolButton", icon: "source/images/icon-refresh.png", onclick:"loadNewer"},
@@ -253,6 +253,12 @@ enyo.kind({
 			// different item than last time, show the popup
 			this.$.entryClickPopup.showAtEvent(this.entries[inRowIndex], inEvent);
 		}
+	},
+	scrollToTop: function(){
+		this.$.list.punt();
+	},
+	scrollToBottom: function(){
+		//this.$.list.$.scroller.scrollToBottom();
 	},
 	resizeHandler: function(inHeight) {
 		this.$.list.applyStyle("height", window.innerHeight - 93 + "px"); // - 117 for fatter toolbars.
