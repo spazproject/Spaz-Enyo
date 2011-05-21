@@ -59,6 +59,12 @@ a:active,
 	padding: 0px 5px 0px 0px;
 }
 
+.viewManagement {
+	min-height: 30px;
+	height: 30px;
+	padding-left: 2px;
+}
+
 .entry-view .repost-outer {
 	text-align: center;
 	padding-bottom: 8px;

@@ -190,6 +190,7 @@ enyo.kind({
 		}, this);
 		//self.inherited(arguments);
 	},
+
 	showEntryView: function(inSender, inEntry){
 		console.log("showing entryView");
 		if(!this.$.entryview){
@@ -197,7 +198,9 @@ enyo.kind({
 			this.createComponent({
 				name: "entryview", 
 				kind: "Spaz.EntryView", 
-				onDestroy: "destroyEntryView" 
+				onDestroy: "destroyEntryView" ,
+				onAddViewEvent: "addViewEvent",
+				onGoPreviousViewEvent: "goPreviousViewEvent"
 			}, {owner: this});
 			this.$.entryview.render();
 			
@@ -205,7 +208,7 @@ enyo.kind({
 
 		} 
 		if(this.$.userview){
-			this.destroyUserView();
+			this.destroyUserView(true);
 		}
 		this.$.entryview.setEntry(inEntry);
 		
@@ -213,6 +216,9 @@ enyo.kind({
 
 	"destroyEntryView": function(inSender, inEvent){
 		this.$.entryview.destroy();
+		if(inSender !== true){
+			this.viewEvents = [];
+		}
 
 		//this.render();
 		//this.$.container.refreshList();
@@ -221,23 +227,52 @@ enyo.kind({
 	showUserView: function(inSender, inUsername, inService, inAccountId) {
 		console.log("showing entryView");
 		if(!this.$.userview){
-			this.createComponent({name: "userview", kind: "Spaz.UserView", onDestroy: "destroyUserView"}, {owner: this});
+			this.createComponent(
+				{
+					name: "userview", 
+					kind: "Spaz.UserView", 
+					onDestroy: "destroyUserView",
+					onAddViewEvent: "addViewEvent",
+					onGoPreviousViewEvent: "goPreviousViewEvent"
+				}, 
+				{owner: this}
+			);
 			this.$.userview.render();			
 			//this.$.container.refreshList();
 
 		} 
 		if(this.$.entryview){
-			this.destroyEntryView();
+			this.destroyEntryView(true);
 		}
 		this.$.userview.showUser(inUsername, inService, inAccountId);
 			
 	},
-	
 	"destroyUserView": function(inSender, inEvent){
 		this.$.userview.destroy();
-
+		if(inSender !== true){
+			this.viewEvents = [];
+		}
 		//this.render();
 		//this.$.container.refreshList();
+	},
+	viewEvents: [],
+	addViewEvent: function(inSender, inEvent){
+		this.viewEvents.push(inEvent);
+		return this.viewEvents;
+		console.log("pushed event");
+		console.log(inEvent);		
+	},
+	goPreviousViewEvent: function(inSender){
+		this.viewEvents.pop(); //get rid of current level
+		var event = this.viewEvents.pop(); // get rid of the level you are going to. it will be re-added automatically 
+		switch(event.type){
+			case "user":
+				AppUI.viewUser(event.user.username, event.user.type, event.user.account_id);
+				break;
+			case "entry":
+				AppUI.viewEntry(event.entry);
+				break;
+		}
 	},
 	createColumn: function(inSender, inAccountId, inColumn, inQuery){
 		this.$.container.createColumn(inAccountId, inColumn, inQuery);	

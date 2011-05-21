@@ -6,10 +6,18 @@ enyo.kind({
 		entry: {}
 	},
 	events: {
+		onAddViewEvent: "",
+		onGoPreviousViewEvent: "",
 		onDestroy: "",
 	},
 	components: [
 		{className: "entry-view", width: "322px", height: "100%", layoutKind: "VFlexLayout", components: [
+			{name: "viewManagement", kind: "Toolbar", defaultKind: "Control", onclick: "doGoPreviousViewEvent", className: "viewManagement truncating-text", showing: false, content: "", components: [
+				{name: "leftArrowIcon", kind: "Image", src: "source/images/icon-back.png", style: "position: relative; bottom: 1px;"},
+				{name: "viewManagementText", content: "Hi", style: "color: #ccc; font-size: 14px;"},
+				{kind: "Spacer"}
+
+			]},
 			{kind: "Header", width: "322px", components: [
 				{kind: "VFlexBox", className: "header", components: [
 					{kind: "HFlexBox", width: "322px", components: [
@@ -59,6 +67,24 @@ enyo.kind({
 	],
 	entryChanged: function(){
 		if(this.$.entry.content !== this.entry.message){
+
+			var events = this.doAddViewEvent({type: "entry", entry: this.entry});
+		    if(events.length > 1){
+		    	this.$.viewManagement.setShowing(true);
+		    	var lastEvent = events[events.length-2];
+		    	switch (lastEvent.type){
+		    		case "user":
+			    		this.$.viewManagementText.setContent("Back to @" + lastEvent.user.username);
+		    			break;
+		    		case "entry":
+			    		this.$.viewManagementText.setContent("Back to @" + lastEvent.entry.author_username + "'s Entry");
+		    			break;
+		    	
+		    	}
+		    } else {
+		    	this.$.viewManagement.setShowing(false);		    	
+		    }
+
 		    this.$.detail_scroller.setScrollPositionDirect(0,0);
 		    
 			this.$.image.setSrc(this.entry.author_avatar_bigger);
