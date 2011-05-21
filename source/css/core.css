@@ -18,7 +18,8 @@ a,
 a:active,
 .hashtag:active,
 .link:active,
-.username:active {
+.username:active,
+.underlineOnClick:active {
 	text-decoration: underline;
 }
 

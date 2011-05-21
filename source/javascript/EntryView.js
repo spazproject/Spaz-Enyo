@@ -14,7 +14,7 @@ enyo.kind({
 		{className: "entry-view", width: "322px", height: "100%", layoutKind: "VFlexLayout", components: [
 			{name: "viewManagement", kind: "Toolbar", defaultKind: "Control", onclick: "doGoPreviousViewEvent", className: "viewManagement truncating-text", showing: false, content: "", components: [
 				{name: "leftArrowIcon", kind: "Image", src: "source/images/icon-back.png", style: "position: relative; bottom: 1px;"},
-				{name: "viewManagementText", content: "Hi", style: "color: #ccc; font-size: 14px;"},
+				{name: "viewManagementText", content: "", className: "underlineOnClick", style: "color: #ccc; font-size: 14px;"},
 				{kind: "Spacer"}
 
 			]},
