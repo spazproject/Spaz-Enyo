@@ -11,11 +11,19 @@ enyo.kind({
 		user: ''
 	},
 	events: {
+		onAddViewEvent: "",
+		onGoPreviousViewEvent: "",
 		onDestroy: ""
 	},
 	components: [
 		{name: "user_view", className: "user-view", width: "322px", height: "100%", layoutKind: "VFlexLayout", components: [
-		    {name: "content", layoutKind: "VFlexLayout", flex: 1, components: [
+			{name: "viewManagement", kind: "Toolbar", defaultKind: "Control", onclick: "doGoPreviousViewEvent", className: "viewManagement truncating-text", showing: false, content: "", components: [
+				{name: "leftArrowIcon", kind: "Image", src: "source/images/icon-back.png", style: "position: relative; bottom: 1px;"},
+				{name: "viewManagementText", content: "", className: "underlineOnClick", style: "color: #ccc; font-size: 14px;"},
+				{kind: "Spacer"}
+
+			]},		   
+			{name: "content", layoutKind: "VFlexLayout", flex: 1, components: [
 		        {kind: "Header", width: "322px", components: [
         			{kind: "VFlexBox", className: "header", components: [
         				{kind: "HFlexBox", width: "322px", components: [
@@ -90,9 +98,27 @@ enyo.kind({
 		);
 	},
 	
-	userChanged: function(){
+	userChanged: function(inOldValue){
 		
 		if(this.$.username.getContent() !== "@" + this.user.username){
+							
+			var events = this.doAddViewEvent({type: "user", user: this.user});
+		   	if(events.length > 1){
+		    	this.$.viewManagement.setShowing(true);
+		    	var lastEvent = events[events.length-2];
+		    	switch (lastEvent.type){
+		    		case "user":
+			    		this.$.viewManagementText.setContent("Back to @" + lastEvent.user.username);
+		    			break;
+		    		case "entry":
+			    		this.$.viewManagementText.setContent("Back to @" + lastEvent.entry.author_username + "'s Entry");
+		    			break;
+		    	
+		    	}
+		    } else {
+		    	this.$.viewManagement.setShowing(false);		    	
+		    }
+
 			this.$.image.setSrc(this.user.avatar_bigger);
 			this.$.image.applyStyle("display", null);			
 			this.$.realname.setContent(this.user.fullname||this.user.username);

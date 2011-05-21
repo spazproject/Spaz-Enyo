@@ -18,7 +18,8 @@ a,
 a:active,
 .hashtag:active,
 .link:active,
-.username:active {
+.username:active,
+.underlineOnClick:active {
 	text-decoration: underline;
 }
 
@@ -57,6 +58,12 @@ a:active,
 /* fixes padding */
 .enyo-header-inner {
 	padding: 0px 5px 0px 0px;
+}
+
+.viewManagement {
+	min-height: 30px;
+	height: 30px;
+	padding-left: 2px;
 }
 
 .entry-view .repost-outer {
