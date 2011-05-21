@@ -88,12 +88,6 @@ a:active,
 .user-view .header {
 	padding: 5px 10px 10px 10px;
 }
-.entry-view .author-username,
-.entry-view .author-realname,
-.user-view .author-username,
-.user-view .author-realname {
-	padding-left: 10px;
-}
 .entry-view .author-realname,
 .user-view .author-realname {
 	font-weight: bold;
