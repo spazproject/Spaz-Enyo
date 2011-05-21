@@ -33,7 +33,7 @@ enyo.kind({
 
         			]},
         		]},
-    			{kind: "RadioGroup", onChange: "switchDataType", width: "310px", style: "padding-left: 10px; padding-top: 7px;", components: [
+    			{name: "radioGroup", kind: "RadioGroup", onChange: "switchDataType", width: "310px", style: "padding-left: 10px; padding-top: 7px;", components: [
     			    {name: "entries", kind: "Spaz.RadioButton", label: "Entries", number: ""},
     			    {name: "followers", kind: "Spaz.RadioButton", label: "Followers", number: ""},
     			    {name: "friends", kind: "Spaz.RadioButton", label: "Following", number: ""}
@@ -46,13 +46,12 @@ enyo.kind({
 						{
 							name: "item", 
 							kind: "Spaz.Entry",
-							//onEntryClick: "entryClick"
+							onEntryClick: "entryClick"
 						}
-    				]},
-				
-    	        ]}
-		    ]},
-		    
+					]}
+				]}
+			]},
+			
         	{name: "loading", layoutKind: "VFlexLayout", align: "center", pack: "center", flex: 1, components: [
     			{kind: "SpinnerLarge"}
     		]},
@@ -62,10 +61,11 @@ enyo.kind({
 				{kind: "Spacer"},
 				{kind: "ToolButton", name: "follow", disabled: false, content: "Follow"},
 				{kind: "Spacer"}
-			]}
+			]},
+			
+			{name: "entryClickPopup", kind: "Spaz.EntryClickPopup"}
 		]}
 	],
-	
 	
 	showLoading: function(inShowing) {
 	    this.$.content.setShowing(!inShowing);
@@ -75,20 +75,18 @@ enyo.kind({
 	},
 	
 	showUser: function(inUsername, inService, inAccountId) {
-		var self = this;
-		
-		self.showLoading(true);
-		
+		this.showLoading(true);
+		this.account_id = inAccountId;
 		window.AppCache.getUser(inUsername, inService, inAccountId,
-			function(user) {
-				self.setUser(user);
-        		self.showLoading(false);
-			},
-			function() {
+			enyo.bind(this, function(user) {
+				this.setUser(user);
+				this.showLoading(false);
+			}),
+			enyo.bind(this, function() {
 				AppUtils.showBanner("Error loading user info for "+inUsername);
-        		self.showLoading(false);
+				self.showLoading(false);
 				self.doDestroy();
-			}
+			})
 		);
 	},
 	
@@ -107,7 +105,9 @@ enyo.kind({
 				case SPAZCORE_SERVICE_TWITTER:
 					this.$.followers.setNumber(this.user._orig.followers_count);
 					this.$.friends.setNumber(this.user._orig.friends_count);
-					this.$.entries.setNumber(this.user._orig.statuses_count);	
+					this.$.entries.setNumber(this.user._orig.statuses_count);
+					this.$.radioGroup.setValue(0);
+					this.switchDataType(this.$.radioGroup);
 					break;
 			}
 			
@@ -126,29 +126,36 @@ enyo.kind({
 		this.dataType = this.$.radioGroup.components[inSender.getValue()].name;
 		switch(this.dataType){
 			case "entries":
-				//get Items
-				//@TODO create/delete item component based on choice.
+				AppUtils.makeTwitObj(this.account_id).getUserTimeline(this.user.service_id, null, null,
+					enyo.bind(this, function(data) {
+						this.items = AppUtils.convertToEntries(data.reverse());
+						this.$.list.render();
+					}),
+					enyo.bind(this, function() {
+						AppUtils.showBanner("Error loading entries for " + this.$.username.getContent());
+					}));
 				break;
 			case "followers":
-
 				break;
 			case "friends":
-
 				break;
-
 		}
+		this.$.scroller.start();
 		this.$.list.render();
 
 	},
 	loadItem: function(inSender, inIndex){
 		if (this.items[inIndex]) {
-			var item = this.items[inIndex];
 			switch(this.dataType){
 				case "entries":
-					this.$.item.setEntry(entry);
+					this.$.item.setEntry(this.items[inIndex]);
 					break;
 			}
 			return true;
 		}
-	}
+	},
+	
+	entryClick: function(inSender, inEvent){
+		this.$.entryClickPopup.showAtEvent(inSender.entry, inEvent);
+	},
 });
