@@ -22,7 +22,7 @@ enyo.kind({
 	},
 	components: [
 		{layoutKind: "VFlexLayout", components: [
-			{kind: "Toolbar", defaultKind: "Control", content: "Home", style: "color: white; color: white; padding-left: 5px;", components: [
+			{kind: "Toolbar", height: "42px", defaultKind: "Control", content: "Home", style: "min-height: 42px; color: white; color: white; padding-left: 5px;", components: [
 				//gotta do this to get the header title to center and not be a button. "defaultKind" in Toolbar is key.
 				{name: "topLeftButton", kind: "ToolButton", style: "display: none"},
 				{name: "header", style: "padding: 0px 0px 5px 5px;", className: "truncating-text", content: ""},
@@ -37,7 +37,7 @@ enyo.kind({
 					onEntryClick: "entryClick"
 				}
 			]},
-			{kind: "Toolbar", style: "color: white;", components: [
+			{kind: "Toolbar", height: "42px", style: "min-height: 42px; color: white;", components: [
 				{name: "moveColumnLeftButton", onclick: "doMoveColumnLeft", kind: "ToolButton", icon: "source/images/icon-back.png"},
 				{kind: "Spacer"},
 				{name: "refresh", kind: "ToolButton", icon: "source/images/icon-refresh.png", onclick:"loadNewer"},
@@ -248,7 +248,7 @@ enyo.kind({
 		}
 	},
 	resizeHandler: function(inHeight) {
-		this.$.list.applyStyle("height", window.innerHeight - 117 + "px");
+		this.$.list.applyStyle("height", window.innerHeight - 93 + "px"); // - 117 for fatter toolbars.
 		this.$.list.resizeHandler();
 	},
 	rendered: function() {

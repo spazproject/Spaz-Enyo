@@ -1,6 +1,6 @@
 enyo.kind({
 	name: "Spaz.Sidebar",
-	width: "50px",
+	//width: "50px",
 	kind: "VFlexBox",
 	className: "enyo-toolbar-vertical",
 	events: {
