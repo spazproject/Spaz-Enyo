@@ -42,6 +42,7 @@ a:active,
 }
 .entry .text {
 	font-size: 13px;
+	padding-right: 2px;
 }
 .entry .action-separator {
 	width: 12px;

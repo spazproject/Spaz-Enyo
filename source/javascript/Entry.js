@@ -60,8 +60,10 @@ enyo.kind({
 		if(_.includes(className, "username")){
 			var username = inEvent.target.getAttribute('data-user-screen_name') || inEvent.target.innerText.replace("@", "");
 			AppUI.viewUser(username, this.entry.service, this.entry.account_id);
-		} else if(_.includes(className, "avatar")){
+		} else if(className === "avatar"){
 			AppUI.viewUser(this.entry.author_username, this.entry.service, this.entry.account_id);
+		} else if(className === "small-avatar"){
+			AppUI.viewUser(this.entry.reposter_username, this.entry.service, this.entry.account_id);
 		} else if(_.includes(className, "hashtag")){
 			AppUI.search(inEvent.target.innerText, this.entry.account_id);
 		} else if(!inEvent.target.getAttribute("href")){ //if not a link, send out a general tap event

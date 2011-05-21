@@ -39,7 +39,7 @@ enyo.kind({
 								{name: "from"}
 							]
 						},
-						{name: "repost", className: "repost-outer", showing: false},
+						{name: "repost", className: "repost-outer", onclick: "entryClick", showing: false},
 						{kind: "ActivityButton", name: "conversation_button", onclick: "toggleDrawer", toggling: true, content: "View Conversation"},
 						{kind: "Drawer", name: "conversation_drawer", /*caption: "Conversation",*/ open: false, onOpenChanged: "onConversationOpenChanged", components: [
 						    {kind: "Spaz.Conversation", name: "conversation", onStart: "onConversationLoadStart", onDone: "onConversationLoadDone"}
