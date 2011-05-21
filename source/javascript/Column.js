@@ -22,7 +22,7 @@ enyo.kind({
 	},
 	components: [
 		{layoutKind: "VFlexLayout", components: [
-			{kind: "Toolbar", height: "42px", defaultKind: "Control", content: "Home", style: "min-height: 42px; color: white; color: white; padding-left: 5px;", components: [
+			{kind: "Toolbar", height: "42px", defaultKind: "Control", onclick: "scrollToTop", content: "Home", style: "min-height: 42px; color: white; color: white; padding-left: 5px;", components: [
 				//gotta do this to get the header title to center and not be a button. "defaultKind" in Toolbar is key.
 				{name: "topLeftButton", kind: "ToolButton", style: "display: none"},
 				{name: "header", style: "padding: 0px 0px 5px 5px;", className: "truncating-text", content: ""},
@@ -37,7 +37,7 @@ enyo.kind({
 					onEntryClick: "entryClick"
 				}
 			]},
-			{kind: "Toolbar", height: "42px", style: "min-height: 42px; color: white;", components: [
+			{kind: "Toolbar", height: "42px", onclick: "scrollToBottom", style: "min-height: 42px; color: white;", components: [
 				{name: "moveColumnLeftButton", onclick: "doMoveColumnLeft", kind: "ToolButton", icon: "source/images/icon-back.png"},
 				{kind: "Spacer"},
 				{name: "refresh", kind: "ToolButton", icon: "source/images/icon-refresh.png", onclick:"loadNewer"},
@@ -204,11 +204,11 @@ enyo.kind({
 					/* convert to our internal format */
 					data = AppUtils.convertToEntries(data);
 					
-
+					/* concat to existing entries */
 					this.entries = [].concat(data.reverse(), this.entries);
-					this.entries.sort(function(a,b){
-						return b.service_id - a.service_id; // newest first
-					});
+					
+					/* sort our good stuff */
+					this.sortEntries();
 					
 					// add in the account used to get this entry. this seems sloppy here.
 					for (var j = this.entries.length - 1; j >= 0; j--){
@@ -229,6 +229,13 @@ enyo.kind({
 			}
 		}
 	},
+	
+	sortEntries: function() {
+		this.entries.sort(function(a,b){
+			return b.service_id - a.service_id; // newest first
+		});
+	},
+	
 	setupRow: function(inSender, inIndex) {
 		if (this.entries[inIndex]) {
 			var entry = this.entries[inIndex];
@@ -246,6 +253,12 @@ enyo.kind({
 			// different item than last time, show the popup
 			this.$.entryClickPopup.showAtEvent(this.entries[inRowIndex], inEvent);
 		}
+	},
+	scrollToTop: function(){
+		this.$.list.punt();
+	},
+	scrollToBottom: function(){
+		//this.$.list.$.scroller.scrollToBottom();
 	},
 	resizeHandler: function(inHeight) {
 		this.$.list.applyStyle("height", window.innerHeight - 93 + "px"); // - 117 for fatter toolbars.
