@@ -32,7 +32,7 @@ enyo.kind({
         					{kind: "VFlexBox", height: "75px", flex: 1, components: [
         						{name: "realname", className: "author-realname truncating-text"},
         						{name: "username", className: "author-username"},
-        						{name: "url", style: "padding-left: 10px;", className: "small"}
+        						{name: "url", className: "small"}
         					]},	
         					{kind: "ToolButton", icon: "source/images/icon-close.png", style: "position: relative; bottom: 10px; right: 10px; float: right;", onclick: "doDestroy"}	
         				]},

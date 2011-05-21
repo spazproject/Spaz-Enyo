@@ -24,11 +24,9 @@ enyo.kind({
 						{kind: "Image", width: "75px",  height: "75px", className: "avatar"},
 						{width: "10px"},
 						{kind: "VFlexBox", height: "75px", flex: 1, components: [
-							{kind: "Spacer"},
-							{name: "realname", flex: 3, className: "author-realname truncating-text"},
-							{name: "username", onclick: "entryClick", flex: 3, className: "link author-username"},
-							{kind: "Spacer"}
-
+							{name: "realname", className: "author-realname truncating-text"},
+							{name: "username", onclick: "entryClick", className: "link author-username"},
+							{name: "url", className: "small"}
 						]},	
 						{kind: "ToolButton", icon: "source/images/icon-close.png", style: "position: relative; bottom: 10px; right: 10px; float: right;", onclick: "doDestroy"}	
 					]},
@@ -92,6 +90,8 @@ enyo.kind({
 			this.$.image.applyStyle("display", "");			
 			this.$.realname.setContent(this.entry.author_fullname||this.entry.author_username);
 			this.$.username.setContent("@" + this.entry.author_username);
+			var url = this.entry._orig.user.url || '';
+			this.$.url.setContent(sch.autolink(enyo.string.runTextIndexer(url)), url.length);
 			this.$.bio.setContent(this.entry.author_description||'');
 			this.$.time.setContent(sch.getRelativeTime(this.entry.publish_date));
 			if (this.entry._orig.source) {
