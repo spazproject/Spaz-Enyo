@@ -29,11 +29,9 @@ enyo.kind({
         				{kind: "HFlexBox", width: "322px", components: [
         					{kind: "Image", width: "75px",  height: "75px", className: "avatar"},
         					{kind: "VFlexBox", height: "75px", flex: 1, components: [
-        						{kind: "Spacer"},
-        						{name: "realname", flex: 3, className: "author-realname truncating-text"},
-        						{name: "username", flex: 3, className: "author-username"},
-        						{kind: "Spacer"}
-
+        						{name: "realname", className: "author-realname truncating-text"},
+        						{name: "username", className: "author-username"},
+        						{name: "url", style: "padding-left: 10px;", className: "small"}
         					]},	
         					{kind: "ToolButton", icon: "source/images/icon-close.png", style: "position: relative; bottom: 10px; right: 10px; float: right;", onclick: "doDestroy"}	
         				]},
@@ -134,6 +132,8 @@ enyo.kind({
 					this.$.entries.setNumber(this.user._orig.statuses_count);
 					this.$.radioGroup.setValue(0);
 					this.switchDataType(this.$.radioGroup);
+					var url = this.user._orig.url || '';
+					this.$.url.setContent(sch.autolink(enyo.string.runTextIndexer(url)), url.length);
 					break;
 			}
 			
