@@ -331,11 +331,11 @@ AppUtils.convertToEntry = function(item) {
 					
 					entry.is_repost = true;
 					
-					entry.service_id    = item.retweeted_status.id;
 					entry.text          = item.retweeted_status.text;
 					entry.text_raw      = item.retweeted_status.text;
 					
 					entry.repost_orig_date  = sc.helpers.httpTimeToInt(item.retweeted_status.created_at);
+					entry.repost_orig_id    = item.retweeted_status.id;
 					
 					entry.author_username = item.retweeted_status.user.screen_name;
 					entry.author_description = item.retweeted_status.user.description;
