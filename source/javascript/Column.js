@@ -204,11 +204,11 @@ enyo.kind({
 					/* convert to our internal format */
 					data = AppUtils.convertToEntries(data);
 					
-
+					/* concat to existing entries */
 					this.entries = [].concat(data.reverse(), this.entries);
-					this.entries.sort(function(a,b){
-						return b.service_id - a.service_id; // newest first
-					});
+					
+					/* sort our good stuff */
+					this.sortEntries();
 					
 					// add in the account used to get this entry. this seems sloppy here.
 					for (var j = this.entries.length - 1; j >= 0; j--){
@@ -229,6 +229,13 @@ enyo.kind({
 			}
 		}
 	},
+	
+	sortEntries: function() {
+		this.entries.sort(function(a,b){
+			return b.service_id - a.service_id; // newest first
+		});
+	},
+	
 	setupRow: function(inSender, inIndex) {
 		if (this.entries[inIndex]) {
 			var entry = this.entries[inIndex];
