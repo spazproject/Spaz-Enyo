@@ -19,7 +19,7 @@ enyo.kind({
 		{layoutKind: "HFlexLayout", components: [
 			{name: "composeHeader", content: "New Entry", style: "padding-bottom: 0px"},
 			{kind: "Spacer"},
-			{kind: "ToolButton", icon: "source/images/icon-close.png", style: "position: relative; bottom: 7px;", onclick: "doClose"}
+			{name: "closeButton", kind: "ToolButton", icon: "source/images/icon-close.png", style: "position: relative; bottom: 7px;", onclick: "doClose"}
 		]},
 		{kind: "HFlexBox", name: "inReplyEntryText", content: "", style: "color:#666666; font-size:14px; padding-bottom:1em;" },
 		{kind: "Control", style: "min-height: 50px", components: [
@@ -137,14 +137,14 @@ enyo.kind({
 
 	onSendClick: function(inSender) {
 		this.$.sendButton.setActive(true);
-		this.$.sendButton.setDisabled(true);
+		this.setAllDisabled(true);
 		
 		if (this.isDM) {
 			this.twit.sendDirectMessage('@'+this.dmUser, this.$.postTextBox.getValue(),
 				enyo.bind(this, function() {
 					this.$.postTextBox.setValue('');
 					this.$.sendButton.setActive(false);
-					this.$.sendButton.setDisabled(false);
+					this.setAllDisabled(false);
 					AppUI.refresh();
 					this.close();
 				}),
@@ -152,7 +152,7 @@ enyo.kind({
 					//@TODO report error info
 					AppUtils.showBanner('Sending failed');
 					this.$.sendButton.setActive(false);
-					this.$.sendButton.setDisabled(false);
+					this.setAllDisabled(false);
 				})
 			);			
 		} else {
@@ -160,7 +160,7 @@ enyo.kind({
 				enyo.bind(this, function() {
 					this.$.postTextBox.setValue('');
 					this.$.sendButton.setActive(false);
-					this.$.sendButton.setDisabled(false);
+					this.setAllDisabled(false);
 					AppUI.refresh();
 					this.close();
 				}),
@@ -168,7 +168,7 @@ enyo.kind({
 					//@TODO report error info
 					AppUtils.showBanner('Sending failed');
 					this.$.sendButton.setActive(false);
-					this.$.sendButton.setDisabled(false);
+					this.setAllDisabled(false);
 				})
 			);			
 		}
@@ -415,8 +415,17 @@ enyo.kind({
 			'message':null,
 			'account_id':null
 		}, opts);
+	},
+	
+	setAllDisabled: function(inDisabled) {
+		enyo.forEach (this.getComponents(),
+			function(component) {
+				// The closeButton should always remain enabled
+				if ((component.setDisabled) && (component.getName() !== "closeButton")) {
+					component.setDisabled(inDisabled);
+				}
+			}
+		);
 	}
-	
-	
 });
 
