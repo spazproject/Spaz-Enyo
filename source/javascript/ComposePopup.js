@@ -244,6 +244,12 @@ enyo.kind({
 	},
 	
 	postTextBoxKeydown: function(inSender, inEvent) {
+		// RichText.setDisabled(true) doesn't really work, so we'll check
+		// if the control is disabled and throw out the event if it is.
+		if (inSender.getDisabled()) {
+			inEvent.preventDefault();
+			return;
+		}
 		if (inEvent.keyCode === 13) {
 			if(this.$.sendButton.disabled === false){
 				// Enter to send - this should be a pref evenutally.
