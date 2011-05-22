@@ -30,9 +30,11 @@ enyo.kind({
         					{kind: "Image", width: "75px",  height: "75px", className: "avatar"},
 							{width: "10px"},
         					{kind: "VFlexBox", height: "75px", flex: 1, components: [
+        						{kind: "Spacer"},
         						{name: "realname", className: "author-realname truncating-text"},
         						{name: "username", className: "author-username"},
-        						{name: "url", className: "small"}
+        						{name: "url", className: "small"},
+        						{kind: "Spacer"}
         					]},	
         					{kind: "ToolButton", icon: "source/images/icon-close.png", style: "position: relative; bottom: 10px; right: 10px; float: right;", onclick: "doDestroy"}	
         				]},
@@ -56,13 +58,15 @@ enyo.kind({
 							onEntryClick: "entryClick"
 						},
 						{
-							name: "userItem", kind: "enyo.Item", onclick: "userItemClick", components: [
+							name: "userItem", kind: "enyo.Item", tapHighlight: true, onclick: "userItemClick", components: [
 								{kind: "enyo.HFlexBox", components: [
 									{name: "userAvatar", kind: "enyo.Image", width: "48px", height: "48px", className: "small-avatar"},
 									{width: "10px"},
-									{kind: "enyo.VFlexBox", flex: 1, components: [
+									{kind: "enyo.VFlexBox", height: "48px", flex: 1, components: [
+										{kind: "Spacer"},
 										{name: "userRealname", style: "font-weight: bold; font-size: 16px;", className: "truncating-text"},
-										{name: "userUsername", style: "font-weight: bold; font-size: 14px;"}
+										{name: "userUsername", style: "font-weight: normal; font-size: 14px;"},
+										{kind: "Spacer"}
 									]}
 								]}
 							]

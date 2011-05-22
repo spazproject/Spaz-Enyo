@@ -24,9 +24,11 @@ enyo.kind({
 						{kind: "Image", width: "75px",  height: "75px", className: "avatar"},
 						{width: "10px"},
 						{kind: "VFlexBox", height: "75px", flex: 1, components: [
-							{name: "realname", className: "author-realname truncating-text"},
-							{name: "username", onclick: "entryClick", className: "link author-username"},
-							{name: "url", className: "small"}
+							{kind: "Spacer"},
+    						{name: "realname", className: "author-realname truncating-text"},
+    						{name: "username", className: "author-username"},
+    						{name: "url", className: "small"},
+    						{kind: "Spacer"}
 						]},	
 						{kind: "ToolButton", icon: "source/images/icon-close.png", style: "position: relative; bottom: 10px; right: 10px; float: right;", onclick: "doDestroy"}	
 					]},
