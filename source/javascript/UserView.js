@@ -56,7 +56,7 @@ enyo.kind({
 							onEntryClick: "entryClick"
 						},
 						{
-							name: "userItem", kind: "enyo.Item", components: [
+							name: "userItem", kind: "enyo.Item", onclick: "userItemClick", components: [
 								{kind: "enyo.HFlexBox", components: [
 									{name: "userAvatar", kind: "enyo.Image", width: "48px", height: "48px", className: "small-avatar"},
 									{width: "10px"},
@@ -229,4 +229,8 @@ enyo.kind({
 	entryClick: function(inSender, inEvent){
 		this.$.entryClickPopup.showAtEvent(inSender.entry, inEvent);
 	},
+	
+	userItemClick: function(inSender, inEvent) {
+		AppUI.viewUser(this.items[inEvent.rowIndex].screen_name, this.items[inEvent.rowIndex].SC_service, this.account_id);
+	}
 });
