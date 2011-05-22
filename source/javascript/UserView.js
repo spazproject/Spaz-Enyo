@@ -51,9 +51,21 @@ enyo.kind({
     		    {kind: "Scroller", flex: 1, className: "entry-view", components: [
     				{name: "list", kind: "VirtualRepeater", onGetItem: "loadItem", style: "", components: [
 						{
-							name: "item", 
+							name: "entryItem", 
 							kind: "Spaz.Entry",
 							onEntryClick: "entryClick"
+						},
+						{
+							name: "userItem", kind: "enyo.Item", components: [
+								{kind: "enyo.HFlexBox", components: [
+									{name: "userAvatar", kind: "enyo.Image", width: "48px", height: "48px", className: "small-avatar"},
+									{width: "10px"},
+									{kind: "enyo.VFlexBox", flex: 1, components: [
+										{name: "userRealname", style: "font-weight: bold; font-size: 16px;", className: "truncating-text"},
+										{name: "userUsername", style: "font-weight: bold; font-size: 14px;"}
+									]}
+								]}
+							]
 						}
 					]}
 				]}
@@ -91,8 +103,8 @@ enyo.kind({
 			}),
 			enyo.bind(this, function() {
 				AppUtils.showBanner("Error loading user info for "+inUsername);
-				self.showLoading(false);
-				self.doDestroy();
+				this.showLoading(false);
+				this.doDestroy();
 			})
 		);
 	},
@@ -131,10 +143,10 @@ enyo.kind({
 					this.$.followers.setNumber(this.user._orig.followers_count);
 					this.$.friends.setNumber(this.user._orig.friends_count);
 					this.$.entries.setNumber(this.user._orig.statuses_count);
-					this.$.radioGroup.setValue(0);
-					this.switchDataType(this.$.radioGroup);
 					var url = this.user._orig.url || '';
 					this.$.url.setContent(sch.autolink(enyo.string.runTextIndexer(url)), url.length);
+					this.$.radioGroup.setValue(0);
+					this.switchDataType(this.$.radioGroup);
 					break;
 			}
 			
@@ -155,16 +167,38 @@ enyo.kind({
 			case "entries":
 				AppUtils.makeTwitObj(this.account_id).getUserTimeline(this.user.service_id, null, null,
 					enyo.bind(this, function(data) {
+						this.showLoading(false);
 						this.items = AppUtils.convertToEntries(data.reverse());
 						this.$.list.render();
 					}),
 					enyo.bind(this, function() {
+						this.showLoading(false);
 						AppUtils.showBanner("Error loading entries for " + this.$.username.getContent());
 					}));
 				break;
 			case "followers":
+				AppUtils.makeTwitObj(this.account_id).getFollowersList(this.user.service_id, null,
+					enyo.bind(this, function(data) {
+						this.showLoading(false);
+						this.items = data;
+						this.$.list.render();
+					}),
+					enyo.bind(this, function() {
+						this.showLoading(false);
+						AppUtils.showBanner("Error loading followers for " + this.$.username.getContent());
+					}));
 				break;
 			case "friends":
+				AppUtils.makeTwitObj(this.account_id).getFriendsList(this.user.service_id, null,
+					enyo.bind(this, function(data) {
+						this.showLoading(false);
+						this.items = data;
+						this.$.list.render();
+					}),
+					enyo.bind(this, function() {
+						this.showLoading(false);
+						AppUtils.showBanner("Error loading friends for " + this.$.username.getContent());
+					}));
 				break;
 		}
 		this.$.scroller.start();
@@ -175,7 +209,17 @@ enyo.kind({
 		if (this.items[inIndex]) {
 			switch(this.dataType){
 				case "entries":
-					this.$.item.setEntry(this.items[inIndex]);
+					this.$.entryItem.setShowing(true);
+					this.$.userItem.setShowing(false);
+					this.$.entryItem.setEntry(this.items[inIndex]);
+					break;
+				case "followers":
+				case "friends":
+					this.$.entryItem.setShowing(false);
+					this.$.userItem.setShowing(true);
+					this.$.userAvatar.setSrc(this.items[inIndex].profile_image_url);
+					this.$.userRealname.setContent(this.items[inIndex].name);
+					this.$.userUsername.setContent("@" + this.items[inIndex].screen_name);
 					break;
 			}
 			return true;
