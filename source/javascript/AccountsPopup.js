@@ -130,11 +130,9 @@ enyo.kind({
 				this.createComponents([
 					{name: "secondLevel", components: [	
 						{kind: "Group", components: [
+							{kind: "ActivityButton", caption: "Get Authorization", onclick: "getPinAuthorization"},
 							{kind: "Item", components: [
-								{name: "username", kind: "Input", hint: "username", autoCapitalize: "lowercase", autocorrect: false, spellcheck: false},
-							]},
-							{kind: "Item", components: [
-								{name: "password", kind: "PasswordInput", hint: "password"},
+								{name: "pinInput", kind: "Input", hint: "Pin Number", autoKeyModifier: "num-lock", autoCapitalize: "lowercase", autocorrect: false, spellcheck: false}	
 							]},							
 						]},
 						{kind: "HFlexBox", components: [
@@ -211,9 +209,17 @@ enyo.kind({
 		} else {
 			this.editing_acc_id = null;
 		}
+	},
+	getPinAuthorization: function(inSender, inEvent){
+		//launch browser.
+		inSender.setActive(true);
+		//get stuff
+		var r = new enyo.PalmService();
+			r.service = "palm://com.palm.applicationManager/";
+			r.method = "open";
+			r.call({target: 'http://www.cnn.com'});
 		
-
-	
+		inSender.setActive(false);
 	},
 	"saveAccount": function(inSender, inEvent){
 		var self = this;
