@@ -51,6 +51,9 @@ enyo.kind({
     			]},
     			//{layoutKind: "HFlexLayout", pack: "center", components: [
     		    {kind: "Scroller", flex: 1, className: "entry-view", components: [
+    		    	{layoutKind: "VFlexLayout", align: "center", pack: "center", flex: 1, components: [
+		    			{name: "listSpinner", kind: "SpinnerLarge"}
+		    		]},
     				{name: "list", kind: "VirtualRepeater", onGetItem: "loadItem", style: "", components: [
 						{
 							name: "entryItem", 
@@ -91,12 +94,16 @@ enyo.kind({
 	],
 	
 	showLoading: function(inShowing) {
-	    this.$.content.setShowing(!inShowing);
+	   	this.$.content.setShowing(!inShowing);
 	    this.$.follow.setShowing(!inShowing);
 		this.$.loading.setShowing(inShowing);
 		this.$.spinnerLarge.setShowing(inShowing);
 	},
-	
+
+	showSpinner: function(inShowing) {
+		this.$.listSpinner.setShowing(inShowing);		
+	},
+
 	showUser: function(inUsername, inService, inAccountId) {
 		this.showLoading(true);
 		this.account_id = inAccountId;
@@ -166,41 +173,46 @@ enyo.kind({
 	},
 	items: [],
 	switchDataType: function(inSender){
+		this.showSpinner(true);
+		this.items = [];
 		this.dataType = this.$.radioGroup.components[inSender.getValue()].name;
 		switch(this.dataType){
 			case "entries":
 				AppUtils.makeTwitObj(this.account_id).getUserTimeline(this.user.service_id, null, null,
 					enyo.bind(this, function(data) {
-						this.showLoading(false);
+						this.showSpinner(false);
 						this.items = AppUtils.convertToEntries(data.reverse());
 						this.$.list.render();
+						this.$.scroller.setScrollTop(0);
 					}),
 					enyo.bind(this, function() {
-						this.showLoading(false);
+						this.showSpinner(false);
 						AppUtils.showBanner("Error loading entries for " + this.$.username.getContent());
 					}));
 				break;
 			case "followers":
 				AppUtils.makeTwitObj(this.account_id).getFollowersList(this.user.service_id, null,
 					enyo.bind(this, function(data) {
-						this.showLoading(false);
+						this.showSpinner(false);
 						this.items = data;
 						this.$.list.render();
+						this.$.scroller.setScrollTop(0);
 					}),
 					enyo.bind(this, function() {
-						this.showLoading(false);
+						this.showSpinner(false);
 						AppUtils.showBanner("Error loading followers for " + this.$.username.getContent());
 					}));
 				break;
 			case "friends":
 				AppUtils.makeTwitObj(this.account_id).getFriendsList(this.user.service_id, null,
 					enyo.bind(this, function(data) {
-						this.showLoading(false);
+						this.showSpinner(false);
 						this.items = data;
 						this.$.list.render();
+						this.$.scroller.setScrollTop(0);
 					}),
 					enyo.bind(this, function() {
-						this.showLoading(false);
+						this.showSpinner(false);
 						AppUtils.showBanner("Error loading friends for " + this.$.username.getContent());
 					}));
 				break;
