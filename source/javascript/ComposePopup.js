@@ -23,7 +23,7 @@ enyo.kind({
 		]},
 		{kind: "HFlexBox", name: "inReplyEntryText", content: "", style: "color:#666666; font-size:14px; padding-bottom:1em;" },
 		{kind: "Control", style: "min-height: 50px", components: [
-			{name:"postTextBox", kind: "RichText", alwaysLooksFocused: true, richContent: false, multiline: true, flex: 1, oninput: "postTextBoxInput", hint: "Type message here...", onkeydown: "postTextBoxKeydown", components: [
+			{name:"postTextBox", kind: "RichText", alwaysLooksFocused: true, richContent: false, multiline: true, flex: 1, oninput: "postTextBoxInput", hint: "Type message here...", onkeydown: "postTextBoxKeydown", onfocus: "postTextBoxFocus", components: [
 				{name: "remaining", style: "color: grey; padding-left: 5px;", content: "140"}
 			]}
 		]},
@@ -259,6 +259,12 @@ enyo.kind({
 			
 		}
 	},
+
+	postTextBoxFocus: function(inSender, inEvent){
+		if(inSender.getDisabled()){
+			inSender.forceBlur();
+		}
+	},
 	
 	
 	compose: function(opts) {
@@ -432,6 +438,11 @@ enyo.kind({
 				}
 			}
 		);
+		if(inDisabled){
+			this.$.postTextBox.applyStyle("color", "gray");
+		} else {
+			this.$.postTextBox.applyStyle("color", "black");			
+		}
 	}
 });
 
