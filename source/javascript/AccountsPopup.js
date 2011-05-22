@@ -20,7 +20,15 @@ enyo.kind({
 		]},	
 		//very thin divider
 		{name: "accountsList", kind: "Spaz.AccountsList", onAccountClick: "viewAccountFromListTap"},
-		{kind: "Button", caption: "Add an Account", onclick: "newAccount"}
+		{kind: "Button", caption: "Add an Account", onclick: "newAccount"},
+		
+		{name: "typeButton", kind: "Button", style: "padding: 0px 5px;", showing: false, components: [
+		   {name: "type", "kind":"ListSelector", onChange: "changeService", className: "accountSelection", value: SPAZCORE_SERVICE_TWITTER, items: [
+				    {caption: "Twitter", value: SPAZCORE_SERVICE_TWITTER},
+				    {caption: "Identi.ca", value: SPAZCORE_SERVICE_IDENTICA},
+				    {caption: $L("Status.net/Custom"), value: SPAZCORE_SERVICE_CUSTOM},
+			]},	
+		]}
 	],
 	showAtCenter: function(){
 		this.openAtCenter();
@@ -30,8 +38,10 @@ enyo.kind({
 
 		this.$.header.destroyComponents();
 		
-		this.$.secondLevel.destroy();		
-
+		this.$.secondLevel.destroy();	
+		
+		this.$.typeButton.setShowing(false);
+	
 		this.createComponents(
 			[
 				{name: "accountsList", kind: "Spaz.AccountsList", onAccountClick: "viewAccountFromListTap"},
@@ -104,6 +114,9 @@ enyo.kind({
 		this.goDownLevel("new");
 		this.createAccountEditComponents();
 	},
+	changeService: function(inSender){
+		this.createAccountEditComponents();	
+	},
 	createAccountEditComponents: function(accountObject) {
 
 		// @TODO - show custom api url input if STATUSNET or CUSTOM
@@ -111,34 +124,67 @@ enyo.kind({
 		if (this.$.secondLevel) {
 			this.$.secondLevel.destroy();
 		}
-
-		this.createComponents([
-			{name: "secondLevel", components: [
-				{kind: "Group", components: [
-					{kind: "Item", components: [
-						{name: "username", kind: "Input", hint: "username", autoCapitalize: "lowercase", autocorrect: false, spellcheck: false},
-					]},
-					{kind: "Item", components: [
-						{name: "password", kind: "PasswordInput", hint: "password"},
-					]},
-					{kind: "Item", components: [
-						{name: "type", kind: "ListSelector", value: SPAZCORE_SERVICE_TWITTER, items: [
-						    {caption: "Twitter", value: SPAZCORE_SERVICE_TWITTER},
-						    {caption: "Identi.ca", value: SPAZCORE_SERVICE_IDENTICA},
-						    {caption: $L("Status.net/Custom"), value: SPAZCORE_SERVICE_CUSTOM},
-						]},					
-					]},
-					{kind: "Item", components: [
-						{name: "api_base_url", kind: "Input", hint: "Custom API URL"}
+		this.$.typeButton.setShowing(true);
+		switch(this.$.type.getValue()){
+			case SPAZCORE_SERVICE_TWITTER:
+				this.createComponents([
+					{name: "secondLevel", components: [	
+						{kind: "Group", components: [
+							{kind: "Item", components: [
+								{name: "username", kind: "Input", hint: "username", autoCapitalize: "lowercase", autocorrect: false, spellcheck: false},
+							]},
+							{kind: "Item", components: [
+								{name: "password", kind: "PasswordInput", hint: "password"},
+							]},							
+						]},
+						{kind: "HFlexBox", components: [
+							{kind: "Button", flex: 1, caption: "Cancel", onclick: "goTopLevel"},
+							{name: "saveButton", kind: "ActivityButton", flex: 1, caption: "Save", onclick: "saveAccount"}
+						]}
 					]}
-					
-				]},
-				{kind: "HFlexBox", components: [
-					{kind: "Button", flex: 1, caption: "Cancel", onclick: "goTopLevel"},
-					{name: "saveButton", kind: "ActivityButton", flex: 1, caption: "Save", onclick: "saveAccount"}
-				]}
-			]}
-		]);
+				]);
+				break;
+			case SPAZCORE_SERVICE_IDENTICA:
+				this.createComponents([
+					{name: "secondLevel", components: [	
+						{kind: "Group", components: [
+							{kind: "Item", components: [
+								{name: "username", kind: "Input", hint: "username", autoCapitalize: "lowercase", autocorrect: false, spellcheck: false},
+							]},
+							{kind: "Item", components: [
+								{name: "password", kind: "PasswordInput", hint: "password"},
+							]},							
+						]},
+						{kind: "HFlexBox", components: [
+							{kind: "Button", flex: 1, caption: "Cancel", onclick: "goTopLevel"},
+							{name: "saveButton", kind: "ActivityButton", flex: 1, caption: "Save", onclick: "saveAccount"}
+						]}
+					]}
+				]);
+				break;
+			case SPAZCORE_SERVICE_CUSTOM: 
+				this.createComponents([
+					{name: "secondLevel", components: [	
+						{kind: "Group", components: [
+							{kind: "Item", components: [
+								{name: "username", kind: "Input", hint: "username", autoCapitalize: "lowercase", autocorrect: false, spellcheck: false},
+							]},
+							{kind: "Item", components: [
+								{name: "password", kind: "PasswordInput", hint: "password"},
+							]},	
+							{kind: "Item", components: [
+								{name: "api_base_url", kind: "Input", hint: "Custom API URL"}
+							]}						
+						]},
+						{kind: "HFlexBox", components: [
+							{kind: "Button", flex: 1, caption: "Cancel", onclick: "goTopLevel"},
+							{name: "saveButton", kind: "ActivityButton", flex: 1, caption: "Save", onclick: "saveAccount"}
+						]}
+					]}
+				]);
+				break;
+
+		}		
 
 		this.render();
 
@@ -175,7 +221,7 @@ enyo.kind({
 		var type = this.$.type.getValue()
 			,username = this.$.username.getValue()
 			,password = this.$.password.getValue()
-			,api_base_url = this.$.api_base_url.getValue();
+			,api_base_url = (this.$.api_base_url) ? this.$.api_base_url.getValue() : null;
 
 		var twit = new SpazTwit();
 
@@ -250,7 +296,7 @@ enyo.kind({
 		this.$.promptRemoveAccount.destroy();
 		this.$.removeAccountFlexBox.createComponents([
 			{kind: "Button", flex: 1, content: "Cancel", onclick: "goBackToViewAccount", owner: this},
-			{kind: "Button", flex: 1, content: "Are you Sure?", className: "enyo-button-negative", onclick: "removeAccount", owner: this}
+			{kind: "Button", flex: 1, content: "Are you sure?", className: "enyo-button-negative", onclick: "removeAccount", owner: this}
 		]);
 		this.$.removeAccountFlexBox.render();
 
