@@ -1,4 +1,4 @@
-/*********** Built 2011-05-17 18:32:32 EDT ***********/
+/*********** Built 2011-05-23 13:52:05 EDT ***********/
 /*jslint 
 browser: true,
 nomen: false,
@@ -9532,7 +9532,10 @@ SpazImageURL.prototype.findServiceUrlsInString = function(str) {
 		sch.dump(thisapi.url_regex);
 		while( (re_matches = thisapi.url_regex.exec(sch.trim(str))) != null) {
 			sch.dump(re_matches);
-			matches[key] = re_matches;
+			if(!matches[key]) {
+				matches[key] = [];
+			}
+			matches[key].push(re_matches);
 			num_matches++;
 		}
 	}
@@ -9560,8 +9563,11 @@ SpazImageURL.prototype.getThumbsForMatches = function(matches) {
 		api = this.getAPI(service);
 		urls = matches[service]; // an array
 		sch.dump("URLS:"+urls);
-		thumburls[urls[0]] = api.getThumbnailUrl(urls[1]);
-		num_urls++;
+		for (var i = 0; i < urls.length; i++) {
+			var url = urls[i];
+			thumburls[url[0]] = api.getThumbnailUrl(url[1]);
+			num_urls++;
+		}
 	}
 
 	sch.dump('num_urls:'+num_urls);
@@ -9620,8 +9626,11 @@ SpazImageURL.prototype.getImagesForMatches = function(matches) {
 		api = this.getAPI(service);
 		urls = matches[service]; // an array
 		sch.dump("URLS:"+urls);
-		imageurls[urls[0]] = api.getImageUrl(urls[1]);
-		num_urls++;
+		for (var i = 0; i < urls.length; i++) {
+			var url = urls[i];
+			imageurls[url[0]] = api.getImageUrl(url[1]);
+			num_urls++;
+		}
 	}
 
 	sch.dump('num_urls:'+num_urls);
