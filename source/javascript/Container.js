@@ -83,7 +83,7 @@ enyo.kind({
 		};
 		this.$.columnsScroller.createComponents(cols);
 		this.$.columnsScroller.render();
-		setTimeout(enyo.bind(this, this.refreshAll), 1);
+		setTimeout(AppUI.refresh, 1);
 	},
 	createColumn: function(inAccountId, inColumn, inQuery){
 		this.columnData.push({type: inColumn, accounts: [inAccountId], query: inQuery});
