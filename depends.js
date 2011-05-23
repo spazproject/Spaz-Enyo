@@ -4,7 +4,7 @@ enyo.depends(
 	"vendors/humane-themes/bold-dark.css",
 	"vendors/cache.js",
 	"vendors/jquery.min.js",
-	"vendors/spazcore-standard.js", // includes underscore, underscore.string
+	"vendors/spazcore.js", // includes underscore, underscore.string
 
 	// config
 	"source/javascript/config/auth_config.js",
