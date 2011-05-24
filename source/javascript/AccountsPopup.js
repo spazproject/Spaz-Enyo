@@ -78,9 +78,10 @@ enyo.kind({
 	},
 	viewAccount: function(account_id){		
 		this.editing_acc_id = account_id;
-
+		
 		this.goDownLevel(account_id);
 
+		var account = App.Users.get(account_id);
 		if (this.$.secondLevel) {
 			this.$.secondLevel.destroy();
 		}
@@ -92,8 +93,15 @@ enyo.kind({
 					//]},
 				//]},
 				{kind: "Group", /*caption: "Options",*/ components: [
-					{name: "viewUser", kind: "Button", content: "View Profile", onclick: "viewProfile", flex: 1, owner: this},
-					{name: "removeAccountFlexBox", kind: "HFlexBox", components: [
+					{name: "accountInfo", kind: "Item", layoutKind: "HFlexLayout", flex: 1, owner: this, components: [
+						{name: "avatar", kind: "Image", height: "50px", width: "50px", className: "avatar", owner: this},
+						{width: "10px"},
+						{kind: "VFlexBox", flex: 1, height: "50px", components: [
+							{name: "realname", flex: 1, style: "font-weight: bold", content: account.username, owner: this},
+							{name: "username", flex: 1, className: "link", onclick: "viewProfile", content: account.username}
+						]}
+					]},
+					{name: "removeAccountFlexBox", kind: "Item", flex: 1, components: [
 						{name: "promptRemoveAccount", kind: "Button", content: "Remove Account", className: "enyo-button-negative", onclick: "promptRemoveAccount", flex: 1, owner: this}
 						//{kind: "Button", flex: 1, content: "Change Credentials", account_id: account_id, onclick: "changeCredentials"},
 						// ^this may be more pain than it is worth. we would need to flesh out goDownLevel to be able to go down more than one level and so forth.
@@ -102,6 +110,13 @@ enyo.kind({
 				{kind: "Button", content: "Back", onclick: "goTopLevel", flex: 1}
 			]}
 		]);
+		
+		AppUtils.getAccount(account_id, enyo.bind(this, function(user){
+			this.$.realname.setContent(user.name);
+			this.$.avatar.setSrc(user.profile_image_url);
+		}), function(xhr, msg, exc){
+			console.error("Couldn't find user's avatar");
+		});
 
 		this.render();
 		//this.createAccountEditComponents(App.Users.get(account_id));
