@@ -41,6 +41,7 @@ enyo.kind({
 				{kind: "VFlexBox", className: "header", style: "", components: [
 						//{kind: "Divider", className: "divider", style: "display: none", caption: ""},
 						{name: "entry", onclick: "entryClick", className: "message"},
+						{name: "images", kind: "enyo.VFlexBox", align: "center"},
 						{name: "small", kind: "HFlexBox", className: "small", style: "padding: 5px 0px",
 							components: [
 								{name: "time"},
@@ -101,6 +102,29 @@ enyo.kind({
 			} 
 			this.$.entry.setContent(AppUtils.makeItemsClickable(this.entry.text));
 			
+			enyo.forEach (this.getComponents(),
+				function (component) {
+					if (component.isImagePreview) {
+						component.destroy();
+					}
+				}
+			);
+			this.imageUrls = new SpazImageURL().getThumbsForUrls(this.entry.text);
+			for (var imageUrl in this.imageUrls) {
+				var imageComponent = this.$.images.createComponent({
+					kind: "enyo.Control",
+					flex: 1,
+					isImagePreview: true,
+					owner: this,
+					components: [
+						{style: "height: 10px;"},
+						{kind: "enyo.Image", onclick: "imageClick", src: this.imageUrls[imageUrl]},
+						{style: "height: 10px;"}
+					]
+				});
+				imageComponent.render();
+			}
+			
 			if(!this.entry.in_reply_to_id) {
 			    this.$.conversation_button.hide();
 			    this.$.conversation.clearConversationMessages();
@@ -154,5 +178,9 @@ enyo.kind({
 	},
 	reply: function() {
 		AppUI.reply(this.entry);
+	},
+	imageClick: function(inSender) {
+		// launch to an ImageView
+		console.log(arguments);
 	}
 });
