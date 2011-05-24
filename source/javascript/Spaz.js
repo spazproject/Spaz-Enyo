@@ -188,6 +188,12 @@ enyo.kind({
 		AppUI.addFunction("reply", function(inEntry){
 			this.reply(this, inEntry);
 		}, this);
+		AppUI.addFunction("repost", function(inEntry){
+			this.repost(this, inEntry);
+		}, this);
+		AppUI.addFunction("repostManual", function(inEntry){
+			this.repostManual(this, inEntry);
+		}, this);
 		//self.inherited(arguments);
 	},
 
@@ -302,6 +308,26 @@ enyo.kind({
 			});
 		} else {
 			this.$.sidebar.replyTo({
+				'entry':inEntry,
+				'account_id':inEntry.account_id
+			});			
+		}
+	},
+	repost: function(inSender, inEntry) {
+		if (inEntry.is_private_message) {
+			AppUtils.showBanner("Private messages cannot be reposted");
+		} else {
+			this.$.sidebar.repost({
+				'entry':inEntry,
+				'account_id':inEntry.account_id
+			});			
+		}
+	},
+	repostManual: function(inSender, inEntry) {
+		if (inEntry.is_private_message) {
+			AppUtils.showBanner("Private messages cannot be reposted");
+		} else {
+			this.$.sidebar.repostManual({
 				'entry':inEntry,
 				'account_id':inEntry.account_id
 			});			

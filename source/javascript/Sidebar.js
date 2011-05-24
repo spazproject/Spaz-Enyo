@@ -50,6 +50,12 @@ enyo.kind({
 	replyTo: function(inReplyArgs) {
 		this.$.composePopup.replyTo(inReplyArgs);
 	},
+	repost: function(inArgs) {
+		this.$.composePopup.repost(inArgs);
+	},
+	repostManual: function(inArgs) {
+		this.$.composePopup.repostManual(inArgs);
+	},
 	directMessage: function(inDMArgs) {
 		this.$.composePopup.directMessage(inDMArgs);
 	}

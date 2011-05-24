@@ -13,6 +13,8 @@ enyo.kind({
 	items: [
 		"Details",
 		"Reply",
+		"Repost",
+		"Edit &amp; Repost",
 		"Share"
 	],
 	create: function(){
@@ -33,8 +35,18 @@ enyo.kind({
 				this.$.popup.close();
 				this.clearEntry();
 				break;
+			case "Repost":
+				AppUI.repost(this.entry);
+				this.$.popup.close();
+				this.clearEntry();
+				break;
+			case "Edit &amp; Repost":
+				AppUI.repostManual(this.entry);
+				this.$.popup.close();
+				this.clearEntry();
+				break;
 			case "Share":
-
+				AppUtils.showBanner($L('Not yet implemented'));
 				this.clearEntry();
 				break;
 			default: 
