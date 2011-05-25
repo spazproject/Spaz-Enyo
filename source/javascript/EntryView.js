@@ -42,7 +42,6 @@ enyo.kind({
 				{kind: "VFlexBox", className: "header", style: "", components: [
 						//{kind: "Divider", className: "divider", style: "display: none", caption: ""},
 						{name: "entry", onclick: "entryClick", className: "message"},
-						{name: "images", kind: "enyo.VFlexBox", align: "center"},
 						{name: "small", kind: "HFlexBox", className: "small", style: "padding: 5px 0px",
 							components: [
 								{name: "time"},
@@ -50,6 +49,7 @@ enyo.kind({
 								{name: "from"}
 							]
 						},
+						{name: "images", kind: "enyo.VFlexBox", align: "center"},
 						{name: "repost", className: "repost-outer", onclick: "entryClick", showing: false},
 						{kind: "ActivityButton", name: "conversation_button", onclick: "toggleDrawer", toggling: true, content: "View Conversation"},
 						{kind: "Drawer", name: "conversation_drawer", /*caption: "Conversation",*/ open: false, onOpenChanged: "onConversationOpenChanged", components: [
@@ -147,6 +147,8 @@ enyo.kind({
 				this.$.repost.setShowing(true);
 
 				this.$.time.setContent(sch.getRelativeTime(this.entry.repost_orig_date));
+			} else {
+				this.$.repost.setShowing(false);			
 			}
 		} else {
 			this.doDestroy();
