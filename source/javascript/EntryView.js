@@ -9,6 +9,7 @@ enyo.kind({
 		onAddViewEvent: "",
 		onGoPreviousViewEvent: "",
 		onDestroy: "",
+		onShowImageView: ""
 	},
 	components: [
 		{className: "entry-view", width: "322px", height: "100%", layoutKind: "VFlexLayout", components: [
@@ -99,7 +100,7 @@ enyo.kind({
 			this.$.time.setContent(sch.getRelativeTime(this.entry.publish_date));
 			if (this.entry._orig.source) {
 				this.$.from.setContent(this.entry._orig.source);
-			} 
+			}
 			this.$.entry.setContent(AppUtils.makeItemsClickable(this.entry.text));
 			
 			enyo.forEach (this.getComponents(),
@@ -109,8 +110,12 @@ enyo.kind({
 					}
 				}
 			);
-			this.imageUrls = new SpazImageURL().getThumbsForUrls(this.entry.text);
-			for (var imageUrl in this.imageUrls) {
+			var siu = new SpazImageURL();
+			var imageThumbUrls = siu.getThumbsForUrls(this.entry.text);
+			var imageFullUrls = siu.getImagesForUrls(this.entry.text);
+			this.imageFullUrls = [];
+			var i = 0;
+			for (var imageUrl in imageThumbUrls) {
 				var imageComponent = this.$.images.createComponent({
 					kind: "enyo.Control",
 					flex: 1,
@@ -118,11 +123,13 @@ enyo.kind({
 					owner: this,
 					components: [
 						{style: "height: 10px;"},
-						{kind: "enyo.Image", onclick: "imageClick", src: this.imageUrls[imageUrl]},
+						{name: "imagePreview" + i, kind: "enyo.Image", onclick: "imageClick", src: imageThumbUrls[imageUrl]},
 						{style: "height: 10px;"}
 					]
 				});
 				imageComponent.render();
+				this.imageFullUrls.push(imageFullUrls[imageUrl]);
+				i++;
 			}
 			
 			if(!this.entry.in_reply_to_id) {
@@ -180,7 +187,7 @@ enyo.kind({
 		AppUI.reply(this.entry);
 	},
 	imageClick: function(inSender) {
-		// launch to an ImageView
-		console.log(arguments);
+		var imageIndex = parseInt(inSender.getName().replace("imagePreview", ""), 10);
+		this.doShowImageView(this.imageFullUrls, imageIndex);
 	}
 });

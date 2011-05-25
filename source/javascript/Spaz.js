@@ -13,6 +13,11 @@ enyo.kind({
 			kind: "Spaz.Container", 
 			onRefreshAllFinished: "refreshAllFinished"
 		},
+		{
+			name: "imageViewPopup",
+			kind: "Spaz.ImageViewPopup",
+			onClose: "closeImageView"
+		}
 	],
 	
 	twit: new SpazTwit(),
@@ -206,7 +211,8 @@ enyo.kind({
 				kind: "Spaz.EntryView", 
 				onDestroy: "destroyEntryView" ,
 				onAddViewEvent: "addViewEvent",
-				onGoPreviousViewEvent: "goPreviousViewEvent"
+				onGoPreviousViewEvent: "goPreviousViewEvent",
+				onShowImageView: "showImageView"
 			}, {owner: this});
 			this.$.entryview.render();
 			
@@ -332,5 +338,12 @@ enyo.kind({
 				'account_id':inEntry.account_id
 			});			
 		}
+	},
+	showImageView: function(inSender, inUrls, inIndex) {
+		this.$.imageViewPopup.openAtCenter();
+		this.$.imageViewPopup.setImages(inUrls, inIndex);
+	},
+	closeImageView: function(inSender) {
+		this.$.imageViewPopup.close();
 	}
 });
