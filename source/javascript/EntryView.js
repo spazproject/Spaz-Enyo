@@ -103,13 +103,9 @@ enyo.kind({
 			}
 			this.$.entry.setContent(AppUtils.makeItemsClickable(this.entry.text));
 			
-			enyo.forEach (this.getComponents(),
-				function (component) {
-					if (component.isImagePreview) {
-						component.destroy();
-					}
-				}
-			);
+			enyo.forEach (this.$.images.getControls(), function (control) {
+				control.destroy();
+			});
 			var siu = new SpazImageURL();
 			var imageThumbUrls = siu.getThumbsForUrls(this.entry.text);
 			var imageFullUrls = siu.getImagesForUrls(this.entry.text);
@@ -119,7 +115,6 @@ enyo.kind({
 				var imageComponent = this.$.images.createComponent({
 					kind: "enyo.Control",
 					flex: 1,
-					isImagePreview: true,
 					owner: this,
 					components: [
 						{style: "height: 10px;"},
