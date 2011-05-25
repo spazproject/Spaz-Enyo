@@ -223,9 +223,9 @@ AppUtils.getAccountAvatar = function(account_id, onSuccess, onFailure) {
 
 AppUtils.getAccount = function(account_id, onSuccess, onFailure) {
 
-	/*if (!window.App.avatarCache) {
+	if (!window.App.avatarCache) {
 		window.App.avatarCache = {};
-	} @TODO: cache?
+	} /*@TODO: cache?
 
 	if (window.App.avatarCache[account_id]) {
 		onSuccess(window.App.avatarCache[account_id]);
@@ -240,7 +240,7 @@ AppUtils.getAccount = function(account_id, onSuccess, onFailure) {
 	twit.getUser(
 		'@'+username,
 		function(data) {
-			window.App.avatarCache[account_id] = data.profile_image_url;
+			window.App.avatarCache[account_id] = data.profile_image_url; //cache the avatar here for now.
 			onSuccess(data);
 		}, function(xhr, msg, exc) {
 			onFailure(xhr, msg, exc);
