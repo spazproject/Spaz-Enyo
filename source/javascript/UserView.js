@@ -33,7 +33,7 @@ enyo.kind({
         						{kind: "Spacer"},
         						{name: "realname", className: "author-realname truncating-text"},
         						{name: "username", className: "author-username"},
-        						{name: "url", className: "small"},
+        						{name: "url", kind: "enyo.HtmlContent", className: "small"},
         						{kind: "Spacer"}
         					]},	
         					{kind: "ToolButton", icon: "source/images/icon-close.png", style: "position: relative; bottom: 10px; right: 10px; float: right;", onclick: "doDestroy"}	
@@ -54,7 +54,7 @@ enyo.kind({
     		    	{layoutKind: "VFlexLayout", align: "center", pack: "center", flex: 1, components: [
 		    			{name: "listSpinner", kind: "SpinnerLarge"}
 		    		]},
-    				{name: "list", kind: "VirtualRepeater", onGetItem: "loadItem", style: "", components: [
+    				{name: "list", kind: "VirtualRepeater", onSetupRow: "loadItem", style: "", components: [
 						{
 							name: "entryItem", 
 							kind: "Spaz.Entry",

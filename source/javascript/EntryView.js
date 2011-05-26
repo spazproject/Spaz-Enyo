@@ -28,7 +28,7 @@ enyo.kind({
 							{kind: "Spacer"},
     						{name: "realname", className: "author-realname truncating-text"},
     						{name: "username", className: "link author-username"},
-    						{name: "url", className: "small"},
+    						{name: "url", kind: "enyo.HtmlContent", className: "small"},
     						{kind: "Spacer"}
 						]},	
 						{kind: "ToolButton", icon: "source/images/icon-close.png", style: "position: relative; bottom: 10px; right: 10px; float: right;", onclick: "doDestroy"}	
@@ -41,16 +41,16 @@ enyo.kind({
 		    {kind: "Scroller", name: "detail_scroller", flex: 1, className: "entry-view", components: [
 				{kind: "VFlexBox", className: "header", style: "", components: [
 						//{kind: "Divider", className: "divider", style: "display: none", caption: ""},
-						{name: "entry", onclick: "entryClick", className: "message"},
+						{name: "entry", kind: "enyo.HtmlContent", onclick: "entryClick", className: "message"},
 						{name: "small", kind: "HFlexBox", className: "small", style: "padding: 5px 0px",
 							components: [
 								{name: "time"},
 								{content: "from", style: "padding: 0px 3px;"},
-								{name: "from"}
+								{name: "from",  kind: "enyo.HtmlContent"}
 							]
 						},
 						{name: "images", kind: "enyo.VFlexBox", align: "center"},
-						{name: "repost", className: "repost-outer", onclick: "entryClick", showing: false},
+						{name: "repost", kind: "enyo.HtmlContent", className: "repost-outer", onclick: "entryClick", showing: false},
 						{kind: "ActivityButton", name: "conversation_button", onclick: "toggleDrawer", toggling: true, content: "View Conversation"},
 						{kind: "Drawer", name: "conversation_drawer", /*caption: "Conversation",*/ open: false, onOpenChanged: "onConversationOpenChanged", components: [
 						    {kind: "Spaz.Conversation", name: "conversation", onStart: "onConversationLoadStart", onDone: "onConversationLoadDone"}

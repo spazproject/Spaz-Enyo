@@ -21,8 +21,8 @@ enyo.kind({
 						{name: "reposterIcon", kind: "Image", height: "13px", src: "source/images/reposted.png", style: "position: relative; bottom: 7px; padding: 0px 3px;", showing: false},
 						{name: "reposterUsername", className: "text username author", showing: false}
 					]},
-					{name: "text", className: "text"},
-					{name: "timeFrom", className: "small"},
+					{name: "text", kind: "enyo.HtmlContent", className: "text"},
+					{name: "timeFrom", kind: "enyo.HtmlContent", className: "small"},
 				]},		
 			]}
 		]}

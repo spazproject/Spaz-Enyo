@@ -3,6 +3,7 @@ enyo.kind({
 	kind: "Popup",
 	scrim: true,
 	modal: true, //yes/no?
+	lazy: false,
 	//width: "400px",
 	events: {
 		onClose: ""

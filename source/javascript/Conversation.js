@@ -15,7 +15,7 @@ enyo.kind({
 		/*{name: "list", kind: "Spaz.VirtualList", flex: 1, style: "background-color: #D8D8D8;min-height: 150px;", horizontal: false, className: "conversation list", onSetupRow: "setupRow", components: [
 			{name: "item", kind: "Spaz.Entry", onclick: "entryClick"}
 		]}*/
-		{name: "list", kind: "VirtualRepeater", onGetItem: "setupRow", components: [
+		{name: "list", kind: "VirtualRepeater", onSetupRow: "setupRow", components: [
 			{name: "item", kind: "Spaz.Entry", onEntryClick: "entryClick"}
 		]},
 		//{name: "list", className: "conversation list", components: []},

@@ -16,14 +16,14 @@ enyo.kind({
 	},
 	//* @protected
 	getValue: function() {
-		return this.value || this.manager.indexOfControl(this);
+		return this.value || this.container.indexOfControl(this);
 	},
 	clickHandler: function(inSender, e) {
 		if (!this.disabled) {
-			// if our manager is not our owner (i.e. if we are not RadioGroup chrome), he won't get this via normal dispatch
-			// manager could also simply be watching mousedown himself, but it's more convenient for us to identify ourselves
+			// if our container is not our owner (i.e. if we are not RadioGroup chrome), he won't get this via normal dispatch
+			// container could also simply be watching mousedown himself, but it's more convenient for us to identify ourselves
 			// as inSender
-			this.dispatch(this.manager, "radioButtonClick");
+			this.dispatch(this.container, "radioButtonClick");
 			this.fire("onclick", e);
 		}
 	}

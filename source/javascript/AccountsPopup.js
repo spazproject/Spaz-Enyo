@@ -6,6 +6,7 @@ enyo.kind({
 	},
 	scrim: true,
 	modal: true,
+	lazy: false,
 	//style: "min-height: 250px",
 	width: "400px",
 	layoutKind: "VFlexLayout",

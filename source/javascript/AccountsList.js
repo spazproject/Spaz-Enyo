@@ -8,7 +8,7 @@ enyo.kind({
 	},
 	components: [
 		{kind: "Group", components: [
-			{kind: "VirtualRepeater", onGetItem: "setupRow", className: "timeline list", flex: 1, components: [
+			{kind: "VirtualRepeater", onSetupRow: "setupRow", className: "timeline list", flex: 1, components: [
 				{kind: "Item", tapHighlight: true, className: "entry", layoutKind: "HFlexLayout", onclick: "doAccountClick", components: [
 					{name: "icon", kind: "Image", style: "padding-right: 5px"},
 					{name: "label", content: "", style: "font-size: 16px; padding-top: 3px; padding-right: 5px"},

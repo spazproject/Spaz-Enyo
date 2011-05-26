@@ -2,7 +2,7 @@ enyo.kind({
 	name: "Spaz.EntryClickPopup",
 	kind: "Popup",
 	scrim: true,
-	//modal: true,
+	lazy: false,
 	events: {
 		onClose: "",
 		onShare: ""
@@ -14,7 +14,7 @@ enyo.kind({
 		"Details",
 		"Reply",
 		"Repost",
-		"Edit &amp; Repost",
+		"Edit & Repost",
 		"Share"
 	],
 	create: function(){
@@ -40,7 +40,7 @@ enyo.kind({
 				this.$.popup.close();
 				this.clearEntry();
 				break;
-			case "Edit &amp; Repost":
+			case "Edit & Repost":
 				AppUI.repostManual(this.entry);
 				this.$.popup.close();
 				this.clearEntry();
@@ -56,7 +56,7 @@ enyo.kind({
 	},
 	"showAtEvent": function(inEntry, inEvent){
 		this.entry = inEntry;
-		this.$.popup.openNear({left: inEvent.x, top: inEvent.y});
+		this.$.popup.openAtEvent(inEvent);
 	},
 	getEntry: function() {
 		return this.entry;
