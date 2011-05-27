@@ -21,6 +21,18 @@ For example, to show a spinner while a service response is being requested:
 		this.$.spinner.hide();
 	}
 
+Note, extra care must be taken to use a Spinner in a list item. The spinner animation must be started
+manually, asynchronous to list rendering. It's possible to do this as follows:
+
+setupRow: function(inSender, inIndex) {
+	if (this.data[inIndex].busy) {
+		enyo.asyncMethod(this, "startSpinner", inIndex);
+	}
+},
+startSpinner: function(inIndex) {
+	this.$.list.prepareRow(inIndex);
+	this.$.spinner.show();
+}
 */
 enyo.kind({
 	name: "enyo.Spinner", 
@@ -35,7 +47,7 @@ enyo.kind({
 	// FIXME: start/stop spinning on showing change
 	// but need to do after animation properties are set, which is
 	// after showingchanged is called.
-	create: function() {
+	rendered: function() {
 		this.inherited(arguments);
 		this.disEnableAnimation(this.showing);
 	},

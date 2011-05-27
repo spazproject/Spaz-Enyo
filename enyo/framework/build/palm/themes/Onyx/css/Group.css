@@ -22,10 +22,14 @@
 .enyo-group-label {
 	margin: -34px -12px;
 	padding: 4px 0 12px 10px;
-	font-size: 14px;
-	color: #ffffff;
-	text-shadow: #646454 0px 1px 0px;
+	font-size: .7rem;
+	color: #fff;
+	text-shadow: #646454 0 1px 0;
 	font-weight: bold;
 	height: 44px;
 	text-transform: uppercase;
+}
+
+.enyo-group-label.enyo-group-fit {
+	margin-bottom: -21px;
 }

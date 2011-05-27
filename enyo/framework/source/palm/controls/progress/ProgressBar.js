@@ -78,6 +78,7 @@ enyo.kind({
 		this.$.bar.domStyles.visibility = inEnd <= 0 ? "hidden" : "visible";
 		this.$.bar.domStyles.width = inEnd + "%";
 		if (this.$.bar.hasNode()) {
+			inSender.setNode(this.$.bar.node);
 			inSender.style = this.$.bar.node.style;
 			this.doBeginAnimation();
 		}
@@ -89,6 +90,7 @@ enyo.kind({
 		this.completeAnimation(inSender, inValue);
 	},
 	stopAnimation: function(inSender, inValue, inStart, inEnd) {
+		inSender.setNode(null);
 		this.completeAnimation(inSender, inEnd);
 	},
 	completeAnimation: function(inSender, inValue) {

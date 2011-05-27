@@ -1,5 +1,5 @@
 /* Copyright 2009-2011 Hewlett-Packard Development Company, L.P. All rights reserved. */
-/*globals enyo rb_auth*/
+/*globals enyo rb*/
 
 rb_auth = new enyo.g11n.Resources({root: "$enyo-lib/authlib"});
 
@@ -18,9 +18,8 @@ enyo.kind({
 		azertyKey: false 
 	},   
 	className: "dialpad-container",
-	height: "278px",
 	chrome: [
-		{kind: "HFlexBox", flex: 1, defaultKind: "DialpadButton", components: [
+		{kind: "HFlexBox", flex: 1, height: "4px", defaultKind: "DialpadButton", components: [
 			{number: "1", flex: 1, className: "dialpadbutton-top-left voicemail"},
 			{number: "2", subtext: "ABC", flex: 1, className: "dialpadbutton-top-middle"},
 			{number: "3", subtext: "DEF", flex: 1, className: "dialpadbutton-top-right"}
@@ -31,9 +30,9 @@ enyo.kind({
 			{number: "6", subtext: "MNO", flex: 1, className: "dialpadbutton-right"}
 		]},
 		{kind: "HFlexBox", flex: 1, defaultKind: "DialpadButton", components: [
-			{number: "7", subtext: "PQRS", flex: 1, className: "dialpadbutton-left"},
-			{number: "8", subtext: "TUV", flex: 1, className: "dialpadbutton-middle"},
-			{number: "9", subtext: "WXYZ", flex: 1, className: "dialpadbutton-right"}
+			{number: "7", subtext: "PQRS", flex: 1, className: "dialpadbutton-bottom-left"},
+			{number: "8", subtext: "TUV", flex: 1, className: "dialpadbutton-bottom-middle"},
+			{number: "9", subtext: "WXYZ", flex: 1, className: "dialpadbutton-botton-right"}
 		]},
 		{name: "client", flex: 1, layoutKind: "VFlexLayout"},
 		
@@ -292,7 +291,7 @@ enyo.kind({
 		{kind: "HFlexBox", flex: 1, defaultKind: "DialpadButton", components: [
 			{flex: 1, className: "dialpadbutton-bottom-left", disabled: true },
 			{number: "0", flex: 1, className: "dialpadbutton-bottom-middle dialpadbutton-bottom-single"},
-			{kind: "IconButton", flex: 1, value: "backspace", layoutKind: "VFlexLayout", pack: "center", className: "dialpadbutton-bottom-right dialpad-backspace", icon: "images/dialpad-backspace.png", onclick: "handleBackspace"}
+			{kind: "IconButton", flex: 1, value: "backspace", layoutKind: "VFlexLayout", pack: "center", className: "dialpadbutton-bottom-back dialpad-backspace",  icon:enyo.path.rewrite("$enyo-lib/authlib/images/dialpad-backspace.png"), onclick: "handleBackspace"}
 		]}
 	],
 	create: function(){

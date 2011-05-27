@@ -40,7 +40,7 @@ enyo.kind({
 	// of making a service call.  Use {"refreshCache":true} to force the retrieval of the templates 
 	getAccountTemplates: function (options) {
 		var filter = (options && options.capability)? {"capability": options.capability}: {}; 
-		this.log("getAccountTemplates: accountTemplates.length=" + this.accountTemplates.length + " filter=" + enyo.json.stringify(filter));
+		//this.log("getAccountTemplates: accountTemplates.length=" + this.accountTemplates.length + " filter=" + enyo.json.stringify(filter));
 		// Used the cached templates unless they don't exist, or the call is forced
 		if (this.accountTemplates.length == 0 || (options && options.refreshCache === true)) {
 			// Only pass the "capability" option to the service
@@ -54,7 +54,7 @@ enyo.kind({
 	gotAccountTemplates: function(inSender, inResponse) {
 		// Cache the service response
 		this.accountTemplates = inResponse.results || [];
-		this.log("gotAccountTemplates: accountTemplates.length=" + this.accountTemplates.length);
+		//this.log("gotAccountTemplates: accountTemplates.length=" + this.accountTemplates.length);
 		this.doGetTemplates_TemplatesAvailable(this.accountTemplates);
 	}
 	

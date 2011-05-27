@@ -30,7 +30,7 @@ enyo.kind({
 	filterHighlightClassName: "enyo-text-filter-highlight",
 	//* @protected
 	components: [
-		{kind: "DbPages", onQuery: "dbPagesQuery", onReceive: "receiveDbPage"},
+		{kind: "DbPages", onQuery: "dbPagesQuery", onReceive: "receiveDbPage", size: 20},
 		{kind: "DbService", dbKind: "com.palm.person:1", onSuccess: "querySuccess", onFailure: "gotFailure", components: [
 			{name: "find", method: "find", onSuccess: "gotPageResults"},
 			{name: "search", method: "search", onSuccess: "gotSearchResults"},
@@ -38,10 +38,10 @@ enyo.kind({
 		]},
 		{kind: "GalService", onSuccess: "gotGalResults", onFailure: "gotFailure"},
 		{name: "list", flex: 1, kind: "VirtualList", className: "enyo-addressing-list", 
-			onAcquirePage: "listAcquirePage", onDiscardPage: "listDiscardPage", onSetupRow: "listSetupRow", components: [
+			onAcquirePage: "listAcquirePage", onDiscardPage: "listDiscardPage", onSetupRow: "listSetupRow", pageSize: 20, components: [
 			{name: "client", canGenerate: false},
-			{kind: "Divider", className: "enyo-addressing-item-divider"},
-			{name: "addressList", kind: "VirtualRepeater", className: "enyo-addressing-item-addresses", onGetItem: "addressGetItem", components: [
+			{kind: "Divider", allowHtml: true, className: "enyo-addressing-item-divider"},
+			{name: "addressList", kind: "VirtualRepeater", className: "enyo-addressing-item-addresses", onSetupRow: "addressGetItem", components: [
 				{kind: "Item", tapHighlight: true, onclick: "selectItem", components: [
 					{name: "addressType", className: "enyo-addressing-type enyo-addressing-padding enyo-label"},
 					{name: "address", className: "enyo-addressing-address enyo-addressing-padding"}
@@ -127,6 +127,7 @@ enyo.kind({
 		this.$.find.cancel();
 		this.$.search.cancel();
 		this.$.galService.cancel();
+		this.showGalSpinner(false);
 	},
 	//* @protected
 	showGalSpinner: function(inShowing){
@@ -175,12 +176,16 @@ enyo.kind({
 	},
 	gotSearchResults: function(inSender, inResponse, inRequest) {
 		this.data = this.data.concat(inResponse.results);
+		this.toggleNoResults(this.data.length)
 		this.$.list.refresh();
 	},
 	gotGalResults: function(inSender, inResponse) {
 		this.showGalSpinner(false);
 		this.data = this.data.concat(inResponse.results);
-		if (this.data.length) {
+		this.toggleNoResults(this.data.length)
+	},
+	toggleNoResults: function(inResults) {
+		if (inResults) {
 			this.$.noResultsMessage.hide();
 			this.$.list.show();
 		} else {
@@ -191,7 +196,7 @@ enyo.kind({
 	},
 	gotFailure: function(inSender, inResponse) {
 		this.showGalSpinner(false);
-		//console.log("Contact lookup failed: " + (inResponse && inResponse.errorText));
+		this.error("Contact lookup failed: ", (inResponse && inResponse.errorText));
 	},
 	// list paging query/response
 	dbPagesQuery: function(inSender, inQuery) {
@@ -210,7 +215,8 @@ enyo.kind({
 	// since paged list contains non-paged data, we need to adjust
 	// the calculation of rowToPage
 	listRowToPage: function(inRowIndex) {
-		return Math.floor((inRowIndex - this.data.length) / this.$.list.pageSize);
+		var pageIndex = Math.floor((inRowIndex - this.data.length) / this.$.list.pageSize);
+		return pageIndex;
 	},
 	listAcquirePage: function(inSender, inPage) {
 		if (this.allowListPaging) {

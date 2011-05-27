@@ -23,7 +23,8 @@ enyo.kind({
 	],
 	//* @protected
 	create: function() {
-		this.inherited(arguments);
+		this.inherited(arguments)
+		this.$.caption.allowHtml = this.allowHtml;
 		this.iconChanged();
 		this.captionChanged();
 	},

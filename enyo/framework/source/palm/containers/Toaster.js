@@ -13,7 +13,7 @@ To show a toaster asking the user to confirm a choice, try the following:
 		{kind: "Button", caption: "Confirm choice", onclick: "showToaster"},
 		{kind: "Toaster", flyInFrom: "right", components: [
 			{content: "Are you sure?"},
-			{layoutKind: "HFlexLayout", pack: center, components: [
+			{layoutKind: "HFlexLayout", pack: "center", components: [
 				{kind: "Button", caption: "OK", onclick: "confirmClick"},
 				{kind: "Button", caption: "Cancel", onclick: "cancelClick"}
 			]}
@@ -35,7 +35,7 @@ To show a toaster asking the user to confirm a choice, try the following:
 enyo.kind({
 	name: "enyo.Toaster",
 	kind: enyo.Popup,
-	className: "enyo-toaster",
+	className: "enyo-toaster enyo-popup-float",
 	published: {
 		/**
 		Direction from which the toaster should fly in when it is opened.
@@ -59,15 +59,20 @@ enyo.kind({
 	},
 	renderOpen: function() {
 		this.inherited(arguments);
-		this.startAnimate(100, 0);
+		if (this.showHideMode != "manual") {
+			this.startAnimate(100, 0);
+		}
 	},
 	renderClose: function() {
-		this.startAnimate(0, 100);
+		if (this.showHideMode == "auto") {
+			this.startAnimate(0, 100);
+		}
 	},
 	// NOTE: this could be made simpler by using -webkit-transition
 	startAnimate: function(inStart, inEnd) {
 		if (this.hasNode()) {
-			this.$.animator.style = this.hasNode().style;
+			this.$.animator.setNode(this.node);
+			this.$.animator.style = this.node.style;
 		}
 		this.$.animator.play(inStart, inEnd);
 	},
@@ -83,7 +88,10 @@ enyo.kind({
 		}
 	},
 	finishAnimate: function(inSender, inY) {
-		if (!this.isOpen) {
+		if (this.isOpen) {
+			enyo.asyncMethod(this, "afterOpen");
+			this.$.animator.setNode(null);
+		} else {
 			this.hide();
 		}
 	},
@@ -115,23 +123,15 @@ enyo.kind({
 		if (this.dragging) {
 			var w = this.hasNode()["client" + (this.isHorizontal() ? "Width" : "Height")]; 
 			var s = Math.abs(this.dragD0/w) * 100;
+			this.setShowHideMode("manual");
 			if ((this.dragD * (this.flyInFrom == "right" || this.flyInFrom == "bottom" ? 1 : -1)) > 0) {
 				this.startAnimate(s, 0);
-				if (!this.isOpen) {
-					this.isOpen = true;
-					this.prepareOpen();
-					this.showHideScrim(this.isOpen);
-					enyo.asyncMethod(this, "afterOpen");
-				}
+				this.open();
 			} else {
 				this.startAnimate(s, 100);
-				if (this.isOpen) {
-					this.isOpen = false;
-					this.prepareClose();
-					this.showHideScrim(this.isOpen);
-					this.doClose();
-				}
+				this.close();
 			}
+			this.setShowHideMode("auto");
 			this.dragging = false;
 		}
 	}

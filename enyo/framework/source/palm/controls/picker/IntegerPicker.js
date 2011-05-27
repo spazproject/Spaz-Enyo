@@ -3,8 +3,8 @@
 A control that allows selection from a single integer field.
 The default selection range is 0-9.  You can adjust the range by setting the min and max properties.
  
- 	{kind: "IntegerPicker", label: "rating", min: 0, max: 10, onChange: "pickerChange"}
- 	
+	{kind: "IntegerPicker", label: "rating", min: 0, max: 10, onChange: "pickerChange"}
+
 The selected integer can be retrieved by calling <code>getValue</code>, like so:
 
 	pickerPick: function(inSender) {

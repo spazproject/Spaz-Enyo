@@ -2,7 +2,9 @@
 .enyo-popup {
 	min-width: 300px;
 	z-index: 120;
-	position: fixed;
+	/* Causes rendering artifacts */
+	/*position: fixed;*/
+	position: absolute;
 	left: 0px;
 	top: 0px;
 	-webkit-box-sizing: border-box;

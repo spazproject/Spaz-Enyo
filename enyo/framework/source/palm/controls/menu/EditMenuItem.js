@@ -5,22 +5,36 @@ enyo.kind({
 	name: "enyo.EditMenuItem",
 	kind: enyo.AppMenuItem,
 	published: {
-		showShortcut: true
+		showShortcut: false
 	},
-	shortcutIconChrome: {name:"shortcutIcon", className:"enyo-editmenuitem-icon"},
-	shortcutChrome: {name:"shortcut", className:"enyo-menuitem-caption enyo-editmenuitem-shortcut"},
+	shortcutChrome: [
+		{name:"shortcutIcon", className:"enyo-editmenuitem-icon"},
+		{name:"shortcut", className:"enyo-menuitem-caption enyo-editmenuitem-shortcut"}
+	],
 	create: function() {
 		this.inherited(arguments);
-		this.$.item.createComponent(this.shortcutIconChrome, {owner:this});
-		this.$.item.createComponent(this.shortcutChrome, {owner:this});
-		this.shortcutChanged();
 		this.showShortcutChanged();
 	},
 	shortcutChanged: function() {
-		this.$.shortcut.setContent('+' + this.shortcut);
+		if (this.$.shortcut) {
+			this.$.shortcut.setContent('+' + this.shortcut);
+		}
 	},
 	showShortcutChanged: function() {
-		this.$.shortcut.setShowing(this.showShortcut)
-		this.$.shortcutIcon.setShowing(this.showShortcut)
+		var hasShortcut = this.$.shortcut;
+		if (this.showShortcut && !hasShortcut) {
+			this.makeShortcutChrome();
+		}
+		if (hasShortcut) {
+			this.$.shortcut.setShowing(this.showShortcut);
+			this.$.shortcutIcon.setShowing(this.showShortcut);
+		}
+	},
+	makeShortcutChrome: function() {
+		this.$.item.createComponents(this.shortcutChrome, {owner:this});
+		this.shortcutChanged();
+		if (this.generated) {
+			this.render();
+		}
 	}
 });

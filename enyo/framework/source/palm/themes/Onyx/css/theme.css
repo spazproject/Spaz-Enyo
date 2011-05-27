@@ -7,6 +7,7 @@ html {
 body {
 	position: relative;
 	background-color: #d8d8d8;
+	color: #333;
 }
 
 body, html {
@@ -25,31 +26,32 @@ html, body, input, button {
 	background-color: #d8d8d8;
 }
 
+.enyo-text-filter-highlight {
+	background: url(../images/filter-highlight.png) bottom left repeat-x;
+}
+
 .enyo-text-ellipsis {
 	white-space: nowrap;
 	overflow: hidden;
 	text-overflow: ellipsis;
 }
 
-.enyo-text-filter-highlight {
-	background: url(../images/filter-highlight.png) bottom left repeat-x;
-}
-
 .enyo-label {
-	color: #1f75bf;
+	color: #1879cd;
+	font-size: .7rem;
 	text-transform: uppercase;
 }
 
-.enyo-header {
+.enyo-text-header {
 	font-size: 1rem;
 }
 
-.enyo-subheader {
+.enyo-text-subheader {
 	font-size: .9rem;
 }
-
-.enyo-body,
-.enyo-paragraph {
+.enyo-text-body,
+.enyo-paragraph,
+.enyo-item-secondary {
 	font-size: .8rem;
 }
 
@@ -57,11 +59,29 @@ html, body, input, button {
 	margin: .5em 0;
 }
 
+.enyo-item-ternary,
 .enyo-subtext {
-	font-size: .8rem;
-	color: #696969;
+	font-size: .7rem;
+	color: #828282;
 }
 
 .enyo-footnote {
+	font-size: .8rem;
+	color: #666;
+}
+
+.enyo-text-error {
 	font-size: .7rem;
+	color: #d70000;
+}
+
+/* Preferences Styles */
+
+.enyo-preferences-box {
+	width: 500px;
+	margin: 23px auto 0;
+}
+
+.enyo-preference-button {
+	width: 290px;
 }

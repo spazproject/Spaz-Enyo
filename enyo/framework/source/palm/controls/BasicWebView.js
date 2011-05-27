@@ -18,7 +18,7 @@ enyo.weightedAverage = {
 		}
 		for (var i=0, d=0, o=0, c, w; (c=cache[i]) && (w=this.weights[i]); i++) {
 			o += c * w;
-			d += w
+			d += w;
 		}
 		d = d || 1;
 		o = o / d;
@@ -29,121 +29,27 @@ enyo.weightedAverage = {
 	}
 };
 
-enyo.sizeableMixin = {
-	zoom: 1,
-	// note: we assume minZoom and maxZoom are defined
-	centeredZoomStart: function(e) {
-		var o = enyo.dom.calcNodeOffset(this.hasNode());
-		var s = this.fetchScrollPosition();
-		this._zoomStart = {
-			scale: e.scale,
-			centerX: e.centerX - (o.left + s.l),
-			centerY: e.centerY - (o.top + s.t),
-			scrollX: s.l,
-			scrollY: s.t,
-			offsetLeft: o.left + s.l,
-			offsetTop: o.top + s.t,
-			zoom: this.zoom
-		}
-	},
-	centeredZoomChange: function(e) {
-		var gs = this._zoomStart;
-		e.scale = e.scale || gs.scale;
-		var centerX = (e.centerX - gs.offsetLeft) || gs.centerX;
-		var centerY = (e.centerY - gs.offsetTop) || gs.centerY;
-		// round to two decimal places to reduce jitter
-		var ds = Math.round(e.scale * 100) / 100;
-		// note: zoom by the initial gesture zoom multiplied by scale;
-		// this ensures we zoom enough to not be annoying.
-		var z = gs.zoom * ds;
-		// if scales beyond max zoom, disallow scaling so we simply pan
-		// and set scale to total amount we have scaled since start
-		if (z > this.getMaxZoom()) {
-			ds = this.getMaxZoom() / gs.zoom;
-		}
-		/*
-		this.log("e", centerX, centerY, e.scale,
-				"s", gs.centerX, gs.centerY, gs.scale,
-				"scroll", gs.scrollX, gs.scrollY,
-				"offset", gs.offsetLeft, gs.offsetTop,
-				"zoom", gs.zoom, this.zoom);
-		*/
-		// this is the offset after scaling
-		var x = (ds - 1) * gs.centerX;
-		// add the scaled scroll offset
-		x += ds * gs.scrollX;
-		// now account for the moving center
-		x += ds * (gs.centerX - centerX);
-		// do the y direction
-		var y = (ds - 1) * gs.centerY + ds * gs.scrollY + ds * (gs.centerY - centerY);
-		//this.log(ds, z, x, y);
-		return {zoom: z, x: x, y: y};
-	},
-	resetZoom: function() {
-		// reset zoom to its original value.
-		// assume subclass has implemented setZoom
-		this.setZoom(this.getMinZoom());
-	},
-	// FIXME: need to determine how to interact with scroller
-	// NOTE: we could have a scroller with a client area and the webview below
-	// but we might want controls above and below webview inside the scroller
-	findScroller: function() {
-		if (this._scroller) {
-			return this._scroller;
-		}
-		var n = this.hasNode(), c;
-		while (n) {
-			c = enyo.$[n.id];
-			if (c && c instanceof enyo.BasicScroller) {
-				return this._scroller = c;
-			}
-			n = n.parentNode;
-		}
-	},
-	fetchScrollPosition: function() {
-		var p = {t: 0, l: 0};
-		var s = this.findScroller();
-		if (s) {
-			p.l = s.getScrollLeft();
-			p.t = s.getScrollTop();
-		}
-		return p;
-	},
-	setScrollPosition: function(inX, inY) {
-		var s = this.findScroller();
-		if (s) {
-			s.setScrollTop(inY);
-			s.setScrollLeft(inX);
-		}
-	},
-	setScrollPositionDirect: function(inX, inY) {
-		var s = this.findScroller();
-		if (s) {
-			s.setScrollPositionDirect(inX, inY);
-		}
-	},
-	toContentOffset: function(inLeft, inTop) {
-		var o = this.getOffset();
-		var s = this.fetchScrollPosition();
-		return {left: inLeft - o.left - s.l, top: inTop - o.top - s.t};
-	}
-}
-
 //* @public
 enyo.kind({
 	name: "enyo.BasicWebView",
 	kind: enyo.Control,
 	//* @public
 	published: {
+		/** page identifier, used to open new webviews for new window requests */
 		identifier: "",
-		// NOTE: WebView does not appear to load relative url's.
+		/** url for page, updated as user navigates, relative URLs not allowed */
 		url: "",
+		/** smallest font size shown on the page, used to stop text from becoming unreadable */
 		minFontSize: 16,
 		enableJavascript: true,
+		/** boolean, allow page to request new windows to be opened */
 		blockPopups: true,
+		/** boolean, allow webview to accept cookies from server */
 		acceptCookies: true,
+		/** array of URL redirections specified as {regexp: string, cookie: string, enable: boolean}. */
 		redirects: [],
 		networkInterface: "",
+		/** boolean, if set, page ignores viewport-related meta tags */
 		ignoreMetaTags: false
 	},
 	domAttributes: {
@@ -151,6 +57,7 @@ enyo.kind({
 	},
 	requiresDomMousedown: true,
 	events: {
+		onMousehold: "",
 		onResized: "",
 		onPageTitleChanged: "",
 		onUrlRedirected: "",
@@ -175,7 +82,7 @@ enyo.kind({
 	},
 	//* @protected
 	lastUrl: "",
-	style: "display: block",
+	style: "display: block; -webkit-transform:translate3d(0,0,0)",
 	//style: "border: 2px solid red;",
 	nodeTag: "object",
 	//* @protected
@@ -188,8 +95,8 @@ enyo.kind({
 		/*
 		this._mouseInInteractive = false;
 		this._mouseInFlash = false;
-		this._flashGestureLock = false;
 		*/
+		this._flashGestureLock = false;
 	},
 	destroy: function() {
 		this.callQueue = null;
@@ -279,7 +186,7 @@ enyo.kind({
 	//* @protected
 	// this tells the adapter how big the plugin is.
 	updateViewportSize: function() {
-		var b = enyo.getVisibleControlBounds(this);
+		var b = enyo.calcModalControlBounds(this);
 		this.callBrowserAdapter("setVisibleSize", [b.width, b.height]);
 	},
 	urlChanged: function() {
@@ -303,7 +210,7 @@ enyo.kind({
 		}
 		//this.log('type: ' + inEvent.type + ' pass: ' + pass + ' flashGestureLock: ' + this._flashGestureLock + ' mouseInFlash: ' + this._mouseInFlash + ' mouseInInteractive: ' + this._mouseInInteractive);
 		if (pass || (!this._flashGestureLock && !this._mouseInInteractive) || (this._flashGestureLock && !this._mouseInFlash)) {
- 			r = this.inherited(arguments);
+			r = this.inherited(arguments);
 		}
 		return r;
 	},
@@ -328,7 +235,7 @@ enyo.kind({
 		for (var i=0, r; r=inOldRedirects && inOldRedirects[i]; i++) {
 			this.callBrowserAdapter("addUrlRedirect", [r.regex, false, r.cookie, 0]);
 		}
-		for (var i=0, r; r=this.redirects[i]; i++) {
+		for (i=0, r; r=this.redirects[i]; i++) {
 			this.callBrowserAdapter("addUrlRedirect", [r.regex, r.enable, r.cookie, 0]);
 		}
 	},
@@ -375,7 +282,7 @@ enyo.kind({
 	},
 	//* @protected
 	flushCallQueue: function() {
-		this.log(this.callQueue.length, "view?", this.hasView());
+		//this.log(this.callQueue.length, "view?", this.hasView());
 		if (this.callQueue.length > 0) {
 			if (this.hasView()) {
 				var l = this.callQueue.length;
@@ -392,11 +299,11 @@ enyo.kind({
 		if (this.flashPopup == null) {
 			// Note: the html break in the message is intentional
 			// (requested by HI)
-			this.flashPopup = this.createComponent({kind: "Popup", modal: true, style: "text-align:center", components: [{content: $L("Dragging works in Flash, until you<br>pinch to zoom out")}]});
+			this.flashPopup = this.createComponent({kind: "Popup", modal: true, style: "text-align:center", components: [{allowHtml: true, content: $L("Dragging works in Flash, until you<br>pinch to zoom out")}]});
 			this.flashPopup.render();
 			if (this.flashPopup.hasNode()) {
 				this.flashTransitionEndHandler = enyo.bind(this, "flashPopupTransitionEndHandler");
-				//this.flashPopup.node.addEventListener("webkitTransitionEnd", this.flashTransitionEndHandler, false);
+				this.flashPopup.node.addEventListener("webkitTransitionEnd", this.flashTransitionEndHandler, false);
 			}
 		}
 		this.flashPopup.applyStyle("opacity", 1);
@@ -519,6 +426,10 @@ enyo.kind({
 	flashGestureLockChange: function(enabled) {
 		//this.log(enabled);
 		this._flashGestureLock = enabled;
+
+                if (this._flashGestureLock) {
+                    this.showFlashLockedMessage();
+                }
 	},
 	/**
 	(browser adapter callback) called when browser needs to create
@@ -560,6 +471,36 @@ enyo.kind({
 	**/
 	textCaretRectUpdate: function(inLeft, inTop, inRight, inBottom) {
 		// nop
+	},
+	/**
+	(browser adapter callback)
+	**/
+	eventFired: function(inEvent, inInfo) {
+		var e = {type:inEvent.type, pageX:inEvent.pageX, pageY:inEvent.pageY};
+		var h = {
+			isNull: inInfo.isNull,
+			isLink: inInfo.isLink,
+			isImage: inInfo.isImage,
+			x: inInfo.x,
+			y: inInfo.y,
+			bounds: {
+				left: inInfo.bounds && inInfo.bounds.left || 0,
+				top: inInfo.bounds && inInfo.bounds.top || 0,
+				right: inInfo.bounds && inInfo.bounds.right || 0,
+				bottom: inInfo.bounds && inInfo.bounds.bottom || 0
+			},
+			element: inInfo.element,
+			title: inInfo.title,
+			linkText: inInfo.linkText,
+			linkUrl: inInfo.linkUrl,
+			linkTitle: inInfo.linkTitle,
+			altText: inInfo.altText,
+			imageUrl: inInfo.imageUrl,
+			editable: inInfo.editable,
+			selected: inInfo.selected
+		};
+		var fn = "do" + inEvent.type.substr(0, 1).toUpperCase() + inEvent.type.substr(1);
+		return this[fn].apply(this, [e, h]);
 	},
 	// renamed browser adapter callbacks:
 	// (browser adapter callback) renamed to showListSelector

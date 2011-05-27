@@ -17,7 +17,7 @@ Tellurium.subscribeToCommands = function() {
 		'type': Tellurium.stageType,
 		// FIXME: does not apply to enyo
 		'scene': "phone",
-		'version': Tellurium.nubVersion,
+		'version': Tellurium.nubVersion
 	};
 
 	Tellurium.subscribeRequest = new Tellurium.enyo.PalmService({
@@ -43,7 +43,7 @@ Tellurium.notifyEvent = function(params) {
 	if (!Tellurium.serviceAvailable) {
 		//console.log("Tellurium.notifyEvent: " + enyo.json.stringify(params));
 		return;
-	};
+	}
 	//console.log(" ENYO TELLURIUM : notifyEvent: " + enyo.json.stringify(params));
 	if (Tellurium.stageId && (!Tellurium.inVerifyDialog || params.event === "verify")) {
 		params.stageId = Tellurium.stageId;

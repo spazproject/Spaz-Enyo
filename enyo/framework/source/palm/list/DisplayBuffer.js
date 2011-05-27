@@ -5,12 +5,10 @@ enyo.kind({
 	kind: enyo.Buffer,
 	height: 0,
 	acquirePage: function(inPage) {
-		//this.log(inPage);
 		var node = this.pages[inPage];
 		if (node) {
 			node.style.display = "";
 			if (!this.heights[inPage]) {
-				//this.log(inPage, this.height);
 				this.height += this.heights[inPage] = node.offsetHeight;
 			}
 		}

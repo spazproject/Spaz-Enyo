@@ -33,7 +33,7 @@ enyo.kind({
 		{className: "enyo-progressslider-progress", components: [
 			{name: "bar", kind: enyo.ProgressBar, className: "enyo-progress-slider", components: [
 				{name: "altBar", className: "enyo-progress-slider-alt-bar"},
-				{name: "button", kind: "CustomButton", caption: " ", toggling: true, allowDrag: true, className: "enyo-slider-button"},
+				{name: "button", kind: "CustomButton", caption: " ", toggling: true, allowDrag: true, className: "enyo-slider-button"}
 			]}
 		]},
 		{name: "client"}
@@ -67,7 +67,7 @@ enyo.kind({
 	},
 	positionChanged: function(inOldPosition) {
 		this.inherited(arguments);
-		if (this.lockBar && inOldPosition != undefined && !this.$.animator.isAnimating()) {
+		if (this.lockBar && inOldPosition !== undefined && !this.$.animator.isAnimating()) {
 			this.$.bar.setPositionImmediate(this.position);
 		}
 	},

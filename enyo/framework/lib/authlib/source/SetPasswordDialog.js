@@ -1,7 +1,7 @@
 /* Copyright 2009-2011 Hewlett-Packard Development Company, L.P. All rights reserved. */
 enyo.kind ({
 	name: "SetPasswordDialog", 
-	kind: enyo.Dialog,
+	kind: enyo.ModalDialog,
 	modal: true,
 	published: {
 		policy: ""
@@ -10,8 +10,8 @@ enyo.kind ({
 		onDone: "",
 		onCancel: ""
 	},
+	caption: $L("Set Password"),
 	components: [		
-		{name: "title", content: rb_auth.$L("Set Password"), className: "enyo-dialog-prompt-title"},
 		{name: "hint", className: "enyo-dialog-prompt-message"},
 		{name: "error", showing: false},
 		{name: "password", kind: "PasswordInput", hint: rb_auth.$L("enter password..."), onkeypress:"handleKeyPress"},
@@ -21,14 +21,14 @@ enyo.kind ({
 		{name: "setPassword", kind:"PalmService", service:"palm://com.palm.systemmanager/", method: "setDevicePasscode", onSuccess:"setPasswordSuccess", onFailure: "setPasswordFailure"}
 	],
 	policyChanged: function() {
-		this.log(this.policy)
+		this.log(this.policy);
 		if ( this.policy.alphaNumeric === true ) {
 			if ( this.policy.minLength > 1 ) {
 				this.$.hint.setContent((new enyo.g11n.Template(rb_auth.$L("Password must be #{len} or more characters long and contain both numbers and letters."))).evaluate({
 					len: this.policy.minLength
 				}));
 			} else {
-				this.$.hint.setContent(rb_auth.$L("Password must contain both numbers and letters."))
+				this.$.hint.setContent(rb_auth.$L("Password must contain both numbers and letters."));
 			}
 		} else {
 			if ( this.policy.minLength > 1 ) {
@@ -54,7 +54,7 @@ enyo.kind ({
 	open: function() {
 		this.inherited(arguments);
 		this.$.password.forceFocus();
-	},
+	},	
 	cancelClick: function(inSender) {
 		this.setErrorMessage();
 		this.doCancel();
@@ -77,11 +77,11 @@ enyo.kind ({
 		this.$.error.setContent(message || '');
 		this.$.error.setShowing(!!message);
 	},
-	
 	handleKeyPress: function(inSender, inEvent) {
 		if(inEvent && inEvent.keyCode == 13) {
-			if(this.$.password.hasFocus())
+			if(this.$.password.hasFocus()) {
 				this.$.passwordconfirm.forceFocus();
+			}
 			else if(this.$.passwordconfirm.hasFocus()) {
 				this.$.passwordconfirm.forceBlur();
 				this.acceptClick();	

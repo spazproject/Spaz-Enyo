@@ -5,7 +5,7 @@ displayed in an <a href="#enyo.Item">Item</a>, so they have small guide lines be
 
 Here's an example:
 
-	{kind: "Group", caption: "Audio/Video Options", components: [
+	{kind: "RowGroup", caption: "Audio/Video Options", components: [
 		{layoutKind: "HFlexLayout", components: [
 			{content: "Sound", flex: 1},
 			{kind: "ToggleButton"}
@@ -22,7 +22,7 @@ enyo.kind({
 	chrome: [
 		{name: "label", kind: "Control", className: "enyo-group-label"},
 		// NOTE: row styling applied by the layoutKind here.
-		{name: "client", kind: "Control", layoutKind: "OrderedLayout", className: "enyo-group-inner"}
+		{name: "client", kind: "OrderedContainer", className: "enyo-group-inner"}
 	],
 	defaultKind: "enyo.Item",
 	//* @protected
@@ -49,6 +49,12 @@ enyo.kind({
 		var c = this.controlAtIndex(inIndex);
 		c.setShowing(false);
 		this.$.client.flow();
+	},
+	flow: function() {
+		this.inherited(arguments);
+		if (this.hasNode()) {
+			this.$.client.flow();
+		}
 	}
 });
 
@@ -56,13 +62,20 @@ enyo.kind({
 	name: "enyo.RowItem",
 	kind: enyo.Item,
 	setOrderStyle: function(inClass) {
-		this.addRemoveClass(inClass, !this.hasClass(inClass));
+		if (this._orderClassName) {
+			this.addRemoveOrderClassName(this._orderClassName, false);
+		}
+		this.addRemoveOrderClassName(inClass, true);
+		this._orderClassName = inClass;
+	},
+	addRemoveOrderClassName: function(inClass, inAdd) {
+		this.addRemoveClass(inClass, inAdd);
 		var c = this.children[0];
 		if (c) {
 			if (c.setOrderStyle) {
 				c.setOrderStyle(inClass);
 			} else {
-				c.addRemoveClass(inClass, !c.hasClass(inClass));
+				c.addRemoveClass(inClass, inAdd);
 			}
 		}
 	}

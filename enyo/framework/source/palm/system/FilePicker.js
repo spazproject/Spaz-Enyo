@@ -4,46 +4,57 @@ A FilePicker control is used for allowing the user to choose files using the sta
 	
 The onPickFile event fires with a response from the file picker if/when the user chooses a file.
 The response object is an array of objects indicating chosen files:
-[
-	{
-		fullPath: // Absolute File Path.
-		iconPath: // Absolute File Path with ExtractFS prefix.
-		attachmentType: // File Type (image, document, audio, video)
-		size: // File Size in Bytes.
-	},
-	{
+
+	[
+		{
+			fullPath: // Absolute File Path.
+			iconPath: // Absolute File Path with ExtractFS prefix.
+			attachmentType: // File Type (image, document, audio, video)
+			size: // File Size in Bytes.
+		},
+		{
+			...
+		},
 		...
-	},
-	...
-]
+	]
 */
 enyo.kind({
 	name: "enyo.FilePicker",
 	kind: "enyo.Popup",
+	className: "enyo-popup enyo-filepicker",
 	published: {
-		fileType: undefined, 		/** Optional string or array.  Limits displayed files to the given type (or types).  
-										Possible types are: 'image', 'audio', 'video', 'document'.*/
-		previewLabel: undefined,	//* Optional free form string to override the default string displayed at the top panel.
-		extensions: undefined,		//* Optional array of file extension strings, used to filter displayed files.
-		allowMultiSelect: false,	//* Optional boolean indicating if selection of multiple files is allowed.
-		currentRingtonePath:undefined, //* Optional string contains the current ringtone absolute file path.
-		cropWidth:undefined, //* Optional int to set the width of the crop window.
-		cropHeight:undefined //* Optional int to set the height of the crop window.
+		/** Optional string or array.  Limits displayed files to the given type (or types).  
+			Possible types are: 'image', 'audio', 'video', 'document'.*/
+		fileType: undefined, 		
+		//* Optional free form string to override the default string displayed at the top panel.
+		previewLabel: undefined,	
+		//* Optional array of file extension strings, used to filter displayed files.
+		extensions: undefined,
+		//* Optional boolean indicating if selection of multiple files is allowed.
+		allowMultiSelect: false,
+		//* Optional string contains the current ringtone absolute file path.
+		currentRingtonePath:undefined,
+		//* Optional int to set the width of the crop window.
+		cropWidth:undefined,
+		//* Optional int to set the height of the crop window.
+		cropHeight:undefined
 	},
 	events: {
-		onPickFile:"" //* Sent with a response from the file picker (see above) when the user chooses a file.
+		//* Sent with a response from the file picker (see above) when the user chooses a file.
+		onPickFile:""
 	},
-	height:"480px",
-	width:"380px",
 	dismissWithClick:false,
 	modal:true,
 	scrim:true,
 	filePickerPath: "/usr/lib/luna/system/luna-systemui/app/FilePicker/filepicker.html",
 	components: [
-		{name: 'crossapp', kind:"CrossAppUI", onResult: "handleResult"}
+		{className: "enyo-filepiecker-container", components: [
+			{name: 'crossapp', kind:"CrossAppUI", onResult: "handleResult"}
+		]}
 	],
 	//* Activates the modal FilePicker UI.
 	pickFile: function() {
+		this.validateComponents();
 		this.updateParams();
 		this.$.crossapp.setPath(this.filePickerPath);
 		this.openAtCenter(); //It opens at the center for now.

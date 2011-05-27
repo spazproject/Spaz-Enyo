@@ -4,7 +4,7 @@ A <a href="#enyo.Control">Control</a> that gets a gray
 highlight on mouse down. It generates an ondown event on mouse down, and an
 onup event on mouse up.
 
-	{kind: "Pushable", content: "push me", ondown: "pushableDown", onup: "pushableUp}
+	{kind: "Pushable", content: "push me", ondown: "pushableDown", onup: "pushableUp"}
 
 	pushableDown: function(inSender) {
 		this.log(inSender.content + "is down");

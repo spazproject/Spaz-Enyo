@@ -24,6 +24,10 @@ enyo.kind({
 		this.inherited(arguments);
 		this.disabledChanged();
 	},
+	destroy: function() {
+		this.cancelClickJob();
+		this.inherited(arguments);
+	},
 	heldChanged: function() {
 		if (!this.tapHighlight) {
 			return;
@@ -44,60 +48,35 @@ enyo.kind({
 		this.setHeld(false);
 		this.fire("onmouserelease", inEvent);
 	},
-	// make sure we show "held" before clicking
 	clickHandler: function(inSender, inEvent) {
-		if (this.disabled) {
-			return;
+		if (!this.disabled) {
+			// allow only one held item at a time (prevents ever showing multiple helds,
+			// which can happen if system bogs)
+			if (enyo.Item.clickJob) {
+				enyo.Item.clickJob();
+			}
+			// make sure we show "held" before clicking
+			this.setHeld(true);
+			// on a delay click and remove held state, flyweight safe:
+			// update held property without rendering a change.
+			enyo.Flyweight.callWithoutNode(this, enyo.bind(this, "setHeld", false));
+			// cache info so that if flyweight context is reset we update properly
+			this.makeClickJob(this.hasNode(), this.domAttributes.className, inEvent);
 		}
-		// apply held
-		this.setHeld(true);
-		//
-		// on a delay click and removing held.
-		var n = this.hasNode();
-		enyo.callWithoutNode(this, n, enyo.bind(this, "setHeld", false));
-		var cn = this.domAttributes.className;
-		setTimeout(enyo.hitch(this, function() {
-			n.className = cn;
+	},
+	_clickJobName: "enyo.Item:click",
+	makeClickJob: function(inNode, inClassName, inEvent) {
+		enyo.Item.clickJob = enyo.hitch(this, function() {
+			if (inNode) {
+				inNode.className = inClassName;
+			}
+			this.cancelClickJob();
 			this.doClick(inEvent, inEvent.rowIndex);
-		}), 100);
+		});
+		enyo.job(this._clickJobName, enyo.Item.clickJob, 100);
+	},
+	cancelClickJob: function() {
+		enyo.job.stop(this._clickJobName);
+		enyo.Item.clickJob = null;
 	}
 });
-
-// FIXME: needs a place to live and better name
-// locate a flyweight that is a parent for the given node
-enyo.findFlyweight = function(inNode) {
-	var n = inNode, c;
-	while (n) {
-		c = enyo.$[n.id];
-		if (c && c.kindName.indexOf("Flyweight") >= 0) {
-			return c;
-		}
-		n = n.parentNode;
-	}
-}
-
-// call a function with a control's node access disabled.
-enyo.callWithoutNode = function(inControl, inNode, inFunc) {
-	inControl.node = null;
-	var fn = inControl.hasNode;
-	inControl.hasNode = enyo.nop;
-	inFunc();
-	inControl.hasNode = fn;
-	inControl.node = inNode;
-}
-
-// call a function in a control's context with the control set to a particular node
-// and handle if the control is a descendant of a flyweight.
-enyo.callWithNode = function(inControl, inNode, inFunc) {
-	var f = enyo.findFlyweight(inControl.node);
-	var c = f || inControl;
-	var n0 = c.node;
-	var n1 = f ? f.findNode(inNode) : inNode;
-	c.setNode(n1);
-	//
-	var args = enyo._toArray(arguments, 3);
-	inFunc = enyo.isString(inFunc) ? inControl[inFunc] : inFunc;
-	inFunc.apply(inControl, args);
-	// why set this back?
-	//c.setNode(n0);
-}

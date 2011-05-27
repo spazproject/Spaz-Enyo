@@ -209,7 +209,6 @@ enyo.job.stop = function(inJobName) {
 	// API is non-standard, so what enyo exposes may vary from 
 	// web documentation for various browsers
 	// in particular, requestAnimationFrame takes no arguments, and the callback receives no arguments
-	// and we name the complement clearAnimationFrame (as opposed to cancelRequestAnimationFrame)
 	var builtin = window.webkitRequestAnimationFrame;
 	enyo.requestAnimationFrame = builtin ? enyo.bind(window, builtin) :
 		function(inCallback) {
@@ -219,7 +218,19 @@ enyo.job.stop = function(inJobName) {
 	var builtin = window.webkitCancelRequestAnimationFrame || window.clearTimeout;
 	// API 
 	enyo.cancelRequestAnimationFrame = enyo.bind(window, builtin);
+	//
+	// Note: (we have requested to change the native implementation to do this)
+	// first return value of webkitRequestAnimationFrame is 0 and a call 
+	// to webkitCancelRequestAnimationFrame with no arguments will cancel this.
+	// To avoid this and to allow for a boolean test of the return value,
+	// make 1 bogus call so the first used return value of webkitRequestAnimationFrame is > 0.
+	// (we choose to do this rather than wrapping the native function to avoid the overhead)
+	if (builtin) {
+		var f = enyo.requestAnimationFrame(enyo.nop);
+		enyo.cancelRequestAnimationFrame(f);
+	}
 })();
+
 
 //* @public
 /**
@@ -265,23 +276,37 @@ enyo.string = {
 		}
 		return inString;
 	},
-	/** return string where _inSearchText_ is case-insensitively matched and wrapped in a &lt;span&gt; tag with
-		CSS class _inClassName_ */
+	/** 
+		return string where _inSearchText_ is case-insensitively matched and wrapped in a &lt;span&gt; tag with
+		CSS class _inClassName_ 
+	*/
 	applyFilterHighlight: function(inText, inSearchText, inClassName) {	
 		return inText.replace(new RegExp(inSearchText, "i"), '<span class="' + inClassName + '">$&</span>');
 	},
-	/** return string with ampersand, less-than, and greater-than characters replaced with HTML entities, 
-		e.g. '<code>"This & That"</code>' becomes '&lt;code&gt;"This &amp;amp; That"&lt;/code&gt;' */
-	escapeHtml: function(inHtml) {
-		return inHtml ? inHtml.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;') : '';
+	/**
+		return string with ampersand, less-than, and greater-than characters replaced with HTML entities, 
+		e.g. '&lt;code&gt;"This &amp; That"&lt;/code&gt;' becomes '&amp;lt;code&amp;gt;"This &amp;amp; That"&amp;lt;/code&amp;gt;' 
+	*/
+	escapeHtml: function(inText) {
+		return inText != null ? String(inText).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;') : '';
 	},
-	/** return a text-only version of a string by using the DOM to write out HTML and read back plain text */
+	/**
+		return string with ampersand and double quote characters replaced with HTML entities, 
+		e.g. 'hello from "Me & She"' becomes 'hello from &amp;quot;Me &amp;amp; She&amp;quot;' 
+	*/
+	escapeHtmlAttribute: function(inText) {
+		return inText != null ? String(inText).replace(/&/g,'&amp;').replace(/"/g,'&quot;') : '';
+	},
+	/** return a text-only version of a string that may contain html */
+	// credit to PrototypeJs for these regular expressions
+	// Note, it's possible to use dom to strip tags using innerHtml/innerText tricks
+	// but dom executes html so this is unsecure. In addition entities are converted to tags
+	_scriptsRe: new RegExp("<script[^>]*>([\\S\\s]*?)<\/script>", "gim"),
+	_tagsRe: new RegExp(/<\w+(\s+("[^"]*"|'[^']*'|[^>])+)?>|<\/\w+>/gi),
 	removeHtml: function(inHtml) {
-		if (!this.div) {
-			this.div = document.createElement("div");
-		}
-		this.div.innerHTML = inHtml;
-		return this.div.innerText;
+		var t = inHtml.replace(enyo.string._scriptsRe, "").replace(enyo.string._tagsRe, "");
+		// just to be sure, escape any html we may have missed.
+		return enyo.string.escapeHtml(t);
 	},
 	/**
 		Searches _inText_ for URLs (web and mailto) and emoticons (if supported), and returns a new string with those entities replaced by HTML links and images (respectively).
@@ -352,16 +377,16 @@ enyo.reloadG11nResources = function(){
 }
 
 // return visible control dimensions unobscured by other content
-enyo.getVisibleControlBounds = function(inControl) {
+enyo.calcModalControlBounds = function(inControl) {
 	var o = enyo.mixin(inControl.getBounds(), inControl.getOffset());
 	var oh = o.top + o.height;
-	var vh = enyo.getVisibleBounds().height;
+	var vh = enyo.getModalBounds().height;
 	o.height -= Math.max(0, oh - vh);
 	return o;
 }
 
 // return visible bounds of window unobscured by content like maybe a keyboard...
-enyo.getVisibleBounds = function() {
+enyo.getModalBounds = function() {
 	return {
 		width: window.innerWidth,
 		height: window.innerHeight

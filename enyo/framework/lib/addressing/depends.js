@@ -12,6 +12,7 @@ enyo.depends(
 	"ContactAtom.js",
 	"css/AtomizingInput.css",
 	"AtomizingInput.js",
+	"AddressListPopup.js",
 	"css/AddressingPopup.css",
 	"AddressingPopup.js"
 );

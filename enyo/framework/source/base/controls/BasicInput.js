@@ -24,6 +24,7 @@ enyo.kind({
 		readonly: false,
 		placeholder: "",
 		placeholderClassName: "",
+		disabledClassName: "enyo-input-disabled",
 		tabIndex: ""
 	},
 	events: {
@@ -62,6 +63,12 @@ enyo.kind({
 			this.addRemovePlaceholderClassName(false);
 		}
 	},
+	mousedownHandler: function(inSender, inEvent) {
+		if (this.disabled) {
+			inEvent.preventDefault();
+		}
+		return this.fire("mousedown", inEvent);
+	},
 	changeHandler: function(inSender, inEvent) {
 		// if we are re-rendered we won't show the proper value unless we capture it in domAttributes
 		// we don't call setAttribute (or setDomValue) because of potential side-effects of altering the DOM
@@ -85,7 +92,13 @@ enyo.kind({
 		this.setDomValue(this.value);
 	},
 	disabledChanged: function() {
+		// NOTE: standard disabled attribute prevents all mouse events;
+		// this could be avoided by not using this attribute;
+		// however, this would make dealing with focus tab order complex 
+		// (e.g. keyboard next focuses control: it should
+		// not focus, but next control after this one should)
 		this.setAttribute("disabled", this.disabled ? "disabled" : null);
+		this.addRemoveClass(this.disabledClassName, this.disabled);
 	},
 	readonlyChanged: function() {
 		this.setAttribute("readonly", this.readonly ? "readonly" : null);
@@ -101,8 +114,8 @@ enyo.kind({
 			if (this.isEmpty()) {
 				this.updatePlaceholder(false);
 			}
-			this.doFocus();
 		}
+		return this.disabled ? true : this.doFocus();
 	},
 	blurHandler: function(inSender, inEvent) {
 		if (this.isEmpty()) {
@@ -120,22 +133,27 @@ enyo.kind({
 	/**
 	Force the input to receive keyboard focus.
 	*/
-	forceFocus: function() {
+	forceFocus: function(inCallback) {
 		if (this.hasNode()) {
 			// has to be async in many cases (when responding to dom events, in particular) or it just fails
 			enyo.asyncMethod(this, function() {
 				this.hasNode().focus();
-				//this.node.select();
+				if (inCallback) {
+					inCallback();
+				}
 			});
 		}
 	},
 	/**
 		Forces this input to be blurred (lose focus).
 	*/
-	forceBlur: function() {
+	forceBlur: function(inCallback) {
 		if (this.hasNode()) {
 			enyo.asyncMethod(this, function() {
 				this.hasNode().blur();
+				if (inCallback) {
+					inCallback();
+				}
 			});
 		}
 	},

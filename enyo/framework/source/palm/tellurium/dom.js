@@ -55,9 +55,12 @@ Tellurium.clickDom = function(xpath) {
 
 /* Create Offset 
 */
-function createOffset(x,y){
-var offset=[x,y];offset.left=x;offset.top=y;return offset;
-}
+Tellurium.createOffset = function(x,y) {
+  var offset=[x,y];
+  offset.left=x;
+  offset.top=y;
+  return offset;
+};
 
 /*
  * Retrieve the value of an element property using document.querySelector(selector) to locate the first element that matches the selector.
@@ -99,7 +102,7 @@ Tellurium.setValue = function(selector,value) {
  * @param {Object} propertyname
  * @param {Object} value
  */
-  Tellurium.setElementValue = function(selector,propertyname,value) {
+Tellurium.setElementValue = function(selector,propertyname,value) {
   eval("document.querySelector(selector)."+propertyname+"='"+value+"'");
   return true;
 };
@@ -134,47 +137,47 @@ Tellurium.getDimensions = function(inElement) {
 	return dims;
 };
 
-// Utility function copied from Mojo2
-Tellurium.viewportOffset = function(el) {
-	var currentEl = el;
+Tellurium.viewportOffset = function(elementObjectOrLocator) {
+	var targetEl = (typeof elementObjectOrLocator == "string") ? Tellurium.getElement(elementObjectOrLocator) : elementObjectOrLocator;
+	if (!targetEl) throw { message: "Tellurium.viewportOffset: Invalid element/locator parameter." };
+	var currentEl = targetEl;
 	var top = 0, left = 0;
 	var fixedParent;
-	var ownerDocument = el.ownerDocument;
-
-	// Add up offsetTop & offsetLeft of positioned ancestors to the root of the DOM.
+	var ownerDocument = targetEl.ownerDocument;
+	// pass1 - add up offsetTop & offsetLeft of positioned ancestors to the root of the DOM
 	while (currentEl) {
 		top += currentEl.offsetTop;
 		left += currentEl.offsetLeft;
-		// Don't forget to include border widths, but not on the el itself.
-		if (currentEl !== el) {
+		// include border widths, but not on the targetEl itself
+		if (currentEl !== targetEl) {
 			top += currentEl.clientTop;
 			left += currentEl.clientLeft;
 		}
-
-		// If we have a fixed position ancestor, then we're done -- fixed position is always relative to the viewport.
-		if (currentEl.style.position === 'fixed') {
+		// done if element is fixed position, which is always relative to the viewport
+		if (currentEl.style.position && currentEl.style.position === 'fixed') {
 			fixedParent = currentEl;
 			break;
 		}
 		currentEl = currentEl.offsetParent;
 	}
-
-	// Make a second pass to add up the scrollLeft & scrollTop of our ancestors.
-	// Don't forget to stop in the case where we had a fixed position ancestor.
-	currentEl = el;
+	// pass2 - adjust for enyo-scroller containers
+	var scrollTop, scrollLeft;
+	currentEl = targetEl;
 	while (currentEl && currentEl !== ownerDocument) {
-		left -= currentEl.scrollLeft;
-		top -= currentEl.scrollTop;
-		if (currentEl === fixedParent) {
-			break;
+		try {
+		  if (currentEl.className && Tellurium.isWordInString(currentEl.className, "enyo-scroller")) {
+			scrollTop = eval("Tellurium.enyo.windows.getActiveWindow().enyo.$."+currentEl.id+".getScrollTop()");
+			scrollLeft = eval("Tellurium.enyo.windows.getActiveWindow().enyo.$."+currentEl.id+".getScrollLeft()");
+			top -= scrollTop;
+			left -= scrollLeft;
+		  }
 		}
-
+		catch (scrollerException) { }
+		if (currentEl === fixedParent) break;
 		currentEl = currentEl.parentNode;
 	}
-	return createOffset(left, top);
+	return Tellurium.createOffset(left, top);
 };
-
-
 
 /*
  * Runs a custom javascript.
@@ -266,30 +269,53 @@ Tellurium.isElementPresent = function(locator) {
  */
 Tellurium.isElementVisible = function(locator) {
 	var element = Tellurium.getElement(locator);
-	if (!element) {
-		return false;
-	}
-	if (element.style.display === 'none') {
-		return false;
-	}
+	if (!element) return false;
+	if (element.style.display === 'none') return false;
 	var ancestorsXPath = Tellurium.getElementXPath(element, false) + "/ancestor::*";
 	var ancestorNodes = document.evaluate(ancestorsXPath, document, null, XPathResult.ANY_TYPE, null);
 	while(element = ancestorNodes.iterateNext()) {
-		if (element.style.display === 'none') {
-			return false;
-		}
+		if (element.style.display === 'none') return false;
 	}
 	return true;
 };
 
 /*
- * Try to make the element visible on the screen
+ * Try to make the element visible on the screen.
  * @param {Object} locator
  */
- // FIXME: tbd when Enyo supports this api.
 Tellurium.revealElement = function(locator) {
-	var element = Tellurium.getElement(locator);
-	//Tellurium._getTopScene().revealElement(element);
+	var scrollerElementId = Tellurium.findScrollerAncestorId(locator);
+	if (scrollerElementId === "") return false;
+	var locatorElement = Tellurium.getElement(locator);
+	var evalText = "Tellurium.enyo.windows.getActiveWindow().enyo.$."+scrollerElementId+".scrollTo("+locatorElement.offsetTop+",0)";
+	eval(evalText);
+};
+
+/*
+ * Search for a DOM ancestor that is a scroller (class="enyo-scroller"); return the 'id' property of the scroller element; return "" if not found
+ * @param {Object} locator
+ */
+Tellurium.findScrollerAncestorId = function(locator) {
+	// validate locator element
+	var locatorElement = Tellurium.getElement(locator);
+	if (!locatorElement) return "";
+	if (locatorElement.style.display === 'none') return "";
+	if (locatorElement.offsetTop == undefined || locatorElement.offsetTop == null) return "";
+	// look for an ancestor scroller container
+	var foundScroller = false;
+	var ancestorElement = null;
+	var ancestorsXPath = Tellurium.getElementXPath(locatorElement, false) + "/ancestor::*";
+	var ancestorNodes = document.evaluate(ancestorsXPath, document, null, XPathResult.ANY_TYPE, null);
+	while (ancestorElement = ancestorNodes.iterateNext()) {
+		if (ancestorElement.style.display === 'none') return ""; // if the ancestor is hidden then so is the locatorElement
+		if (ancestorElement.className == undefined || ancestorElement.className == null) return "";
+		if (!Tellurium.isWordInString(ancestorElement.className, "enyo-scroller")) continue;
+		foundScroller = true;
+		break;
+	}
+	if (!foundScroller) return "";
+	if (!ancestorElement.id) return "";
+	return ancestorElement.id;
 };
 
 /*
@@ -344,18 +370,16 @@ Tellurium.getMetrics = function(locator) {
 	};	
 	return metrics;
 };
-Tellurium.getDayViewEventMetrics = function(eventSubject) {
-    // Find an event's dimensions using its subject:
-    var bounds = Tellurium.calendarDayViewInspector.getBySubject({bounds: eventSubject});
-    if (!bounds) {
-           console.error ("\n\n\tNo event was found with subject [ %s ].\n\n", eventSubject);
-           return;
-    }
-    var metrics = {
-           width: bounds.width,
-           height: bounds.height,
-           left: bounds.left,
-           top: bounds.top
-     };
-      return metrics;
- };
+
+/*
+ * Search for a word in a string (words are separated by spaces; search is case sensitive).
+ * @param {Object} inputString
+ * @param {Object} targetWord
+ */
+Tellurium.isWordInString = function(inputString, targetWord) {
+	var words = inputString.split(" ");
+	for (var i = 0; i < words.length; i++) {
+		if (words[i] === targetWord) return true;
+	}
+	return false;
+};

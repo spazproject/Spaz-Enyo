@@ -24,7 +24,11 @@ enyo.kind({
 		Event fired when a contact is accepted; implement to decorate the contact with extra information,
 		such as providing an "type" (address type) for reverse lookup.
 		*/
-		onDecorateContact: ""
+		onDecorateContact: "",
+		/**
+		Event fired before the Addressing popup is opened.
+		*/
+		onBeforePopupOpen: ""
 	},
 	//* @protected
 	components: [
@@ -40,8 +44,8 @@ enyo.kind({
 			onFilterCleared: "inputFilterCleared"
 		},
 		{kind: "ReverseLookupService", onSuccess: "gotReverseLookup", onFailure: "failedReverseLookup"},
-		{kind: "Popup", layoutKind: "VFlexLayout", dismissWithClick: false, onmousedown: "popupMousedown",
-			onmousedown: "popupMousedown", className: "enyo-addressing-popup enyo-bg", components: [
+		{kind: "AddressListPopup", name:"popup", layoutKind: "VFlexLayout", dismissWithClick: true, onmousedown: "popupMousedown",
+			onBeforeOpen: "popupBeforeOpen", className: "enyo-addressing-popup enyo-bg", components: [
 			{name: "client"},
 			{name: "list", flex: 1, kind: "AddressingList", onSelect: "listSelect"}
 		]}
@@ -53,10 +57,21 @@ enyo.kind({
 		}
 		this.contactsChanged();
 		this.expandButtonCaptionChanged();
-		this.addressTypesChanged();
-		this.imTypesChanged();
 		this.inputTypeChanged();
 		this.popupClassNameChanged();
+	},
+	importProps: function(inProps) {
+		this.popupComponents = inProps.components || [];
+		inProps.components = [];
+		this.inherited(arguments);
+	},
+	popupBeforeOpen: function(inSender, inFirstOpen) {
+		if (inFirstOpen) {
+			this.createComponents(this.popupComponents, {owner: this.owner});
+			this.addressTypesChanged();
+			this.imTypesChanged();
+		}
+		this.doBeforePopupOpen();
 	},
 	setOrderStyle: function(inClassName) {
 		this.$.input.setOrderStyle(inClassName);
@@ -66,9 +81,6 @@ enyo.kind({
 			this.$.popup.removeClass(inOldValue);
 		}
 		this.$.popup.addClass(this.popupClassName);
-	},
-	popupMousedown: function(inSender, inEvent) {
-		inEvent.preventDefault();
 	},
 	addressTypesChanged: function() {
 		this.$.list.setAddressTypes(this.addressTypes);
@@ -118,9 +130,11 @@ enyo.kind({
 	},
 	//* @protected
 	inputFocus: function(inSender, inEvent) {
+		if (this.getInputValue()) {
+			this.open();
+		}
 	},
 	inputBlur: function() {
-		this.close();
 	},
 	inputGetContact: function() {
 		var selected = this.$.list.getSelected();
@@ -144,13 +158,23 @@ enyo.kind({
 			this.search(inSearch);
 		}
 	},
+	//* Close the popup and return it to a pristine state
+	reset: function() {
+		this.$.input.setInputValue("");
+		this.$.input.stopFilterJob();
+		this.setContacts(null);
+		this.inputFilterCleared();
+	},
 	//* @protected
 	open: function() {
+		this.updateWidth();
+		this.$.popup.openAroundControl(this.$.input, true);
+	},
+	updateWidth: function() {
 		var n = this.hasNode();
 		if (n) {
 			this.$.popup.applyStyle("min-width", n.offsetWidth + "px");
 		}
-		this.$.popup.openAroundControl(this.$.input);
 	},
 	inputAtomize: function(inSender, inAtom) {
 		var contact = inAtom.contact;
@@ -190,6 +214,7 @@ enyo.kind({
 		this.$.list.refresh();
 	},
 	inputFilterCleared: function() {
+		this.$.list.cancelSearch();
 		this.close();
 	},
 	inputShowAllContacts: function() {
@@ -207,5 +232,10 @@ enyo.kind({
 	},
 	listSelect: function(inSender, inSelected) {
 		this.$.input.atomizeInput(inSelected.address);
+	},
+	resizeHandler: function() {
+		this.$.popup.applyStyle("min-width",undefined);
+		this.updateWidth();
+		this.inherited(arguments);
 	}
 });

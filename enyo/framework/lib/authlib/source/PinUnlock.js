@@ -13,17 +13,17 @@ enyo.kind({
 		onPinVerified:""
 	},
 	components: [
-		{name: "label", components: [
-			{name: "Text", content: rb_auth.$L("Phone Locked"), style: "font-size: 26px; text-align: center; color: white; width: 100%; weight: bold"},
-			{name: "subText", content: rb_auth.$L("Enter PIN"), style: "font-size: 16px; text-align: center; color: white; width: 100%; weight: bold"},
-			{name: "pinForm", style: "width: 100%; height: 32px; position: relative;", components: [
-				{name: "pinDisplay", content: " ", style: "width: 100%; font-size: 32px; text-align: center; position: absolute; bottom: 5px; color: white; weight: bold;"}
+		{name: "label", height:"30px", components: [
+			{name: "Text", content: rb_auth.$L("Phone Locked"), style: "font-family: Prelude Medium; font-size: 20px; text-align: center; color: white; weight: bold;"},
+			{name: "subText", content: rb_auth.$L("Enter PIN"), style: "font-size: 18px;  color: grey;  text-align: center;"},
+			{name: "pinForm", components: [
+				{name: "pinDisplay", content: " ", style: "font-size: 26px; text-align: center; color: white; weight: bold; line-height:20px;"}
 			]},
 		]},			
 		{kind: "PinDialpad", flex: 1, onNumberAdded: "handleButtonClick", onHandleDelete: "handleBackspace"},			
 		{name: "groupButton", layoutKind: "HFlexLayout", defaultKind: "Button", components: [
-			{name: "buttonCancel", flex: 1, pack: "center", layoutKind: "VFlexLayout", caption: rb_auth.$L("Cancel"), onclick: "onCancel", className: "pin-menu-button"},
-			{flex: 1, layoutKind: "VFlexLayout", pack: "center", caption: rb_auth.$L("Done"), onclick: "unlock", className: "pin-menu-button"}
+			{name: "buttonCancel", flex: 1, pack: "center", layoutKind: "VFlexLayout", caption: rb_auth.$L("Cancel"), onclick: "onCancel", height: "40px"},
+			{flex: 1, layoutKind: "VFlexLayout", pack: "center", caption: rb_auth.$L("Done"), onclick: "unlock", height: "40px", className:"enyo-button-affirmative"}
 		]},
 		{className: "firstuse-bottom-corners"},		
 		
@@ -64,7 +64,7 @@ enyo.kind({
 			this.$.Text.setContent(rb_auth.$L("Phone Locked"));
 			
 			if (this.onlyOneRetryRemaining === true) {
-				this.$.subText.setContent(rb_auth.$L("Entering an incorrect PIN will erase your phone"));
+				this.$.subText.setContent(rb_auth.$L("Final Try"));
 				this.$.lastChanceAlert.open();
 			} else {
 				this.$.subText.setContent(rb_auth.$L("Enter PIN"));
@@ -103,7 +103,16 @@ enyo.kind({
 	}, 		
 	updatePinDisplay: function() {
 		var maskString = this.pin.replace(/./g,'.');
-		this.$.pinDisplay.setContent(maskString);	
+		this.$.pinDisplay.setContent(maskString);
+        if(this.setPin){
+			this.$.subText.setContent(" ");	
+		}else if (this.pin){ 
+			if( this.pin.length > 0) {
+				this.$.subText.setContent(" ");	
+			}else{
+				this.$.subText.setContent(rb_auth.$L("Enter PIN"));
+			}
+		}		
 	},
 	
 	setPin: function() {
@@ -128,12 +137,13 @@ enyo.kind({
 				this.pin = "";
 				this.$.Text.setContent(rb_auth.$L("PIN numbers don't match"));
 				this.$.subText.setContent(rb_auth.$L("Try Again"));
+                this.$.pinDisplay.setContent(" ");
 			}
 		}
 	}, 
 
 	devicePinVerifyResponse: function(inSender, response){
-		this.log("------------devicePinVerifyResponse: ",enyo.json.to(response)); 
+		this.log("------------devicePinVerifyResponse: ",enyo.json.stringify(response, undefined, 2)); 
 		if (response.returnValue) {
 			this.log("time to get response: " + (Date.now() - this._timer))
 			this.doPinVerified();
@@ -146,7 +156,7 @@ enyo.kind({
 				if (response.retriesLeft === 1) {
 					// Show Last Chance Warning Message
 					this.onlyOneRetryRemaining = true;
-					this.$.subText.setContent(rb_auth.$L("Entering an incorrect PIN will erase your phone"));
+					this.$.subText.setContent(rb_auth.$L("Final Try"));
 					this.$.lastChanceAlert.open();
 				}
 				else {
@@ -169,12 +179,12 @@ enyo.kind({
 	onSetPin: function(inSender, response) {
 		console.log("### set pin success");
 		this.doSetPinSuccess();
-		console.log("onSetPin"+enyo.json.to(response)); //todo: rui: take me out later		
+		console.log("onSetPin"+enyo.json.stringify(response, undefined, 2)); //todo: rui: take me out later		
 		this.reset();
 	}, 
 	
 	onSetPinFailure: function(inSender, response) {
-this.log(enyo.json.to(response)); //temp log to track a policy issue		
+this.log(enyo.json.stringify(response, undefined, 2)); //temp log to track a policy issue		
 		this.setErrorMessage(rb_auth.$L("Passcode does not match security requirements."));
 	},
 	

@@ -8,9 +8,9 @@ enyo.dispatcher = {
 	handlerName: "dispatchDomEvent",
 	captureHandlerName: "captureDomEvent",
 	mouseOverOutEvents: {mouseover: 1, mouseout: 1},
-	// these events are handled on document
+	// these events come from document
 	events: ["mousedown", "mouseup", "mouseover", "mouseout", "mousemove", "click", "dblclick", "change", "keydown", "keyup", "keypress", "input"],
-	// thes events are handled on window
+	// thes events come from window
 	windowEvents: ["resize", "load", "unload"],
 	connect: function() {
 		var d = enyo.dispatcher;
@@ -44,7 +44,8 @@ enyo.dispatcher = {
 		return t;
 	},
 	findDefaultTarget: function(e) {
-		return enyo.master.getComponents()[0];
+		return enyo.dispatcher.rootHandler;
+		//return enyo.master.getComponents()[0];
 	},
 	dispatch: function(e) {
 		// Find the control who maps to e.target, or the first control that maps to an ancestor of e.target.
@@ -62,9 +63,13 @@ enyo.dispatcher = {
 		c = e.filterTarget || c;
 		if (c) {
 			// capture phase
-			// filterTarget redirects event handling so we decide not to process capture phase.
-			if (!e.filterTarget) {
-				this.dispatchCapture(e, c);
+			// filterTarget redirects event handling and forward means we'll also send the event 
+			// to the original target; so we decide not to process capture phase if we are capturing
+			// and not forwarding.
+			if (!e.filterTarget || e.forward) {
+				if (this.dispatchCapture(e, c) === true) {
+					return true;
+				}
 			}
 			// bubble phase
 			var handled = this.dispatchBubble(e, c);
@@ -121,18 +126,28 @@ enyo.dispatcher = {
 		}
 	},
 	dispatchBubble: function(e, c) {
+		/*
+		if (e.type == "mouseup") {
+			var t = enyo.dom.findTarget(c, e.pageX, e.pageY);
+			console.log(e.pageX + " x " + e.pageY + " c: " + c.id + " t: " + (t ? t.id : "no target"));
+		}
+		*/
 		e.stopPropagation = function() {
 			this._handled = true;
 		};
 		// Bubble up through the control tree
 		while (c) {
+			// NOTE: diagnostic only 
+			if (e.type == "click" && e.ctrlKey && e.altKey) {
+				console.log(e.type + ": " + c.name + " [" + c.kindName + "]");
+			}
 			// Stop processing if dispatch returns true
 			if (this.dispatchToTarget(e, c) === true) {
 				return true;
 			}
 			// Bubble up through parents
-			//c = c.manager || c.owner;
-			c = c.parent || c.manager || c.owner;
+			//c = c.container || c.owner;
+			c = c.parent || c.container || c.owner;
 		}
 		return false;
 	},
@@ -159,14 +174,6 @@ enyo.dispatcher = {
 			if (this.isInternalMouseOverOut(e, c)) {
 				return true;
 			}
-			// FIXME: no code in framework is using this facility
-			// and it's not performant, consider removal
-			/*
-			console.log("handleMouseOverOut: ", e.target.id, c.name);
-			// Bubble synthetic childmouseover/out
-			var synth = {type: "child" + e.type, dispatchTarget: e.dispatchTarget};
-			this.dispatchBubble(synth, c.parent);
-			*/
 		}
 	},
 	isInternalMouseOverOut: function(e, c) {
@@ -209,40 +216,7 @@ enyo.requiresWindow(enyo.dispatcher.connect);
 
 enyo.dispatcher.features = [];
 
-// squelching feature
-
-/*
-enyo.mixin(enyo.dispatcher, {
-	_squelch: [],
-	// FIXME: this timeout is a point of brittleness; it was previously 50ms, but we
-	// found that even on desktop Chrome, this was sometimes too short for a click when
-	// squelching on mouseup.
-	squelchPeriod: 150,
-	squelchNextType: function(inType) {
-		this._squelch[inType] = new Date().getTime() + this.squelchPeriod;
-	},
-	squelchNextClick: function() {
-		this.squelchNextType("click");
-	}
-});
-
-enyo.dispatcher.features.push(function(e) {
-	// NOTE: primarily to allow DND in a single node 
-	// (see Scroller) without firing a click
-	// event when mousing up at the end of the drag.
-	var t = this._squelch[e.type];
-	if (t && e.synthetic) {
-		this._squelch[e.type] = 0;
-		if (new Date().getTime() < t) {
-			return true;
-		}
-	}
-});
-*/
-
 // capturing feature
-
-//* @protected
 
 /*
 	NOTE: This object is a plug-in; these methods should 
@@ -255,16 +229,19 @@ enyo.dispatcher.captureFeature = {
 	captures: [],
 	//* @public
 	capture: function(inTarget, inShouldForward) {
-		if (this.captureTarget) {
-			this.captures.push(this.captureTarget);
-		}
-		this.captureTarget = inTarget;
-		this.forwardEvents = inShouldForward;
+		var info = {target: inTarget, forward: inShouldForward};
+		this.captures.push(info);
+		this.setCaptureInfo(info);
 		//console.log("capture on");
 	},
 	release: function() {
 		//console.log("capture off");
-		this.captureTarget = this.captures.pop();
+		this.captures.pop();
+		this.setCaptureInfo(this.captures[this.captures.length-1]);
+	},
+	setCaptureInfo: function(inInfo) {
+		this.captureTarget = inInfo && inInfo.target;
+		this.forwardEvents = inInfo && inInfo.forward;
 	}
 };
 
@@ -272,7 +249,8 @@ enyo.mixin(enyo.dispatcher, enyo.dispatcher.captureFeature);
 
 enyo.dispatcher.features.push(function(e) {
 	var c = e.dispatchTarget;
-	if (this.captureTarget && !this.noCaptureEvents[e.type]) {
+	// prevent capturing on targetless or window targeted events as it doesn't make much sense.
+	if ((e.target && e.target != window) && this.captureTarget && !this.noCaptureEvents[e.type]) {
 		if (!c || !c.isDescendantOf(this.captureTarget)) {
 			e.filterTarget = this.captureTarget;
 			e.forward = this.autoForwardEvents[e.type] || this.forwardEvents;
@@ -289,3 +267,49 @@ enyo.dispatcher.features.push(function(e) {
 		this.dispatchToTarget(e, this.keyWatcher);
 	}
 });
+
+// experimental
+
+// FIXME: should be a Component
+enyo.dispatcher.rootHandler = {
+	listeners: [],
+	addListener: function(inListener) {
+		this.listeners.push(inListener);
+	},
+	removeListener: function(inListener) {
+		enyo.remove(this.listeners, inListener);
+	},
+	dispatchDomEvent: function(e) {
+		// note some root events should be dispatched to all controls via enyo master
+		// avoid propagating resize to listeners
+		if (e.type == "resize") {
+			this.broadcastMessage("resize");
+			return;
+		}
+		// send an "autoHide" message when window hides or deactivates
+		if (e.type == "windowDeactivated" || e.type == "windowHidden") {
+			this.broadcastMessage("autoHide");
+		}
+		this.broadcastEvent(e);
+	},
+	// messages go to enyo master.
+	broadcastMessage: function(inMessage) {
+		for (var n in enyo.master.$) {
+			//console.log("broadcasting message", inMessage, "to", n);
+			enyo.master.$[n].broadcastMessage(inMessage);
+		}
+	},
+	// events go to listeners.
+	broadcastEvent: function(e) {
+		for (var i=0, l; l=this.listeners[i]; i++) {
+			// we may need to do something with the return value
+			// and/or return some value ourselves
+			l.dispatchDomEvent(e);
+		}
+	},
+	// FIXME: we are implementing a subset of Component interface in an adhoc manner.
+	// This much of the interface is required.
+	isDescendantOf: function() {
+		return false;
+	}
+};

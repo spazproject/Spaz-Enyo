@@ -88,6 +88,7 @@ enyo.kind({
 	name: "PrintDialog",
 	kind: "ModalDialog",
 	layoutKind: "VFlexLayout",
+	contentHeight: "316px",
 	published: {
 		copiesRange: {min:1, max:25},
 		duplexOption: false,		// None, Book, Tablet
@@ -113,10 +114,9 @@ enyo.kind({
 		CANCEL: PrintDialogString.load("CANCEL"),
 		DONE: PrintDialogString.load("DONE")
 	},
-	className: "enyo-popup print-dialog",
+	className: "enyo-popup enyo-modaldialog print-dialog",
 	components: [
-		//{name: "dialogTitle", className: "title"},
-		{kind: "Pane", height: "258px", className: "group", transitionKind: "enyo.transitions.Simple", onSelectView: "viewSelected", components: [
+		{kind: "Pane", flex:1, className: "group", transitionKind: "enyo.transitions.Simple", onSelectView: "viewSelected", components: [
 			{name: "printerSelector", kind: "PrinterSelector",
 				onSelect: "printerSelected",
 				onChangeCount: "printerSelectorCountChanged",
@@ -132,11 +132,11 @@ enyo.kind({
 		]},
 		{kind: "HFlexBox", pack: "justify", align: "center", defaultKind: "Button", components: [
 			{name: "cancelButton", flex: 1, onclick: "clickCancel"},
-			{name: "printButton", flex: 1, disabled: true, onclick: "clickPrint"}
+			{name: "printButton", flex: 1, disabled: true, onclick: "clickPrint", className: "enyo-button-affirmative"}
 		]}
 	],
-
-	create: function() {
+	
+	componentsReady: function() {
 		this.inherited(arguments);
 		this.$.cancelButton.setCaption(this.strings.CANCEL);
 		this.$.printButton.setCaption(this.strings.PRINT);
@@ -149,17 +149,19 @@ enyo.kind({
 		}
 	},
 	
-	showingChanged: function() {
+	open: function() {
 		this.inherited(arguments);
 		
-		if (this.showing) {			
-			// Start locating printers
-			this.$.pane.selectViewByName("printerSelector", true);
-			this.$.printerSelector.loadPrinters();
-		}
-		else {
-			this.$.printerSelector.freePrinters();
-		}
+		// Start locating printers
+		this.$.pane.selectViewByName("printerSelector", true);
+		this.$.printerSelector.loadPrinters();
+	},
+	
+	close: function() {
+		this.inherited(arguments);
+		
+		// Free printers
+		this.$.printerSelector.freePrinters();
 	},
 	
 	viewSelected: function(inSender, inView, inPreviousView) {

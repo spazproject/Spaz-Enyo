@@ -18,20 +18,13 @@ parseQuery = function(inQuery) {
 				query.where.push({
 					prop: mm[1],
 					op: mm[2],
-					//val: enyo.json.parse(enyo.string.stripQuotes(enyo.string.trim(mm[3])))
 					val: enyo.json.parse(enyo.string.trim(mm[3]))
 				});
 			}
 		}
-		/*
-		var wherex = /where (.*? and )*(.*)/i;
-		var wm = m[1].match(wherex);
-		console.dir(wm);
-		*/
 	}
 	if (m && m[2]) {
 		query.orderBy = m[2].slice(8);
 	}
-	//console.log(enyo.json.stringify(query));
 	return query;
 };

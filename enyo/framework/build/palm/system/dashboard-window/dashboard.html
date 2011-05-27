@@ -9,12 +9,6 @@
 			(function() {
 				var dashboard = new enyo.DashboardContent();
 				dashboard.renderInto(document.body);
-				// FIXME: DashboardContent changes its owner, which removes it from enyo.master, which leaves
-				// a tellurium-related PalmService component as the default target, which is bad since it can't 
-				// receive DOM events.  Enyo should provide more explicit control over default target.
-				enyo.dispatcher.findDefaultTarget = function() {
-					return dashboard;
-				}
 			})();
 		</script>
 	</body>

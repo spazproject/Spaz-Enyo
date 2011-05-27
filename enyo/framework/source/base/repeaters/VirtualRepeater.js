@@ -7,10 +7,10 @@ set of row controls as needed for as many rows as are contained in the repeater.
 A VirtualRepeater's components block contains the controls to be used for a single row.
 This set of controls will be rendered for each row.
 
-The onGetItem event allows for customization of row rendering. Here's a simple example:
+The onSetupRow event allows for customization of row rendering. Here's a simple example:
 
 	components: [
-		{kind: "VirtualRepeater", onGetItem: "getItem", components: [
+		{kind: "VirtualRepeater", onSetupRow: "getItem", components: [
 			{kind: "Item", layoutKind: "HFlexLayout", components: [
 				{name: "caption", flex: 1},
 				{kind: "Button", onclick: "buttonClick"}
@@ -26,9 +26,9 @@ The onGetItem event allows for customization of row rendering. Here's a simple e
 	}
 
 In the above example, the control named "item" will be rendered for each row. When a row is rendered, 
-the onGetItem event is fired with the row index.
+the onSetupRow event is fired with the row index.
 The getItem method sets properties on controls in the row to customize the rendering of the row.
-Notice that it returns true if the index is less than 100. An onGetItem handler must 
+Notice that it returns true if the index is less than 100. An onSetupRow handler must 
 return true to indicate that the given row should be rendered. If it does not, the repeater
 will stop rendering.
 
@@ -46,18 +46,17 @@ enyo.kind({
 	name: "enyo.VirtualRepeater",
 	kind: enyo.Control,
 	events: {
-		onGetItem: "",
-		onRowIndexChanged: ""
+		onSetupRow: ""
 	},
 	published: {
 		accelerated: false,
 		stripSize: 10
 	},
 	chrome: [
-		{name: "client", kind: enyo.RowServer, onSetupRow: "doGetItem", onRowIndexChanged: "doRowIndexChanged"}
+		{name: "client", kind: enyo.RowServer, onSetupRow: "doSetupRow"}
 	],
 	//* @protected
-	getContent: function() {
+	getInnerHtml: function() {
 		this.$.client.clearState();
 		var stripClass = this.accelerated ? ' class="enyo-virtual-repeater-strip"' : '';
 		var h = '';
@@ -78,7 +77,7 @@ enyo.kind({
 	*/
 	renderRow: function(inRowIndex) {
 		this.prepareRow(inRowIndex);
-		this.doGetItem(inRowIndex);
+		this.doSetupRow(inRowIndex);
 	},
 	//* @protected
 	prepareRow: function(inRowIndex) {

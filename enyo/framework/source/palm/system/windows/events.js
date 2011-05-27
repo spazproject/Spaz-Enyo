@@ -37,7 +37,12 @@ enyo.windows.events = {
 	handleRelaunch: function() {
 		var root = enyo.windows.getRootWindow();
 		var lp = PalmSystem.launchParams;
-		lp = lp && enyo.json.parse(lp);
+		try {
+			lp = lp && enyo.json.parse(lp);
+		} catch(e) {
+			console.error("Invalid launch params: " + e);
+			lp = {};
+		}
 		if (this.handleAppMenu(lp)) {
 			return true;
 		} else {

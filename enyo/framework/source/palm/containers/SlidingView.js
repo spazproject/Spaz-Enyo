@@ -37,7 +37,9 @@ enyo.kind({
 		/** Minimum content width. */
 		minWidth: 0,
 		/** Amount we should be shifted right to reveal panel underneath us when selected. */
-		peekWidth: 0
+		peekWidth: 0,
+		/** Whether or not the view may be dragged right to dismiss it */
+		dismissible: false
 	},
 	//* @protected
 	chrome: [
@@ -67,7 +69,7 @@ enyo.kind({
 	},
 	// siblings
 	findSiblings: function() {
-		return this.manager.views;
+		return this.pane.views;
 	},
 	getPreviousSibling: function() {
 		return this.findSiblings()[this.index-1];
@@ -83,9 +85,18 @@ enyo.kind({
 		var s = this.findSiblings();
 		return s[s.length-1];
 	},
+	getLastShowingSibling: function() {
+		var sibs = this.findSiblings();
+		for (var i=0, s; s=sibs[i]; i++) {
+			if (!s.showing) {
+				return sibs[Math.max(0, i-1)];
+			}
+		}
+		return sibs[i-1];
+	},
 	// selection
 	select: function() {
-		this.manager.selectView(this);
+		this.pane.selectView(this);
 	},
 	selectPrevious: function() {
 		enyo.call(this.getPreviousSibling(), "select");
@@ -94,48 +105,31 @@ enyo.kind({
 		enyo.call(this.getNextSibling(), "select");
 	},
 	toggleSelected: function() {
-		if (this == this.manager.view) {
+		if (this == this.pane.view) {
 			this.selectPrevious();
 		} else {
 			this.select();
 		}
 	},
-	slideFromOutOfView: function() {
-		if (this.hasNode() && !this.manager.dragging && !this.manager.isAnimating()) {
-			this.show();
-			this.applySlideToNode(this.calcSlideMax() + this.node.offsetWidth);
-			this.moveAlone = true;
-			this.manager.playAnimation(this);
-		}
-	},
-	/*
-	// FIXME: experimental
-	slideToOutOfView: function() {
-		if (this.hasNode() && !this.manager.dragging && !this.manager.isAnimating()) {
-			var p = this.getPreviousSibling();
-			if (p && p.hasNode()) {
-				p.flex = 1;
-				p.applyStyle("-webkit-box-flex", "1");
-				p.parent.removeClass("enyo-hflexbox");
-				var w = p.node.offsetWidth;
-				enyo.asyncMethod(this, function() {
-					p.parent.addClass("enyo-hflexbox");
-					if (p.hasNode()) {
-						var d = p.node.offsetWidth - w;
-						this.applySlideToNode(this.slidePosition - d);
-						this.moveAlone = true;
-						this.manager.playAnimation(this);
-					}
-				});
+	showingChanged: function(inOldValue) {
+		if (!this.hasNode()) {
+			this.inherited(arguments);
+		} else if (!this.pane.dragging && (inOldValue != this.showing)) {
+			this.dispatch(this.owner, this.showing ? this.onShow : this.onHide);
+			this.pane.stopAnimation();
+			if (this.showing) {
+				this.inherited(arguments);
+				this.applySlideToNode(this.calcSlideHidden());
 			}
+			this.overSliding = true;
+			this.pane.playAnimation(this);
 		}
 	},
-	*/
 	// sliding calculations
 	calcSlide: function() {
 		var i = this.index;
-		var si = this.manager.view.index;
-		var state = i == si ? "Selected" : (i < si ? "Before" : "After");
+		var si = this.pane.view.index;
+		var state = this.shouldSlideHidden() ? "Hidden" : (i == si ? "Selected" : (i < si ? "Before" : "After"));
 		return this["calcSlide" + state]();
 	},
 	// FIXME: re-consider offset caching, pita: required to reset on resize.
@@ -152,12 +146,14 @@ enyo.kind({
 	},
 	calcSlideMax: function() {
 		var c = this.getPreviousSibling();
-		return (c && c.slidePosition) || 0;
+		var x = (c && c.slidePosition) || 0;
+		//this.log(this.id, x);
+		return x;
 	},
 	// before selected
 	calcSlideBefore: function() {
 		var m = this.calcSlideMin();
-		if (this.manager.isAnimating() || this.manager.dragging) {
+		if (this.pane.isAnimating() || this.pane.dragging) {
 			var c = this.getNextSibling();
 			if (this.hasNode() && c) {
 				return Math.max(m, c.slidePosition);
@@ -170,12 +166,25 @@ enyo.kind({
 	},
 	// after selected
 	calcSlideAfter: function() {
-		if (this.manager.isAnimating() || this.manager.dragging) {
+		if (this.pane.isAnimating() || this.pane.dragging) {
 			return this.calcSlideMax();
 		} else {
-			var s = this.manager.view;
+			var s = this.pane.view;
 			return s ? s.calcSlideMin() : 0;
 		}
+	},
+	calcSlideHidden: function() {
+		var x = this.hasNode() && this.parent.hasNode() ? this.parent.node.offsetWidth - this.getLeftOffset() : 0;
+		//this.log(this.slidePosition, x);
+		return x;
+	},
+	shouldSlideHidden: function() {
+		var p = this;
+		do {
+			if (!p.showing) {
+				return true;
+			}
+		} while (p = p.getPreviousSibling());
 	},
 	// movement
 	// move this sliding and validate next.
@@ -188,7 +197,8 @@ enyo.kind({
 		}
 	},
 	applySlideToNode: function(inSlide) {
-		if (inSlide != this.slidePosition) {
+		if (inSlide != this.slidePosition && this.index) {
+			this.lastSlidePosition = this.slidePosition;
 			this.slidePosition = inSlide;
 			if (this.hasNode()) {
 				//this.log(this.id, inSlide);
@@ -201,27 +211,31 @@ enyo.kind({
 	validateSlide: function() {
 		this.move(this.calcSlide());
 	},
-	// move all slidings to their calculated position
-	validateAll: function() {
-		// kick off vlidation from first sliding sibling...
-		// all subsequent siblings will validate
-		var s = this.getFirstSibling() || this;
-		s.validateSlide();
-		if (!this.manager.dragging) {
-			enyo.asyncMethod(this, "resizeLastSibling");
+	// move all before this index to calculated position
+	validateSlideBefore: function() {
+		var s = this.getFirstSibling();
+		while (s) {
+			if (s.index != this.index) {
+				s.applySlideToNode(s.calcSlide());
+				s = s.getNextSibling();
+			} else {
+				break;
+			}
 		}
 	},
 	// animation
 	canAnimate: function() {
-		return (this.slidePosition != this.calcSlide());
+		return (this.index != 0 && this.slidePosition != this.calcSlide());
 	},
 	// move this, then slide each previous and force before mode.
-	animateMove: function(inSlide) {
+	animateMove: function(inSlide, inOverSliding) {
 		this.move(inSlide);
-		var p = this.getPreviousSibling();
-		while (p) {
-			p.applySlideToNode(p.calcSlideBefore());
-			p = p.getPreviousSibling();
+		if (!inOverSliding) {
+			var p = this.getPreviousSibling();
+			while (p) {
+				p.applySlideToNode(p.calcSlideBefore());
+				p = p.getPreviousSibling();
+			}
 		}
 	},
 	// dragging
@@ -237,11 +251,11 @@ enyo.kind({
 		this.dragMax = this.calcSlideMax();
 		//
 		var i = this.index;
-		var si = this.manager.view.index;
-		//
-		if (this.showing && i >= si) {
-			var c = this.dragMax != this.dragMin && ((inDelta > 0 && this.slidePosition <= this.dragMax) ||
-				(inDelta < 0 && this.slidePosition > this.dragMin));
+		var si = this.pane.view.index;
+		// first index not draggable
+		if (i && this.showing && i >= si) {
+			var x = this.slidePosition + inDelta;
+			var c = this.dragMax != this.dragMin && (x >= this.dragMin && x <= this.dragMax);
 			return c;
 		}
 	},
@@ -255,57 +269,77 @@ enyo.kind({
 		return this.isAtDragMax() || this.isAtDragMin();
 	},
 	beginDrag: function(e, inDx) {
+		this.validateSlideBefore();
 		this.dragStart = this.slidePosition - inDx;
 	},
+	isMovingToSelect: function() {
+		return this.slidePosition < this.lastSlidePosition;
+	},
 	drag: function(e) {
+		// bail if we are waiting for an animation or not moving
 		var x0 = e.dx + this.dragStart;
-		var x = Math.max(this.dragMin, Math.min(x0, this.dragMax));
+		if (this.pendingDragMove || (x0 == this.slidePosition)) {
+			return;
+		}
+		var x = Math.max(this.dragMin, Math.min(x0, this.overSliding ? 1e9 : this.dragMax));
 		this.shouldDragSelect = x0 < this.slidePosition;
-		this.move(x);
-		// // handle edge case, if we dragged to max or min, our drag is done
-		if ((this.isAtDragMin() && this.shouldDragSelect) || (this.isAtDragMax() && !this.shouldDragSelect)) {
-			return this.getDragSelect();
+		// if out of bounds, return boundary info
+		if ((x0 < this.dragMin) || (x0 > this.dragMax && !this.overSliding) || (x0 < this.dragMax && this.overSliding)) {
+			return {select: this.getDragSelect()};
+		} else {
+			this.pendingDragMove = this._drag(x);
 		}
 	},
+	_drag: function(inX) {
+		this.move(inX);
+		this.pendingDragMove = null;
+	},
 	dragFinish: function() {
-		return this.getDragSelect();
+		return {select: this.getDragSelect()};
 	},
 	getDragSelect: function() {
-		return this.shouldDragSelect ? this : this.getPreviousSibling();
+		if (this.shouldDragSelect && !this.overSliding) {
+			return this;
+		} else {
+			// select previous sibling if it is out of position or first
+			var p = this.getPreviousSibling();
+			return p && ((p.slidePosition < p.calcSlideMax()) || (p.index == 0)) ? p : null;
+		}
 	},
 	// sizing
 	// don't auto-adjust width if fixedWidth is true
 	fixedWidthChanged: function() {
 		if (this.fixedWidth) {
-			this.$.client.applyStyle("width", null);
+			this.applySize();
 		}
 	},
 	minWidthChanged: function() {
 		this.$.client.applyStyle("min-width", this.minWidth || null);
 	},
-	// FIXME: refactor, pretty ugly way to force last sibling to resize
-	resizeLastSibling: function() {
-		if (!this.manager.dragging) {
-			var f = this.getLastSibling();
-			if (f && !f.fixedWidth) {
-				var t = f.calcSlide();
-				f.adjustWidth(t);
+	applySize: function(inSuggestFit) {
+		var w;
+		if (inSuggestFit && !this.fixedWidth) {
+			w = this.calcFitWidth();
+		} else if (this.$.client.domStyles.width) {
+			w = null;
+		}
+		if (w !== undefined) {
+			w = (w ? w + "px" : null);
+			// apply fast-like
+			if (this.$.client.hasNode()) {
+				this.$.client.domStyles.width = this.$.client.node.style.width = w;
+				this.doResize(w);
 			}
 		}
 	},
-	adjustWidth: function(inDelta) {
-		// FIXME: attempting to make this smooth based on ipad performance
-		// adjusting client as opposed to this node lessens artifacts 
-		// generated when resizing our node. This appears to be due to 
-		// our node being transformed.
+	calcFitWidth: function() {
+		var w = null;
 		if (this.hasNode() && this.$.client.hasNode()) {
-			var ow = this.node.offsetWidth;
-			var w = Math.max(ow, ow - inDelta);
-			if (w) {
-				this.$.client.domStyles.width = this.$.client.node.style.width = w + "px";
-				this.doResize();
-			}
+			var pw = this.parent.getBounds().width;
+			var l = this.getLeftOffset();
+			w = Math.max(0, Math.min(pw, pw - l - (this.slidePosition||0)));
 		}
+		return w;
 	},
 	clickHandler: function(inSender, inEvent) {
 		if (inEvent.dispatchTarget.slidingHandler) {

@@ -115,13 +115,22 @@ enyo.dom = {
 		var s = inComputedStyle || this.getComputedStyle(inNode);
 		return s.getPropertyValue(inProperty);
 	},
-	fetchBorderExtents: function(inNode) {
+	calcBorderExtents: function(inNode) {
 		var s = this.getComputedStyle(inNode, null);
 		return s && {
 			t: parseInt(s.getPropertyValue("border-top-width")),
 			r: parseInt(s.getPropertyValue("border-right-width")),
 			b: parseInt(s.getPropertyValue("border-bottom-width")),
 			l: parseInt(s.getPropertyValue("border-left-width"))
+		};
+	},
+	calcMarginExtents: function(inNode) {
+		var s = this.getComputedStyle(inNode, null);
+		return s && {
+			t: parseInt(s.getPropertyValue("margin-top")),
+			r: parseInt(s.getPropertyValue("margin-right")),
+			b: parseInt(s.getPropertyValue("margin-bottom")),
+			l: parseInt(s.getPropertyValue("margin-left"))
 		};
 	},
 	/*
@@ -135,7 +144,7 @@ enyo.dom = {
 				// add border
 				var op = n.offsetParent;
 				if (op) {
-					var b = enyo.dom.fetchBorderExtents(op);
+					var b = enyo.dom.calcBorderExtents(op);
 					o.top += b.t;
 					o.left += b.l;
 				}
@@ -159,7 +168,7 @@ enyo.dom = {
 			op = n.offsetParent;
 			// add border of offsetParent
 			if (op) {
-				b = enyo.dom.fetchBorderExtents(op);
+				b = enyo.dom.calcBorderExtents(op);
 				o.top += b.t;
 				o.left += b.l;
 			}
@@ -168,7 +177,7 @@ enyo.dom = {
 			// if we share an offset parent with inParentNode, subtract
 			// its position within our common offset parent
 			if (n && p && (op == pop)) {
-				pb = enyo.dom.fetchBorderExtents(pop);
+				pb = enyo.dom.calcBorderExtents(pop);
 				o.top -= (p.offsetTop + pb.t) || 0;
 				o.left -= (p.offsetLeft + pb.l) || 0;
 			}
@@ -176,20 +185,90 @@ enyo.dom = {
 		} while (n && n != pop && n != p);
 		return o;
 	},
+	calcNodeOffset2: function(inNode, inOriginNode) {
+		var n = inNode;
+		var o = {top: 0, left: 0};
+		var op, p;
+		while (n && (n != inOriginNode)) {
+			// add offset
+			o.top += n.offsetTop || 0;
+			o.left += n.offsetLeft || 0;
+			// add border
+			var b = enyo.dom.calcBorderExtents(n);
+			o.top += b.t;
+			o.left += b.l;
+			// next offset parent
+			op = n.offsetParent;
+			// next parent
+			p = n.parentNode;
+			// add scroll position for all parents up to and including offsetParent
+			while (p && p.nodeType == 1) {
+				o.top -= p.scrollTop;
+				o.left -= p.scrollLeft;
+				if (p == op) {
+					break;
+				}
+				if (p == inOriginNode) {
+					return o;
+				}
+				p = p.parentNode;
+			}
+			// continue from next offsetParent
+			n = op;
+		}
+		return o;
+	},
+	findTarget: function(inControl, inX, inY) {
+		console.log("===== findTarget ====");
+		var cc = inControl;
+		while (cc.parent) {
+			cc = cc.parent;
+		}
+		return this._findTarget(cc.hasNode(), inX, inY);
+	},
+	_findTarget: function(inNode, inX, inY) {
+		var n = inNode;
+		if (n.style) {
+			var o = this.calcNodeOffset2(n);
+			var x = inX - o.left;
+			var y = inY - o.top;
+			if (x>0 && y>0 && x<=n.offsetWidth && y<=n.offsetHeight) {
+				console.log("IN: " + n.id + " -> [" + x + "," + y + " in " + n.offsetWidth + "x" + n.offsetHeight + "] (children: " + n.childNodes.length + ")");
+				for (var i=0, n$=n.childNodes, c; c=n$[i]; i++) {
+					var target = this._findTarget(c, inX, inY);
+					if (target) {
+						return target;
+					}
+				} 
+				console.log("returning target " + n.id);
+				return n;
+			} else {
+				console.log("(not in " + n.id + ") -> [" + x + "," + y + " in " + n.offsetWidth + "x" + n.offsetHeight + "]");
+				console.log(inX, inY, o.left, o.top);
+			}
+		} else {
+			console.log("not HTML node");
+		}
+	},
 	/**
 		Copies a string to the system clipboard
 	*/
 	setClipboard: function(inText) {
 		if (!this._clipboardTextArea) {
-			this._clipboardTextArea = document.createElement("textarea");
+			this._clipboardTextArea = enyo.makeElement("textarea");
 			// HACK: force textarea offscreen
 			this._clipboardTextArea.style.cssText = "top:-1000px;position:absolute;"
 		}
 		this._clipboardTextArea.value = inText;
 		document.body.appendChild(this._clipboardTextArea);
+		// cache current manual mode
+		this._manualModeCache = !!enyo.keyboard.isManualMode();
+		enyo.keyboard.setManualMode(true);
 		this._clipboardTextArea.select();
 		document.execCommand('cut');
 		this._clipboardTextArea.blur();
+		// restore manual keyboard mode
+		enyo.keyboard.setManualMode(this._manualModeCache);
 		document.body.removeChild(this._clipboardTextArea);
 	},
 	/**
@@ -198,12 +277,14 @@ enyo.dom = {
 	*/
 	getClipboard: function(inCallback) {
 		if (!this._clipboardTextArea) {
-			this._clipboardTextArea = document.createElement("textarea");
+			this._clipboardTextArea = enyo.makeElement("textarea");
 			// HACK: force textarea offscreen
 			this._clipboardTextArea.style.cssText = "top:-1000px;position:absolute;"
 		}
 		this._clipboardTextArea.value = "";
 		document.body.appendChild(this._clipboardTextArea);
+		this._manualModeCache = !!enyo.keyboard.isManualMode();
+		enyo.keyboard.setManualMode(true);
 		this._clipboardTextArea.select();
 		if (window.PalmSystem) {
 			PalmSystem.paste();
@@ -211,6 +292,8 @@ enyo.dom = {
 			enyo.asyncMethod(this,function(){
 				inCallback(this._clipboardTextArea.value);
 				this._clipboardTextArea.blur();
+				// restore manual keyboard mode
+				enyo.keyboard.setManualMode(this._manualModeCache);
 				document.body.removeChild(this._clipboardTextArea);
 			});
 		}

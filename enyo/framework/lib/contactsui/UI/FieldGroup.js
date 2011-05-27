@@ -15,7 +15,9 @@ enyo.kind({
 		onGetFieldTypeOptions: "",
 		onFieldClick: "",
 		onShowArrow: "",
-		onMouseHold: ""
+		onMouseHold: "",
+		onGetActionIcon: "",
+		onActionIconClick: ""
 	},
 	fieldsChanged: function () {
 		this.renderGroup();
@@ -33,18 +35,25 @@ enyo.kind({
 	renderFields: function () {
 		var i,
 			c,
-			f;
+			f,
+			icon;
 
 		this.setShowing(this.fields && this.fields.length > 0);
-
+		icon = this.doGetActionIcon();
+		
 		for (i = 0; this.fields && (f = this.fields[i]); i += 1) {
 			c = this.createComponent(
-				{onclick: "itemClick", onmousehold: "itemMouseHold", components: [
-					{name: "dropdownArrow", className: "icon"},
-					{content: this.getFieldValue(f), className: "value", flex: 1},
-					{content: this.getFieldTypeDisplay(f), className: "label"}
+				{onclick: "itemClick", layoutKind: "HFlexLayout", tapHighlight: true, onmousehold: "itemMouseHold", components: [
+					{kind: "Control", flex: 1, components: [
+						{content: this.getFieldValue(f), className: "value"},
+						{content: this.getFieldTypeDisplay(f), className: "label"}
+
+					]},
+					{name: "dropdownArrow", className: "button-arrow"},
+					{name: "actionIcon", kind: "IconButton", icon: icon, caption: "", onclick: "actionIconClick", className: "action"}
 				]}, {field: f});
 			this.$.dropdownArrow.setShowing(this.doShowArrow(this.getFieldType(f)));
+			this.$.actionIcon.setShowing(icon);
 		}
 	},
 	getFieldValue: function (inField) {
@@ -63,6 +72,10 @@ enyo.kind({
 	},
 	itemClick: function (inSender, inEvent) {
 		this.doFieldClick(inEvent, inSender.field);
+	},
+	actionIconClick: function (inSender, inEvent) {
+		this.doActionIconClick(inEvent, inSender.getParent().field);
+		inEvent.preventClick(); //prevent the "itemClick" handler from also going
 	},
 	itemMouseHold: function (inSender, inEvent) 
 	{

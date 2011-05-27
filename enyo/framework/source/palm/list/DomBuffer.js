@@ -56,7 +56,6 @@ enyo.kind({
 		//this.log(inPage);
 		var n = this.pages[inPage];
 		if (!n) {
-			enyo.vizLog && enyo.vizLog.log("DomBuffer.discardPage: bad page: " + inPage + " " + this.top + "/" + this.bottom, "background-color: orange;");
 			this.warn("bad page:", inPage);
 		} else {
 			n.parentNode.removeChild(n);

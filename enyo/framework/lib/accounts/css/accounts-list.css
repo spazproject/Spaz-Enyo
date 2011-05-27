@@ -117,10 +117,6 @@ div:last-child > .accounts-list-item {
 .error-box img {
 	margin:0 7px;
 }
-.error-text {
-	font-size:18px;
-	color: #d70000;
-}
 .enyo-group + .error-box {
 	margin-top:-2px;
 	margin-bottom:-8px;

@@ -10,7 +10,7 @@ enyo.kind({
 		onResult: "",
 	},
 	components: [
-		{kind: "CrossAppUI", name:"crossAppUI", onResult: "handleCrossAppUIResult"},
+		{kind: "CrossAppUI", name:"crossAppUI"},
 		{name: "modifyAccount", kind: "PalmService", service: enyo.palmServices.accounts, method: "modifyAccount"},
 	],
 	
@@ -22,6 +22,7 @@ enyo.kind({
 		this.$.crossAppUI.setPath(ui.name);
 		this.$.crossAppUI.setApp(ui.appId);
 		this.$.crossAppUI.setParams(params);
+		this.$.crossAppUI.onResult = "handleCrossAppUIResult";
 	},
 	
 	// Handle the validation response from the custom UI
@@ -43,6 +44,9 @@ enyo.kind({
 			}
 		}
 		this.doResult(msg);
+		this.$.crossAppUI.onResult = "";
+		this.$.crossAppUI.setPath("");
+		this.$.crossAppUI.setParams();
 	}
 });
 

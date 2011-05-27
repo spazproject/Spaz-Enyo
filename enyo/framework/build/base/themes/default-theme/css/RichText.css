@@ -23,4 +23,5 @@
 
 .enyo-richtext.enyo-richtext-disabled, .enyo-richtext.enyo-richtext-plaintext.enyo-richtext-disabled {
 	-webkit-user-modify: read-only;
+	color: darkGray;
 }

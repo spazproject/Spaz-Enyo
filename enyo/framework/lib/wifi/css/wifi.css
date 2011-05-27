@@ -1,11 +1,16 @@
 /* Copyright 2009-2011 Hewlett-Packard Development Company, L.P. All rights reserved. */
-.wifi-spinner-box {
-	padding: 10px 35px 0px 33px;
+.enyo-modaldialog-title {
+	overflow: hidden;
+	text-overflow:ellipsis;
+	white-space:nowrap;
 }
 .wifi-list {
-	margin: 0px 25px 0px 25px;
+	margin: 0px 0px 15px 0px;
 }
 .wifi-item-name {
+	overflow:hidden;
+	text-overflow:ellipsis;
+	white-space:nowrap;
 }
 .wifi-item-state {
 	padding: 0px 5px 0px 0px;
@@ -13,38 +18,19 @@
 .wifi-item-secure {
 	padding: 0px 8px 0px 0px;
 }
-.wifi-item-strength {
-}
 .wifi-item-join {
 	padding: 5px 8px 0px 0px;
-}
-.wifi-message-normal {
-	margin: 0px 5px 0px 5px;
-	font-size: 16px;
-	color: grey;
 }
 .wifi-message-error {
 	font-size: 16px;
 	color: red;
-	padding: 10px 0px px 0px;
+	padding: 15px 0px 10px 0px;
 }
 .wifi-message-status {
 	font-size: 12px;
 	color: grey;
 	padding: 0px 0px 0px 3px;
 }
-.wifi-ip-box {
-	margin: 0px 0px 0px 0px;
-}
 .wifi-label-text {
 	color: rgb(31, 117, 191);
-}
-.scrollable {
-	-webkit-border-image: url(../images/bg_field.png) 10 7 10 7 stretch stretch;
-	border-width: 10px 7px;
-	margin: 0px;
-	overflow:hidden;
-}
-.scrollable .scrollable-inner {
-	margin: 0px 0px;
 }

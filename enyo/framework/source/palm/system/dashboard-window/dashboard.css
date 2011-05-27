@@ -2,7 +2,6 @@
 /* Dashboard module */
 
 body {
-	color: #FFF;
 	font-family: Prelude, 'Prelude Medium', 'Segoe UI', Arial, Helvetica, sans-serif;
 	margin: 0;
 	background:transparent;
@@ -33,7 +32,7 @@ body {
 	-webkit-box-flex: 1;
 	
 	background: url(images/notification-divider.png) left top no-repeat;
-	
+	color: #FFF;
 	margin-top: -1px;
 	margin-left: -7px;
 	border: none;
@@ -102,6 +101,7 @@ body {
 .dashboard-count-label {
 	margin: 0 -4px;
 	font-size: 16px;
+	color: #FFF;
 }
 
 .dashboard-title,

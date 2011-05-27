@@ -56,20 +56,18 @@ enyo.gesture = {
 	mousedown: function(e) {
 		// only process events that haven't been synthesized
 		// (aka have not already been through this function)
-		if (!e.synthetic) {
+		if (!e.synthetic && e.dispatchTarget) {
 			// cache the mousedown targets
 			this.target = e.target;
 			this.dispatchTarget = e.dispatchTarget;
 			//
+			// defer focus events until mouseup, so we can cancel via dragging
+			this.beginPreventFocus(e);
+			//
 			// Custom mousedown handling so we can
-			// call preventDefault on mousedown by default.
+			// call preventDefault on mousedown.
 			//
-			// preventDefault on mousedown implements a performance
-			// tweak to short-circuit cycle-stealing mousedown
-			// handling in webkit when the -webkit-user-select:none
-			// style is set.
-			//
-			// Certain objects require default mousedown behavior,
+			// However, certain objects require default mousedown behavior,
 			// for example, inputs need default mousedown to position
 			// the caret.
 			//
@@ -81,11 +79,16 @@ enyo.gesture = {
 			this.startTracking(e);
 			// if the mouse is held down long enough, we will send 'mousehold' events
 			this.startMousehold(e);
+			//
 			// stop processing if we used custom mousedown
 			return custom;
 		}
 	},
 	sendCustomMousedown: function(e) {
+		// preventDefault on mousedown implements a performance
+		// tweak to short-circuit cycle-stealing mousedown
+		// handling in webkit when the -webkit-user-select:none
+		// style is set.
 		e.preventDefault();
 		// We still need to allow control over focus effects
 		// by honoring client code calls preventDefault.
@@ -96,6 +99,7 @@ enyo.gesture = {
 		// so we can watch for 'prevented' flag
 		e.synthetic = true;
 		enyo.dispatch(e);
+		// Manually implement focusing on mousedown
 		if (!e.prevented) {
 			this.focusNode(e.target);
 		}
@@ -120,46 +124,99 @@ enyo.gesture = {
 		}
 	},
 	mouseup: function(e) {
-		// We squelch all standard click events; instead,
-		// we synthesize click events on mouseup so we can
-		// include the case when mouseup/down pairs cross node
-		// boundaries.
-		//
 		// only process events that haven't been synthesized
-		// (aka have not already been through this function)
+		// (i.e. have not already been through this function)
 		if (!e.synthetic) {
 			// it's possible for the drop event from stopDragging to
 			// cause events to occur asynchronously to this method
 			// (e.g. by throwing an alert), so we need to disable
 			// tracking first.
 			this.stopTracking();
+			// stop focus prevention
+			this.endPreventFocus(e);
+			// we need to remember if this gesture was a drag, so we
+			// can prevent a 'click' from being generated (see click method)
 			this.didDrag = this.stopDragging(e);
 			this.stopMousehold();
-			// reprocess this mouseup, because it has to happen before we send click
-			// note that we cannot send click asynchronously, because click must happen
-			// before dblclick
-			e.synthetic = true;
-			enyo.dispatch(e);
-			if (!this.didDrag) {
-				this.sendCustomClick(e);
-			}
-			return true;
+			//
+			// sendCustomClick may create a synthetic click event if the up/down pair
+			// crossed a node boundary. If sendCustomClick returns true, it has handled 
+			// this mouseup specially,  and we must inform dispatcher to stop processing.
+			return !this.didDrag && this.sendCustomClick(e);
 		}
 	},
-	click: function(e) {
-		// squelch organic clicks
-		return this.didDrag;
+	// drag focus prevention:
+	// FIXME: would be better to prevent mousedown event to stop the real focus
+	// but this requires a "focus at point" api. That api has been requested and is currently pending.
+	// So for now, prevent focus event when mouse is down; we send it explicitly on
+	// mouse up if a focus event was generated.
+	focus: function(e) {
+		this.needsCustomFocus = this.focusPrevented;
+		return this.focusPrevented;
+	},
+	beginPreventFocus: function(e) {
+		this.focusPrevented = true;
+		this.needsCustomFocus = false;
+		enyo.keyboard.suspend();
+	},
+	endPreventFocus: function(e) {
+		this.focusPrevented = false;
+		var keyboard = enyo.keyboard.isShowing();
+		// if there was a drag when keyboard not showing abort focus by blurring
+		if (this.dragEvent && !keyboard) {
+			//console.log("GESTURE: blur mousedown target");
+			this.target.blur();
+		// otherwise, send focus event if one was generated during prevention period.
+		} else if (this.needsCustomFocus) {
+			//console.log("GESTURE: simulate focus: " + this.target.id);
+			this.send("focus", e, {synthetic: true, target: this.target});
+		}
+		// signal to mouseup event if focus is acceptable: no drag or (keyboard is up and mouseup/down share ancestor).
+		e.canFocus = !this.dragEvent || (keyboard && this._findCommonAncestor(this.dispatchTarget, e.dispatchTarget));
+		enyo.keyboard.resume();
+		//console.log("GESTURE: in mouseup event, signal that focus is: " + (e.canFocus ? "prevent" : "don't prevent"));
 	},
 	sendCustomClick: function(e) {
+		// If mousedown/up pair has crossed a node boundary,
+		// synthesize a click event on the first common ancestor.
+		//
 		// if the target is the same, DOM should send a click for us (is this ever not true?)
 		if (this.target !== e.target) {
 			// If there is a common ancestor for the mousedown/mouseup pair,
 			// it is the origin for bubbling a click event
 			var p = this._findCommonAncestor(this.dispatchTarget, e.dispatchTarget);
 			if (p) {
+				// reprocess the original mouseup synchronously, because it has to happen before we send click
+				// we also must send click synchronously, because click must happen before dblclick
+				e.synthetic = true;
+				enyo.dispatch(e);
+				// now send syntha-click
 				this.send("click", e, {synthetic: true, target: p.hasNode()});
+				// tell the caller we handled the mouseup in this case
+				return true;
 			}
 		}
+	},
+	findCustomClickTarget: function(e) {
+		// if the target is the same, DOM should send a click for us (is this ever not true?),
+		// otherwise, we may need to send a custom event
+		return (this.target !== e.target);
+	},
+	click: function(e) {
+		if (this.didDrag) {
+			// reset didDrag just in case somebody might send a click directly
+			// and there was no mouseup to set didDrag.
+			this.didDrag = false;
+			// squelch post-drag clicks
+			return true;
+		}
+		/*
+		if (e.synthetic) {
+			console.log("synth click");
+		} else {
+			console.log("dom click");
+		}
+		*/
 	},
 	_findCommonAncestor: function(inA, inB) {
 		var p = inB;
@@ -288,39 +345,3 @@ enyo.gesture = {
 		return synth;
 	}
 };
-
-/*
-//
-// NOTE: special performance tweak to short-circuit cycle-stealing event handling triggered by mousedown
-// when the -webkit-user-select:none style is set.
-//
-enyo.requiresWindow(function() {
-	// FIXME: we need to pass mousedown for non-enyo applications. The current necessity is to
-	// search through parents for attribute to allow event. Prompted by google maps.
-	var shouldPassEvent = function(inNode) {
-		var n = inNode;
-		while (n) {
-			if (n.getAttribute && n.getAttribute("enyo-pass-events")) {
-				return true;
-			}
-			n = n.parentNode;
-		}
-	};
-	var preventMousedown = function(e) {
-		var t = e.target;
-		if (t.getAttribute && (t.getAttribute("contenteditable") || shouldPassEvent(t)) || (t.tagName == "INPUT")) {
-			// mousedown is ok.
-		} else {
-			// prevent mousedown to speedup processing when webkit-user-select: none.
-			e.preventDefault();
-			// FIXME: preventDefault stops normal blur/focus from occuring so make that happen
-			if (document.activeElement != e.target) {
-				document.activeElement.blur();
-				e.target.focus();
-			}
-		}
-	};
-	// NOTE: special performance tweak to short-circuit cycle-stealing event handling triggered by mousedown
-	document.addEventListener("mousedown", preventMousedown, true);
-});
-*/

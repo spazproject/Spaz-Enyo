@@ -8,7 +8,7 @@ For example, to place controls to the left and right of an input:
 	{kind: "InputBox", components: [
 		{content: "Foo"},
 		{kind: "BasicRichText", flex: 1, className: "enyo-input-inner"},
-		{content: "Bar"},
+		{content: "Bar"}
 	]}
 
 */

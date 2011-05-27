@@ -1,5 +1,6 @@
 /* Copyright 2009-2011 Hewlett-Packard Development Company, L.P. All rights reserved. */
 enyo.depends(
+	"LazyControl.js",
 	"Image.js",
 	"Stateful.js",
 	"CustomButton.js",
@@ -13,10 +14,10 @@ enyo.depends(
 	"RichText.js",
 	"AnimatedImage.js",
 	"Iframe.js",
+	"PopupLayer.js",
 	"BasicPopup.js",
 	"Popup.js",
-	"LabeledContainer.js",
 	"Scrim.js",
-	"Progress.js",
-	"LazyControl.js"
+	"LabeledContainer.js",
+	"Progress.js"
 );

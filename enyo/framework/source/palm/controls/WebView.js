@@ -27,6 +27,7 @@ enyo.kind({
 		ignoreMetaTags: false
 	},
 	events: {
+		onMousehold: "",
 		onResized: "",
 		onPageTitleChanged: "",
 		onUrlRedirected: "",
@@ -44,10 +45,13 @@ enyo.kind({
 		onNewPage: "",
 		onPrint: "",
 		onEditorFocusChanged: "",
-		onError: ""
+		onError: "",
+		onDisconnected: ""
 	},
 	chrome: [
 		{name: "view", kind: enyo.BasicWebView,
+			onclick: "webviewClick",
+			onMousehold: "doMousehold",
 			onResized: "doResized",
 			onPageTitleChanged: "pageTitleChanged",
 			onUrlRedirected: "doUrlRedirected",
@@ -62,7 +66,7 @@ enyo.kind({
 			onPromptDialog: "doPromptDialog",
 			onSSLConfirmDialog: "doSSLConfirmDialog",
 			onUserPasswordDialog: "doUserPasswordDialog",
-			onOpenSelect: "openSelect",
+			onOpenSelect: "showSelect",
 			onNewPage: "doNewPage",
 			onPrint: "doPrint",
 			onEditorFocusChanged: "doEditorFocusChanged",
@@ -116,19 +120,34 @@ enyo.kind({
 	ignoreMetaTagsChanged: function() {
 		this.$.view.setIgnoreMetaTags(this.ignoreMetaTags);
 	},
-	openSelect: function(inSender, inId, inItemsJson) {
+	showSelect: function(inSender, inId, inItemsJson) {
 		if (this._cachedSelectPopups[inId]) {
 			this._cachedSelectPopups[inId]._response = -1;
-			this._cachedSelectPopups[inId].openAtCenter();
+			this.openSelect(this._cachedSelectPopups[inId]);
 		} else {
 			this.showSpinner();
 			enyo.asyncMethod(this, "createSelectPopup", inId, inItemsJson);
+		}
+	},
+	openSelect: function(inPopup) {
+		var s = this._selectRect;
+		if (s) {
+			var p = inPopup.calcSize();
+			var o = this.getOffset();
+			var l = Math.max(0, s.right - (s.right - s.left)/2 - p.width/2);
+			var t = Math.max(0, s.bottom - (s.bottom - s.top)/2 - p.height/2);
+			inPopup.openAt({left: l + o.left, top: t + o.top});
+		} else {
+			inPopup.openAtCenter();
 		}
 	},
 	createSelectPopup: function(inId, inItemsJson) {
 		var p = this._freeSelectPopups.pop();
 		if (!p) {
 			p = this.createComponent({kind: "PopupList", name: "select-" + inId, _webviewId: inId, _response: -1, onSelect: "selectPopupSelect", onClose: "selectPopupClose"});
+		} else {
+			p._webviewId = inId;
+			p._response = -1;
 		}
 		var listItems = [];
 		var items = enyo.json.parse(inItemsJson);
@@ -139,7 +158,7 @@ enyo.kind({
 		p.render();
 		this._cachedSelectPopups[inId] = p;
 		this.hideSpinner();
-		p.openAtCenter();
+		this.openSelect(p);
 	},
 	selectPopupSelect: function(inSender, inSelected, inOldItem) {
 		inSender._response = inSelected;
@@ -156,21 +175,27 @@ enyo.kind({
 		this.hideSpinner();
 	},
 	disconnected: function() {
+		var r = this._requestDisconnect;
 		if (!this._requestDisconnect) {
 			this.showSpinner();
 			setTimeout(enyo.hitch(this, "reinitialize"), 5000);
 		} else {
 			this._requestDisconnect = false;
 		}
+		this.doDisconnected(r);
 	},
 	reinitialize: function() {
 		this.$.view.connect();
 	},
 	showSpinner: function() {
-		this.$.spinner.show();
-		this.$.spinnerPopup.openAtCenter();
+		if (!this.$.spinnerPopup.isOpen) {
+			this.$.spinnerPopup.validateComponents();
+			this.$.spinner.show();
+			this.$.spinnerPopup.openAtCenter();
+		}
 	},
 	hideSpinner: function() {
+		this.$.spinnerPopup.validateComponents();
 		this.$.spinnerPopup.close();
 		this.$.spinner.hide();
 	},
@@ -184,6 +209,9 @@ enyo.kind({
 	//* @public
 	activate: function() {
 		this.$.view.callBrowserAdapter("pageFocused", [true]);
+		// XXX plugin functions are not accessible when it's hidden
+		// so some calls may be in queue.
+		this.$.view.flushCallQueue();
 	},
 	deactivate: function() {
 		this.$.view.callBrowserAdapter("pageFocused", [false]);
@@ -273,6 +301,16 @@ enyo.kind({
 	},
 	callBrowserAdapter: function(inFuncName, inArgs) {
 		this.$.view.callBrowserAdapter(inFuncName, inArgs);
+	},
+	webviewClick: function(inSender, inEvent, inInfo) {
+		if (inInfo) {
+			if (inInfo.element == "SELECT") {
+				this._selectRect = inInfo.bounds;
+			} else {
+				this._selectRect = null;
+			}
+			this.doClick(inEvent, inInfo);
+		}
 	}
 });
 

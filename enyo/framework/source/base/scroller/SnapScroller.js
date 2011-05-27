@@ -57,52 +57,56 @@ enyo.kind({
 	indexChanged: function() {
 		var p = this.calcPos(this.index);
 		if (p !== undefined) {
-			this.calcBoundaries();
 			this.scrollToDirect(p);
 		}
 	},
+	getCurrentPos: function() {
+		return this.scrollH ? this.getScrollLeft() : this.getScrollTop();
+	},
 	scrollStart: function() {
 		this.inherited(arguments);
-		this.startPos = this.scrollH ? this.getScrollLeft() : this.getScrollTop();
-		this._scrolling = true;
+		this.startPos = this.getCurrentPos();
 	},
 	scroll: function(inSender) {
 		this.inherited(arguments);
-		this.pos = this.scrollH ? this.getScrollLeft() : this.getScrollTop();
+		this.pos = this.getCurrentPos();
 		// determine swipe prev or next
 		this.goPrev = this.pos0 != this.pos ? this.pos0 > this.pos : this.goPrev;
-		if (this.$.scroll.dragging) {
-			this.snapStarting = false;
-		} else {
-			if (!this.snapStarting) {
-				var bs = this.getBoundaries();
-				var b0 = bs[this.scrollH ? "left" : "top"];
-				var b1 = bs[this.scrollH ? "right" : "bottom"];
-				if (this.pos > b0 && this.pos < b1) { // within the scroll boundaries
-					this.snap();
-				}
-			} else if (!this._scrolling) {
-				this.snapStarting = false;
+		if (this.dragging) {
+			this.snapable = true;
+		} else if (this.snapable && this.startPos !== this.pos) {
+			var bs = this.getBoundaries();
+			if (this.pos > bs[this.scrollH ? "left" : "top"] && this.pos < bs[this.scrollH ? "right" : "bottom"]) {
+				this.snapable = false;
+				// within the scroll boundaries, e.g. not in overscroll
+				this.snap();
 			}
+		} else if (!this.snapping) {
+			this.snapable = true;
 		}
 		this.pos0 = this.pos;
 	},
 	scrollStop: function() {
-		this._scrolling = false;
 		if (this.snapping) {
 			this.snapping = false;
 			if (this.index != this.oldIndex) {
+				// scroll animation may not scroll to the exact pos, e.g. 1073 vs 1072.733952370556
+				// force to scoll exactly to the exact pos
+				var p = this.getCurrentPos();
+				if (this.snapPos != p && Math.abs(this.snapPos - p) < 1) {
+					this.scrollToDirect(this.snapPos);
+				}
 				this.snapFinish();
 			}
+			this.inherited(arguments);
 		}
-		this.inherited(arguments);
 	},
 	snapFinish: function() {
 		this.doSnapFinish();
 	},
 	snapScrollTo: function(inPos) {
+		this.snapPos = inPos;
 		this.pos = inPos;
-		this.snapStarting = true;
 		this.snapping = true;
 		if (this.scrollH) {
 			this.scrollTo(0, inPos);
@@ -111,6 +115,8 @@ enyo.kind({
 		}
 	},
 	scrollToDirect: function(inPos) {
+		this.calcBoundaries();
+		this.stop();
 		this.pos = inPos;
 		if (this.scrollH) {
 			this.setScrollPositionDirect(inPos, 0);

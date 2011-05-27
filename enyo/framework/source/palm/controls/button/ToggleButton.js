@@ -34,7 +34,7 @@ enyo.kind({
 	className: "enyo-toggle-button",
 	chrome: [
 		{name: "labelOn", nodeTag: "span", className: "enyo-toggle-label-on", content: "On"},
-		{name: "labelOff", nodeTag: "span", className: "enyo-toggle-label-off", content: "Off"},
+		{name: "labelOff", nodeTag: "span", className: "enyo-toggle-label-off", content: "Off"}
 	//	{name: "thumb", className: "enyo-toggle-thumb-off"}
 	],
 	//* @protected

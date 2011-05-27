@@ -3,6 +3,7 @@ enyo.depends(
 	"css/theme.css",
 	"css/CheckBox.css",
 	"css/Button.css",
+	"css/ActivityButton.css",
 	"css/RadioButton.css",
 	"css/GroupedToolButton.css",
 	"css/GrabButton.css",
@@ -34,9 +35,9 @@ enyo.depends(
 	"css/Picker.css",
 	"css/PickerGroup.css",
 	"css/Group.css",
-	"css/RoundedBox.css",
 	"css/RoundedInput.css",
 	"css/Input.css",
+	"css/SearchInput.css",
 	"css/ToolInput.css",
 	"css/Spinner.css",
 	"css/Dialog.css",
@@ -47,5 +48,7 @@ enyo.depends(
 	"css/ImageView.css",
 	"css/CroppableImage.css",
 	"css/WebView.css",
-	"css/ModalDialog.css"
+	"css/ModalDialog.css",
+	"css/FilePicker.css",
+	"css/VirtualScroller.css"
 );

@@ -27,24 +27,26 @@ enyo.kind({
 	kind: enyo.Control,
 	events: {
 		onCredentials_ValidationSuccess: "",
+		onCredentials_Cancel: "",
 	},
 	components: [
 		{name: "usernameTitle", kind: "RowGroup", className:"accounts-group", components: [
-			{kind: "Input", name: "username", spellcheck: false, autocorrect:false, autoCapitalize: "lowercase", inputType:"email", changeOnInput: true, onchange: "keyTapped"}
+			{kind: "Input", name: "username", spellcheck: false, autocorrect:false, autoCapitalize: "lowercase", inputType:"email", changeOnInput: true, onchange: "keyTapped", onkeydown:"checkForEnter"}
 		]},
 		{name: "passwordTitle", kind: "RowGroup", className:"accounts-group", components: [
-			{kind: "PasswordInput", name: "password", changeOnInput: true, onchange: "keyTapped"}
+			{kind: "PasswordInput", name: "password", changeOnInput: true, onchange: "keyTapped", onkeydown:"checkForEnter"}
 		]},
-		{name: "errorBox", kind: "enyo.HFlexBox", className:"error-box", showing:false, components: [
+		{name: "errorBox", kind: "enyo.HFlexBox", className:"error-box", align:"center", showing:false, components: [
 			{name: "errorImage", kind: "Image", src: AccountsUtil.libPath + "images/header-warning-icon.png"},
-			{name: "errorMessage", className: "error-text", style:"margin-right:60px"}
+			{name: "errorMessage", className: "enyo-text-error", flex:1}
 		]},
 		{name:"signInButton", kind: "ActivityButton", className:"enyo-button-affirmative accounts-btn", onclick: "signInTapped"},
+		{name:"removeAccountButton", kind: "Accounts.RemoveAccount", className:"accounts-btn", onAccountsRemove_Removing: "removingAccount", onAccountsRemove_Done: "doCredentials_Cancel"},
 		
 		{name: "callValidators", kind: "PalmService", onResponse: "validationResponse"},
 		
 		{name: "accounts", kind: "Accounts.getAccounts", onGetAccounts_AccountsAvailable: "onAccountsAvailable", subscribe: false},
-		{name: "modifyAccount", kind: "PalmService", service: enyo.palmServices.accounts, method: "modifyAccount", onResponse: "doModifyView_Success"},
+		{name: "modifyAccount", kind: "PalmService", service: enyo.palmServices.accounts, method: "modifyAccount"},
 	],
 	
 	// Show the credentials
@@ -54,22 +56,25 @@ enyo.kind({
 		
 		// Update the group captions
 		if (this.account.loc_usernameLabel)
-			AccountsUtil.changeCaption(this.$.usernameTitle, this.account.loc_usernameLabel);
+			this.$.usernameTitle.setCaption(this.account.loc_usernameLabel);
 		else
-			AccountsUtil.changeCaption(this.$.usernameTitle, AccountsUtil.LIST_TITLE_USERNAME);
+			this.$.usernameTitle.setCaption(AccountsUtil.LIST_TITLE_USERNAME);
 		if (this.account.loc_passwordLabel)
-			AccountsUtil.changeCaption(this.$.passwordTitle, this.account.loc_passwordLabel);
+			this.$.passwordTitle.setCaption(this.account.loc_passwordLabel);
 		else
-			AccountsUtil.changeCaption(this.$.passwordTitle, AccountsUtil.LIST_TITLE_PASSWORD);
-		
-		// Update the button label
-		AccountsUtil.changeCaption(this.$.signInButton, AccountsUtil.BUTTON_SIGN_IN);
+			this.$.passwordTitle.setCaption(AccountsUtil.LIST_TITLE_PASSWORD);
 		
 		// Clear the password field and initialize the username field
 		this.$.password.value = "";
 		this.$.password.valueChanged();
 		this.$.username.value = this.account.username || "";
 		this.$.username.valueChanged();
+		
+		// Show the "Remove Account" button if the account is in error
+		if (this.account.credentialError)
+			this.$.removeAccountButton.init(this.account, this.capability);
+		else
+			this.$.removeAccountButton.hide();
 		
 		// Reset the form fields
 		this.resetForm();
@@ -85,12 +90,31 @@ enyo.kind({
 			AccountsUtil.disableControl(this.$.signInButton, true);
 	},
 	
+	checkForEnter: function(inSender, inResponse) {
+		// Was 'Enter' tapped?
+		if (inResponse.keyCode != 13)
+			return;
+		if (inSender.getName() === "username") {
+			// Advance to the password field
+			enyo.asyncMethod(this.$.password, "forceFocus");
+		} else {
+			// Can the user sign in now?
+			if (!this.$.signInButton.getDisabled()) {
+				this.$.password.forceBlur();
+				this.signInTapped();
+			}
+			else if (!this.$.username.getDisabled())
+				enyo.asyncMethod(this.$.username, "forceFocus");
+		}
+	},
+	
 	// The "Sign In" button was tapped
 	signInTapped: function() {
-		// Disable the Sign In button
+		// Disable the "Sign In" and "Remove Acount" buttons
 		AccountsUtil.disableControl(this.$.signInButton, true);
+		this.$.removeAccountButton.disableButton(true);
 		// Change the text to Signing In
-		AccountsUtil.changeCaption(this.$.signInButton, AccountsUtil.BUTTON_SIGNING_IN);
+		this.$.signInButton.setCaption(AccountsUtil.BUTTON_SIGNING_IN);
 		// Start the spinner on the button
 		this.$.signInButton.active = true;
 		this.$.signInButton.activeChanged();
@@ -138,7 +162,7 @@ enyo.kind({
 			console.log("validate id=" + v.id);
 			
 			// Create the parameters that are passed to the service
-			var params = LoginUtils.createValidatorParams(this.username, this.password, v.id, v.config, {accountId: this.account._id});
+			var params = LoginUtils.createValidatorParams(this.username, this.password, v.id, v.config, undefined, {accountId: this.account._id});
 			
 			// Create the service parameters
 			var props = LoginUtils.getServiceMethod(v.validator);
@@ -196,8 +220,12 @@ enyo.kind({
 		}
 		
 		// If modifying an existing account then return the successful result now
-		if (this.account.username)
+		if (this.account.username) {
+			// Stop the spinner
+			this.$.signInButton.active = false;
+			this.$.signInButton.activeChanged();
 			this.doCredentials_ValidationSuccess(this.results);
+		}
 		else {
 			// Make sure this account isn't a duplicate before it can be saved
 			this.$.accounts.getAccounts({templateId: this.account.templateId});
@@ -210,7 +238,7 @@ enyo.kind({
 		if (!this.results)
 			return;
 		if (account && account.length) {
-			for (i in account) {
+			for (var i in account) {
 				if (account[i].username !== this.results.username || account[i].beingDeleted)
 					continue;
 
@@ -223,7 +251,7 @@ enyo.kind({
 				
 				// The account is being created from a PIM app.  If the capability is enabled already
 				// then this is an attempt to create a duplicate account
-				for (cp in account[i].capabilityProviders) {
+				for (var cp in account[i].capabilityProviders) {
 					var c = account[i].capabilityProviders[cp];
 					// Find the capability
 					if (c.capability !== this.capability)
@@ -239,7 +267,7 @@ enyo.kind({
 					// Create an array of currently enabled capabilities, starting with this capability
 					var enabledCapabilities = [{"id":c.id}];
 					console.log("Enabling capability " + c.id + " for account " +  account[i]._id);
-					for (cap in account[i].capabilityProviders) {
+					for (var cap in account[i].capabilityProviders) {
 						var c = account[i].capabilityProviders[cap];
 						if (c._id)
 							enabledCapabilities.push({"id":c.id});
@@ -264,6 +292,10 @@ enyo.kind({
 		}
 		this.doCredentials_ValidationSuccess(this.results);
 		
+		// Stop the spinner
+		this.$.signInButton.active = false;
+		this.$.signInButton.activeChanged();
+
 		// Shouldn't need to delete the results, but the getAccounts is a subscription
 		delete this.results;
 	},
@@ -290,15 +322,32 @@ enyo.kind({
 		}
 		else {
 			AccountsUtil.disableControl(this.$.username, false);
-			enyo.asyncMethod(this.$.username, "forceFocus");
+			if (error) {
+				this.$.password.setSelection({start: 0, end: this.password.length});
+				enyo.asyncMethod(this.$.password, "forceFocus");
+			}
+			else
+				enyo.asyncMethod(this.$.username, "forceFocus");
 		}
 		AccountsUtil.disableControl(this.$.password, false);
 		
 		// Reset the "Sign In" button
-		AccountsUtil.changeCaption(this.$.signInButton, AccountsUtil.BUTTON_SIGN_IN);
+		this.$.signInButton.setCaption(AccountsUtil.BUTTON_SIGN_IN);
 		this.$.signInButton.active = false;
 		this.$.signInButton.activeChanged();
 		this.keyTapped();
+		
+		// Enable the "Remove Account" button
+		this.$.removeAccountButton.disableButton(false);
+	},
+	
+	// The account (or capability) is being removed
+	removingAccount: function() {
+		// Disable the "Sign In" button
+		AccountsUtil.disableControl(this.$.signInButton, true);
+		// Disable the username and password fields
+		AccountsUtil.disableControl(this.$.username, true);
+		AccountsUtil.disableControl(this.$.password, true);
 	}
 });
 
@@ -313,12 +362,12 @@ enyo.kind({
 	components: [
 		{kind:"Toolbar", className:"enyo-toolbar-light accounts-header", pack:"center", components: [
 			{kind: "Image", name:"titleIcon"},
-	        {content: AccountsUtil.PAGE_TITLE_SIGN_IN, className:""}
+	        {kind: "Control", content: AccountsUtil.PAGE_TITLE_SIGN_IN}
 		]},
 		{className:"accounts-header-shadow"},
 		{kind: "Scroller", flex: 1, components: [
 			{kind: "Control", className:"box-center", components: [
-				{kind: "Accounts.credentials", name: "credentials", onCredentials_ValidationSuccess: "doCredentials_ValidationSuccess"},
+				{kind: "Accounts.credentials", name: "credentials", onCredentials_ValidationSuccess: "doCredentials_ValidationSuccess", onCredentials_Cancel: "doCredentials_Cancel"},
 			]}
 		]},
 		{className:"accounts-footer-shadow"},

@@ -27,9 +27,8 @@ enyo.kind({
 		{kind: "InputBox", className: "enyo-atomizing-input-box", layoutKind: null, components: [
 			{name: "client", className: "enyo-atomizing-input-wrapper", components: [
 				{name: "expandButton", kind: "Button", className: "enyo-contact-atom enyo-addressing-expand-button", onclick: "doExpandButtonClick"},
-				{name: "showallButton", showing: false, kind: "IconButton", className: "enyo-addressing-showall-button",  icon: "enyo-addressing-showall-icon", iconIsClassName: true, onclick: "doShowAllButtonClick"},
+				{name: "showallButton", showing: true, kind: "IconButton", className: "enyo-addressing-showall-button",  icon: "enyo-addressing-showall-icon", iconIsClassName: true, onclick: "doShowAllButtonClick"},
 				{name: "returnButton", showing: false, kind:"CustomButton", className: "enyo-addressing-return-button", onclick:"returnAtomize"},
-				// FIXME: RichText is a BasicInput, so it does not have changeOnKeypress
 				{
 					name: "input",
 					kind: "RichText",
@@ -114,6 +113,7 @@ enyo.kind({
 		this.hintChanged();
 	},
 	getContacts: function() {
+		this.atomizeInput();
 		var contacts = [];
 		for (var i=0, a; a=this.atoms[i]; i++) {
 			contacts.push(a.getContact());
@@ -130,9 +130,12 @@ enyo.kind({
 		}
 		this.forceFocus();
 	},
+	getSelection: function() {
+		return this.$.input.getSelection();
+	},
 	//* @public
-	forceFocus: function() {
-		this.$.input.forceFocus();
+	forceFocus: function(inCallback) {
+		this.$.input.forceFocus(inCallback);
 	},
 	addAtom: function(inContact, inIsButtony) {
 		var atom = this.createComponent({
@@ -150,9 +153,11 @@ enyo.kind({
 		var c = this.$.client;
 		c.children.pop();
 		c.children.splice(c.children.length - 1, 0, atom);
-		atom.render();
-		if (atom.hasNode()) {
-			atom.node.parentNode.insertBefore(atom.node, atom.node.previousSibling);
+		if (this.hasNode()){
+			atom.render();
+			if (atom.hasNode()) {
+				atom.node.parentNode.insertBefore(atom.node, atom.node.previousSibling);
+			}
 		}
 		return atom;
 	},
@@ -177,8 +182,14 @@ enyo.kind({
 			return false;
 		}
 		this.$.input.setValue("");
-		this.$.returnButton.hide();
-		this.$.showallButton.show();
+		if (this.$.input.hasFocus()) {
+			this.buttonize();
+			this.showAllOrReturn(this.getInputValue().length === 0);
+		} else {
+			this.unbuttonize();
+			this.showAllOrReturn(true);
+		}
+		this.hintChanged();
 		return true;
 	},
 	//* @protected
@@ -201,14 +212,12 @@ enyo.kind({
 		for (var i = 0, a; a=this.atoms[i]; i++) {
 			a.setIsButtony(true);
 		}
-		this.$.showallButton.addClass("enyo-button");
 	},
 	unbuttonize: function(inSender, inEvent) {
 		for (var i = 0, a; a=this.atoms[i]; i++) {
 			a.setIsButtony(false);
 			a.setSeparator(i < this.atoms.length-1 ? "; " : "");
 		}
-		this.$.showallButton.removeClass("enyo-button");
 	},
 	editAtom: function(inSender, inEvent) {
 		if (!this.$.input.hasFocus()) {
@@ -226,20 +235,31 @@ enyo.kind({
 	mousedownHandler: function(inSender, inEvent) {
 		if (!inSender.isDescendantOf(this.$.input)) {
 			inEvent.preventDefault();
-			if (!this.$.input.hasFocus()) {
-				this.forceFocus();
+		}
+	},
+	mouseupHandler: function(inSender, inEvent) {
+		if (!this.$.input.hasFocus()) {
+			if (inEvent.canFocus) {
+				this.forceFocus(enyo.bind(this, "cursorToEndPosition"));
 			}
+		} else {
+			this.cursorToEndPosition();
+		}
+	},
+	cursorToEndPosition: function() {
+		var s = this.getSelection();
+		if (s) {
+			s.modify("move", "right", "documentboundary");
 		}
 	},
 	focusHandler: function(inSender, inEvent) {
 		this.buttonize();
-		this.$.showallButton.show();
+		this.showAllOrReturn(this.getInputValue().length === 0);
 		this.addClass(this.focusedClassName);
 		this.fire("onfocus", inEvent);
 	},
 	blurHandler: function(inSender, inEvent) {
-		this.atomizeInput();
-		this.$.showallButton.hide();
+		this.showAllOrReturn(true);
 		this.unbuttonize();
 		this.removeClass(this.focusedClassName);
 		this.hintChanged();
@@ -289,6 +309,7 @@ enyo.kind({
 		} else if (!this.isExcludedFilterKey(keyCode)) {
 			if (this.isDeletingLastChar(keyCode)) {
 				this.stopFilterJob();
+				this.doFilterCleared();
 			} else {
 				this.startFilterJob();
 			}
@@ -302,12 +323,15 @@ enyo.kind({
 	},
 	inputInputEvent: function(inSender, inEvent) {
 		var showAllOrReturn = inSender.isEmpty();
-		this.$.showallButton.setShowing(showAllOrReturn);
-		this.$.returnButton.setShowing(!showAllOrReturn);
+		this.showAllOrReturn(showAllOrReturn);
 		if (showAllOrReturn) {
 			this.stopFilterJob();
 			this.doFilterCleared();
 		}
+	},
+	showAllOrReturn: function(inShowAll) {
+		this.$.showallButton.setShowing(inShowAll);
+		this.$.returnButton.setShowing(!inShowAll);
 	},
 	startFilterJob: function() {
 		enyo.job(this.id + "filter", enyo.bind(this, "fireFilterStringChanged"), this.filterDelay);

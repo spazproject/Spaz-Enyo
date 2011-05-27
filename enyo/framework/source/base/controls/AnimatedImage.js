@@ -26,6 +26,7 @@ Call the start method to start the animation and the stop method to stop it:
 		this.$.animatedImage.stop();
 	}
 */
+
 enyo.kind({
 	name: "enyo.AnimatedImage",
 	kind: enyo.Control,
@@ -36,33 +37,46 @@ enyo.kind({
 		easingFunc: enyo.easing.linear
 	},
 	//* @protected
-	chrome: [
-		{name: "animator", kind: "Animator", onAnimate: "stepAnimation"}
-	],
-	create: function() {
-		this.inherited(arguments);
-		this.repeatChanged();
-		this.easingFuncChanged();
+	// flyweight safe animation
+	playAnimation: function() {
+		//this.log();
+		if (this.hasNode()) {
+			this.stop();
+			//
+			var a = this.createComponent({
+				kind: "Animator",
+				repeat: this.repeat,
+				easingFunc: this.easingFunc,
+				onAnimate: "stepAnimation",
+				onStop: "stopAnimation",
+				node: this.node,
+				style: this.node.style
+			});
+			a.play();
+			this.node.animation = a;
+		}
 	},
-	repeatChanged: function() {
-		this.$.animator.setRepeat(this.repeat);
-	},
-	easingFuncChanged: function() {
-		this.$.animator.setEasingFunc(this.easingFunc);
+	stopAnimation: function(inSender) {
+		inSender.node.animation = null;
+		inSender.destroy();
 	},
 	stepAnimation: function(inSender, inValue, inProgress) {
 		var i = Math.round(inProgress * (this.imageCount-1));
-		this.positionBackgroundImage(i);
-	},
-	positionBackgroundImage: function(inIndex) {
-		var ypos = -inIndex * this.imageHeight;
-		this.applyStyle("background-position", "0px " + ypos + "px");
+		var ypos = -i * this.imageHeight;
+		var v = "0px " + ypos + "px";
+		var ds = this.domStyles;
+		ds["background-position"] = inSender.style.backgroundPosition = v;
 	},
 	//* @public
 	start: function() {
-		this.$.animator.play();
+		this.playAnimation();
 	},
 	stop: function() {
-		this.$.animator.stop();
+		if (this.hasNode()) {
+			var a = this.node.animation;
+			if (a) {
+				a.stop();
+			}
+		}
 	}
 });

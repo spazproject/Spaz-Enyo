@@ -26,7 +26,9 @@ enyo.kind({
 		value: "",
 		textAlign: "center",
 		/** An array of simple strings representing items. */
-		items: []
+		items: [],
+		scrim: false,
+		modal: true
 	},
 	events: {
 		onChange: ""
@@ -45,21 +47,31 @@ enyo.kind({
 			className: "enyo-picker-popup",
 			onSelect: "popupSelect",
 			onClose: "popupClose",
-			scrim: this.scrim
+			onclick: "popupClick",
+			scrim: this.scrim,
+			modal: this.modal
 		});
 	},
 	scrimChanged: function() {
-		this.popup.scrim = this.scrim;
+		this.popup.setScrim(this.scrim);
+		this.popup.setScrimWhenModal(this.scrim);
+	},
+	modalChanged: function() {
+		this.popup.setModal(this.modal);
 	},
 	clickHandler: function(inSender, inEvent) {
 		this.openPopup(inEvent);
 		return this.doClick(inEvent);
 	},
+	resizeHandler: function() {
+		this.inherited(arguments);
+		this.popup.resized();
+	},
 	openPopup: function(inEvent) {
 		this.setFocus(true);
-		// tell manager about popup opening before we popup
-		// manager may have its own popup that should be opened first.
-		this.dispatch(this.manager, this.managerOpenPopup);
+		// tell container about popup opening before we popup
+		// container may have its own popup that should be opened first.
+		this.dispatch(this.container, this.containerOpenPopup);
 		var n = this.hasNode();
 		if (n) {
 			this.popup.applyStyle("min-width", n.offsetWidth + "px");
@@ -79,7 +91,7 @@ enyo.kind({
 	},
 	popupClose: function(inSender, inEvent) {
 		this.setFocus(false);
-		this.dispatch(this.manager, this.managerClosePopup, [inEvent]);
+		this.dispatch(this.container, this.containerClosePopup, [inEvent]);
 	},
 	closePopup: function() {
 		this.popup.close();
@@ -91,25 +103,18 @@ enyo.kind({
 	textAlignChanged: function() {
 		this.popup.applyStyle("text-align", this.textAlign);
 	},
-	fetchIndexByValue: function(inValue) {
-		for (var i=0, item; item=this.items[i]; i++) {
-			var v = enyo.isString(item) ? item : item.value;
-			if (v == inValue) {
-				return i;
-			}
-		}
-	},
 	valueChanged: function(inOldValue) {
 		if (this.value != inOldValue) {
-			var i = this.fetchIndexByValue(this.value);
+			var i = this.popup.fetchIndexByValue(this.value);
 			// disallow changes to invalid values
 			if (i === undefined) {
 				this.value = inOldValue;
 			} else {
-				this.popup.setSelected(i);
+				this.popup.selected = i;
 				var item = this.items[i];
 				var caption = enyo.isString(item) ? item : item.caption;
 				this.setCaption(caption);
+				this.updateSelected(i, this.popup.fetchIndexByValue(inOldValue));
 			}
 		}
 	},
@@ -134,8 +139,15 @@ enyo.kind({
 			this.setValue(v);
 			if (this.value != oldValue) {
 				this.doChange(this.value);
-				this.dispatch(this.manager, "pickerChange");
+				this.dispatch(this.container, "pickerChange");
 			}
+		}
+	},
+	popupClick: function(inSender, inEvent) {
+		var t = inEvent.dispatchTarget;
+		// inform our container if our popup receives a foreign click that's on one of its descendants.
+		if (t && !t.isDescendantOf(this.popup) && t.isDescendantOf(this.container)) {
+			this.dispatch(this.container, "pickerPopupClick", [t]);
 		}
 	}
 });

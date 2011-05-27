@@ -6,14 +6,15 @@ enyo.kind({name: "SecurityPolicyGuard",
 			width: "100%",
 			events: {
 				onSuccess: "",
-				onFailure: ""
+				onFailure: "",
+				onCancel: ""
 			},
 			published: {
 				policy: ""
 			},
 			components: [
-			    {kind:"Popup", name: "secPops", width:"360px", height:"400px",  components: [
-			        {kind: enyo.VFlexBox, width: "320px", height: "380px", components: [                                                           	
+			    {kind:"Popup", name: "secPops",  lazy:false, width:"360px", height:"360px",  className: "cust-enyo-popup",  components: [
+			        {kind: enyo.VFlexBox, width: "320px", height: "325px", components: [                                                           	
 				        {name:"pane", flex:1, kind:"Pane", transitionKind:enyo.transitions.Simple, height:"100%", components:[
 			     			{name:"blank"},
 			     			{name:"pinUnlock", kind: "PinUnlock", onCancelClick: "cancelLogin", onSetPinSuccess: "setPinSuccess"}
@@ -22,8 +23,8 @@ enyo.kind({name: "SecurityPolicyGuard",
 			    ]},
 			             
 	            // Dialogs
-	            {name:"securityUpgradePrompt", kind:"SecurityUpgradePrompt", onPin:"choosePin", onPassword:"choosePassword"},
-	     		{name:"setPasswordDialog", kind:"SetPasswordDialog", onDone:"setPassword", onCancel:"cancelLogin"}
+	            {name:"securityUpgradePrompt", lazy:false, kind:"SecurityUpgradePrompt", onPin:"choosePin", onPassword:"choosePassword", onCancel: "cancelUpgrade"},
+	     		{name:"setPasswordDialog", lazy:false, kind:"SetPasswordDialog", onDone:"setPassword", onCancel:"cancelLogin"}
 			],
 			setSecurityPolicy: function(policyToLoad) {
 				this.$.pinUnlock.reset();
@@ -35,12 +36,12 @@ enyo.kind({name: "SecurityPolicyGuard",
 				this.pendingSecurityPolicy = this.policy;
 				
 				if (this.lockMode !== "none") {
-					this.$.securityUpgradePrompt.setTitle(rb_auth.$L("Device Password Upgrade Required")); 
+					this.$.securityUpgradePrompt.setCaption(rb_auth.$L("Device Password Upgrade Required")); 
 				} else {
-					this.$.securityUpgradePrompt.setTitle(rb_auth.$L("Device Password Required"));
+					this.$.securityUpgradePrompt.setCaption(rb_auth.$L("Device Password Required"));
 				}
 				this.$.securityUpgradePrompt.setPolicy(this.pendingSecurityPolicy);
-				this.$.securityUpgradePrompt.open();
+				this.$.securityUpgradePrompt.openAtCenter();
 			},
 			
 			cancelLogin: function() {
@@ -63,10 +64,14 @@ enyo.kind({name: "SecurityPolicyGuard",
 				this.$.securityUpgradePrompt.close();
 				this.log("-----------setting policy",this.pendingSecurityPolicy)
 				this.$.setPasswordDialog.setPolicy(this.pendingSecurityPolicy.password);
-				this.$.setPasswordDialog.open();
+				this.$.setPasswordDialog.openAtCenter();
 			},
 			setPassword: function(inSender, response) {
 				this.doSuccess()
 				this.$.secPops.close();
+			},
+			cancelUpgrade: function() {
+				this.$.secPops.close();
+				this.doCancel();
 			}
 });

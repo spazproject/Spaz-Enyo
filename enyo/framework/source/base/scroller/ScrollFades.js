@@ -8,20 +8,31 @@ enyo.kind({
 	kind: enyo.Control,
 	//* @protected
 	className: "enyo-view",
-	components: [
-		{name: "top", showing: false, className: "enyo-scrollfades-top"},
-		{name: "bottom", showing: false, className: "enyo-scrollfades-bottom"},
-		{name: "left", showing: false, className: "enyo-scrollfades-left"},
-		{name: "right", showing: false, className: "enyo-scrollfades-right"}
-	],
+	topFadeClassName: "enyo-scrollfades-top",
+	bottomFadeClassName: "enyo-scrollfades-bottom",
+	leftFadeClassName: "enyo-scrollfades-left",
+	rightFadeClassName: "enyo-scrollfades-right",
+	create: function() {
+		this.inherited(arguments);
+		this.createFade("top");
+		this.createFade("bottom");
+		this.createFade("left");
+		this.createFade("right");
+	},
+	createFade: function(inFadePos) {
+		var f = this[inFadePos + "FadeClassName"];
+		if (f) {
+			this.createComponent({name: inFadePos, showing: false, className: f});
+		}
+	},
 	//* @public
 	showHideFades: function(inScroller) {
 		var t = inScroller.scrollTop;
 		var l = inScroller.scrollLeft;
 		var bs = inScroller.getBoundaries();
-		this.$.top.setShowing(inScroller.vertical && t > bs.top);
-		this.$.bottom.setShowing(inScroller.vertical && t < bs.bottom);
-		this.$.left.setShowing(inScroller.horizontal && l > bs.left);
-		this.$.right.setShowing(inScroller.horizontal && l < bs.right);
+		this.$.top && this.$.top.setShowing(inScroller.vertical && t > bs.top);
+		this.$.bottom && this.$.bottom.setShowing(inScroller.vertical && t < bs.bottom);
+		this.$.left && this.$.left.setShowing(inScroller.horizontal && l > bs.left);
+		this.$.right && this.$.right.setShowing(inScroller.horizontal && l < bs.right);
 	}
-})
+});

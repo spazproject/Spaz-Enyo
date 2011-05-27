@@ -14,44 +14,71 @@ To set items, use <code>setItems</code>:
 enyo.kind({
 	name: "enyo.PopupList",
 	kind: enyo.PopupSelect,
+	events: {
+		onSetupItem: ""
+	},
 	components: [
-		{name: "list", kind: "VirtualRepeater", onGetItem: "listGetItem"}
+		{name: "list", kind: "VirtualRepeater", onSetupRow: "listSetupRow"}
 	],
 	//* @protected
-	create: function() {
+	componentsReady: function() {
 		this.inherited(arguments);
 		this.$.list.createComponent({name: "item", kind: this.defaultKind, owner: this});
-		this.itemClassName = this.$.item.getItemClassName();
 	},
 	menuItemClick: function(inSender, inEvent) {
+		this._itemClicked = true;
 		this.setSelected(inEvent.rowIndex);
-		//this.close();
 	},
 	// NOTE: PopupList assumes items are strings; however, it's valid in its superclass Menu
 	// for items to be objects.
-	listGetItem: function(inSender, inIndex) {
+	listSetupRow: function(inSender, inIndex) {
 		var l = this.items.length;
-		if (inIndex < l) {
+		if (inIndex < l && this.$.item) {
 			var item = this.items[inIndex];
 			var caption = enyo.isString(item) ? item : item.caption;
+			this.$.item.addRemoveItemClass("enyo-single", l == 1);
+			this.$.item.addRemoveItemClass("enyo-first", inIndex == 0);
+			this.$.item.addRemoveItemClass("enyo-last", inIndex == l-1);
 			this.$.item.setCaption(caption);
-			var r = l == 1 ? "single" : (inIndex == 0 ? "first" : (inIndex == l-1 ? "last" : ""));
-			r = r ? " enyo-" + r : "";
-			this.$.item.setItemClassName(this.itemClassName + r);
+			this.doSetupItem(this.$.item, inIndex, item);
 			return true;
 		}
 	},
 	itemsChanged: function() {
-		if (this.generated) {
+		if (this.$.list && this.generated) {
 			this.$.list.render();
 		}
 	},
+	fetchIndexByValue: function(inValue) {
+		for (var i=0, item; item=this.items[i]; i++) {
+			var v = this.fetchItemValue(item);
+			if (v == inValue) {
+				return i;
+			}
+		}
+	},
+	fetchItemValue: function(inItem) {
+		return enyo.isString(inItem) ? inItem : (inItem.value === undefined ? inItem.caption : inItem.value);
+	},
+	fetchValue: function(inIndex) {
+		var item = this.items[inIndex];
+		if (item !== undefined) {
+			return this.fetchItemValue(item);
+		}
+	},
 	fetchRowNode: function(inIndex) {
-		return this.$.list.fetchRowNode(inIndex);
+		return this.$.list && this.$.list.fetchRowNode(inIndex);
+	},
+	fetchItem: function(inIndex) {
+		if (this.$.list && this.$.list.prepareRow(inIndex)) {
+			return this.$.item;
+		}
 	},
 	scrollToSelected: function() {
 		var n = this.fetchRowNode(this.selected), pn = this.$.list.hasNode();
-		var offset = enyo.dom.calcNodeOffset(n, pn);
-		this.scrollIntoView(offset.top);
+		if (n && pn) {
+			var offset = enyo.dom.calcNodeOffset(n, pn);
+			this.scrollIntoView(offset.top);
+		}
 	}
 });

@@ -23,12 +23,22 @@ enyo.kind({
 		executable: "", 
 		/** an array of strings; if provided, used as command line parameters to plugin */
 		params: [], 
-		/** set to true to enable alpha-blending for displayed plugins */
+		/** set to true to enable premultiplied alpha-blending for plugins.  Enable if you want to blend the plugin
+		    display contents with the HTML elements below it on the page.  Set to false for faster drawing. */
 		alphaBlend: false, 
+		/** set to true to stop plugin layer from clearing transparency information from display surface.
+		    Should always be used with alphaBlend: false.  Used to allow showing video layer from
+		    video tag playback through a hybrid object. */
+		killTransparency: false,
+		/** if true, plugin will remain alive when hidden. Useful if you're hosting this in a pane or other part of the
+		    page where you don't want the plugin process to be killed and restarted later. */
+		cachePlugin: false,
+		/** if true, allows plugin to get focus when tapped by setting its tabIndex property */
+		allowKeyboardFocus: false,
 		/** height of the plugin object */
 		height: 0,
 		/** width of the plugin object */
-		width: 0,
+		width: 0
 	},
 	events: {
 		/** sent when the plugin has is ready to allow method calls.  This is either signaled directly by
@@ -70,6 +80,11 @@ enyo.kind({
 			this.setAttribute("type", "application/x-palm-remote");
 			this.setAttribute("exe", this.executable);
 			this.setAttribute("alphablend", (this.alphaBlend ? "true" : "false"));
+			this.setAttribute("killTransparency", (this.killTransparency ? "true" : "false"));
+			this.setAttribute("x-palm-cache-plugin", (this.cachePlugin ? "true" : "false"));
+			if (this.allowKeyboardFocus) {
+				this.setAttribute("tabIndex", 0);
+			}
 			for (var paramNum = 0; paramNum < this.params.length; paramNum++) {
 				this.setAttribute("param" + (paramNum + 1), this.params[paramNum]);
 			}
@@ -200,5 +215,16 @@ enyo.kind({
 		// also add to the deferredCallbacks list, even if we just set it, since if the plugin is
 		// re-rendered, we'll need to set these up again.
 		this.deferredCallbacks.push({ "name": name, "callback": fn });
+	},
+	
+	/** tell the system to put focus on the hybrid window and show the on-screen keyboard if available */
+	focus: function() {
+		if (this.hasNode()) {
+			this.hasNode().focus();
+			// special
+			if (window.PalmSystem) {
+				window.PalmSystem.editorFocused(true, 0, 0);
+			}
+		}
 	}
 });

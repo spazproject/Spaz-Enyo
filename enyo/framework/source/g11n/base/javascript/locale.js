@@ -125,3 +125,28 @@ enyo.g11n.Locale.prototype.equals = function (otherLocale) {
 		this.region === otherLocale.region &&
 		this.variant === otherLocale.variant);
 };
+
+/**
+If the current locale includes a region but no language, this function causes
+the locale to fill itself out with the default language for that region. For
+each region, one language is picked as the default. If the region does not
+have a default, the language of the current UI locale is used, and if that
+cannot be found, English is used. 
+*/
+enyo.g11n.Locale.prototype.useDefaultLang = function () {
+	var defLangs, language, uiLoc;
+	
+	if (!this.language) {
+		defLangs = enyo.g11n.Utils.getNonLocaleFile({
+			root: enyo.g11n.Utils._getEnyoRoot(),
+			path: "base/formats/defLangs.json"
+		});
+		language = defLangs && defLangs[this.region];
+		if (!language) {
+			uiLoc = enyo.g11n.currentLocale();
+			language = uiLoc.language;
+		}
+		this.language = language || "en";
+		this.locale = this.language + "_" + this.region;
+	}
+};

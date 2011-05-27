@@ -53,7 +53,7 @@ enyo.kind({
 		{kind: "VFlexBox", name: "loadingAccounts", className:"enyo-bg", components: [
 			{kind:"Toolbar", className:"enyo-toolbar-light accounts-header", pack:"center", components: [
 					{kind: "Image", name:"welcomeIconStart"},
-					{content: AccountsUtil.TEXT_WELCOME, className:""}
+					{kind: "Control", content: AccountsUtil.TEXT_WELCOME}
 			]},
 			{className:"accounts-header-shadow"},
 			{kind: "HFlexBox", className:"box-center", style:"margin-top:0", flex:1, pack:"center", align:"center", components: [
@@ -67,19 +67,30 @@ enyo.kind({
 			// Display one of two headers depending on the number of accounts
 			{kind:"Toolbar", name:"noAccountsSetUpHeader", className:"enyo-toolbar-light accounts-header", pack:"center", components: [
 				{kind: "Image", name:"welcomeIcon"},
-				{content: AccountsUtil.TEXT_WELCOME, className:""}
+				{kind: "Control", content: AccountsUtil.TEXT_WELCOME}
 			]},
 			{kind:"Toolbar", name: "oneOrMoreAccountsHeader", className:"enyo-toolbar-light accounts-header", pack:"center", components: [
 				{kind: "Image", name: "titleIcon"},
-				{name: "titleText", className:""}
+				{kind: "Control", name: "titleText"}
 			]},
 			{className:"accounts-header-shadow"},
-			{kind: "FadeScroller", flex:1, components: [
+			{kind: "Scroller", flex:1, components: [
 				{kind:"Control", name: "noAccountsSetUpYet", style:"width:100%", components: [
 					{kind:"Control", className:"box-center", components:[
 						{name: "getStartedWithProfileAccount", components: [
 							{content: AccountsUtil.TEXT_GET_STARTED_PROFILE_ACCOUNT, className:"accounts-body-title"},
 							{kind: "Button", className: "enyo-button-affirmative accounts-btn", name: "profileButton", onclick: "doAccountsFirstLaunchDone"},
+							{content: AccountsUtil.TEXT_OR_ADD_NEW_ACCOUNT, className:"accounts-body-title"}
+						]},
+						{name: "getStartedWithLocalStorageAccount", components: [
+							{name:"localFileStorageMsg", className:"accounts-body-title"},
+							{kind:"RowGroup", className:"accounts-group", components:[
+								{kind: "Item", name: "Account", layoutKind: "HFlexLayout", align:"center", className:"accounts-list-item", components: [
+									{kind: "Image", name:"localStorageImage", className:"icon-image"},
+									{name: "localStorageName"}
+								]}
+							]},
+							{kind: "Button", className: "enyo-button-affirmative accounts-btn", content: AccountsUtil.BUTTON_GO, onclick: "doAccountsFirstLaunchDone"},
 							{content: AccountsUtil.TEXT_OR_ADD_NEW_ACCOUNT, className:"accounts-body-title"}
 						]},
 						{name: "welcomeMsg", className:"accounts-body-title"},
@@ -99,14 +110,10 @@ enyo.kind({
 						]},
 						{kind: "enyo.Button", className: "enyo-button-affirmative accounts-btn", label:AccountsUtil.BUTTON_GO, onclick: "doAccountsFirstLaunchDone"},
 						{content: AccountsUtil.TEXT_OR_ADD_NEW_ACCOUNT, className:"accounts-body-title"},
-						{kind: "enyo.Button", className:"accounts-btn", label: AccountsUtil.BUTTON_ADD_ACCOUNT, onclick: "AddAccount"}
+						{kind: "enyo.Button", className:"enyo-button-dark accounts-btn", label: AccountsUtil.BUTTON_ADD_ACCOUNT, onclick: "AddAccount"}
 					]},
 				]},
 				{name: "client", style: "width: 100%; position: relative;"}
-			]},
-			{className:"accounts-footer-shadow", name:"doneNoAccountsShadow"},
-			{kind:"Toolbar", className:"enyo-toolbar-light", name:"doneNoAccounts", components:[
-				{kind: "Button", label: AccountsUtil.BUTTON_DONE, className:"accounts-toolbar-btn", onclick: "doAccountsFirstLaunchDone"}
 			]},
 
 			{name: "accounts", kind: "Accounts.getAccounts", onGetAccounts_AccountsAvailable: "onAccountsAvailable"},
@@ -124,20 +131,28 @@ enyo.kind({
 			console.log("ERROR: msgs parameter missing pageTitle message!");
 			return;
 		}
+		
+		// Temp fix for Photos until they get their submission in
+		if (this.capability === "PHOTO.UPLOAD") {
+			this.capability = ["PHOTO.UPLOAD","LOCAL.FILESTORAGE"];
+			msgs.localFileStorage = $L("Get started with photos on your device:");
+		}
+		// Temp fix for Quick Office until they get their submission in
+		if (this.capability === "DOCUMENTS") {
+			this.capability = ["DOCUMENTS","LOCAL.FILESTORAGE"];
+			msgs.localFileStorage = $L("Get started with documents on your device:");
+		}
+		
 		console.log("startFirstLaunch: capabilty = " + this.capability);
+		this.msgs = msgs;
 		// Set up the page title
-		this.$.titleText.caption = msgs.pageTitle;
-		this.$.titleText.captionChanged();
-		this.$.welcomeIcon.src = this.iconSmall;
-		this.$.welcomeIcon.srcChanged();
-		this.$.welcomeIconStart.src = this.iconSmall;
-		this.$.welcomeIconStart.srcChanged();
-		this.$.titleIcon.src = this.iconSmall;
-		this.$.titleIcon.srcChanged();
+		this.$.titleText.setContent(msgs.pageTitle);
+		this.$.welcomeIcon.setSrc(this.iconSmall);
+		this.$.welcomeIconStart.setSrc(this.iconSmall);
+		this.$.titleIcon.setSrc(this.iconSmall);
 
 		// Set up the "To get started, set up a XXX account" message
-		this.$.welcomeMsg.content = msgs.welcome;
-		this.$.welcomeMsg.contentChanged();
+		this.$.welcomeMsg.setContent(msgs.welcome);
 		
 		// Get the list of accounts to determine which view to show.  Include the HP Profile account
 		this.$.accounts.getAccounts({capability: this.capability}, this.exclude);
@@ -158,7 +173,7 @@ enyo.kind({
 		
 		// Special case the HP Profile account
 		// Remove it from the array, if it exists
-		for (i=0, l = inResponse.accounts.length; i< l; i++) {
+		for (var i=0, l = inResponse.accounts.length; i< l; i++) {
 			if (this.accounts[i].templateId === "com.palm.palmprofile") {
 				this.profileAccount = this.accounts[i];
 				this.accounts.splice(i, 1);
@@ -172,15 +187,14 @@ enyo.kind({
 			this.$.welcomeMsg.hide();
 			
 			// Put the user's name on the button
-			this.$.profileButton.caption = this.profileAccount.username;
-			this.$.profileButton.captionChanged(); 
+			this.$.profileButton.setCaption(this.profileAccount.username);
 		}
 		else {
 			// Hide the "Get started with your HP webOS account"
 			this.$.getStartedWithProfileAccount.hide();
+			this.$.getStartedWithLocalStorageAccount.hide();
 		}
-		this.$.doneNoAccountsShadow.hide();
-		this.$.doneNoAccounts.hide();
+		
 		// There are 2 views: one for no accounts and another for one or more accounts
 		if (this.accounts.length) {
 			this.$.noAccountsSetUpHeader.hide();
@@ -195,19 +209,25 @@ enyo.kind({
 			this.$.noAccountsSetUpHeader.show();
 			this.$.noAccountsSetUpYet.show();
 			
-			// Show a "Done" button for Photos
-			if (this.capability === "PHOTO")
-				this.$.doneNoAccountsShadow.show();
-				this.$.doneNoAccounts.show();
-
+			// Is there a local storage account?
+			if (this.profileAccount && this.msgs.localFileStorage) {
+				this.$.getStartedWithLocalStorageAccount.show();
+				this.$.getStartedWithProfileAccount.hide();
+				this.$.localFileStorageMsg.setContent(this.msgs.localFileStorage);
+				this.$.localStorageImage.setSrc(this.profileAccount.icon.loc_32x32);
+				this.$.localStorageName.setContent(this.profileAccount.alias);
+			}
+			
 			// Render the list of available accounts to add
 			this.$.templateList.setStripSize(this.addTemplates.length);		
 			this.$.templateList.render();
 		}
 		
 		// Go to the Accounts view, if the current view is "Loading Accounts"
-		if (this.getViewName() === "loadingAccounts")
+		if (this.getViewName() === "loadingAccounts") {
 			this.selectViewByName("firstLaunchFromPIMApp");	
+			enyo.asyncMethod(this.$.getAccountsSpinner, "hide");
+		}
 	},
 	
 	// Render an item in the list of accounts that can be added
@@ -216,14 +236,12 @@ enyo.kind({
 			return false;
 		// The last item in the list is "Find More ..."
 		if (inIndex == this.addTemplates.length) {
-			this.$.templateIcon.src = AccountsUtil.libPath + "images/appcatalog-32x32.png";
-			this.$.templateIcon.srcChanged();
+			this.$.templateIcon.setSrc(AccountsUtil.libPath + "images/appcatalog-32x32.png");
 			this.$.templateName.setContent(AccountsUtil.TEXT_FIND_MORE);
 			return true;
 		}
 		if (this.addTemplates[inIndex].icon) {
-			this.$.templateIcon.src = this.addTemplates[inIndex].icon.loc_32x32;
-			this.$.templateIcon.srcChanged();
+			this.$.templateIcon.setSrc(this.addTemplates[inIndex].icon.loc_32x32);
 		}
 		this.$.templateName.setContent(this.addTemplates[inIndex].alias || this.addTemplates[inIndex].loc_name);
 		return true;

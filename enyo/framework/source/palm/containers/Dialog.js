@@ -10,7 +10,7 @@ To show a dialog asking the user to confirm a choice, try the following:
 		{kind: "Button", caption: "Confirm choice", onclick: "showDialog"},
 		{kind: "Dialog", components: [
 			{content: "Are you sure?"},
-			{layoutKind: "HFlexLayout", pack: center, components: [
+			{layoutKind: "HFlexLayout", pack: "center", components: [
 				{kind: "Button", caption: "OK", onclick: "confirmClick"},
 				{kind: "Button", caption: "Cancel", onclick: "cancelClick"}
 			]}
@@ -32,9 +32,12 @@ To show a dialog asking the user to confirm a choice, try the following:
 enyo.kind({
 	name: "enyo.Dialog",
 	kind: enyo.Toaster,
-	className: "enyo-toaster enyo-dialog",
 	//* @protected
 	components: [
 		{name: "client", className: "enyo-dialog-inner"}
-	]
+	],
+	create: function() {
+		this.inherited(arguments);
+		this.addClass("enyo-dialog");
+	}
 });

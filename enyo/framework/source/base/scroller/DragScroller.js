@@ -1,10 +1,10 @@
 /* Copyright 2009-2011 Hewlett-Packard Development Company, L.P. All rights reserved. */
 /**
 enyo.DragScroller is a base kind that integrates the scrolling simulation provided
-by <a href="#enyo.ScrollMath">enyo.ScrollMath</a>
-with the drag management of <a href="#enyo.Drag">enyo.Drag</a>.
+by <a href="#enyo.ScrollStrategy">enyo.ScrollStrategy</a>
+into a Control</a>.
 
-enyo.ScrollMath is not typically created in application code.
+enyo.ScrollStrategy is not typically created in application code.
 */
 enyo.kind({
 	name: "enyo.DragScroller",
@@ -25,7 +25,7 @@ enyo.kind({
 	},
 	//* @protected
 	tools: [
-		{name: "scroll", kind: "ScrollMath"}
+		{name: "scroll", kind: "ScrollStrategy"}
 	],
 	create: function() {
 		this.inherited(arguments);

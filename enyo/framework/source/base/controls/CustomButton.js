@@ -71,6 +71,15 @@ enyo.kind({
 			return this.doMouseup(e);
 		}
 	},
+	// FIXME: flick should not be required to reset down state as mouseup + mouseout specify all
+	// cases where down should be set to false; however, on device, occasionally when flicking
+	// the mouseup or mouseout is simply not sent. This behavior occurs even on a simple, non-enyo test.
+	// Therefore, it's necessary to turn off down on flick.
+	flickHandler: function(inSender, e) {
+		if (!this.disabled && this.down) {
+			this.setDown(false);
+		}
+	},
 	clickHandler: function(inSender, e) {
 		if (!this.disabled) {
 			if (this.toggling) {

@@ -44,7 +44,11 @@ enyo.kind({
 		/** Fired when user swipes away the dashboard (or the last layer).  NOT sent when it is programmatically closed by emptying the layer stack.*/
 		onUserClose: "",
 		/** Fired when user swipes a dashboard layer away, unless it's the last one (that's onUserClose instead). Event includes the top layer object.*/
-		onLayerSwipe: ""
+		onLayerSwipe: "",
+		/** Fired when the dashboard window is displayed/maximized. */
+		onDashboardActivated: "",
+		/** Fired when user dashboard window is concealed/minimized. */
+		onDashboardDeactivated: ""
 	},
 	
 	indexPath: "$palm-system/dashboard-window/dashboard.html",
@@ -90,7 +94,8 @@ enyo.kind({
 			// so they will remain truthy, but have no properties.
 			var params = {layers:this.layers, docPath:document.location.pathname, 
 							onTap:"dbTapped", onIconTap:"iconTapped", onMessageTap:"msgTapped", 
-							onUserClose:"userClosed", onLayerSwipe:"layerSwiped"};
+							onUserClose:"userClosed", onLayerSwipe:"layerSwiped",
+							onDashboardActivated:"dbActivated", onDashboardDeactivated:"dbDeactivated"};
 			if(!windowValid) {
 				var attributes = {webosDragMode:"manual"};
 				if(this.smallIcon) {
@@ -99,7 +104,7 @@ enyo.kind({
 				this.window = enyo.windows.openDashboard(enyo.path.rewrite(this.indexPath), this.name, params, attributes);
 				this.window.dashboardOwner = this;
 			} else {
-				enyo.windows.activate(this.name, undefined, params);
+				enyo.windows.activate(undefined, this.name, params);
 			}
 		} else {
 			if(windowValid) {
@@ -108,6 +113,15 @@ enyo.kind({
 			this.window = undefined;
 		}
 	},
+	layerSwiped: function(inSender, topLayer) {
+		this.layers.pop();
+		this.doLayerSwipe(topLayer);
+	},
+	userClosed: function(inSender) {
+		this.layers.length = 0;
+		this.doUserClose();
+	},
+	// The following event handler pass-throughs are entirely trivial, but ensure the correct sender & arguments.
 	dbTapped: function(inSender, topLayer, event) {
 		this.doTap(topLayer, event);
 	},
@@ -117,12 +131,10 @@ enyo.kind({
 	iconTapped: function(inSender, topLayer, event) {
 		this.doIconTap(topLayer, event);
 	},
-	layerSwiped: function(inSender, topLayer) {
-		this.layers.pop();
-		this.doLayerSwipe(topLayer);
+	dbActivated: function(inSender) {
+		this.doDashboardActivated();
 	},
-	userClosed: function(inSender) {
-		this.layers.length = 0;
-		this.doUserClose();
+	dbDeactivated: function(inSender) {
+		this.doDashboardDeactivated();
 	}
 });

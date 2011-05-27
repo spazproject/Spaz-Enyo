@@ -36,4 +36,4 @@ enyo.kind({
 	labelChanged: function() {
 		this.$.label.setContent(this.label);
 	}
-})
+});

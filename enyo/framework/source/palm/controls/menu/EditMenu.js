@@ -13,6 +13,11 @@ enyo.kind({
 	kind: enyo.AppMenuItem,
 	caption: enyo._$L("Edit"),
 	published: {
+		/**
+		If true, edit menu items will automatically disable if the focused element does not support
+		editing. This setting will override the individual item disabled properties.
+		*/
+		autoDisableItems: true,
 		selectAllDisabled: false,
 		cutDisabled: false,
 		copyDisabled: false,
@@ -48,6 +53,22 @@ enyo.kind({
 	send: function(inSender) {
 		this["do" + enyo.cap(inSender.command)]();
 		enyo.dispatch({type: inSender.command, target: document.activeElement});
+	},
+	openChanged: function() {
+		this.inherited(arguments);
+		if (this.open && this.autoDisableItems) {
+			this.setItemsDisabled(this.shouldDisableItems());
+		}
+	},
+	shouldDisableItems: function() {
+		var a = document.activeElement;
+		return !Boolean(a && a.parentNode&& a.parentNode.querySelector(a.nodeName +":focus"));
+	},
+	setItemsDisabled: function(inDisable) {
+		this.setSelectAllDisabled(inDisable);
+		this.setCutDisabled(inDisable);
+		this.setCopyDisabled(inDisable);
+		this.setPasteDisabled(inDisable);
 	},
 	selectAllDisabledChanged: function() {
 		this.$.selectAll.setDisabled(this.selectAllDisabled);

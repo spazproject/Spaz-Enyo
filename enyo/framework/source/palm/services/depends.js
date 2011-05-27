@@ -5,5 +5,6 @@ enyo.depends(
 	"SystemService.js",
 	"DbService.js",
 	"TempDbService.js",
-	"MockPalmService.js"
+	"MockPalmService.js",
+	"bridge/"
 );

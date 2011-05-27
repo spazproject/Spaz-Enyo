@@ -21,6 +21,11 @@ the AJAX request, you can do this:
 	this.$.getWeather.setUrl("http://somewebsite.com/Sunnyvale+CA/weather.json");
 	this.$.getWeather.call();
 
+The params argument of call() can take either a JS object or a string.  The JS object form
+will be converted to a application/x-www-form-urlencoded automatically; use the string form
+if you need to pass arguments to the server in a different format, but be sure to also set
+this to your own string, be sure to also set the _contentType_ property.
+
 (Please see the <b>Published Properties</b> section for a full list of available options.)
 
 All 2xx responses are treated as success, as well as 0 and unknown status.
@@ -73,7 +78,8 @@ enyo.kind({
 		*/
 		url: "",
 		/**
-		The HTTP method to use for the request. Defaults to GET.
+		The HTTP method to use for the request, defaults to GET.  Supported values include
+		"GET", "POST", "PUT", and "DELETE".
 		*/
 		method: "GET", // {value: "GET", options: ["GET", "POST", "PUT", "DELETE"]},
 		/**
@@ -86,11 +92,13 @@ enyo.kind({
 		*/
 		contentType: "application/x-www-form-urlencoded",
 		/**
-		If true, makes a synchronous (blocking) call, if supported.
+		If true, makes a synchronous (blocking) call, if supported.  Synchronous requests
+		are not supported on HP webOS.
 		*/
 		sync: false,
 		/**
-		Optional additional request headers in object format, or null.
+		Optional additional request headers as a JS object, e.g. 
+		<code>{ "X-My-Header": "My Value", "Mood": "Happy" }</code>, or null.
 		*/
 		headers: null,
 		/**
@@ -137,8 +145,9 @@ enyo.kind({
 			params = null;
 		}
 		//
-		var headers = {};
-		headers["Content-Type"] = this.contentType;
+		var headers = {
+			"Content-Type": this.contentType
+		};
 		enyo.mixin(headers, this.headers);
 		//
 		enyo.xhr.request({
@@ -152,28 +161,35 @@ enyo.kind({
 			password: this.password
 		});
 	},
+	isHttpUrl: function() {
+		return this.url.indexOf("http") == 0;
+	},
 	isFailure: function(inResponse) {
 		var xhr = this.xhr;
 		return !xhr || !this.isSuccess(xhr.status);
 	},
 	isSuccess: function(inStatus) {
-		return !inStatus || (inStatus >= 200 && inStatus < 300);
+		// Usually we will treat status code 0 and 2xx as success.  But in webos, if url is a local file,
+		// 200 is returned if the file exists, 0 otherwise.  So we workaround this by treating 0 differently if
+		// the app running inside webos and the url is not http.
+		return ((!window.PalmSystem || this.isHttpUrl()) && !inStatus) || (inStatus >= 200 && inStatus < 300);
 	},
 	receive: function(inText, inXhr) {
 		this.xhr = inXhr;
 		this.inherited(arguments, [inXhr]);
 	},
 	setResponse: function(inXhr) {
-		var r;
+		var r, resp;
+		if (!inXhr) {
+			this.response = null;
+			return;
+		}
 		switch (this.handleAs) {
 			case "json":
+				resp = inXhr.responseText;
 				try {
-					var resp = inXhr.responseText;
 					r = resp && enyo.json.parse(resp);
 				} catch (e) {
-					this.log("responseText is not in JSON format");
-					this.log(e);
-					this.log(resp);
 					r = resp;
 				}
 				break;

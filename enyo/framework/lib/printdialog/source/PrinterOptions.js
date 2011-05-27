@@ -28,7 +28,7 @@ enyo.kind({
 	components: [
 		{kind: "BasicScroller", flex: 1, className: "group-inner", layoutKind: "OrderedLayout", components: [
 			{kind: "PrinterOptionItem", className: "selected-printer", components: [
-				{name: "printerName", flex: 1},
+				{name: "printerName"},
 			]},
 			{name: "copiesOption", kind: "PrinterOptionItem", components: [
 				{content: PrintDialogString.load("NUMBER_OF_COPIES"), flex: 1, className: "label"},
@@ -52,8 +52,7 @@ enyo.kind({
 			]},
 			{name: "pagesOption", kind: "PrinterOptionItem", components: [
 				{content: PrintDialogString.load("PAGE_RANGE"), flex: 1, className: "label"},
-				{kind: "Group", style:"width:80px", components: [{name: "pagesInput", kind: "Input", flex: 1, inputClassName: "pages-input", autocorrect: false, autoKeyModifier: "num-lock"}]}
-				
+				{kind: "RowGroup", style:"width:80px", components: [{name: "pagesInput", kind: "Input", flex: 1, inputClassName: "pages-input", autocorrect: false, autoKeyModifier: "num-lock"}]}
 			]},
 			{name: "qualityOption", kind: "PrinterOptionItem", components: [
 				{content: PrintDialogString.load("PRINT_QUALITY"), flex: 1, className: "label"},

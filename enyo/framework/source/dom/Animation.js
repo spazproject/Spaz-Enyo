@@ -10,6 +10,8 @@ enyo.kind({
 	easingFunc: enyo.easing.linear,
 	constructed: function(inProps) {
 		enyo.mixin(this, inProps);
+		this._stepFunction = enyo.bind(this, "stepFunction");
+		this._animate = enyo.bind(this, "animate");
 	},
 	play: function() {
 		this.easingFunc = this.easingFunc || enyo.easing.linear;
@@ -20,23 +22,36 @@ enyo.kind({
 		}
 		enyo.call(this, "onBegin", [this.start, this.end]);
 		this.t0 = this.t1 = Date.now();
-		this.animating = setInterval(enyo.hitch(this, "animate"), this.tick);
-		this._stepFunction = enyo.bind(this, "stepFunction");
+		// FIXME: we have places assuming animation starts synchronously
+		//this.requestFrame();
+		this.animating = true;
 		this.animate();
 		return this;
+	},
+	requestFrame: function() {
+		this.animating = enyo.requestAnimationFrame(this._animate, this.node);
+	},
+	cancelFrame: function() {
+		this.animating = enyo.cancelRequestAnimationFrame(this.animating);
 	},
 	stepFunction: function(inValue) {
 		return this.easingFunc(inValue, this);
 	},
 	stop: function() {
 		if (this.animating) {
-			clearInterval(this.animating);
-			this.animating = null;
+			this.cancelFrame();
 			enyo.call(this, "onStop", [this.value, this.start, this.end]);
 			return this;
 		}
 	},
 	animate: function() {
+		if (!this.animating) {
+			// We're already stopped, so return immediately.  This is necessary 
+			// because enyo.cancelRequestAnimationFrame() appears to be broken
+			// (not enyo's fault, I tried directly using both clearInterval() 
+			// and webkitCancelRequestAnimationFrame(), and neither work.
+			return;
+		}
 		var n = Date.now();
 		this.dt = n - this.t1;
 		this.t1 = n;
@@ -54,6 +69,7 @@ enyo.kind({
 			enyo.call(this, "onEnd", [this.end]);
 		} else {
 			enyo.call(this, "onAnimate", [this.value, p]);
+			this.requestFrame();
 		}
 	},
 	shouldEnd: function() {
@@ -67,7 +83,6 @@ enyo.kind({
 		this.repeated++;
 	}
 });
-
 
 //* @public
 // This component just runs one animation at a time and exists
@@ -87,6 +102,10 @@ enyo.kind({
 		onStop: "",
 		onEnd: ""
 	},
+	destroy: function() {
+		this.stop();
+		this.inherited(arguments);
+	},
 	//* @public
 	play: function(inStart, inEnd) {
 		this.stop();
@@ -97,16 +116,25 @@ enyo.kind({
 			easingFunc: this.easingFunc,
 			start: inStart,
 			end: inEnd,
-			onBegin: enyo.hitch(this, "doBegin"),
-			onAnimate: enyo.hitch(this, "doAnimate"),
-			onStop: enyo.hitch(this, "doStop"),
-			onEnd: enyo.hitch(this, "doEnd")
+			node: this.node,
+			onBegin: enyo.bind(this, "doBegin"),
+			onAnimate: enyo.bind(this, "doAnimate"),
+			onStop: enyo.bind(this, "doStop"),
+			onEnd: enyo.bind(this, "doEnd")
 		});
 		this._animation.play();
 	},
 	stop: function() {
 		if (this._animation) {
 			this._animation.stop();
+			this._animation = null;
+		}
+	},
+	// a node which must be visible for the animation to run
+	setNode: function(inNode) {
+		this.node = inNode;
+		if (this._animation) {
+			this._animation.node = inNode;
 		}
 	},
 	isAnimating: function() {

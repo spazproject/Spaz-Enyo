@@ -5,8 +5,9 @@ enyo.kind({
 	kind: enyo.Control,
 	className: "dashboard-notification-module",
 	components: [
+		{kind: "ApplicationEvents", onWindowActivated:"dbActivated", onWindowDeactivated:"dbDeactivated"},
 		
-		{name: 'topSwipeable', kind:"enyo.SwipeableItem2", layoutKind: "HFlexLayout", confirmRequired:false, onConfirm: "dbSwiped", allowLeft:false, components: [ 
+		{name: 'topSwipeable', kind:"enyo.AnimatedSwipeableItem", layoutKind: "HFlexLayout", confirmRequired:false, onConfirm: "dbSwiped", allowLeft:false, components: [ 
 			{ className:'palm-dashboard-icon-container', onclick: "iconTapHandler", components: [
 					{name:'icon', className: "dashboard-icon", kind:enyo.Image},
 					{name: 'badge', className:'dashboard-count', components:[
@@ -28,7 +29,9 @@ enyo.kind({
 		onMessageTap: "",
 		onTap: "",
 		onUserClose: "",
-		onLayerSwipe: ""
+		onLayerSwipe: "",
+		onDashboardActivated: "",
+		onDashboardDeactivated: ""
 	},	
 	clickHandler: function(inSender, event) {
 		this.doTap(this.layers[this.layers.length-1], event);
@@ -38,6 +41,12 @@ enyo.kind({
 	},
 	msgTapHandler: function(inSender, event) {
 		this.doMessageTap(this.layers[this.layers.length-1], event);
+	},
+	dbActivated: function(inSender) {
+		this.doDashboardActivated();
+	},
+	dbDeactivated: function(inSender) {
+		this.doDashboardDeactivated();
 	},
 	// Whole dashboard was swiped, close the window.
 	dbSwiped: function() {
@@ -125,7 +134,7 @@ enyo.kind({
 	},
 	handleNewLayers: function(params) {
 		var layers = params && params.layers;
-		this.indicateNewContent(layers && layers.length && layers.length > this.layers.length);
+		this.indicateNewContent(layers && layers.length && layers.length >= this.layers.length);
 		this.layers = layers || [];
 		this.updateContents();
 	},
@@ -159,7 +168,7 @@ enyo.kind({
 	kind: "enyo.Control",
 	className: "dashboard-layer",
 	components:[
-			{name:'swipeable', kind: "enyo.SwipeableItem2", allowLeft:false, onDrag: "configureClipping", onConfirm:"doSwipe", 
+			{name:'swipeable', kind: "enyo.AnimatedSwipeableItem", allowLeft:false, onDrag: "configureClipping", onConfirm:"doSwipe", 
 										className: "palm-dashboard-text-container", confirmRequired:false, components: [
 				{name:'title', className:"dashboard-title"},
 				{name:'text', className:"palm-dashboard-text"}

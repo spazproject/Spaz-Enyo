@@ -25,7 +25,7 @@ enyo.kind({
 		this.$.client.setStripSize(this.stripSize);
 	},
 	fetch: function(inRow) {
-		return this.data[inRow]
+		return this.data[inRow];
 	},
 	getItem: function(inSender, inIndex) {
 		var record = this.fetch(inIndex);

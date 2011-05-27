@@ -29,8 +29,8 @@
 		"yesterday": "gisteren",
 		"today" : "vandaag",
 		"tomorrow" : "morgen",
-		"thisMonth": "1##{num} week ago|##{num} weeks ago",
-		"thisYear": "1##{num} month ago|##{num} months ago"
+		"thisMonth": "1#1 week geleden|##{num} weken geleden",
+		"thisYear": "1#1 maand geleden|##{num} maanden geleden"
 	}, 
 
 	"am": "AM",

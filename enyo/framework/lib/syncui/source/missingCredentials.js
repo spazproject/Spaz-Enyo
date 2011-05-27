@@ -35,8 +35,8 @@ enyo.kind({
 			this.account = this.accounts[this.nextAccountToCheck];
 			this.nextAccountToCheck ++;
 			
-			// Skip accounts without validators
-			if (!this.account.validator)
+			// Skip accounts without validators and those being deleted
+			if (!this.account.validator || this.account.beingDeleted)
 				continue;
 			
 			// See if this account has credentials
@@ -95,7 +95,7 @@ enyo.kind({
 	syncWatchFired: function() {
 		// Get the account status (after waiting a little bit to prevent multiple updates from multiple transports)
 		if (!this.getStatusTimer)
-			this.getStatusTimer = setTimeout(this.getAccountStatus.bind(this), 1000);
+			this.getStatusTimer = setTimeout(this.getAccountStatus.bind(this), 2000);
 	},
 	
 	getAccountStatus: function() {

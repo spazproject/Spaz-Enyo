@@ -170,7 +170,10 @@ enyo.g11n.NumberFmt = function(options) {
 };
 
 /**
-Converts a number into a string, using the proper locale-based format for numbers.
+Converts a number into a string, using the proper locale-based format for numbers. If the parameter
+is passed in as a string containing a number, it will be parsed into a number first before being 
+formatted back into a string. If the parameter is not a number or not a string containing a valid
+number, the value "undefined" is returned.
 
 Returns the input number formatted as a string using the current locale formatting and the current 
 option settings for the formatter.
@@ -179,6 +182,12 @@ enyo.g11n.NumberFmt.prototype.format = function(number) {
 	try {
 		var rawFormat, parts, wholeNumberPart, num;
 		
+		if (typeof(number) === 'string') {
+			number = parseFloat(number);
+		}
+		if (isNaN(number)) {
+			return undefined;
+		}
 		if (typeof(this.fractionDigits) !== "undefined") {
 			rawFormat = number.toFixed(this.fractionDigits);
 		} else {

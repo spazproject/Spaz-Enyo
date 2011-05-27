@@ -26,6 +26,9 @@ enyo.windows.agent = {
 	removeBannerMessage: function(inId) {
 		PalmSystem.removeBannerMessage.apply(removeBannerMessage, arguments);
 	},
+	setWindowProperties: function(inWindow, inProps) {
+		inWindow.PalmSystem.setWindowProperties(inProps);
+	},
 	isValidWindow: function(inWindow) {
 		// FIXME: adding PalmSystem check because closed is not enough when a window is immediately swiped away =(
 		return Boolean(inWindow && !inWindow.closed && inWindow.PalmSystem);

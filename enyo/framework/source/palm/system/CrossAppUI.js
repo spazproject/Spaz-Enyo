@@ -17,7 +17,7 @@ enyo.kind({
 		onResult:"" //* Sent when a result is received from the cross-app UI.
 	},
 	components: [
-		{name: "getAppPath", kind: "enyo.PalmService", service: "palm://com.palm.applicationManager/", method: "getAppInfo", onResponse: "gotAppInfo"}
+		{name: "getAppPath", kind: "enyo.PalmService", service: "palm://com.palm.applicationManager/", method: "getAppBasePath", onResponse: "gotAppInfo"}
 	],
 	className: "enyo-iframe enyo-view",
 	create: function() {
@@ -49,7 +49,11 @@ enyo.kind({
 		}
 	},
 	gotAppInfo: function(inSender, response) {
-		this.appPath = response && response.appInfo && response.appInfo.main;
+		if(!response || !response.returnValue) {
+			console.error("Could not get app path: "+(response && response.errorText));
+			return;
+		}
+		this.appPath = response.basePath;
 		this.appPath = this.appPath || "";
 		if (this.appPath) {
 			// Chop off app's index file.

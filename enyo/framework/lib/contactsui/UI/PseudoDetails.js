@@ -1,7 +1,20 @@
 /* Copyright 2009-2011 Hewlett-Packard Development Company, L.P. All rights reserved. */
 /*jslint white: true, onevar: true, undef: true, eqeqeq: true, plusplus: true, bitwise: true, 
 regexp: true, newcap: true, immed: true, nomen: false, maxerr: 500 */
-/*global ContactsLib, enyo, console, $L, com, $contactsui_path */
+/*global ContactsLib, enyo, console, crb, com, $contactsui_path, PalmSystem */
+
+//*****************************************************************************
+//*****************************************************************************
+//*****************************************************************************
+//*****************************************************************************
+//*****************************************************************************
+//**********DEPRECATED WIDGET - GETTING TAKEN OUT BEFORE DFISH SHIP************
+//*****************************************************************************
+//*****************************************************************************
+//*****************************************************************************
+//*****************************************************************************
+//*****************************************************************************
+
 
 /* 
  * How to use this component.
@@ -18,7 +31,8 @@ enyo.depends(
  *
 	components: [
 		{name: "PseudoDetails", kind: "com.palm.library.contactsui.pseudoDetails", flex: 1,
-		onEdit: "edit", onAddToExisting: "addToExisting", onAddToNew: "addToNew", onDone: "done", showDone: false}
+		onEdit: "edit", onAddToExisting: "addToExisting", onAddToNew: "addToNew", onDone: "done", 
+		showDone: false, onRenderPersonComplete: "pseudoDetailsComplete"}
 	],
 
  * The events that can be specified are:
@@ -26,6 +40,7 @@ enyo.depends(
  *   onAddToExisting: Called when the user chooses the "Add to existing contact" button
  *   onAddToNew: Called when the user chooses the "Add to new contact" button
  *   onDone: Called when the user taps the "done" button
+ *   onRenderPersonComplete: Called when the rendering of a person is complete.
  * 
  * Additionally, "showDone" can be set to false if you do not want the "Done" command menu button displayed
  * 
@@ -51,6 +66,11 @@ enyo.depends(
 		contact.getEmails().add(new ContactsLib.EmailAddress({value: email}));
 
 		this.$.PseudoDetails.setContact(contact);
+
+	},
+	pseudoDetailsComplete: function()
+	{
+		this.selectViewByName("PseudoDetails");
 	},
 
  *
@@ -63,14 +83,15 @@ enyo.depends(
 
 */
 enyo.kind({
-	name: "com.palm.library.contactsui.pseudoDetails",
+	name: "pseudoDetails",
 	kind: "VFlexBox",
 	className: "enyo-bg",
 	person: null,
 	showDone: true,
 	published: {
 		personId: null,
-		contact: null
+		contact: null,
+		showButtonsHideBar: false
 	},
 	events: {
 		onEdit: "",
@@ -81,13 +102,15 @@ enyo.kind({
 		onRenderPersonComplete: ""
 	},
 	components: [
-		{ kind: "PalmService", service: "palm://com.palm.applicationManager/", components: [
+		{kind: "PalmService", service: "palm://com.palm.applicationManager/", components: [
 			{name: "launchApp", method: "launch"},
 			{name: "openApp", method: "open"},
 			{name: "getDefaultMapApp", method: "listAllHandlersForUrl"}
 		]},
-
-		{name: "AllDetails", className: "enyo-contacts-details", kind: "Scroller", horizontal: false, autoHorizontal: false, showing: false, flex: 1, components: [
+		{kind: "DbService", components: [
+			{name: "watchPerson", method: "find", dbKind: "com.palm.person:1", onSuccess: "personWatchFired", onWatch: "personWatchFired", subscribe: true, sortBy: "sortKey"}
+		]},
+		{name: "AllDetails", className: "details", kind: "Scroller", horizontal: false, autoHorizontal: false, showing: false, flex: 1, components: [
 			{kind: "Control", className: "container", components: [
 				{kind: "Control", className: "content", components: [
 					{kind: "HFlexBox", className: "header", components: [
@@ -95,14 +118,12 @@ enyo.kind({
 							{name: "photoImage", className: "img", kind: "Control"},
 							{kind: "Control", className: "mask"}
 						]},
-						{kind: "VFlexBox", flex: 1, pack: "start", align: "end", components: [
-							{kind: "Control", layoutKind: "HFlexLayout", flex: 1, pack: "justify", width: "100%", align: "start", components: [
-								{kind: "Control", flex: 1, components: [
-									{name: "title", className: "name"},
-									{name: "nickname", className: "nickname"},
-									{name: "desc", className: "position"}
-								]},
-								{name: "favIndicator", kind: "Control", className: "favorite", onclick: "toggleFavorite"} // addClass('true') would be good
+						{kind: "Control", layoutKind: "VFlexLayout", flex: 1, pack: "justify", align: "end", components: [
+							{name: "favIndicator", kind: "Control", className: "favorite", onclick: "toggleFavorite"},
+							{kind: "Control", layoutKind: "VFlexLayout", className: "nameinfo", align: "start", components: [
+								{name: "title", className: "name"},
+								{name: "nickname", className: "nickname"},
+								{name: "desc", className: "position"}
 							]},
 							{name: "linkCounter", kind: "enyo.Button", toggling: true, caption: "", className: "enyo-button-light profiles-button", 
 								onclick: "linkedProfilesClick", onmousedown: "photoMousedown", onmouseup: "photoMouseup"}
@@ -110,7 +131,7 @@ enyo.kind({
 					]},
 					{name: "linkPanel", kind: "enyo.Drawer", open: false},
 					{name: "emailGroup", kind: "com.palm.library.contactsui.FieldGroup", onFieldClick: "emailFieldClick"},
-					{name: "phoneGroup", kind: "com.palm.library.contactsui.FieldGroup", onFieldClick: "phoneFieldClick"},
+					{name: "phoneGroup", kind: "com.palm.library.contactsui.FieldGroup", onFieldClick: "phoneFieldClick", onGetActionIcon: "phoneGetActionIcon", onActionIconClick: "phoneActionIconClick"},
 					{name: "imGroup", kind: "com.palm.library.contactsui.FieldGroup", onFieldClick: "imFieldClick", onShowArrow: "showImDropdownArrow"},
 					{name: "addressGroup", kind: "com.palm.library.contactsui.FieldGroup", onGetFieldValue: "getAddressFieldValue", onFieldClick: "addressFieldClick"},
 					{name: "urlGroup", kind: "com.palm.library.contactsui.FieldGroup", onFieldClick: "urlFieldClick"},
@@ -120,27 +141,34 @@ enyo.kind({
 			]}
 //			{style: "height: 48px;"}
 		]},
-		{name: "toolbar", kind: "Toolbar", className: "contacts-toolbar enyo-toolbar-light", showing: false, pack: "end", components: [
-			{name: "doneButton", content: $L("Done"), onclick: "doDone"},
+
+		{name: "toolbar", kind: "Toolbar", className: "details-toolbar enyo-toolbar-light", showing: false, pack: "end", components: [
+			{kind: "Control", className: "border"},
+			{name: "doneButton", content: crb.$L("Done"), onclick: "doDone"},
 //			{name: "favoriteBtn", icon: $contactsui_path + "/images/menu-icon-favorites.png", onclick: "toggleFavorite", showing: false},
 //			{kind: "Control"},
 //			{name: "shareButton", icon: $contactsui_path + "/images/btn_share.png", onclick: "sharePerson"},
 			{name: "editButton", className: "edit-contact", icon: $contactsui_path + "/images/btn_edit.png", onclick: "editPerson"},
-			{name: "addToContactButton", content: $L("Add to contacts"), onclick: "addToContactClick"}
+			{name: "addToContactButton", content: crb.$L("Add to contacts"), onclick: "addToContactClick"}
 		]},
 		{name: "SelectAContact", kind: "VFlexBox", flex: 1, pack: "center", showing: true, style: "border-left:1px solid #a8a8a8;text-align: center; color: grey;", components: [
 			{kind: "Spacer", flex: 2},
 			{kind: "Image", src: "images/first-launch-contacts.png"},
-			{content: $L("Select a contact on the left to see more information."), style: "width:250px;margin:0 auto;"},
+			{content: crb.$L("Select a contact on the left to see more information."), style: "width:250px;margin:0 auto;"},
 			{kind: "Spacer", flex: 5}
 		]},
+		{name: "ButtonsWrapper", /*style: "position:relative",*/ components: [
+			{kind: "Button", name: "addToNewButtonInline", caption: crb.$L("Add New Contact"), onclick: "addNewContactClick", showing: false},
+			{kind: "Button", name: "addToExistingButtonInline", caption: crb.$L("Add to existing"), onclick: "addToExistingClick", showing: false},
+			{kind: "Button", name: "editButtonInline", caption: crb.$L("Edit Contact"), onclick: "editPerson", showing: false}
+		], flex: 1, kind: "VFlexBox", showing: false},
 		{name: "AddToContactsDialog", kind: "Dialog", components: [
 			//{name: "DeleteDialogTitle", className: "enyo-item enyo-first", style: "padding: 12px", content: ""},
-			{kind: "Button", caption: $L("Add New Contact"), onclick: "addNewContactClick"},
-			{kind: "Button", caption: $L("Add to existing"), onclick: "addToExistingClick"},
-			{kind: "Button", className: "enyo-button-light", caption: $L("Cancel"), onclick: "cancelAction"}
+			{kind: "Button", caption: crb.$L("Add New Contact"), onclick: "addNewContactClick"},
+			{kind: "Button", caption: crb.$L("Add to existing"), onclick: "addToExistingClick"},
+			{kind: "Button", className: "enyo-button-light", caption: crb.$L("Cancel"), onclick: "cancelAction"}
 		]},
-		{name: "skypeMenu", kind: "PopupSelect", onSelect: "onSkypeMenuSelect"}
+		{name: "skypeMenu", kind: "PopupSelect", width: "120px", onSelect: "onSkypeMenuSelect", onBeforeOpen: "onSkypeMenuBeforeOpen", onClose: "onSkypeMenuClose"}
 	],
 	create: function () 
 	{
@@ -150,6 +178,11 @@ enyo.kind({
 		if (!this.showDone)
 		{
 			this.$.doneButton.hide();
+		}
+		
+		if (this.showButtonsHideBar) { //shows either the chrome with buttons or inlines the buttons for in-dialog use. Triggered with this.showButtonsHideBar
+			this.$.toolbar.hide();
+			this.$.ButtonsWrapper.show();
 		}
 		
 		this.personIdChanged();
@@ -192,13 +225,23 @@ enyo.kind({
 	{
 		this.$.AllDetails.setShowing(show);
 		this.$.toolbar.setShowing(show);
+		if (!show) {
+			this.cancelWatch();
+		}
 		this.$.SelectAContact.setShowing(!show);
-		this.$.AllDetails.scrollTo(0, 0); //autoscroll to top unconditionally (useful when person being looked at previously has a long profile and user scrolls out of the range of the first page.)
+		this.$.AllDetails.scrollIntoView(0, 0); //autoscroll to top unconditionally (useful when person being looked at previously has a long profile and user scrolls out of the range of the first page.)
 	},
 	contactChanged: function () 
 	{
-		this.$.addToContactButton.show();
-		this.$.editButton.hide();
+		this.cancelWatch(); //cancels refresh watch if one exists on a given person
+		if (!this.showButtonsHideBar) { //buttons on chrome mode
+			this.$.addToContactButton.show();
+			this.$.editButton.hide();
+		} else { //inline buttons mode
+			this.$.addToNewButtonInline.show();
+			this.$.addToExistingButtonInline.show();
+			this.$.editButtonInline.hide();
+		}
 
 		this.$.linkCounter.setDepressed(false);
 		this.$.linkPanel.setOpen(false);
@@ -210,8 +253,14 @@ enyo.kind({
 	personIdChanged: function () {
 		var personFuture;
 
-		this.$.addToContactButton.hide();
-		this.$.editButton.show();
+		if (!this.showButtonsHideBar) { //buttons on chrome mode
+			this.$.addToContactButton.hide();
+			this.$.editButton.show();
+		} else { //inline buttons mode
+			this.$.addToNewButtonInline.hide();
+			this.$.addToExistingButtonInline.hide();
+			this.$.editButtonInline.show();
+		}
 
 		this.$.linkCounter.setDepressed(false);
 		this.$.linkPanel.setOpen(false);
@@ -226,18 +275,44 @@ enyo.kind({
 		personFuture.then(this, function (personFuture) {
 			try {
 				this.person = personFuture.result || {};
+				this.cancelWatch();
+				
+				this.currentPersonLoadedId = this.person.getId() || null;
+				if (this.currentPersonLoadedId) {
+					this.setupWatch();
+				}
+
 				this.renderPerson();  //TODO: move this back into try block
 				if (enyo.windowParams && enyo.windowParams.launchType === "editContact") {
 					this.doDoneCreatingPersonObject();
 					enyo.windowParams = {}; //global
 				}
-			} catch (e) {
+			} catch (e) { 
 				console.log("person failed: " + e);
 				this.showDetails(false);
 				return;
 			}
 		});
 
+	},
+	setupWatch: function () {
+		this.cancelWatch();
+		this.$.watchPerson.call({query: {from: "com.palm.person:1", where: [{prop: "_id", op: "=", val: this.currentPersonLoadedId}]}});
+		this.personWatch = true;
+	},
+	cancelWatch: function () {
+		if (this.personWatch) {
+			this.$.watchPerson.cancel();
+		}
+	},
+	personWatchFired: function (inSender, inResult) {
+		if ("fired" in inResult && inResult.fired === true) {
+			this.personWatch = false;
+			this.reloadPerson();
+		} else if (!inResult || !(inResult.results) || !(inResult.results[0])) { //exists in db
+			this.showDetails(false); //show details init screen
+			this.cancelWatch();
+		}
 	},
 	reloadPerson: function () {
 		this.personIdChanged();
@@ -279,7 +354,7 @@ enyo.kind({
 		var i;
 		for (i = 0; i < array.length; i += 1)
 		{
-			array[i].x_displayType = "notes";
+			array[i].x_displayType = crb.$L("notes");
 		}
 		return array;
 	},
@@ -312,15 +387,15 @@ enyo.kind({
 
 		if (birthday)
 		{
-			array.push({"value": birthday, "x_displayType": "BIRTHDAY"});
+			array.push({"value": birthday, "x_displayType": crb.$L("BIRTHDAY")});
 		}
 		if (spouse)
 		{
-			array.push({"value": spouse.getDisplayValue(), "x_displayType": "SPOUSE"});
+			array.push({"value": spouse.getDisplayValue(), "x_displayType": crb.$L("SPOUSE")});
 		}
 		if (child)
 		{
-			array.push({"value": child.getDisplayValue(), "x_displayType": "CHILDREN"});
+			array.push({"value": child.getDisplayValue(), "x_displayType": crb.$L("CHILDREN")});
 		}
 		return array;
 
@@ -360,6 +435,12 @@ enyo.kind({
 			this.openPhoneApp(inSelected.inSender.getFieldValue(inSelected.field.getDBObject()), "com.palm.skype", true);
 		}
 	},
+	onSkypeMenuBeforeOpen: function () {
+		this.$.skypeMenu.setItems(this.skypPopupItems);
+	},
+	onSkypeMenuClose: function () {
+		this.skypPopupItems = [];
+	},
 
 	openPhoneApp: function (address, transport, video)
 	{
@@ -373,6 +454,25 @@ enyo.kind({
 			}
 		});
 	},
+	phoneActionIconClick: function (inSender, inEvent, inField)
+	{
+		this.$.openApp.call(
+			{
+				id: "com.palm.app.messaging",
+				params: {
+					compose:
+					{
+						personId: this.personId,
+						phoneNumbers: [inField.getDBObject()]
+					}
+				}
+			}
+		);
+	},
+	phoneGetActionIcon: function () 
+	{
+		return $contactsui_path + "/images/btn_sms.png";
+	},
 	phoneFieldClick: function (inSender, inEvent, inField) {
 		this.openPhoneApp(inSender.getFieldValue(inField), "com.palm.telephony");
 	},
@@ -381,16 +481,34 @@ enyo.kind({
 		return (inType === ContactsLib.IMAddress.TYPE.SKYPE);
 	},
 	imFieldClick: function (inSender, inEvent, inField) {
-		var popupItems = [
-				{caption: $L("Chat"), value: "CHAT", field: inField, inSender: inSender},
-				{caption: $L("Voice Call"), value: "VOICE", field: inField, inSender: inSender},
-				{caption: $L("Video Call"), value: "VIDEO", field: inField, inSender: inSender}
-			];
-
 		if (inSender.getFieldType(inField) === ContactsLib.IMAddress.TYPE.SKYPE)
 		{
-			this.$.skypeMenu.setItems(popupItems);
-			this.$.skypeMenu.openAtEvent(inEvent);
+			// maxSkypeMenuXPosition is a work-around for DFISH-12977 (This should be handled by the fmwk)
+			var	deviceDetails = PalmSystem && JSON.parse(PalmSystem.deviceInfo),
+				maxSkypeMenuXPosition,
+				orientation;
+
+			this.skypPopupItems = [
+				{caption: crb.$L("Chat"), value: "CHAT", field: inField, inSender: inSender},
+				{caption: crb.$L("Voice Call"), value: "VOICE", field: inField, inSender: inSender},
+				{caption: crb.$L("Video Call"), value: "VIDEO", field: inField, inSender: inSender}
+			];
+			
+			if (deviceDetails) {
+				orientation = enyo.getWindowOrientation();
+				if (orientation === "up" || orientation === "down") {
+					maxSkypeMenuXPosition = deviceDetails.screenWidth - (parseInt(this.$.skypeMenu.width, 10) + 28);
+				} else if (orientation === "left" || orientation === "right") {
+					maxSkypeMenuXPosition = deviceDetails.screenHeight - (parseInt(this.$.skypeMenu.width, 10) + 28);
+				}
+			}
+
+			if (maxSkypeMenuXPosition && (inEvent.clientX > maxSkypeMenuXPosition)) {
+				this.$.skypeMenu.openAt({left: maxSkypeMenuXPosition, top: inEvent.clientY});
+			} else {
+				this.$.skypeMenu.openAtEvent(inEvent);
+			}
+
 			return;
 		}
 

@@ -1,0 +1,27 @@
+/* Copyright 2009-2011 Hewlett-Packard Development Company, L.P. All rights reserved. */
+.enyo-filepicker {
+	width: 320px;
+	border-width: 24px;
+	-webkit-border-image: url(../images/filepicker.png) 24 stretch stretch;
+}
+
+.enyo-filepiecker-container {
+	margin: -4px;
+	height: 330px;
+}
+
+.enyo-filepicker .enyo-iframe {
+	background-color: #ccc;
+}
+
+.enyo-filepicker-mainview .enyo-group,
+.enyo-filepicker-mainview .group {
+	border-width: 14px;
+	-webkit-border-image: url(../images/modaldialog-group-unlabeled.png) 14 14 repeat repeat;
+	margin: 8px 0;
+}
+
+.enyo-filepicker-mainview .enyo-group.labeled {
+	border-width: 36px 14px 14px 14px;
+	-webkit-border-image: url(../images/modaldialog-group-labeled.png) 36 14 14 14 repeat repeat;
+}

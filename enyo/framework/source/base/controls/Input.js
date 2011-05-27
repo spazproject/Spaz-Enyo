@@ -88,7 +88,8 @@ enyo.kind({
 		onchange: "",
 		oninput: "",
 		onmousedown: "",
-		//** The onkeypress event can be used to filter out disallowed characters.
+		onmouseup: "",
+		//* The onkeypress event can be used to filter out disallowed characters.
 		onkeypress: ""
 	},
 	className: "enyo-input",
@@ -139,10 +140,22 @@ enyo.kind({
 		}
 	},
 	mousedownHandler: function(inSender, inEvent) {
-		if (inEvent.dispatchTarget != this.$.input) {
+		var inputMousedown = (inEvent.dispatchTarget == this.$.input);
+		var m = this.doMousedown(inEvent);
+		// if mousedown is outside input and event handler did not cancel
+		// focus by calling preventDefault (need to check synthetic event flag)
+		// then we (1) preventDefault to avoid blur of input node
+		// and (2) force focus to ensure input is focused.
+		if (!inputMousedown && !inEvent.prevented) {
+			// prevent blur of input
 			inEvent.preventDefault();
+			/*
+			if (!this.disabled) {
+				this.forceFocus();
+			}
+			*/
 		}
-		return this.doMousedown(inEvent);
+		return m;
 	},
 	focusHandler: function(inSender, inEvent) {
 		if (this.styled && !this.alwaysLooksFocused) {
@@ -152,6 +165,12 @@ enyo.kind({
 			this.forceSelect();
 		}
 		this.doFocus(inEvent);
+	},
+	mouseupHandler: function(inSender, inEvent) {
+		if (inEvent.canFocus && !this.disabled) {
+			this.forceFocus();
+		}
+		return this.doMouseup(inEvent);
 	},
 	blurHandler: function(inSender, inEvent) {
 		if (!this.alwaysLooksFocused) {
@@ -163,8 +182,10 @@ enyo.kind({
 		this.doBlur(inEvent);
 	},
 	clickHandler: function(inSender, inEvent) {
-		this.forceFocus();
-		this.doClick(inEvent);
+		// note: follow webkit behavior to not send clicks on input elements
+		// this is done automatically for the input node; enforcing here to catch
+		// any chrome around the input.
+		return this.disabled ? true : this.doClick(inEvent);
 	},
 	rendered: function() {
 		this.inherited(arguments);
@@ -207,17 +228,18 @@ enyo.kind({
 	inputHandler: function(inSender, e) {
 		this.value = inSender.getValue();
 		if (this.keypressInputDelay) {
-			enyo.job(this.id + "-inputDelay", enyo.bind(this, "doInput", e, this.value), Number(this.keypressInputDelay));
-			if (this.changeOnInput) {
-				enyo.job(this.id + "-inputDelay", enyo.bind(this, "doChange", e, this.value), Number(this.keypressInputDelay));
-			}
+			var fn = enyo.bind(this, "processInputEvent", e);
+			enyo.job(this.id + "-inputDelay", fn, Number(this.keypressInputDelay));
 		} else {
-			this.doInput(e, this.value);
-			if (this.changeOnInput) {
-				this.doChange(e, this.value);
-			}
+			this.processInputEvent(e);
 		}
 		return true;
+	},
+	processInputEvent: function(e) {
+		this.doInput(e, this.value);
+		if (this.changeOnInput) {
+			this.doChange(e, this.value);
+		}
 	},
 	keypressInputDelayChanged: function() {
 		this.stopInputDelayJob();
@@ -314,14 +336,20 @@ enyo.kind({
 	/**
 		Forces this input to be focused.
 	*/
-	forceFocus: function() {
-		this.$.input.forceFocus();
+	forceFocus: function(inCallback) {
+		this.$.input.forceFocus(inCallback);
+	},
+	/**
+		Force this input to be focused and set the keyboard to automatic mode.
+	*/
+	forceFocusEnableKeyboard: function() {
+		this.forceFocus(enyo.bind(enyo, enyo.keyboard.setManualMode, false));
 	},
 	/**
 		Forces this input to be blurred (lose focus).
 	*/
-	forceBlur: function() {
-		this.$.input.forceBlur();
+	forceBlur: function(inCallback) {
+		this.$.input.forceBlur(inCallback);
 	},
 	/**
 		Force select all text in this input.

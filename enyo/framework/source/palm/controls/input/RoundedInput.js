@@ -2,12 +2,6 @@
 enyo.kind({
 	name: "enyo.RoundedInput",
 	kind: enyo.Input,
-	className: "enyo-rounded-input",
-	focusClassName: "",
-	chrome: [
-		{kind: "RoundedBox", components: [
-			{flex: 1, components: enyo.Input.prototype.chrome},
-			{name: "client"}
-		]}
-	]
+	alwaysLooksFocused: true,
+	className: "enyo-input enyo-rounded-input"
 });

@@ -12,7 +12,7 @@
 */
 enyo.kind({
 	name: "enyo.Control",
-	kind: enyo.ManagedDomBuilder,
+	kind: enyo.ContainedDomBuilder,
 	published: {
 		layoutKind: ""
 	},
@@ -38,11 +38,28 @@ enyo.kind({
 	},
 	create: function() {
 		this.inherited(arguments);
+		this.registerEvents();
 		this.layoutKindChanged();
 	},
 	destroy: function() {
-		this.inherited(arguments);
+		this.unregisterEvents();
 		this.destroyControls();
+		this.inherited(arguments);
+	},
+	importProps: function(inProps) {
+		this.inherited(arguments);
+		if (!this.owner) {
+			//this.log("registering ownerless control [" + this.kindName + "] with enyo.master");
+			this.owner = enyo.master;
+		}
+	},
+	registerEvents: function() {
+		if (this.wantsEvents) {
+			enyo.$[this.id] = this;
+		}
+	},
+	unregisterEvents: function() {
+		delete enyo.$[this.id];
 	},
 	initComponents: function() {
 		this.createChrome(this.chrome);
@@ -60,11 +77,14 @@ enyo.kind({
 	},
 	adjustComponentProps: function(inProps) {
 		this.inherited(arguments);
-		inProps.manager = inProps.manager || this;
+		inProps.container = inProps.container || this;
 	},
 	addControl: function(inControl) {
 		inControl.parent = inControl.parent || this;
 		this.controls.push(inControl);
+	},
+	getInstanceOwner: function() {
+		return this.owner != enyo.master ? this.owner : this;
 	},
 	//* @protected
 	removeControl: function(inControl) {
@@ -102,7 +122,7 @@ enyo.kind({
 		}
 	},
 	/**
-		Send a message to me and all my descendents (children, and children's children, etc.)
+		Send a message to me and all my controls
 	*/
 	// TODO: we probably need this functionality at the component level,
 	// but the Component-owner tree is different but overlapping with respect
@@ -113,7 +133,7 @@ enyo.kind({
 			//this.log(this.name + ": ", inMessageName);
 			return this[fn].apply(this, inArgs);
 		}
-		this.broadcastToChildren(inMessageName, inArgs);
+		this.broadcastToControls(inMessageName, inArgs);
 	},
 	/**
 		Call after this control has been resized to allow it to process the size change.
@@ -125,17 +145,16 @@ enyo.kind({
 	},
 	//* @protected
 	/**
-		Send a message to all my descendents (children, and children's children, etc.)
+		Send a message to all my controls
 	*/
-	broadcastToChildren: function(inMessageName, inArgs) {
+	broadcastToControls: function(inMessageName, inArgs) {
 		for (var i=0, cs=this.controls, c; c=cs[i]; i++) {
 			c.broadcastMessage(inMessageName, inArgs);
 		}
 	},
 	resizeHandler: function() {
-		this.broadcastToChildren("resize");
+		this.broadcastToControls("resize");
 	},
-	//* @protected
 	addChild: function(inChild) {
 		// Re-parenting must be done in addChild so that recursive
 		// re-parenting can occur.
@@ -190,18 +209,28 @@ enyo.kind({
 			this.layout = new ctor(this);
 		}
 	},
-	getContent: function() {
-		this.flow();
-		return this.getChildContent() || this.content;
-	},
 	// FIXME: non-ideal
 	// Our non-private controls can end up parented by some sub-control.
 	// Iow, our controlParent may have a controlParent, etc. 
 	// For now, it's easier to ask a control "who is parenting you" than to calculate
 	// who the parent would be in the abstract.
+	/*
 	getEmpiricalChildParent: function() {
 		var c = this.getControls()[0];
 		return (c && c.parent) || this.controlParent || this;
+	},
+	*/
+
+	teardownRender: function() {
+		this.teardownChildren();
+		this.inherited(arguments);
+	},
+	teardownChildren: function() {
+		if (this.generated) {
+			for (var i=0, c; c=this.children[i]; i++) {
+				c.teardownRender();
+			}
+		}
 	},
 	flow: function() {
 		if (this.layout) {
@@ -215,12 +244,37 @@ enyo.kind({
 			this.flow();
 		}
 	},
+	generatedFlow: function() {
+		if (this.generated) {
+			this.flow();
+		}
+	},
 	getChildContent: function() {
 		var results = '';
 		for (var i=0, c; c=this.children[i]; i++) {
 			results += c.generateHtml(); 
 		}
 		return results;
+	},
+	getInnerHtml: function() {
+		this.flow();
+		return this.getChildContent() || this.content;
+	},
+	render: function() {
+		// if it is generated, flow parent when rendering;
+		// if not, we expect parent to render.
+		if (this.parent) {
+			this.parent.generatedFlow();
+		}
+		this.inherited(arguments);
+	},
+	renderDom: function() {
+		this.teardownChildren();
+		this.inherited(arguments);
+	},
+	renderContent: function() {
+		this.teardownChildren();
+		this.inherited(arguments);
 	},
 	rendered: function() {
 		this.inherited(arguments);
@@ -247,6 +301,14 @@ enyo.kind({
 });
 
 //* @protected
+// bind global ids to Control references
+// NOTE: Controls (that wantEvents) will not GC unless explicity destroyed as they will be referenced in this hash
+enyo.$ = {};
+
+// Default owner for ownerless-Controls to allow notifying such Controls of important system events
+// like window resize.
+// NOTE: such Controls will not GC unless explicity destroyed as they will be referenced by this owner
+enyo.master = new enyo.Component();
 
 // enyo.create will default to this constructor (NOTE: this is NOT a default for enyo.kind() [because 'null' is a valid base kind])
 enyo.defaultKind = enyo.defaultCtor = enyo.Control;

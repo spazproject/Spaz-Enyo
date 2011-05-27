@@ -24,8 +24,6 @@ enyo.kind({
 		views: [],
 		dragSnapThreshold: 0.01
 	},
-	// experimental
-	revealRatio: 0.0,
 	//
 	chrome: [
 		{name: "client", kind: "Control"/*, style: "position: absolute;"*/}
@@ -48,9 +46,7 @@ enyo.kind({
 	rendered: function() {
 		this.inherited(arguments);
 		this.resize();
-		this.indexChanged();
 		this.dragSnapThresholdChanged();
-		this.revealAmount = (this.scrollH ? this._controlSize.w : this._controlSize.h) * this.revealRatio;
 	},
 	layoutKindChanged: function() {
 		this.inherited(arguments);
@@ -76,7 +72,9 @@ enyo.kind({
 	viewsChanged: function() {
 		this.destroyControls();
 		this.createViews(this.views);
-		this.render();
+		if (this.generated) {
+			this.render();
+		}
 	},
 	createViews: function(inViews) {
 		for (var i=0, v; v=inViews[i]; i++) {
@@ -108,6 +106,7 @@ enyo.kind({
 	resizeHandler: function() {
 		this.resize();
 		this.inherited(arguments);
+		this.stop();
 	},
 	/**
 	 Handles size changes.  This method can be hooked up to a resizeHandler.

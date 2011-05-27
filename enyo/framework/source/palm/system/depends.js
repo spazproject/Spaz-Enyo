@@ -7,6 +7,7 @@ enyo.depends(
 	"windows/browserAgent.js",
 	"windows/events.js",
 	"windows/manager.js",
+	"setuplogging.js",
 	"Dashboard.js",
 	"CrossAppUI.js",
 	"CrossAppResult.js",

@@ -1,7 +1,7 @@
 /* Copyright 2009-2011 Hewlett-Packard Development Company, L.P. All rights reserved. */
 /*jslint white: true, onevar: true, undef: true, eqeqeq: true, plusplus: true, bitwise: true, 
 regexp: true, newcap: true, immed: true, nomen: false, maxerr: 500 */
-/*global ContactsLib, document, enyo, console, runningInBrowser, PersonList, MockPersonMap, $L, $contactsui_path */
+/*global ContactsLib, document, enyo, console, runningInBrowser, PersonList, MockPersonMap, crb, $contactsui_path */
 
 enyo.kind({
 	name: "PersonList",
@@ -36,42 +36,46 @@ enyo.kind({
 	},
 	components: [
 		{kind: "DbService", components: [
-			{name: "getPersons", method: "find", dbKind: "com.palm.person:1", onSuccess: "gotPersons", subscribe: true, reCallWatches: true, sortBy: "sortKey"}, //im status feature: getPersons -> chainGetImBuddyStatus 
-			{name: "searchPersons", method: "search", dbKind: "com.palm.person:1", onSuccess: "gotPersons", subscribe: false, sortBy: "sortKey"},
+			{name: "getPersons", method: "find", dbKind: "com.palm.person:1", onSuccess: "decideToGetIMStatuses", subscribe: true, onWatch: "gotPersonsWatch", sortBy: "sortKey"}, 
+			{name: "searchPersons", method: "search", dbKind: "com.palm.person:1", onSuccess: "gotPersons", sortBy: "sortKey", subscribe: false},
 			{name: "searchPersonsCnt", method: "search", dbKind: "com.palm.person:1", onSuccess: "gotPersonsCount", onFailure: "gotPersonsCountFailed", subscribe: false, sortBy: "sortKey"}
 		]},
 		{kind: "TempDbService", components: [
-			{name: "getIMStatuses", method: "find", dbKind: "com.palm.imbuddystatus:1", onSuccess: "gotIMStatuses", subscribe: false, reCallWatches: false}
+			{name: "getIMStatuses", method: "find", dbKind: "com.palm.imbuddystatus:1", onSuccess: "gotIMStatuses", subscribe: false}
 		]},
 		{name: "galService", kind: "GalService", onSuccess: "gotGalResults", onFailure: "gotGalFailure"},
-		{name: "personList", kind: "DbList", pageSize: 21, onQuery: "listQuery", flex: 1, onSetupRow: "getListItem", components: [
+		{name: "personList", kind: "DbList", onQuery: "listQuery", flex: 1, onSetupRow: "getListItem", components: [
 			{name: "divider", className: "enyo-divider-alpha", showing: false, components: [
 				{name: "dividerLabel", className: "enyo-divider-alpha-caption divider-Label"}
 			]},
-			{name: "personItem", kind: "Item", layoutKind: "HFlexLayout", pack: "start", align: "center", onclick: "itemClick", components: [
+			{name: "personItem", kind: "Item", layoutKind: "HLayout", onclick: "itemClick", components: [
 				{className: "icon", components: [
 					{name: "photo", kind: "Control", className: "img"},
-					{name: "photoMask", kind: "Control", className: "mask"} // name "photoMask" needed for CFISH
+					{kind: "Control", className: "mask"}
 				]},
 				{name: "contactName", className: "name", wantsEvents: false},
-				{name: "favIcon", className: "favorite"}
-//				{name: "availabilityIcon", className: "status", kind: "Image", src: "images/status-away.png"},
+				{name: "favIcon", className: "favorite"},
+				{name: "availabilityIcon", className: "status", kind: "Image", src: $contactsui_path + "/images/status-offline.png", showing: false}
 			]},
 			// GAL related items
-			{name: "GalDivider", kind: enyo.Divider, caption: $L("GLOBAL ADDRESS LOOKUP"), canGenerate: false},
-			{kind: "HFlexBox", name: "GalMessage", onclick: "GalMessageOnClick", canGenerate: false, components: [
-				{content: $L("Search Exchange"), className: "contacts-GAL-message"}, // TODO: Can Exchange be replaced????
-				{kind: "Spacer"},
-				{name: "GalArrow", kind: enyo.Image, className: "contacts-gal-arrow", src: $contactsui_path + "/images/gal-arrow.png"},
-				{name: "GalSpinner", kind: "Spinner", className: "contacts-gal-spinner"}
+			{name: "GalDivider", kind: enyo.Divider, caption: crb.$L("GLOBAL ADDRESS LOOKUP"), canGenerate: false},
+			{name: "GalMessage", kind: "Item", layoutKind: "HFlexLayout", pack: "justify", align: "center", onclick: "GalMessageOnClick", className: "first last", canGenerate: false, components: [
+				{content: crb.$L("Search Exchange"), className: "name", style: "padding:20px 0;font-size:20px"},
+				{name: "GalImage", kind: "Image", src: "$palm-themes-Onyx/images/search-input-search.png"},
+				{name: "GalSpinner", kind: "Spinner"}
 			]},
-			{name: "GalNoResultsMessage", kind: "VFlexBox", showing: false, canGenerate: false, flex: 1, components: [
-				{kind: "Spacer"},
-				{content: $L("No search results found"), flex: 1, className: "contacts-gal-noresults"}
+			{name: "GalResultsMessage", className: "enyo-item first last", showing: false, canGenerate: false, flex: 1, components: [
+				{name: "GalResultsMsg", flex: 1, className: "message"}
 			]},
 			{name: "GalDrawer", kind: enyo.Drawer, open: false, canGenerate: false, onOpenAnimationComplete: "onOpenAnimationComplete", components: [
-				{name: "GalList", kind: enyo.VirtualRepeater, onGetItem: "onGalGetItem", components: [
-					{name: "galPerson", className: "contacts-gal-person", onclick: "onGalPersonClick"}
+				{name: "GalList", kind: "VirtualRepeater", onSetupRow: "onGalGetItem", components: [
+					{name: "galItem", kind: "Item", layoutKind: "HLayout", onclick: "onGalPersonClick", components: [
+						{className: "icon", components: [
+							{kind: "Control", className: "img"},
+							{kind: "Control", className: "mask"}
+						]},
+						{name: "galPerson", className: "name long"}
+					]}
 				]}
 			]}
 		]}
@@ -83,8 +87,9 @@ enyo.kind({
 			this.AppPrefs = new ContactsLib.AppPrefs(function () {
 				this.isAppPrefsReady = true;
 				this.refresh();
-			}.bind(this));
+			}.bind(this)); //fourth argument disables appPrefs object writeback to db upon instantiation. this eliminates any race conditions with competing PersonLists.
 		} else {
+			this.createComponent({kind: "DbService", dbKind: "enyo.mockGal:1", onFailure: "gotGalFailure", components: [{name: "mockGalService", method: "find", onResponse: "gotGalResults"}]});
 			this.refresh();
 		}
 	
@@ -92,6 +97,7 @@ enyo.kind({
 		this.searchProperty = {prop: "searchProperty", op: "?", val: undefined, collate: "primary"};
 		this.applySearchString = true;
 		this.galData = [];
+		this.gotGalData = false;
 		this.refreshRetryCount = 0;
 	},
 	ready: function () {
@@ -112,7 +118,7 @@ enyo.kind({
 		this.inherited(arguments);
 	},
 	refresh: function () {
-		if (this.isAppPrefsReady === true) {
+		if (this.isAppPrefsReady === true || runningInBrowser) {
 			if (this.isGalActive === true && this.maxIndex < 0 && this.refreshRetryCount < 3) {
 				// Wait before updating the list...
 				this.refreshRetryCount += 1;
@@ -131,23 +137,30 @@ enyo.kind({
 		this.$.personList.punt();
 	},
 	enableGALChanged: function () {
-		this.isGalActive = (this.enableGAL && this.applySearchString);
+		if (runningInBrowser) {
+			this.isGalActive = true;
+		} else {
+			this.isGalActive = (this.enableGAL && this.applySearchString);
+		}
 	},
 	setExclusions: function (exclusionsArray) {
+		enyo.require(exclusionsArray && Array.isArray(exclusionsArray), "setExclusions requires an array");
 		this.exclusions = exclusionsArray;
 		if (this.readyFlag) {
 			this.refresh();
 		}
 	},
-	setSearchString: function (searchString) {
+	setSearchString: function (searchString, dontResetGalStates) {
 		var srchQuery;
 		
-		this.resetGalStates();
+		if (dontResetGalStates === undefined) {
+			this.resetGalStates();
+		}
 
 		if (this.applySearchString === true && searchString) {
 			this.searchProperty.val = searchString;
 			if (this.isGalActive === true) {
-				srchQuery = {orderBy: "sortKey", desc: false, where: [this.searchProperty]};
+				srchQuery = {orderBy: "sortKey", where: [this.searchProperty]};
 				srchQuery.where.push(this.favoriteProperty.val === undefined		? 
 									{prop: "favorite", op: "=", val: [true, false]}	:
 									this.favoriteProperty);
@@ -201,7 +214,6 @@ enyo.kind({
 		//console.info("*** QUERYING DATABASE WITH: " + enyo.json.to(inQuery));
 		var query = {query: inQuery};
 		query.query.orderBy = "sortKey";
-		query.query.desc = false;
 		//console.log("|||QUERY||| " + enyo.json.to(query));
 
 		if (this.applySearchString === true && this.searchProperty.val !== undefined) {
@@ -210,7 +222,6 @@ enyo.kind({
 			} else {
 				query.query.where = [this.searchProperty, this.favoriteProperty];
 			}
-			// TODO: Need to figure out why DbList only returns a maximun of 1 page for searching, after this is fixed look at the TODO in gotPersonsCount
 			return this.$.searchPersons.call(query);
 		} else {
 			if (this.favoriteProperty.val !== undefined) {
@@ -222,34 +233,36 @@ enyo.kind({
 		}
 	},
 
-/*** IM STATUS LOGIC
-	chainGetImBuddyStatus : function (inSender, inResponse, inRequest){
+	decideToGetIMStatuses : function (inSender, inResponse, inRequest) {
 
+		if (this.showIMStatuses) {
+			this.chainGetImBuddyStatus(inSender, inResponse, inRequest);
+		} else {
+			this.gotPersons(inSender, inResponse, inRequest);
+		}
+	},
+	chainGetImBuddyStatus : function (inSender, inResponse, inRequest) {
 		var index,
 			idArray = [], //where person Ids are collected for the im status query
 			query = {query: {
-					where : [{prop: "personId", op: "=", val: idArray}]
-				}
-			};
+				where: [{prop: "personId", op: "=", val: idArray}]
+			}};
 	
 		for (index = 0; index < inResponse.results.length; index += 1) {
 			idArray.push(inResponse.results[index]._id);
 			if (runningInBrowser) {
 				MockPersonMap["" + inResponse.results[index]._id] = inResponse.results[index];
-				MockPersonMap["" + inResponse.results[index]._id].contactCount = (index+1);
+				MockPersonMap["" + inResponse.results[index]._id].contactCount = (index + 1);
 			}
 		}
-console.info("Personlist - querying QUERY " + JSON.stringify(query));
+//console.info("Personlist - querying QUERY " + JSON.stringify(query));
 
-		this.doListUpdated();
-		this.persons = inResponse.results;
-		this.$.personList.queryResponse(inResponse, inRequest);
+		this._processPersonResults(inResponse, inRequest);
 
 		this.$.getIMStatuses.call(query);
 	},
-	gotIMStatuses: function (inSender, inResponse, inRequest){
-		var index,
-			key;
+	gotIMStatuses: function (inSender, inResponse, inRequest) {
+		var index;
 //		console.log("|||||||>>>>> gotImStatuses  " + JSON.stringify(inSender));
 //		console.info("|||||||>>>>> imstatus " + JSON.stringify(inResponse.results));
 //	console.info("|||||||>>>>> imstatus for page " + JSON.stringify(this.persons[0].name) + " ||| " + JSON.stringify(this.persons[this.persons.length-1].name));
@@ -266,36 +279,44 @@ console.info("Personlist - querying QUERY " + JSON.stringify(query));
 	
 		this.$.personList.update();
 	},
-***/
 
-	getListItem: function (inSender, inPerson, inIndex) {		
+	getListItem: function (inSender, inPerson, inIndex) {
 		if (this.isGalActive && inIndex === this.maxIndex) {
 			this.$.GalDivider.canGenerate = true;
 			this.$.GalMessage.canGenerate = true;
 			this.$.GalSpinner.setShowing(this.galSpinnerShowing);
+			this.$.GalMessage.addRemoveClass("selected", this.galSpinnerShowing);
+			this.$.GalImage.setShowing(!this.galSpinnerShowing);
 			this.$.GalList.canGenerate = true;
 			this.$.GalDrawer.canGenerate = true;
-			this.$.GalNoResultsMessage.canGenerate = true;
-			this.$.GalNoResultsMessage.setShowing(this.showGalNoResultsMessage);
-			this.$.GalArrow.setShowing(!this.showGalNoResultsMessage && !this.galSpinnerShowing && !this.$.GalDrawer.getOpen());
+			this.$.GalDrawer.setOpen(this.gotGalData);
+			this.$.GalResultsMessage.canGenerate = true;
+			this.$.GalMessage.setShowing(!this.gotGalData);
+			this.$.GalResultsMessage.setShowing(this.galResultsMsg !== undefined);
+			this.$.GalResultsMsg.setContent(this.galResultsMsg ? this.galResultsMsg : "");
+			this.$.GalResultsMessage.setShowing(this.galResultsMsg !== undefined);
 		} else {
 			this.$.GalDivider.canGenerate = false;
 			this.$.GalMessage.canGenerate = false;
 			this.$.GalList.canGenerate = false;
 			this.$.GalDrawer.canGenerate = false;
-			this.$.GalNoResultsMessage.canGenerate = false;
+			this.$.GalResultsMessage.canGenerate = false;
 		}
 
 		//inPerson is the same as this.$.personList.fetch(inIndex)
 		var future,
 //			personListPageSize = this.$.personList.getPageSize(),
-			l,
+			curGroupName,
 			displayName,
 //			type = this.showFavOnly ? ContactsLib.PersonPhotos.TYPE.SQUARE : ContactsLib.PersonPhotos.TYPE.LIST,
 			type = this.showFavOnly ? ContactsLib.PersonPhotos.TYPE.BIG : ContactsLib.PersonPhotos.TYPE.LIST,
+			nextPerson,
 			noDividerAfter;
 			
 		if (inPerson.emptyGALContact !== undefined) {
+			this.$.personItem.setShowing(false);
+			return true;
+		} else if (inPerson.excludedPerson) {
 			this.$.personItem.setShowing(false);
 			return true;
 		} else {
@@ -308,39 +329,31 @@ console.log("|||||||> contacts[" + ((inIndex % personListPageSize) + 1) + "]: " 
 */
 			this.$.personItem.setShowing(true);
 			displayName = ContactsLib.Person.generateDisplayNameFromRawPerson(inPerson);
-//IM STATUS STUFF 
-/*
+
 			if (inPerson.personAvailability === 4) {
-				displayName += "---OFFLINE---";
+				this.$.availabilityIcon.setSrc($contactsui_path + "/images/status-offline.png");
+				this.$.availabilityIcon.show();
 			} else if (inPerson.personAvailability === 2) {
-				displayName += "---AWAY---";
+				this.$.availabilityIcon.setSrc($contactsui_path + "/images/status-away.png");
+				this.$.availabilityIcon.show();
 			} else if (inPerson.personAvailability === 0) {
-				displayName += "---AVAILABLE---";
+				this.$.availabilityIcon.setSrc($contactsui_path + "/images/status-available.png");
+				this.$.availabilityIcon.show();
 			}
-*/
 			this.$.contactName.setContent(displayName);
+			this.$.contactName.addRemoveClass("long", (this.showFavOnly || !this.showFavStars || !inPerson.favorite));
 			this.$.favIcon.applyStyle("display", !this.showFavOnly && this.showFavStars && inPerson.favorite ? "inline-block" : "none");
 			future = ContactsLib.PersonPhotos.getPhotoPath(inPerson.photos, type, !this.showFavOnly);
 			future.now(this, function () {
 				this.$.photo.applyStyle("background-image", "url(" + future.result + ");");
-		
-//				this.$.photo.domAttributes.src = future.result;
 			});
-			l = this.getGroupName(inIndex, inPerson);
-			this.renderDivider(inIndex, l);
+			curGroupName = inPerson.groupName;
+			this.renderDivider(inIndex, curGroupName);
 
-			noDividerAfter = (this.getGroupName(inIndex + 1) === l);
+			nextPerson = this.$.personList.fetch(inIndex + 1);
+			noDividerAfter = nextPerson ? (nextPerson.groupName === curGroupName) : false;
 			this.$.personItem.addRemoveClass('first', this.$.divider.getShowing() ? true : false);
-			this.$.personItem.addRemoveClass('last', noDividerAfter ? false : true);
-
-			if (this.exclusions && Array.isArray(this.exclusions)) {
-				if (this.exclusions.indexOf(inPerson._id) !== -1) {
-					this.$.personItem.hide();
-//TODO: also display and hide divs in a smarter manner
-				}
-			} else if (this.peopleWithAddressOnly === true && inPerson.addresses && inPerson.addresses.length === 0) {
-				this.$.personItem.hide();
-			}
+			this.$.personItem.addRemoveClass('last', (noDividerAfter || this.showFavOnly) ? false : true); // TODO: When showFavOnly is true how do we figure out if we're the last row..
 
 			if (this.selectedPersonInfo && inPerson._id === this.selectedPersonInfo.personId) {
 				this.$.personItem.addClass('selected');
@@ -350,13 +363,26 @@ console.log("|||||||> contacts[" + ((inIndex % personListPageSize) + 1) + "]: " 
 			return true;
 		}
 	},
-	renderDivider: function (inIndex, l)
+	renderDivider: function (inIndex, inCurGroupName)
 	{
-		var prevDividerTxt = inIndex > 0 ? this.getGroupName(inIndex - 1) : undefined;
-		this.$.divider.setShowing(inIndex === 0 || (l !== "" && prevDividerTxt !== l));
+		this.$.divider.setShowing(this.determineIfCurDivShouldBeShown(inIndex, inCurGroupName));
 		if (this.$.divider.getShowing()) {
-			this.$.dividerLabel.setContent(l);
+			this.$.dividerLabel.setContent(inCurGroupName);
 		}
+	},
+	determineIfCurDivShouldBeShown: function (inIndex, inCurGroupName) {
+		var rawPerson;
+		do {
+			inIndex -= 1;
+			rawPerson = this.$.personList.fetch(inIndex);
+			if (!rawPerson) {
+				return true;
+			} else if (!rawPerson.excludedPerson) { // If they are exlcuded keep looping
+				return (rawPerson.groupName !== inCurGroupName);
+			}
+		} while (rawPerson);
+
+		return false;
 	},
 	getGroupName: function (inIndex, rawPersonObject) {
 		//if we're in first-last or last-first, let the divider text be the first character, or the default divider text
@@ -424,7 +450,7 @@ console.log("|||||||> contacts[" + ((inIndex % personListPageSize) + 1) + "]: " 
 		if (inResponse.count !== undefined && this.isGalActive === true) {
 			if (inResponse.count > 0) {
 				this.maxIndex = inResponse.count - 1;
-				// TODO: Remove this hack since the search does not return any more pages for the DbList when the results have more results than the pageSize
+				// The DbList will only return a maximum of number of results equal to the pageSize, this is a limitation of a DB search
 				if (this.maxIndex > (this.$.personList.pageSize - 1)) {
 					this.maxIndex = this.$.personList.pageSize - 1;
 				}
@@ -440,33 +466,53 @@ console.log("|||||||> contacts[" + ((inIndex % personListPageSize) + 1) + "]: " 
 		this.maxIndex = -1;
 	},
 	gotPersons: function (inSender, inResponse, inRequest) {
-		this.doListUpdated();
-		if (runningInBrowser) {	//for in-browser use (FOR APP PRODUCTION PEOPLE ONLY - will not be supported beyond this)
-			var index,
-				idArray = []; //where person Ids are collected for the im status query
+		var idArray = [], //where person Ids are collected for the im status query
+			index;
 
+		if (runningInBrowser) {	//for in-browser use (FOR APP PRODUCTION PEOPLE ONLY - will not be supported beyond this)
 			for (index = 0; index < inResponse.results.length; index += 1) {
 				idArray.push(inResponse.results[index]._id);
 				MockPersonMap["" + inResponse.results[index]._id] = inResponse.results[index];
 				MockPersonMap["" + inResponse.results[index]._id].contactCount = (index + 1);
 			}
 		}
-		this.persons = inResponse.results;
-		//console.log("========" + JSON.stringify(inResponse.results[0]));
-//		inResponse.results.push({ });
-		// TODO: Preset the dividerText for each rawPerson object????
-		/*
-		if (this.persons && this.persons.length > 0) {
-			this.persons.forEach(function(rawPerson) {
-				// Ideally we would use ContactsLib.PersonDisplayLite but it uses the globalization objects, therefore we have to re-implement some of the functionality ourselves
-			});
-		}*/
 		
+		this._processPersonResults(inResponse, inRequest);
+	},
+	_processPersonResults: function (inResponse, inRequest) {
+		var persons = inResponse.results || [],
+			rawPerson,
+			index;
+		
+		this.doListUpdated();
+		this.persons = inResponse.results;
+		
+		for (index = 0; index < persons.length; index += 1) {
+			rawPerson = persons[index];
+			rawPerson.groupName = this.getGroupName(undefined, rawPerson);
+			if (this.exclusions.length > 0) {
+				if ((this.exclusions.indexOf(rawPerson._id) !== -1) ||
+					(this.peopleWithAddressOnly === true && rawPerson.addresses && rawPerson.addresses.length === 0))
+				{
+					persons[index] = {excludedPerson: true, groupName: rawPerson.groupName};
+				}
+			}
+		}
+
 		if (this.searchProperty.val && this.maxIndex === 0) {
 			inResponse.results.push({"emptyGALContact": ""});
 		}
 
 		this.$.personList.queryResponse(inResponse, inRequest);
+	},
+	gotPersonsWatch: function (inSender, inResponse, inRequest) {
+		if (inResponse.fired === true) {
+			this.$.personList.reset();
+
+			if (this.searchProperty.val !== undefined) {
+				this.setSearchString(this.searchProperty.val, true);
+			}
+		}
 	},
 	getContactFromItem: function (inItem) {
 		var index = this.$.personList.fetchRowIndex();
@@ -485,7 +531,8 @@ console.log("|||||||> contacts[" + ((inIndex % personListPageSize) + 1) + "]: " 
 		//		Therefore just unselect any currently selected item in the list for now.
 		this.selectedPersonInfo = undefined;
 		if (prevSelectedPersonIndex >= 0) {
-			this.$.personList.updateRow(prevSelectedPersonIndex);
+			//this.$.personList.updateRow(prevSelectedPersonIndex);
+			this.$.personList.refresh(); // TODO Work-aroud since updateRow is no longer working for a enyo 0.10 DbList, remove once fixed in fmwk or ...
 		}
 	},
 	toggleListSelection: function (inIsForGal, inIndex, inPersonId) {
@@ -503,7 +550,8 @@ console.log("|||||||> contacts[" + ((inIndex % personListPageSize) + 1) + "]: " 
 
 		// Un-select any previously selected item
 		if (prevSelectedPersonIndex >= 0) {
-			this.$.personList.updateRow(prevSelectedPersonIndex);
+			//this.$.personList.updateRow(prevSelectedPersonIndex);
+			this.$.personList.refresh(); // TODO Work-aroud since updateRow is no longer working for a enyo 0.10 DbList, remove once fixed in fmwk or ...
 		}
 		
 		if (prevSelectedGalPersonIndex >= 0) {
@@ -518,17 +566,19 @@ console.log("|||||||> contacts[" + ((inIndex % personListPageSize) + 1) + "]: " 
 			//this.$.GalList.renderRow(inIndex);
 			this.$.GalList.render();
 		} else {
-			this.$.personList.updateRow(inIndex);
+			//this.$.personList.updateRow(inIndex);
+			this.$.personList.refresh(); // TODO Work-aroud since updateRow is no longer working for a enyo 0.10 DbList, remove once fixed in fmwk or ...
 		}
 	},
 	// GAL Functions
 	resetGalStates: function () {
 		this.$.galService.cancel();
 		this.galData = [];
+		this.gotGalData = false;
 		this.maxIndex = -1;
 		this.selectedGalPersonInfo = undefined;
-		this.showGalNoResultsMessage = false;
-		this.galSpinnerShowing = false;	
+		this.galResultsMsg = undefined;
+		this.galSpinnerShowing = false;
 	},
 	onGalGetItem: function (inSender, inIndex) {
 		var galPerson,
@@ -537,7 +587,7 @@ console.log("|||||||> contacts[" + ((inIndex % personListPageSize) + 1) + "]: " 
 			galPerson = this.galData[inIndex];
 			if (galPerson) {
 				this.$.galPerson.setContent(galPerson.displayName);
-				this.$.galPerson.addRemoveClass('selected', inIndex === selectedIndex);
+				this.$.galItem.addRemoveClass("selected", inIndex === selectedIndex);
 				return true;
 			}
 		}
@@ -545,16 +595,21 @@ console.log("|||||||> contacts[" + ((inIndex % personListPageSize) + 1) + "]: " 
 	gotGalResults: function (inSender, inResponse) {
 		this.showGalSpinner(false);
 		this.galData = inResponse.results || [];
-		if (this.galData.length > 0) {
-			this.showGalNoResultsMessage = false;
+		this.gotGalData = true;
+		if (this.galData.length === 0) {
+			this.galResultsMsg = crb.$L("No search results found");
+		} else if (this.galData.length >= 100) {
+			this.galResultsMsg = crb.$L("Over 100 results found. Please narrow your search query.");
 		} else {
-			this.showGalNoResultsMessage = true;
+			this.galResultsMsg = undefined;
 		}
 		this.$.GalList.render();
-		if (this.galData.length > 0 && this.galData.length <= 100) {
-			this.$.GalDrawer.setOpen(!this.$.GalDrawer.getOpen());
+		if (this.galData.length > 0) {
+			this.$.GalDrawer.setOpen(true);
 		}
-		this.$.personList.updateRow(this.maxIndex); // Needed so that changes to this.showGalNoResultsMessage are rendered
+		//this.$.personList.updateRow(this.maxIndex); // Needed so that changes to this.galMessage are rendered
+		this.$.GalResultsMessage.addRemoveClass("last", (this.galData.length >= 100)); // oksana: this is the attempt... failed one.
+		this.$.personList.refresh(); // TODO Work-aroud since updateRow is no longer working for a enyo 0.10 DbList, remove once fixed in fmwk or ...
 	},
 	gotGalFailure: function (inSender, inResponse) {
 		this.showGalSpinner(false);
@@ -562,13 +617,18 @@ console.log("|||||||> contacts[" + ((inIndex % personListPageSize) + 1) + "]: " 
 	showGalSpinner: function (inShowing) {
 		if (this.maxIndex >= 0) {
 			this.galSpinnerShowing = inShowing;
-			this.$.personList.updateRow(this.maxIndex);
+			//this.$.personList.updateRow(this.maxIndex);
+			this.$.personList.refresh(); // TODO Work-aroud since updateRow is no longer working for a enyo 0.10 DbList, remove once fixed in fmwk or ...
 		}
 	},
 	GalMessageOnClick: function () {
 		if (!this.$.GalDrawer.getOpen()) {
 			this.showGalSpinner(true);
-			this.$.galService.call({filterString: this.searchProperty.val, addressTypes: ["emails", "phoneNumbers", "ims"]});
+			if (runningInBrowser) {
+				this.$.mockGalService.call();
+			} else {
+				this.$.galService.call({filterString: this.searchProperty.val, addressTypes: ["emails", "phoneNumbers", "ims"]});
+			}
 		}
 	},
 	onOpenAnimationComplete: function () {
@@ -577,6 +637,7 @@ console.log("|||||||> contacts[" + ((inIndex % personListPageSize) + 1) + "]: " 
 	onGalPersonClick: function (inSender, inEvent) {
 		var galPerson = this.galData[inEvent.rowIndex];
 		if (galPerson) {
+			galPerson.isGAL = true;
 			this.toggleListSelection(true, inEvent.rowIndex, undefined);		
 			this.doContactClick(galPerson);
 		}

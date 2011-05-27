@@ -39,7 +39,7 @@ enyo.kind({
 				c.setBox(b, this.unit);
 				n += ex;
 			}
-			delete b[measure]
+			delete b[measure];
 			b[mAttr] = m;
 			b[nAttr] = n;
 			client.setBox(b, this.unit);
@@ -52,7 +52,7 @@ enyo.kind({
 			this._flow("h", "t", "b", "l", "r", "enyo-vbox");
 		}
 	},
-	getContent: function() {
+	getInnerHtml: function() {
 		this.flow();
 		return this.inherited(arguments);
 	}

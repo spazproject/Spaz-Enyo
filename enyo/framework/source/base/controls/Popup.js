@@ -35,21 +35,36 @@ enyo.kind({
 		*/
 		showHideMode: "auto",
 		//* Css class that will be applied when the popup is open
-		openClassName: ""
+		openClassName: "",
+		/**
+			Show the keyboard before opening the popup. Manual keyboard mode is enabled when the popup is 
+			opened and must be restored for the keyboard to work automatically. It is most common to use 
+			this option when an Input should be focused when the keyboard is shown.
+			In this case, implement an onOpen handler for the popup and focus the input using the method 
+			forceFocusEnableKeyboard, e.g. this.$.input.forceFocusEnableKeyboard();
+		*/
+		showKeyboardWhenOpening: false
 	},
 	//* @protected
+	contentControlName: "client",
+	preventContentOverflow: true,
 	create: function() {
 		this.inherited(arguments);
-		this.openInfo = null;
-		this.contentControlName = this.contentControlName || this.controlParentName;
+		this.boundsInfo = null;
 	},
 	destroy: function() {
 		this.removeListeners();
+		clearTimeout(this.openingHandle);
+		this.openingHandle = null;
 		this.inherited(arguments);
 	},
 	rendered: function() {
 		this.inherited(arguments);
 		this.addListeners();
+	},
+	teardownRender: function() {
+		this.removeListeners();
+		this.inherited(arguments);
 	},
 	addListeners: function() {
 		if (this.hasNode()) {
@@ -65,6 +80,24 @@ enyo.kind({
 	webkitTransitionEndHandler: function() {
 		this.setShowing(this.isOpen);
 	},
+	open: function() {
+		if (this.showKeyboardWhenOpening) {
+			this._toggledKeyboard = !enyo.keyboard.isManualMode();
+			enyo.call(enyo.keyboard, "forceShow");
+			this.deferredOpen(500);
+		} else {
+			this.inherited(arguments);
+		}
+	},
+	deferredOpen: function(inMs) {
+		if (this.prepareOpen()) {
+			this.openingHandle = setTimeout(enyo.bind(this, "finishOpen"), inMs);
+		}
+	},
+	finishOpen: function() {
+		this.applyBoundsInfo();
+		this.inherited(arguments);
+	},
 	afterOpen: function() {
 		if (this.openClassName) {
 			this.addClass(this.openClassName);
@@ -75,7 +108,7 @@ enyo.kind({
 		if (this.openClassName) {
 			this.removeClass(this.openClassName);
 		}
-		this.openInfo = null;
+		this.boundsInfo = null;
 		this.inherited(arguments);
 		this.clearSizeCache();
 	},
@@ -89,16 +122,26 @@ enyo.kind({
 			this.hide();
 		}
 	},
-	resize: function() {
-		var oi = this.openInfo;
-		if (oi) {
-			this.clearSizeCache();
-			this[oi.method].apply(this, oi.args);
+	resizeHandler: function() {
+		if (this.isOpen) {
+			var args = arguments;
+			// FIXME: Wait a beat to resize. We need to do this to dismiss correctly via a click 
+			// when the device keyboard hides as the result of the click.
+			// This is because the keyboard hides on mouse up and if it is in resize window mode, the
+			// window resizes, prompting this resize handler to be called. Resizing a popup can result
+			// in it moving position and this can move the button the user clicked on at mouseup time.
+			// Moving a button underneath the mouse at mouse up time can prevent a click from firing.
+			// Avoid this issue by deferring resize slightly; we only need the space between mouseup and click.
+			enyo.asyncMethod(this, function() {
+				this.applyBoundsInfo();
+				this.inherited(args);
+			});
 		}
 	},
-	resizeHandler: function() {
-		this.resize();
-		this.inherited(arguments);
+	offsetChangedHandler: function() {
+		if (this.isOpen) {
+			this.applyBoundsInfo();
+		}
 	},
 	//* @public
 	/**
@@ -108,19 +151,8 @@ enyo.kind({
 	right, bottom properties. If both are specified left,top is used.
 	*/
 	openAt: function(inRect) {
-		this.setOpenInfo(arguments);
-		this.applyPosition(inRect);
-		this.applyClampedSize(inRect);
+		this.setBoundsInfo("applyBounds", arguments);
 		this.open();
-	},
-	// track the method name and arguments used to open the popup.
-	setOpenInfo: function(inArguments) {
-		if (!this.openInfo) {
-			var m = inArguments.callee.nom;
-			m = m.split(".").pop().replace("()", "");
-			var args = enyo.cloneArray(inArguments);
-			this.openInfo = {method: m, args: args};
-		}
 	},
 	/**
 	Open at the location of a mouse event (inEvent). The popup's position is automatically constrained
@@ -132,17 +164,8 @@ enyo.kind({
 	to the location the popup would otherwise be positioned.
 	*/
 	openAtEvent: function(inEvent, inOffset) {
-		this.setOpenInfo(arguments);
-		var p = {
-			left: inEvent.centerX || inEvent.clientX || inEvent.pageX,
-			top: inEvent.centerY || inEvent.clientY || inEvent.pageY
-		};
-		if (inOffset) {
-			p.left += inOffset.left || 0;
-			p.top += inOffset.top || 0;
-		}
-		p = this.clampPosition(enyo.mixin(p, this.calcSize()));
-		this.openAt(p);
+		this.setBoundsInfo("applyAtEventBounds", arguments);
+		this.open();
 	},
 	/**
 	Open at the location of the specified control. If there is space, the popup's top, left corner 
@@ -155,7 +178,50 @@ enyo.kind({
 	to the location the popup would otherwise be positioned.
 	*/
 	openAtControl: function(inControl, inOffset) {
-		this.setOpenInfo(arguments);
+		this.setBoundsInfo("applyAtControlBounds", arguments);
+		this.open();
+	},
+	/**
+	Open at the bottom, right of the specified control.
+	*/
+	openAroundControl: function(inControl, inAlwaysBelow, inAlign) {
+		this.setBoundsInfo("applyAroundControlBounds", arguments);
+		this.open();
+	},
+	// inDimensions can have {top, left, right, bottom, width, height}
+	//
+	openNear: function(inDimensions, inAround, inAlwaysBelow) {
+		this.setBoundsInfo("applyNearBounds", arguments);
+		this.open();
+	},
+	/**
+	Open in the center of the viewport
+	*/
+	openAtCenter: function() {
+		this.setBoundsInfo("applyCenterBounds", arguments);
+		this.open();
+	},
+	//* @protected
+	applyBounds: function(inRect) {
+		this.applyPosition(inRect);
+		this.applyClampedSize(inRect);
+	},
+	applyAtEventBounds: function(inEvent, inOffset) {
+		var p = {
+			left: inEvent.centerX || inEvent.clientX || inEvent.pageX,
+			top: inEvent.centerY || inEvent.clientY || inEvent.pageY
+		};
+		if (inOffset) {
+			p.left += inOffset.left || 0;
+			p.top += inOffset.top || 0;
+		}
+		var p = this.clampPosition(enyo.mixin(p, this.calcSize()));
+		this.applyBounds(p);
+	},
+	applyCenterBounds: function() {
+		this.applyBounds(this.calcCenterPosition());
+	},
+	applyAtControlBounds: function(inControl, inOffset) {
 		var o = enyo.mixin({width: 0, height: 0, top: 0, left: 0}, inOffset);
 		var co = inControl.getOffset();
 		o.top += co.top;
@@ -165,14 +231,9 @@ enyo.kind({
 			o.width += n.offsetWidth;
 			o.height += n.offsetHeight;
 		}
-		this.openNear(o);
+		this.applyNearBounds(o);
 	},
-	/**
-	Open at the bottom, right of the specified control.
-	*/
-	// FIXME: incomplete, what spots should be acceptable?
-	openAroundControl: function(inControl) {
-		this.setOpenInfo(arguments);
+	applyAroundControlBounds: function(inControl, inAlwaysBelow, inAlign) {
 		// we position to the bottom right of the node.
 		var co = inControl.getOffset();
 		var o = {};
@@ -185,45 +246,55 @@ enyo.kind({
 		var vp = this.calcViewport();
 		o.top = co.top + h;
 		// need to specify right, not left so that width can be naturally determined.
-		o.right = vp.width - (co.left + w);
+		if (inAlign == "left") {
+			o.left = co.left;
+		} else {
+			o.right = vp.width - (co.left + w);
+		}
 		o.width = w;
 		o.height = h;
-		this.openNear(o, true);
+		this.applyNearBounds(o, true, inAlwaysBelow);
 	},
-	// inDimensions can have {top, left, right, bottom, width, height}
-	//
-	openNear: function(inDimensions, inAround) {
-		this.setOpenInfo(arguments);
+	applyNearBounds: function(inDimensions, inAround, inAlwaysBelow) {
 		var d = inDimensions;
 		var o = enyo.clone(d);
 		o.width = null;
 		o.height = null;
 		var s = this.calcSize();
 		var vp = this.calcViewport();
-		// if placing at top would push off screen and top is more than halfway
-		// then position using bottom
-		if ((d.top + s.height > vp.height) && (d.top > vp.height/2)) {
-			var oh = d.height || 0;
-			oh = inAround ? -oh : oh;
-			o.bottom = vp.height - (d.top + oh);
-			delete o.top;
+		if (!inAlwaysBelow) {
+			// if placing at top would push off screen and top is more than halfway
+			// then position using bottom
+			if ((d.top + s.height > vp.height) && (d.top > vp.height/2)) {
+				var oh = d.height || 0;
+				oh = inAround ? -oh : oh;
+				o.bottom = vp.height - (d.top + oh);
+				delete o.top;
+			}
+			// if placing at left would push off screen and left is more than halfway
+			// then position using right
+			if ((d.left + s.width > vp.width) && (d.left > vp.width/2)) {
+				o.right = vp.width - (d.left - (d.width || 0));
+				delete o.left;
+			}
 		}
-		// if placing at left would push off screen and left is more than halfway
-		// then position using right
-		if ((d.left + s.width > vp.width) && (d.left > vp.width/2)) {
-			o.right = vp.width - (d.left - (d.width || 0));
-			delete o.left;
+		this.applyBounds(o);
+	},
+	// track the method name and arguments used to open the popup.
+	setBoundsInfo: function(inMethod, inArguments) {
+		if (!this.boundsInfo) {
+			var args = enyo.cloneArray(inArguments);
+			this.boundsInfo = {method: inMethod, args: args};
 		}
-		this.openAt(o);
 	},
-	/**
-	Open in the center of the viewport
-	*/
-	openAtCenter: function() {
-		this.setOpenInfo(arguments);
-		this.openAt(this.calcCenterPosition());
+	applyBoundsInfo: function() {
+		var bi = this.boundsInfo;
+		if (bi) {
+			this.clearSizeCache();
+			this.clearClampedSize();
+			this[bi.method].apply(this, bi.args);
+		}
 	},
-	//* @protected
 	calcCenterPosition: function() {
 		var s = this.calcSize();
 		var vp = this.calcViewport();
@@ -239,8 +310,8 @@ enyo.kind({
 	},
 	applyMaxSize: function(inRect) {
 		var s = this.getContentControl();
-		s.applyStyle("max-width", inRect.width + "px");
-		s.applyStyle("max-height", inRect.height + "px");
+		var h = this.preventContentOverflow ? " overflow: hidden;" : "";
+		s.addStyles("max-width: " + inRect.width + "px; max-height: " + inRect.height + "px;" + h);
 	},
 	// return max user set size. ignore sizes that have been clamped.
 	getMaxSize: function() {
@@ -274,7 +345,6 @@ enyo.kind({
 	// clear a size that was clamped.
 	clearClampedSize: function() {
 		var s = this.getContentControl();
-		var ms = this.getMaxSize();
 		if (this._clampedWidth) {
 			s.applyStyle("max-width", null);
 		}
@@ -336,15 +406,28 @@ enyo.kind({
 			s.height = Math.min(d.height, s.height);
 		}
 		//
-		// FIXME: use enyo.dom helper
-		// adjust by the popup's pad/border
-		var ns = this.calcSize();
-		// FIXME: only reduce height if sizeNode is not this
-		if (this.getContentControl() != this) {
-			s.height -= ns.offsetHeight - ns.clientHeight;
-			s.width -= ns.offsetWidth - ns.clientWidth;
-		}
+		// adjust by content v. this size delta
+		var d = this.calcContentSizeDelta();
+		s.height -= d.height;
+		s.width -= d.width;
 		return s;
+	},
+	calcContentSizeDelta: function() {
+		var d = {height: 0, width: 0};
+		var c = this.getContentControl();
+		if (c != this) {
+			// adjust by the popup's pad/border
+			var ns = this.calcSize();
+			d.height = ns.offsetHeight - ns.clientHeight;
+			d.width = ns.offsetWidth - ns.clientWidth;
+			// then offset by content control's margin
+			var m = enyo.dom.calcMarginExtents(c.hasNode());
+			if (m) {
+				d.height += m.t + m.b;
+				d.width += m.l + m.r;
+			}
+		}
+		return d;
 	},
 	// measure the size of the viewport.
 	calcViewport: function() {
@@ -354,9 +437,9 @@ enyo.kind({
 		} else {
 			var vp;
 			if (this.parent && this.parent.hasNode()) {
-				vp = enyo.getVisibleControlBounds(this.parent);
+				vp = enyo.calcModalControlBounds(this.parent);
 			} else {
-				vp = enyo.getVisibleBounds();
+				vp = enyo.getModalBounds();
 			}
 			return this._viewport = vp;
 		}
@@ -370,21 +453,31 @@ enyo.kind({
 		if (this._size) {
 			return this._size;
 		} else if (this.hasNode()) {
-			var s = {h: 0, w: 0};
 			// briefly show node so we can measure it.
-			var hidden = this.node.style.display == "none";
-			if (hidden) {
-				this.node.style.display = "block";
-			}
+			this.beginMeasureSize();
+			var s = {h: 0, w: 0};
 			// FIXME: measure border (equivalent to enyo.dom.fetchBorderExtents?)
 			s.height = s.offsetHeight = this.node.offsetHeight;
 			s.width = s.offsetWidth = this.node.offsetWidth;
 			s.clientHeight = this.node.clientHeight;
 			s.clientWidth = this.node.clientWidth;
-			if (hidden) {
+			this.finishMeasureSize();
+			return (this._size = s);
+		}
+	},
+	beginMeasureSize: function() {
+		if (this.hasNode()) {
+			var h = this._measuredWhenHidden = (this.node.style.display == "none");
+			if (h) {
+				this.node.style.display = "block";
+			}
+		}
+	},
+	finishMeasureSize: function() {
+		if (this.hasNode()) {
+			if (this._measuredWhenHidden) {
 				this.node.style.display = "none";
 			}
-			return (this._size = s);
 		}
 	},
 	clearSizeCache: function() {

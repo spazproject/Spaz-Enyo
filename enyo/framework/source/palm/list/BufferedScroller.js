@@ -3,7 +3,7 @@
 enyo.kind({
 	name: "enyo.BufferedScroller",
 	kind: enyo.VirtualScroller,
-	rowsPerPage: 3,
+	rowsPerPage: 1,
 	events: {
 		onGenerateRow: "generateRow",
 		onAdjustTop: "",
@@ -24,7 +24,6 @@ enyo.kind({
 			kind: enyo.DomBuffer,
 			rowsPerPage: this.rowsPerPage,
 			pages: this.pages,
-			//overbuffer: 2,
 			margin: 20,
 			generateRow: enyo.hitch(this, "doGenerateRow")
 		});
@@ -47,30 +46,25 @@ enyo.kind({
 	},
 	//* @public
 	adjustTop: function(inTop) {
-		//this.log(inTop);
 		this.doAdjustTop(this.pageToTopRow(inTop));
 		if (this.domBuffer.adjustTop(inTop) === false) {
 			return false;
 		}
 		this.displayBuffer.adjustTop(inTop);
-		enyo.viz && enyo.viz.scrollerUpdate(this);
 	},
 	adjustBottom: function(inBottom) {
-		//this.log(inBottom);
 		this.doAdjustBottom(this.pageToBottomRow(inBottom));
 		if (this.domBuffer.adjustBottom(inBottom) === false) {
 			return false;
 		}
 		this.displayBuffer.adjustBottom(inBottom);
-		enyo.viz && enyo.viz.scrollerUpdate(this);
 	},
 	findBottom: function() {
-		while (this.pushPage() !== false);
-		//this.log("new bottom:", this.bottom);
+		while (this.pushPage() !== false) {};
 		this.contentHeight = this.displayBuffer.height;
-		this.bottomBoundary = Math.min(-this.contentHeight + this.pageOffset + this.viewHeight, -1);
-		//this.log(this.contentHeight, this.pageOffset, this.bottomBoundary);
-		this.py = this.uy = this.y = this.y0 = this.bottomBoundary;
+		var bb = Math.min(-this.contentHeight + this.pageOffset + this.viewHeight, -1);
+		this.$.scroll.bottomBoundary = this.$.scroll.y = this.$.scroll.y0 = bb;
+		this.scroll();
 	},
 	refreshPages: function() {
 		// flush all DOM nodes

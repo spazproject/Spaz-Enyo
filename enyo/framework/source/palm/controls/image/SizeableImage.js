@@ -121,9 +121,14 @@ enyo.kind({
 		this.minZoom = w / this._imageWidth;
 		this.maxZoomRatioChanged();
 		this.setZoom(this.minZoom);
+		// reset zoomOffset so it would re-calc
+		this.zoomOffset = null;
 	},
-	zoomChanged: function() {
-		this.zoom = Math.max(this.minZoom, Math.min(this.zoom, this.maxZoom));
+	zoomChanged: function(inOldValue) {
+		this.zoom = Math.max(this.getMinZoom(), Math.min(this.zoom, this.maxZoom));
+		if (this.zoom == inOldValue) {
+			return;
+		}
 		if (!this._imageWidth || !this._imageHeight) {
 			return;
 		}
@@ -134,45 +139,61 @@ enyo.kind({
 		}
 	},
 	sizeImage: function(inWidth, inHeight) {
-		//this.log(inWidth, inHeight);
 		this.$.image.applyStyle("width", inWidth + "px");
 		this.$.image.applyStyle("height", inHeight + "px");
 	},
 	isZoomIn: function() {
-		return Math.round((this.zoom-this.minZoom)*100)/100 != 0;
+		return Math.round((this.zoom - this.minZoom)*100)/100 != 0;
+	},
+	calcZoomOffset: function() {
+		if (this.zoomOffset) {
+			return this.zoomOffset;
+		}
+		var n = this.$.image.hasNode(), pn = this.hasNode();
+		if (n && pn) {
+			var o = enyo.dom.calcNodeOffset(n, pn);
+			return this.zoomOffset = {left: o.left > 0 ? o.left : 0, top: o.top > 0 ? o.top : 0};
+		}
 	},
 	updateZoomPosition: function(inZPos) {
 		this.setZoom(inZPos.zoom);
-		var s = this.findScroller(), bs = {};
-		if (s) {
-			bs = s.getBoundaries();
-		}
-		var x = inZPos.x > bs.left ? (inZPos.x < bs.right ? inZPos.x : bs.right) : bs.left;
-		var y = inZPos.y > bs.top ? (inZPos.y < bs.bottom ? inZPos.y : bs.bottom) : bs.bottom;
-		this.setScrollPositionDirect(x, y);
-		return {x: x, y: y};
+		this.setScrollPositionDirect(inZPos.x, inZPos.y);
 	},
 	gesturestartHandler: function(inSender, e) {
-		if (!this.disableZoom) {
-			this.centeredZoomStart(e);
-			//this.log(enyo.json.stringify(this._zoomStart));
+		if (this.disableZoom) {
+			return;
 		}
+		this.panning = true;
+		var s = this.findScroller();
+		if (s) {
+			s.stop();
+			s._preventDrag = true;
+			s.dragstartHandler(inSender, e);
+		}
+		this.centeredZoomStart(e);
 	},
 	gesturechangeHandler: function(inSender, e) {
-		if (!this.disableZoom) {
-			// stop event to prevent scrolling
-			enyo.stopEvent(e);
-			var gi = this.centeredZoomChange(e);
-			this.updateZoomPosition(gi);
-			//this.log(gi.zoom, gi.x, gi.y);
+		if (this.disableZoom) {
+			return;
 		}
+		var gi = this.centeredZoomChange(e);
+		this.updateZoomPosition(gi);
 	},
 	gestureendHandler: function(inSender, e) {
-		if (!this.disableZoom) {
-			enyo.stopEvent(e);
-			var p = this.fetchScrollPosition();
-			this.setScrollPosition(p.l, p.t);
+		if (this.disableZoom) {
+			return;
 		}
+		this.panning = false;
+		var s = this.findScroller();
+		if (s) {
+			s._preventDrag = false;
+			e.preventClick = function() {
+				this._preventClick = true;
+			};
+			s.dragfinishHandler(inSender, e);
+		}
+		var p = this.fetchScrollPosition();
+		this.setScrollPosition(p.l, p.t);
 	},
 	clickHandler: function(inSender, e) {
 		if (!this._clickMode) {
@@ -198,28 +219,49 @@ enyo.kind({
 		}
 		return true;
 	},
-	smartZoom: function(e) {
+	calcCenterForSmartZoom: function(e) {
+		var co = this.calcClientOffset();
+		var b = this.$.image.hasNode().getBoundingClientRect();
+		if (this.toZoom == this.minZoom) {
+			// zoom out
+			var zo = this.calcZoomOffset();
+			return {x: -b.left + 2 * zo.left, y: -b.top + 2 * zo.top};
+		} else {
+			// zoom in
+			var x = e.clientX, y = e.clientY;
+			x = x < 2*b.left ? (2*b.left) : (x < b.width ? x : b.width);
+			y = y < 2*b.top ? (2*b.top) : (y < b.height ? y : b.height);
+			return {x: x, y: y};
+		}
+	},
+	smartZoom: function(e, inReset) {
 		if (this.disableZoom) {
 			return;
 		}
-		var cx = e.clientX, cy = e.clientY;
-		// FIXME: generate a fake gesture event for use in zoom calculations
+		this.smartZooming = true;
+		this.fromZoom = this.zoom;
+		this.toZoom = (Math.abs(this.zoom - this.maxZoom) > 0.1 && !inReset) ? this.maxZoom : this.minZoom;
+		var c = this.calcCenterForSmartZoom(e);
+		// generate a fake gesture event for use in zoom calculations
 		this.centeredZoomStart({
 			scale: 1,
-			centerX: cx,
-			centerY: cy
+			centerX: c.x,
+			centerY: c.y
 		});
-		this.fromZoom = this.zoom;
-		this.toZoom = Math.abs(this.zoom-this.maxZoom) > 0.1 ? this.maxZoom : this.minZoom;
 		this.$.animator.play(1, this.toZoom / this.fromZoom);
 	},
 	stepAnimation: function(inSender, inValue, inProgress) {
-		// FIXME: this is an experiment to use the gesture code to smartzoom
 		var gi = this.centeredZoomChange({
 			scale: inValue
 		});
-		var pos = this.updateZoomPosition(gi);
-		this.setScrollPosition(pos.x, pos.y);
+		this.updateZoomPosition(gi);
+	},
+	endAnimation: function() {
+		this.smartZooming = false;
+		var s = this.findScroller();
+		if (s) {
+			s.start();
+		}
 	}
 });
 

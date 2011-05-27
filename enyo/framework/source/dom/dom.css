@@ -6,7 +6,6 @@
 */
 body {
 	-webkit-user-select: none;
-	-moz-user-select: none;
 	overflow: hidden;
 }
 
@@ -14,13 +13,12 @@ body {
 div, object, img, textarea, iframe {
 	position: relative;
 }
-*/
 
 .enyo-bbox {
 	box-sizing: border-box;
-	-moz-box-sizing: border-box;
 	-webkit-box-sizing: border-box;
 }
+*/
 
 .enyo-fit {
 	position: absolute !important;

@@ -2,27 +2,24 @@
 
 enyo.kind({
 	name: "SecurityUpgradePrompt",
-	kind: enyo.Dialog,
+	kind: enyo.ModalDialog,
 	modal: true,
 	published: {
-		title: "",
 		policy: ""
 	},
 	events: {
 		onPin: "",
-		onPassword: ""
+		onPassword: "",
+		onCancel: ""
 	},
 	components: [
-		{name: "title", className: "enyo-dialog-prompt-title"},
 		{className: "enyo-dialog-prompt-content", components: [
 			{name: "message", className: "enyo-dialog-prompt-message"},
 			{name: "pinButton", kind: "Button", className:"enyo-button-affirmative", caption: rb_auth.$L("Set Pin"), onclick:"selectPin"},
-			{name: "passwordButton", kind: "Button", className:"enyo-button-affirmative", caption: rb_auth.$L("Set Password"), onclick:"selectPassword"}
+			{name: "passwordButton", kind: "Button", className:"enyo-button-affirmative", caption: rb_auth.$L("Set Password"), onclick:"selectPassword"},
+			{name: "cancelButton", kind: "Button", caption: rb_auth.$L("Cancel"), onclick:"cancel"}
 		]}
 	],
-	titleChanged: function() {
-		this.$.title.setContent(this.title);
-	},
 	policyChanged: function() {
 		if (this.policy.password && this.policy.password.alphaNumeric === true) {
 			this.$.pinButton.hide();
@@ -37,6 +34,10 @@ enyo.kind({
 	},
 	selectPassword: function() {
 		this.doPassword();
+		this.close();
+	},
+	cancel: function() {
+		this.doCancel();
 		this.close();
 	}
 });

@@ -5,7 +5,7 @@ Tellurium.events = {
 		this.dom.setup();
 		this.enyo.setup();
 	}
-}
+};
 
 // dom events
 Tellurium.events.dom = {
@@ -93,15 +93,15 @@ Tellurium.events.dom = {
 		return this.mixinPayloadDetails({}, inEvent, this.mouseDetails);
 	},
 	makeFlickPayload: function(inEvent) {
-	payload = {velocity: inEvent.velocity};
-	return this.mixinPayloadDetails(payload, inEvent, this.mouseDetails);
+		var payload = {velocity: inEvent.velocity};
+		return this.mixinPayloadDetails(payload, inEvent, this.mouseDetails);
 	},
 	makeDragPayload: function(inEvent) {
 		var payload = enyo.clone(inEvent);
 		delete payload.target;
 		return payload;
 	}
-}
+};
 
 // enyo events
 Tellurium.events.enyo = {
@@ -117,7 +117,7 @@ Tellurium.events.enyo = {
 	setupHandler: function(inPrototype, inName) {
 		var kind = inName.slice(2);
 		var payloadHandler = "make" + kind + "Payload";
-		fn = this[payloadHandler];
+		var fn = this[payloadHandler];
 		var m = "do" + enyo.cap(kind);
 		var o = inPrototype[m];
 		if (fn) {
@@ -131,9 +131,9 @@ Tellurium.events.enyo = {
 			payload.type = inName;
 			Tellurium.notifyEvent(payload);
 			return inOriginal.apply(this, arguments);
-		}
+		};
 	},
 	makeSelectViewPayload: function(inView, inLastView) {
 		return {pane: this.id, view: inView.id, lastView: inLastView && inLastView.id};
 	}
-}
+};

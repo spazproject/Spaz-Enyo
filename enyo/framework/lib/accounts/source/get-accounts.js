@@ -126,7 +126,7 @@ enyo.kind({
 			});
 			
 			// Change the main account icons to those of the capability
-			if (this.filterBy && this.filterBy.capability && !enyo.isArray(this.filterBy.capability))
+			if (this.filterBy && this.filterBy.capability)
 				AccountsUtil.promoteCapabilityIcons(accounts, this.filterBy.capability);
 			
 			// Sort the list of accounts

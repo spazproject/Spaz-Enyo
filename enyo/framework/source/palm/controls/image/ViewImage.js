@@ -12,25 +12,16 @@ enyo.kind({
 		overscrollV: true
 	},
 	preventDragPropagation: false,
+	overscrollWidth: 0,
 	chrome: [
 		{name: "client", align: "center"}
 	],
-	/*calcAutoScrolling: function() {
-		// FIXME: bypass autoHorizontal/Vertical check
-		this.setHorizontal(this.$.scroll.rightBoundary !== 0);
-		this.setVertical(this.$.scroll.bottomBoundary !== 0);
+	adjustKFrictionDamping: function(inDamping) {
+		this.$.scroll.kFrictionDamping = inDamping;
 	},
-	start: function() {
-		if (this.$.scroll) {
-			this.inherited(arguments);
-		}
-	},
-	destroy: function() {
-		this.$.scroll && this.$.scroll.stop();
-		this.inherited(arguments);
-	},*/
 	scroll: function(inSender) {
-		var bs = this.getBoundaries(), lb = bs.left-1, rb = bs.right+1, tb = bs.top-1, bb = bs.bottom+1;
+		var ow = this.overscrollWidth;
+		var bs = this.getBoundaries(), lb = bs.left-1-ow, rb = bs.right+1+ow, tb = bs.top-1-ow, bb = bs.bottom+1+ow;
 		var x = -inSender.x, y = -inSender.y;
 		// disable overscroll if overscrollH/V is false
 		if (this.overscrollH || x >= lb && x <= rb) {
@@ -45,6 +36,14 @@ enyo.kind({
 		}
 		this.effectScroll();
 		this.doScroll();
+	},
+	shouldDrag: function(e) {
+		return true;
+	},
+	dragHandler: function(inSender, inEvent) {
+		if (!this._preventDrag) {
+			this.inherited(arguments);
+		}
 	}
 });
 
@@ -75,23 +74,38 @@ enyo.kind({
 			{name: "image", kind: "Image", className: "enyo-viewimage-image"}
 		]}
 	],
+	overscrollWidth: 100,
+	zoomInDragSnapThreshold: 0.2,
+	kFrictionDamping: 0.9,
 	//* @protected
 	create: function() {
 		this.inherited(arguments);
 		this.acceleratedChanged();
+		this.$.scroller.overscrollWidth = this.overscrollWidth;
+		this.$.scroller.adjustKFrictionDamping(this.kFrictionDamping);
 	},
 	acceleratedChanged: function() {
 		this.$.scroller.setAccelerated(this.accelerated);
 	},
-	dragHandler: function(inSender) {
+	dragHandler: function(inSender, inEvent) {
 		var s = this.$.scroller, os = this.outerScroller;
 		var pos = os.scrollH ? s.getScrollLeft() : s.getScrollTop();
 		var bs = s.getBoundaries();
 		var m = os.scrollH ? s.horizontal : s.vertical;
 		var lowerPos = os.scrollH ? bs.left : bs.top;
 		var upperPos = os.scrollH ? bs.right : bs.bottom;
-		if (m && pos >= lowerPos && pos <= upperPos) {
+		if (this.panning || (m && pos + this.overscrollWidth >= lowerPos && pos - this.overscrollWidth <= upperPos)) {
+			// dragging inside the image, stop outer scroller
+			inEvent.preventClick = function() {
+				this._preventClick = true;
+			};
+			os.dragfinishHandler(inSender, inEvent);
 			return true;
+		} else {
+			// pass dragging to outer scroller
+			if (!os.dragging) {
+				os.dragstartHandler(inSender, inEvent);
+			}
 		}
 	},
 	flickHandler: function() {
@@ -102,7 +116,7 @@ enyo.kind({
 		this.inherited(arguments);
 		if (this.outerScroller) {
 			// more resistent to snap to the next image when it is zoom-in
-			this.outerScroller.setDragSnapThreshold(this.isZoomIn() ? 0.1 : 0.01);
+			this.outerScroller.setDragSnapThreshold(this.isZoomIn() ? this.zoomInDragSnapThreshold : 0.01);
 		}
 	},
 	setOuterScroller: function(inScroller) {
@@ -113,8 +127,6 @@ enyo.kind({
 	reset: function() {
 		this.adjustSize();
 		var s = this.$.scroller;
-		// FIXME: why dragging was not reset to false?
-		s.$.scroll.dragging = false;
 		s.setScrollPositionDirect(0, 0);
 	}
 });

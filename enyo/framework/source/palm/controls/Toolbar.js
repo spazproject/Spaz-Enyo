@@ -18,8 +18,27 @@ Other controls to put in a Toolbar are <a href="#enyo.RadioToolButtonGroup">Radi
 enyo.kind({
 	name: "enyo.Toolbar",
 	kind: enyo.HFlexBox,
+	published: {
+		//* Fade the toolbar into view when the virtual keyboard is hidden or raised
+		fadeOnKeyboard: false
+	},
 	pack: "center",
 	align: "center",
 	className: "enyo-toolbar",
-	defaultKind: "ToolButton"
+	defaultKind: "ToolButton",
+	//* @protected
+	resizeHandler: function() {
+		this.inherited(arguments);
+		if (this.fadeOnKeyboard) {
+			this.fadeIn();
+		}
+	},
+	fadeIn: function() {
+		this.removeClass("enyo-toolbar-fade-in");
+		this.addClass("enyo-toolbar-snap-out");
+		enyo.asyncMethod(this, "_fadeIn");
+	},
+	_fadeIn: function() {
+		this.addClass("enyo-toolbar-fade-in");
+	}
 });

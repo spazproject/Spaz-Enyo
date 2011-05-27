@@ -2,6 +2,7 @@
 enyo.depends(
 	"css/accounts-list.css",
 	"source/util.js",
+	"source/remove-account.js",
 	"source/accounts-list.js",
 	"source/add-account.js",
 	"source/credentials.js",
@@ -14,5 +15,6 @@ enyo.depends(
 	"source/get-templates.js",
 	"source/login-utils.js",
 	"source/modify.js",
+	"source/sim-account.js",
 	"$enyo/g11n/phone/"
 );

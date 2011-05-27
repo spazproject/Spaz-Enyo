@@ -1,6 +1,5 @@
 /* Copyright 2009-2011 Hewlett-Packard Development Company, L.P. All rights reserved. */
 /**
-
 _enyo.BasicScroller_ provides touch-based scrolling for controls placed inside it.
 
 Note that applications will typically create an <a href="#enyo.Scroller">enyo.Scroller</a>
@@ -77,7 +76,6 @@ flex layout and given a flex value. For example,
 		]},
 		{kind: "Toolbar"}
 	]}
-
 */
 enyo.kind({
 	name: "enyo.BasicScroller",
@@ -215,7 +213,9 @@ enyo.kind({
 		this.$.scroll.start();
 	},
 	stop: function() {
-		this.$.scroll.stop();
+		if (this.isScrolling()) {
+			this.$.scroll.stop();
+		}
 	},
 	dragstartHandler: function(inSender, inEvent) {
 		this.calcBoundaries();
@@ -226,6 +226,9 @@ enyo.kind({
 	// by start() call above, and also when user starts a drag interaction
 	scrollStart: function(inSender) {
 		this.calcBoundaries();
+		this.calcAutoScrolling();
+		this.scrollLeftStart = this.scrollLeft;
+		this.scrollTopStart = this.scrollTop;
 		this.doScrollStart();
 	},
 	scroll: function(inSender) {
@@ -238,9 +241,11 @@ enyo.kind({
 		if (this.fpsShowing) {
 			this.$.fps.setContent(inSender.fps);
 		}
-		// FIXME: after a scroller stops some controls may need to resize
-		// e.g. popups
-		this.broadcastToChildren("resize");
+		// NOTE: after a scroller stops some controls may need to reposition themselves, e.g. popup
+		// send an offsetChanged message if our scroll position is changed.
+		if (this.scrollLeft != this.scrollLeftStart || this.scrollTop != this.scrollTopStart) {
+			this.broadcastToControls("offsetChanged");
+		}
 		this.doScrollStop();
 	},
 	effectScrollAccelerated: function() {
@@ -269,17 +274,42 @@ enyo.kind({
 		if (sn && this.hasNode()) {
 			// NOTE: it makes most sense to calculate our scroll h/w by asking for the scroll h/w of the parent (client) node 
 			// of our scrolling content (scrollee) node [note: only Scroller has this relationship]
-			// However, scrolling scrollee via top/left alters the parent's scroll h/w, so instead
-			// we use scrollee's scroll h/w. This is off by scrollee's border and we add that in via offsetHeight - clientHeight.
-			this.$.scroll.bottomBoundary = Math.min(0, this.node.clientHeight - (sn.scrollHeight + sn.offsetHeight - sn.clientHeight));
-			this.$.scroll.rightBoundary = Math.min(0, this.node.clientWidth - (sn.scrollWidth + sn.offsetWidth - sn.clientWidth));
+			// However, (non-accelerated) scrolling scrollee via top/left alters the parent's scroll h/w
+			// Also when scrolling scrollee via webkitTransform (accelerated) and the client is position: absolute,
+			// scrolling inexplicably alters the parent's scroll h/w (this seems to violate known transform rules).
+			// So instead, we use scrollee's scroll h/w.
+			// This is off by scrollee's border and margin.
+			// Add border via offsetHeight - clientHeight.
+			// Add margin via offsetTop. This includes margin + top, so compensate for top when we scroll using top. 
 			//
-			// allow content to be visible when underneath a region floating over it
-			// by adjusting bottom boundary by amount of scroller region that's not visible.
-			var vb = enyo.getVisibleControlBounds(this);
-			var b = this.getBounds();
-			this.$.scroll.bottomBoundary -= Math.max(0, b.height - vb.height);
+			// calculate margin adjustment.
+			var mh = sn.offsetTop;
+			var mw = sn.offsetLeft;
+			if (!this.accelerated) {
+				mh += this.scrollTop;
+				mw += this.scrollLeft;
+			}
+			// scroll h/w + (margin) + (border)
+			var h = sn.scrollHeight + mh + (sn.offsetHeight - sn.clientHeight);
+			var w = sn.scrollWidth + mw + (sn.offsetWidth - sn.clientWidth)
+			var bounds = {
+				b: Math.min(0, this.node.clientHeight - h),
+				r: Math.min(0, this.node.clientWidth - w)
+			}
+			this.adjustBoundaries(bounds);
+			this.$.scroll.bottomBoundary = bounds.b;
+			this.$.scroll.rightBoundary = bounds.r;
 		}
+	},
+	// FIXME: make this work...
+	adjustBoundaries: function(inBounds) {
+		// allow content to be visible when underneath a region floating over it
+		// by adjusting bottom boundary by amount of scroller region that's not visible.
+		//
+		// FIXME: need a better name (calcModalControlBounds)
+		var vb = enyo.calcModalControlBounds(this);
+		var b = this.getBounds();
+		inBounds.b -= Math.max(0, b.height - vb.height);
 	},
 	calcAutoScrolling: function() {
 		// auto-detect if we should scroll
@@ -307,13 +337,17 @@ enyo.kind({
 	setScrollPositionDirect: function(inX, inY) {
 		this.scrollTop = inY;
 		this.scrollLeft = inX;
-		// update scrollMath positions
+		// update ScrollStrategy positions
 		var s = this.$.scroll;
 		s.y = s.y0 = -this.scrollTop;
 		s.x = s.x0 = -this.scrollLeft;
 		this.effectScroll();
 	},
 	//* @public
+	//* Returns true if the scroller is scrolling when called.
+	isScrolling: function() {
+		return this.$.scroll.isScrolling();
+	},
 	/**
 	Returns an object describing the scroll boundaries, which are the dimensions
 	of scrolling content. For example, if getBoundaries returns
@@ -323,12 +357,12 @@ enyo.kind({
 	then the scrolling content is 1000 by 1000.
 	*/
 	getBoundaries: function() {
-		var s = this.$.scroll;
 		this.calcBoundaries();
+		var s = this.$.scroll;
 		return {top: s.topBoundary, right: -s.rightBoundary, bottom: -s.bottomBoundary, left: s.leftBoundary};
 	},
 	// NOTE: Yip/Orvell method for determining scroller instantaneous velocity
-	// FIXME: should probably be in ScrollMath.
+	// FIXME: should probably be in ScrollStrategy.
 	// FIXME: incorrect if called when scroller is in overscroll region
 	// because does not account for additional overscroll damping.
 	/**
@@ -362,12 +396,15 @@ enyo.kind({
 				this.setScrollLeft(Math.max(b.left, Math.min(b.right, inY)));
 			}
 		}
+		// FIXME: should only be necessary to ensure a no-op move keeps the scroller in bounds
+		// which should not be necessary. can we remove this?
 		this.start();
 	},
+	//* @protected
 	scrollOffsetIntoView: function(inY, inX, inHeight) {
 		if (this.hasNode()) {
 			this.stop();
-			var b = enyo.getVisibleControlBounds(this);
+			var b = enyo.calcModalControlBounds(this);
 			b.bottom = b.top + b.height;
 			b.right = b.left + b.width;
 			if (inY != undefined) {
@@ -391,6 +428,7 @@ enyo.kind({
 			this.start();
 		}
 	},
+	//* @public
 	/**
 	Sets the scroll position to the bottom of the content, without animation.
 	*/

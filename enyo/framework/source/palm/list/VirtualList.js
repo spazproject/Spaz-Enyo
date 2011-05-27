@@ -132,10 +132,10 @@ enyo.kind({
 		onDiscardPage: ""
 	},
 	//* @protected
-	create: function() {
+	initComponents: function() {
 		this.inherited(arguments);
 		this.createComponents([
-			{kind: "Selection", onChange: "selectionChanged"},
+			{kind: "Selection", onClear: "selectionCleared", onDeselect: "updateRowSelection", onSelect: "updateRowSelection"},
 			{kind: "Buffer", overbuffer: this.lookAhead, margin: 3, onAcquirePage: "doAcquirePage", onDiscardPage: "doDiscardPage"}
 		]);
 	},
@@ -143,8 +143,8 @@ enyo.kind({
 	/** 
 	 Set the selection state for the given row index. 
 	*/
-	select: function(inRowIndex) {
-		return this.$.selection.select(inRowIndex);
+	select: function(inRowIndex, inData) {
+		return this.$.selection.select(inRowIndex, inData);
 	},
 	/** 
 	 Get the selection state for the given row index.
@@ -157,24 +157,27 @@ enyo.kind({
 	*/
 	setMultiSelect: function(inMulti) {
 		this.$.selection.setMulti(inMulti);
+		this.refresh();
 	},
 	/** 
-	 Returns the selection component (<a href="#enyo.Selection">enyo.Selection</a>) that manages the selection
-	 state for this list.
+	Returns the selection component (<a href="#enyo.Selection">enyo.Selection</a>) that manages the selection
+	state for this list.
 	*/
 	getSelection: function() {
 		return this.$.selection;
 	},
 	//* @protected
-	selectionChanged: function() {
-		this.refresh();
+	updateRowSelection: function(inSender, inRowIndex) {
+		this.updateRow(inRowIndex);
 	},
 	resizeHandler: function() {
-		//this.log();
 		if (this.hasNode()) {
+			this.log();
 			this.$.scroller.measure();
 			this.refresh();
 			this.$.scroller.start();
+		} else {
+			this.log("no node");
 		}
 	},
 	//* @protected
@@ -183,17 +186,11 @@ enyo.kind({
 	},
 	adjustTop: function(inSender, inTop) {
 		var page = this.rowToPage(inTop);
-		//this.log(inTop, this.rowToPage(inTop));
-		enyo.vizLog && enyo.vizLog.log("VirtualList.adjustTop: row: " + inTop + " converted to page " + page);
 		this.$.buffer.adjustTop(page);
-		enyo.viz && enyo.viz.listUpdate(this);
 	},
 	adjustBottom: function(inSender, inBottom) {
 		var page = this.rowToPage(inBottom);
-		//this.log(inBottom, this.rowToPage(inBottom));
-		enyo.vizLog && enyo.vizLog.log("VirtualList.adjustBottom: row: " + inBottom + " converted to page " + page);
 		this.$.buffer.adjustBottom(page);
-		enyo.viz && enyo.viz.listUpdate(this);
 	},
 	reset: function() {
 		this.$.buffer.bottom = this.$.buffer.top - 1;

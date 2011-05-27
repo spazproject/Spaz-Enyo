@@ -109,21 +109,22 @@ enyo.kind({
 	},
 	pickerChange: function(inSender) {
 		var m, d, y;
-		if (!this.hideDay){
+		if (!this.hideMonth){
 			m = parseInt(this.$.month.getValue());
 			this.value.setMonth(m);
 		}
-		if (!this.hideMonth){
+		if (!this.hideYear){
 			y = parseInt(this.$.year.getValue());
 			this.value.setYear(y);
 		}
-		if (!this.hideYear){
+		if (!this.hideDay){
 			d = parseInt(this.$.day.getValue());
-			if (inSender != this.$.day && !this.hideDay) {
-				this.setupDay(y, m, d);
-			}
 			this.value.setDate(d);
 		}
+		if (inSender != this.$.day && !this.hideDay) {
+			this.setupDay(y, m, d);
+		}
+		
 
 		this.doChange(this.value);
 	}

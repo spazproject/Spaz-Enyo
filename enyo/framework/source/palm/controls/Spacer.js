@@ -15,4 +15,4 @@ enyo.kind({
 	kind: enyo.Control,
 	className: "enyo-spacer",
 	flex: 1
-})
+});

@@ -17,7 +17,7 @@ enyo.kind({
 		var c$ = this.getShowingChildren(inContainer);
 		var l = c$.length;
 		for (var i=0, c, r; c=c$[i]; i++) {
-			r = l == 1 ? "single" : (i == 0 ? "first" : (i == l-1 ? "last" : "middle"));
+			r = l === 1 ? "single" : (i === 0 ? "first" : (i === l-1 ? "last" : "middle"));
 			this.styleChild(c, "enyo-" + r);
 		}
 	},

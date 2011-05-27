@@ -56,6 +56,7 @@ enyo.kind({
 	beginAnimation: function(inSender, inStart, inEnd) {
 		this.$.button.domStyles.left = inEnd + "%";
 		if (this.$.button.hasNode()) {
+			inSender.setNode(this.$.button.node);
 			inSender.style = this.$.button.node.style;
 		}
 		this.doBeginAnimation();
@@ -98,6 +99,7 @@ enyo.kind({
 		this.inherited(arguments);
 		if (this._clicked) {
 			this._clicked = false;
+			inSender.setNode(null);
 			this.doChange(this.position);
 		}
 	},

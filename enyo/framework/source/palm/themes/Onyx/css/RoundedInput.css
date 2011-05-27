@@ -1,4 +1,13 @@
 /* Copyright 2009-2011 Hewlett-Packard Development Company, L.P. All rights reserved. */
-.enyo-rounded-input {
-	margin: 4px 0;
+.enyo-input.enyo-rounded-input, .enyo-input.enyo-rounded-input.enyo-input-focus {
+	border-width: 6px 20px;
+	-webkit-box-sizing: border-box;
+	-webkit-border-image: url(../images/roundedbox.png) 6 20;
+	margin: 2px 0;
+	font-size: .8rem;
+}
+
+.enyo-input.enyo-rounded-input > .enyo-input-spacing {
+	margin: -1px -10px 0 -10px;
+	min-height: 26px;
 }

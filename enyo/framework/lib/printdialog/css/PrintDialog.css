@@ -1,4 +1,7 @@
 /* Copyright 2009-2011 Hewlett-Packard Development Company, L.P. All rights reserved. */
+.print-dialog {
+	font-size: .9em;
+}
 .print-dialog .label {
 	text-overflow: ellipsis;
 	overflow: hidden;
@@ -7,9 +10,8 @@
 }
 
 .print-dialog .group-inner {
-	margin: -6px -8px;
-	-webkit-box-sizing: content-box;
-	-webkit-border-radius: 10px
+	margin: -10px -12px;
+	border-radius: 10px
 }
 .palm-modal-dialog-content .group .enyo-item {
 	border-bottom-color: #bebebe;
@@ -27,6 +29,7 @@
 
 .print-dialog .search-message {
 	text-align: center;
+	padding:0 13px;
 }
 
 .print-dialog .printer-list-item-box {
@@ -36,7 +39,9 @@
 	overflow: hidden;
 }
 .print-dialog .enyo-item.selected-printer {
-	background: url(../images/bg_selected_printer.png) repeat-x 0 0;
+	background-image: -webkit-gradient(linear, left top, left bottom, from(#ebebeb), to(#c5c5c5));
+	border-top-left-radius: 10px;
+	border-top-right-radius: 10px;
 }
 .print-dialog .enyo-item.selected-printer div {
 	height: 2.2em;
@@ -46,7 +51,7 @@
 }
 
 .print-dialog .get-capabilities-item {
-	height: 7.5em;
+	height: 7.4em;
 	text-align: center;
 }
 
@@ -57,9 +62,10 @@
 .print-dialog .progress-message {
 	color: gray;
 	text-align: center;
-	margin: 10px 10px 0 0;
-	white-space: pre-wrap;
-}
+	padding: 10px 0 0 0;
+	line-height:1.2em;
+	/* what was the right margin for?  */
+} 
 
 .print-dialog .progress-bar {
 	margin: 10px 0 20px 0;

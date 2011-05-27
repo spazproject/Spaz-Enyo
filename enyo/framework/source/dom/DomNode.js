@@ -12,19 +12,57 @@
 	Additionally, it serves as a local cache for certain information that can
 	be costly to gather directly from the DOM itself.
 
-	Controls in Enyo are an extension of Components into the UI realm.
+	Controls in Enyo are an extension of Components into UI.
 	enyo.DomNode is the first step in crafting Component into Control.
 */
 enyo.kind({
 	name: "enyo.DomNode", 
 	kind: enyo.Component,
 	published: {
-		//* Controls the display of this object.
+		/**
+			Controls the display of this object.
+
+			The _showing_ property and the _setShowing()_, _show()_, and _hide()_ methods are only
+			conveniences for quickly setting or removing _display: none_ style.
+
+			The value of _showing_ does not imply an object is actually visible or even rendered in DOM,
+			it simply reflects this state of this specific style as a convenience.
+
+			For any actual DOM node represented by this object, other CSS classes or custom selectors 
+			could cause the display property of the computedStyle to be out sync with _showing_.
+
+			Also, note that _showing_ has lower precedence over other ways for setting the display
+			style for this object. 
+			
+			E.g. if _showing_ is false,
+
+				this.applyStyle("display", null);
+			
+			will immediately display the object without changing the value of _showing_.
+
+			Note that the _getShowing()_ method tests the display style of the node and resets 
+			the _showing_ property as needed before returning it's value.
+		*/
 		showing: true,
+		//* if true, this node is prepended to it's parent, otherwise it's appended
 		prepend: false
 	},
+	/** Type of DomNode created by this Builder. */
+	nodeTag: "div",
 	//* @protected
+	// our id in the DOM
+	id: "",
+	// our node reference (if we have one)
 	node: null,
+	// NOTE: in the past it's been convenient to be able to modify domAttributes/Styles
+	// on demand (using getters), but we aren't using this ability in modern Enyo, so we 
+	// reference domAttributes/Styles directly in this kind.
+	constructor: function() {
+		this.inherited(arguments);
+		// we have to clone these hashes because the originals belong to the prototype
+		this.domStyles = enyo.clone(this.domStyles);
+		this.domAttributes = enyo.clone(this.domAttributes);
+	},
 	create: function() {
 		this.inherited(arguments);
 		this.showingChanged();
@@ -33,6 +71,15 @@ enyo.kind({
 		this._remove();
 		this.inherited(arguments);
 	},
+	ownerChanged: function(inOldOwner) {
+		this.inherited(arguments);
+		this.setAttribute("id", this.id);
+	},
+	//
+	// node insertion/removal/finding
+	//
+	// NOTE: these are private because we have made higher level abstractions (i.e. set/getParent)
+	// is this really a good idea?
 	_append: function() {
 		if (this.node) {
 			var pn = this.getParentNode();
@@ -41,19 +88,12 @@ enyo.kind({
 			}
 		}
 	},
-	_prepend: function() {
-		if (this.node) {
-			var pn = this.getParentNode();
-			if (pn) {
-				pn.insertBefore(this.node, pn.firstChild);
-			}
-		}
-	},
+	// will prepend if inBeforeNode is null
 	_insert: function(inBeforeNode) {
 		if (this.node) {
 			var pn = this.getParentNode();
 			if (pn) {
-				pn.insertBefore(this.node, inBeforeNode);
+				pn.insertBefore(this.node, inBeforeNode || pn.firstChild);
 			}
 		}
 	},
@@ -62,24 +102,13 @@ enyo.kind({
 			this.node.parentNode.removeChild(this.node);
 		}
 	},
+	// end private
 	addToParentNode: function() {
 		if (this.prepend) {
-			this._prepend();
+			this._insert();
 		} else {
 			this._append();
 		}
-	},
-	setNode: function(inNode) {
-		this.node = inNode;
-		//return (this.node = enyo.byId(inNode));
-		//this.nodeStyle = this.node.style;
-	},
-	createNode: function() {
-		this.node = document.createElement(this.nodeTag);
-		this.addToParentNode();
-	},
-	findNodeById: function() {
-		return this.id && (this.node = enyo.byId(this.id));
 	},
 	//* @public
 	/**
@@ -101,7 +130,19 @@ enyo.kind({
 		return this.node || (this.id && this.findNodeById());
 	},
 	//* @protected
-	// FIXME: parentNode stuff vestigial?
+	// NOTE: expensive, other classes do work to avoid calling byId
+	findNodeById: function() {
+		return this.id && (this.node = enyo.byId(this.id));
+	},
+	// FIXME: used by flyweight, but anybody else?
+	setNode: function(inNode) {
+		this.node = inNode;
+	},
+	createNode: function() {
+		this.node = document.createElement(this.nodeTag);
+		// FIXME: why here?
+		this.addToParentNode();
+	},
 	getParentNode: function() {
 		return enyo.byId(this.parentNode);
 	},
@@ -110,29 +151,92 @@ enyo.kind({
 		Removes a node from the DOM by sending null. Does nothing if this.node is null.
 	*/
 	setParentNode: function(inParentNode) {
-		//if (this.node && inParentNode) {
-		//	enyo.byId(inParentNode).appendChild(this.node);
-		//} else if (this.node && this.node.parentNode) {
 		if (!inParentNode) {
 			this._remove();
 		}
 		this.parentNode = inParentNode;
 		this._append();
 	},
-	//* Appends inNode to our node's children.
-	appendChildNode: function(inNode) {
-		if (inNode && this.hasNode()) {
-			this.node.appendChild(inNode);
+	//
+	// rendering attributes/styles to a node
+	//
+	//* @protected
+	attributeToNode: function(inName, inValue) {
+		if (inName == "className") {
+			inName = "class";
+		}
+		if (inValue === null) {
+			this.node.removeAttribute(inName);
+		} else {
+			this.node.setAttribute(inName, inValue);
 		}
 	},
-	//* Inserts inNode at integer index inAt in our node's list of children.
-	insertNodeAt: function(inNode, inAt) {
-		var sib = this.node.childNodes[inAt];
-		this.node.insertBefore(inNode, sib);
+	/**
+		Sets or removes attributes on this node based on input name/value pairs. 
+		Null-valued attributes are removed.
+	*/
+	attributesToNode: function(inAttributes) {
+		for (var n in inAttributes) {
+			this.attributeToNode(n, inAttributes[n]);
+		}
 	},
-	getBounds: function() {
-		var n = this.node || this.hasNode() || 0;
-		return {left: n.offsetLeft, top: n.offsetTop, width: n.offsetWidth, height: n.offsetHeight};
+	/**
+		Sets the styles of this node based on input name/value pairs.
+		Existing styles on the node are lost.
+	*/
+	stylesToNode: function(inStyles) {
+		this.node.style.cssText = enyo.stylesToHtml(inStyles);
+	},
+	//
+	// styles
+	//
+	//* @protected
+	setDomStyles: function(inDomStyles) {
+		this.domStyles = inDomStyles;
+		this.domStylesChanged();
+	},
+	domStylesChanged: function() {
+		if (this.hasNode()) {
+			this.stylesToNode(this.domStyles);
+		}
+		// FIXME: 'display: none' and 'showing' can get out of sync.
+		// To fix it, one has to have priority.
+		// We can implement 'showing' priority by adding this line:
+		//this.syncDisplayToShowing();
+		// We can implement 'display' priority with this line:
+		//this.getShowing();
+		// As of this writing, too many users are relying on the
+		// original behavior for us to fix it in 0.10 without causing
+		// API breakage.
+	},
+	getShowing: function() {
+		// 'showing' specifically means domStyles.display !== 'none'.
+		// 'showing' does not imply the node is actually visible or even rendered in DOM,
+		// it simply reflects this state of this specific property as a convenience.
+		return this.showing = (this.domStyles.display != "none");
+	},
+	syncDisplayToShowing: function() {
+		var ds = this.domStyles;
+		if (this.showing) {
+			// note: only show a node if it's actually hidden
+			// this way we prevent overriding the value of domStyles.display
+			if (ds.display == "none") {
+				ds.display = this._displayStyle || "";
+			}
+		} else {
+			// cache the previous showing value of display
+			// note: we could use a class to hide a node, but then
+			// hide would not override a setting of display: none in style,
+			// which seems bad.
+			this._displayStyle = (ds.display == "none" ? "" : ds.display);
+			ds.display = "none";
+		}
+		if (this.hasNode()) {
+			this.node.style.display = ds.display;
+		}
+	},
+	showingChanged: function() {
+		this.syncDisplayToShowing();
 	},
 	addCssText: function(inCssText) {
 		// remove spaces between rules, then split rules on delimiter (;)
@@ -150,18 +254,6 @@ enyo.kind({
 		}
 	},
 	//* @public
-	// FIXME: need to update style handling vis DomNodeBuilder and AbstractDomBuilder
-	// which have vestigial (?) features (aka getDomStyles, getDomAttributes)
-	// domStyles should not even a concept for this class
-	setDomStyles: function(inDomStyles) {
-		this.domStyles = inDomStyles;
-		this.domStylesChanged();
-	},
-	domStylesChanged: function() {
-		if (this.hasNode()) {
-			this.stylesToNode(this.domStyles);
-		}
-	},
 	/**
 		Adds CSS styles to the set of styles assigned to this object.
 
@@ -172,12 +264,6 @@ enyo.kind({
 	addStyles: function(inStyles) {
 		this.addCssText(inStyles);
 		this.domStylesChanged();
-		/*
-		if (this.hasNode()) {
-			//this.renderDomStyles();
-			this.stylesToNode(this.domStyles);
-		}
-		*/
 	},
 	/**
 		Applies a single style value to this object.
@@ -191,51 +277,38 @@ enyo.kind({
 	applyStyle: function(inStyle, inValue) {
 		this.domStyles[inStyle] = inValue;
 		this.domStylesChanged();
-		/*
-		if (this.hasNode()) {
-			this.stylesToNode(this.domStyles);
-		}
-		*/
 	},
 	/**
 		Replaces the set of CSS styles assigned to this object.
 
-		_inStyles_ is a string containing CSS styles in text format.
+		_inStyle_ is a string containing CSS styles in text format.
 
-			this.$.box.setStyles("color: black;");
+			this.$.box.setStyle("color: black;");
 	*/
 	setStyle: function(inStyle) {
 		this.domStyles = {};
 		this.addStyles(inStyle);
 	},
-	/** Shows this node (alias for _setShowing(true)_). */
-	show: function() {
-		this.setShowing(true);
-	},
-	/** Hides this node (alias for _setShowing(false)_). */
-	hide: function() {
-		this.setShowing(false);
-	},
-	//* @protected
-	showingChanged: function() {
-		var ds = this.domStyles;
-		if (this.showing) {
-			// note: only show a node if it's actually hidden
-			// this way we prevent overriding the value of domStyles.display
-			if (ds.display == "none") {
-				ds.display = this._displayStyle || "";
-			}
-		} else {
-			// cache the previous showing value of display
-			// note: we could use a class to hide a node, but then
-			// hide would not override a setting of display: none in style, which seems bad.
-			this._displayStyle = (ds.display == "none" ? "" : ds.display);
-			ds.display = "none";
-		}
+	//
+	// attributes
+	//
+	/**
+		Sets the value of an attribute on this object. Set _inValue_ to null to remove an attribute.
+
+			// set the tabIndex attribute for this DomNode
+			this.setAttribute("tabIndex", 3);
+			// remove the index attribute
+			this.setAttribute("index", null);
+	*/
+	setAttribute: function(inName, inValue) {
+		this.domAttributes[inName] = inValue;
 		if (this.hasNode()) {
-			this.node.style.display = ds.display;
+			this.attributeToNode(inName, inValue);
 		}
 	},
+	//
+	// className
+	//
 	//* @public
 	// FIXME: should be set/getDomClassName, but it's convenient not to have to facade these in Control; revisit later
 	/**
@@ -303,46 +376,11 @@ enyo.kind({
 	addRemoveClass: function(inClass, inTrueToAdd) {
 		this[inTrueToAdd ? "addClass" : "removeClass"](inClass);
 	},
-	/**
-		Sets the value of an attribute on this object. Set _inValue_ to null to remove an attribute.
-
-			// set the tabIndex attribute for this DomNode
-			this.setAttribute("tabIndex", 3);
-			// remove the index attribute
-			this.setAttribute("index", null);
-	*/
-	setAttribute: function(inName, inValue) {
-		this.domAttributes[inName] = inValue;
-		if (this.hasNode()) {
-			this.attributeToNode(inName, inValue);
-		}
-	},
 	//* @protected
-	attributeToNode: function(inName, inValue) {
-		if (inName == "className") {
-			inName = "class";
-		}
-		if (inValue === null) {
-			this.node.removeAttribute(inName);
-		} else {
-			this.node.setAttribute(inName, inValue);
-		}
-	},
-	/**
-		Sets or removes attributes on this node based on input name/value pairs. 
-		Null-valued attributes are removed.
-	*/
-	attributesToNode: function(inAttributes) {
-		for (var n in inAttributes) {
-			this.attributeToNode(n, inAttributes[n]);
-		}
-	},
-	/**
-		Sets the styles of this node based on input name/value pairs.
-		Existing styles on the node are lost.
-	*/
-	stylesToNode: function(inStyles) {
-		this.node.style.cssText = enyo.stylesToHtml(inStyles);
+	// FIXME: TODOC
+	getBounds: function() {
+		var n = this.node || this.hasNode() || 0;
+		return {left: n.offsetLeft, top: n.offsetTop, width: n.offsetWidth, height: n.offsetHeight};
 	},
 	setBox: function(inBox, inUnit) {
 		var s = this.domStyles, u = inUnit || "px";

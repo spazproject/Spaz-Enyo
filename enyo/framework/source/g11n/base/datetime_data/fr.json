@@ -8,7 +8,7 @@
 		"month": ["janv.", "févr.", "mars", "avr.", "mai", "juin", "juil.", "août", "sept.", "oct.", "nov.", "déc."]
 	},
 	"short": {
-		"day": ["dim.", "lun.", "mar.", "mer.", "jeu.", "ven.", "sam."],
+		"day": ["di", "lu", "ma", "me", "je", "ve", "sa"],
 		"month": ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"],
 		"date": ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10",
 			"11", "12", "13", "14", "15", "16", "17", "18", "19", "20",
@@ -29,8 +29,8 @@
 		"yesterday": "hier",
 		"today" : "aujourd’hui",
 		"tomorrow" : "demain",
-		"thisMonth": "1##{num} week ago|##{num} weeks ago",
-		"thisYear": "1##{num} month ago|##{num} months ago"
+		"thisMonth": "1#Il y a 1 semaine|#Il y a #{num} semaines",
+		"thisYear": "1#Il y a 1 mois|#Il y a #{num} mois"
 	}, 
 
 	"am": "matin",

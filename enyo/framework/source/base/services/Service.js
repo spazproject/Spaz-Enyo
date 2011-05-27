@@ -21,7 +21,6 @@ In this case, the genericResponse method will be called with the service respons
 
 	this.$.service.call({index: 10}, {onResponse: ""});
 
-
 */
 enyo.kind({
 	name: "enyo.Service",

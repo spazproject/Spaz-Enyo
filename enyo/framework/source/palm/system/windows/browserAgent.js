@@ -7,13 +7,14 @@ enyo.windows.browserAgent = {
 		var doc = inOpener.document;
 		var iframe = doc.createElement("iframe");
 		iframe.src = url;
+		iframe._enyoWrapperIframe = true;
 		iframe.setAttribute("frameborder", 0);
 		var m = (inWindowInfo || "").match(/height=(.*)($|,)/);
 		var h = (m && m[1]) || (inAttributes.window == "dashboard" && 96);
 		if (h) {
-			iframe.style.cssText = "position:absolute; bottom: 0px; height: " + h + "px; width:100%";
+			iframe.style.cssText = "position:absolute; left: 0; right: 0; bottom: 0px; height: " + h + "px; width:100%";
 		} else {
-			iframe.style.cssText = "position:absolute; width:100%;height:100%;";
+			iframe.style.cssText = "position:absolute; left: 0; right: 0; width:100%;height:100%;";
 		}
 		doc.body.appendChild(iframe);
 		var w = iframe.contentWindow;
@@ -27,8 +28,7 @@ enyo.windows.browserAgent = {
 		var windows = enyo.windows.getWindows(), f;
 		for (var i in windows) {
 			f = windows[i].frameElement;
-			if (f) {
-				//f.style.zIndex = inWindow == windows[i] ? 1 : "";
+			if (f && f._enyoWrapperIframe) {
 				f.style.display = inWindow.name == i ? "" : "none";
 			}
 		}

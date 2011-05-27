@@ -1,9 +1,9 @@
 /* Copyright 2009-2011 Hewlett-Packard Development Company, L.P. All rights reserved. */
 /**
-A control that displays html content defined in a web page's html source. Using an HtmlContent
-is a convenient way to specify a large amount of html.
+A control that displays HTML content defined in a web page's HTML source. Using an HtmlContent
+is a convenient way to specify a large amount of HTML.
 
-The content property of a control can be used to specify html content, but 
+The content property of a control can be used to specify HTML content, but 
 it's not desirable to place a large amount of content in a components block:
 
 	{content: "This is some short text"}
@@ -11,7 +11,7 @@ it's not desirable to place a large amount of content in a components block:
 Instead, use an HtmlContent. In an application's index.html file:
 
 	<body>
-		<div id="myContent">This could be a large chunk of html.</div>
+		<div id="myContent">This could be a large chunk of HTML.</div>
 	</body>
 
 Then, in a kind's components block:
@@ -19,7 +19,7 @@ Then, in a kind's components block:
 	{kind: "HtmlContent", srcId: "myContent", onLinkClick: "htmlContentLinkClick"}
 
 HtmlContent provides special handling for links. Instead of navigating to the web page 
-specified in a link when it is clicked, an onLinkClick event is generated. The second event argument is the url
+specified in a link when it is clicked, an onLinkClick event is generated. The second event argument is the URL
 of the link:
 
 	htmlContentLinkClick: function(inSender, inUrl) {
@@ -32,11 +32,15 @@ enyo.kind({
 	name: "enyo.HtmlContent",
 	kind: enyo.Control,
 	published: {
+		/** optional ID of an element in the page from which to pull HTML content.  If not set, this acts like a
+		    enyo.Control which has the _allowHtml_ property set to true. */
 		srcId: ""
 	},
 	events: {
+		//* event sent when a link inside the HtmlContent is clicked
 		onLinkClick: ""
 	},
+	allowHtml: true,
 	//* @protected
 	create: function() {
 		this.inherited(arguments);

@@ -14,11 +14,11 @@ enyo.kind({
 		{kind: "Control", flex: 1, className: "group-inner", components: [
 			{kind: "Item", className: "enyo-first", components: [
 				{kind: "VFlexBox", components: [
-					{kind: "RowGroup", components: [{name: "printerID", kind: "Input", hint: PrintDialogString.load("PRINTER_ID_HINT"),
+					{kind: "Group", components: [{name: "printerID", kind: "Input", hint: PrintDialogString.load("PRINTER_ID_HINT"),
 						value: "", 
 						oninput: "doChangePrinterID",
 						onkeydown: "inputKeydown"}]},
-					{kind: "RowGroup", components: [{name: "printerName", kind: "Input", hint: PrintDialogString.load("PRINTER_NAME_HINT"),
+					{kind: "Group", components: [{name: "printerName", kind: "Input", hint: PrintDialogString.load("PRINTER_NAME_HINT"),
 						value: "",
 						oninput: "doChangePrinterName",
 						onkeydown: "inputKeydown"}]},

@@ -36,7 +36,8 @@ var LoginUtils = (function () {
 		createValidatorParams: function(username, password, templateId, validatorConfig, config, options) {
 			var accountId, combinedConfig;
 			
-			accountId = options && options.accountId;
+			if (options && options.accountId)
+				accountId = options.accountId;
 
 			// Combine passed-in config and validator config from template
 			// Passed-in (if any) takes priority over template config

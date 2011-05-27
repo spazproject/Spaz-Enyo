@@ -37,15 +37,15 @@ enyo.kind({
 	create: function() {
 		this.inherited(arguments);
 		this.labelClassChanged();
+		this.applyToPickers("setScrim", [false]);
 		this.labelChanged();
-		this.createChrome([{kind: "Popup", style: "border-width: 0; -webkit-border-image: none;"}]);
+		this.createChrome([{kind: "Popup", allowHtml: true, style: "border-width: 0; -webkit-border-image: none;"}]);
 	},
 	addControl: function(inControl) {
 		this.inherited(arguments);
 		if (inControl instanceof enyo.Picker) {
-			inControl.scrim = false;
-			inControl.managerOpenPopup = "pickerPopupOpen";
-			inControl.managerClosePopup = "pickerPopupClose";
+			inControl.containerOpenPopup = "pickerPopupOpen";
+			inControl.containerClosePopup = "pickerPopupClose";
 			this.pickers.push(inControl);
 		}
 	},
@@ -53,12 +53,10 @@ enyo.kind({
 		this.inherited(arguments);
 	},
 	pickerPopupOpen: function(inSender) {
-		//this.applyToPickers("addClass", ["enyo-pickergroup-above-scrim"]);
 		this.applyToPickers("setFocus", [true]);
 		this.openPopup();
 	},
 	pickerPopupClose: function(inSender, inEvent) {
-		//this.applyToPickers("removeClass", ["enyo-pickergroup-above-scrim"]);
 		this.applyToPickers("setFocus", [false]);
 		if (!this.isEventInPicker(inEvent)) {
 			this.closePopup();
@@ -82,6 +80,8 @@ enyo.kind({
 		if (!p.isOpen) {
 			p.openAtControl(this.$.client);
 			p.setContent(this.$.client.generateHtml());
+			this._scrimZ = this.$.popup.getScrimZIndex();
+			enyo.scrimTransparent.showAtZIndex(this._scrimZ);
 		}
 	},
 	// NOTE: popup content duplicates client content. It should be cleared
@@ -89,6 +89,7 @@ enyo.kind({
 	closePopup: function() {
 		this.$.popup.setContent("");
 		this.$.popup.close();
+		enyo.scrimTransparent.hideAtZIndex(this._scrimZ);
 	},
 	applyToPickers: function(inFunc, inArgs) {
 		for (var i=0, p; p=this.pickers[i]; i++) {
@@ -104,5 +105,26 @@ enyo.kind({
 	},
 	pickerChange: function() {
 		this.doChange();
-	}
+	},
+	findTargetPicker: function(inTarget) {
+		for (var i=0, p; p=this.pickers[i]; i++) {
+			if (inTarget.isDescendantOf(p)) {
+				return p
+			}
+		}
+	},
+	// called when a picker popup receives a click from a target with the
+	// same container as the picker (i.e. another picker in this group)
+	pickerPopupClick: function(inSender, inTarget) {
+		var p = this.findTargetPicker(inTarget);
+		if (p && p != inSender) {
+			p.openPopup();
+		}
+	},
+	resizeHandler: function() {
+		this.inherited(arguments);
+		for (var i=0, p; p=this.pickers[i]; i++) {
+			p.resized();
+		}
+	},
 });

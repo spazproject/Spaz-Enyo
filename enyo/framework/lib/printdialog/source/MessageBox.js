@@ -2,7 +2,7 @@
 enyo.kind({
 	name: "MessageBox",
 	kind: "ModalDialog",
-	className: "enyo-popup print-dialog",
+	className: "enyo-popup enyo-modaldialog print-dialog",
 	published: {
 		message: ""
  	},
@@ -18,7 +18,7 @@ enyo.kind({
 	],
 	
 	//* @protected
-	create: function() {
+	componentsReady: function() {
  		this.inherited(arguments);
  		this.messageChanged();
  	},
@@ -31,6 +31,9 @@ enyo.kind({
  	
  	//* @public
  	showMessage: function(inMessage) {
+		// Make sure all components are created
+		this.validateComponents();
+		
 		if (inMessage) {
 			this.setMessage(inMessage);
 		}

@@ -296,6 +296,9 @@ enyo.g11n.DateFmt = function(params){
 	} else {
 		locale = params.locale;
 	}
+	if (!locale.language) {
+		locale.useDefaultLang();
+	}
 	this.locale = locale;
 	
 	if (typeof(params) === "string"){
@@ -303,14 +306,24 @@ enyo.g11n.DateFmt = function(params){
 	}else if (typeof(params) === 'undefined'){
 		params = {"format": "short"};	
 		self.formatType = params.format;
-	}else{
+	}else {
 		self.formatType = params.format;
+	}
+	
+	if (!self.formatType && !params.time && !params.date) {
+		if (!params) {
+			params = {"format": 'short'};
+		} else {
+			params.format = 'short';
+		}
+		self.formatType = 'short';
 	}
 	
 	self.dateTimeHash = enyo.g11n.Utils.getJsonFile({
 		root: enyo.g11n.Utils._getEnyoRoot(),
 		path: "base/datetime_data",
-		locale: locale
+		locale: locale,
+		type: "language"
 	});
 	
 	if (!self.dateTimeHash){
@@ -324,11 +337,12 @@ enyo.g11n.DateFmt = function(params){
 	self.dateTimeFormatHash = enyo.g11n.Utils.getJsonFile({
 		root: enyo.g11n.Utils._getEnyoRoot(),
 		path: "base/formats",
-		locale: locale
+		locale: locale,
+		type: "region"
 	});
 	
 	self.rb = new enyo.g11n.Resources({
-		root: enyo.g11n.Utils._getEnyoRoot() + "base",
+		root: enyo.g11n.Utils._getEnyoRoot() + "/base",
 		locale: locale
 	});
 	
@@ -593,6 +607,7 @@ enyo.g11n.DateFmt.prototype.format = function(date) {
     //var startTime = new Date();
 	var self = this;
 	if (typeof(date) !== "object" || self.tokenized === null){
+		console.warn("DateFmt.format: no date to format or no format loaded");
 		return undefined;
 	}
 

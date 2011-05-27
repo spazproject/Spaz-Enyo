@@ -4,11 +4,11 @@
 		"month": ["Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"]
 	},
 	"medium": {
-		"day": ["So.", "Mo.", "Di.", "Mi.", "Do.", "Fr.", "Sa."],
+		"day": ["Son.", "Mon.", "Din.", "Mit.", "Don.", "Fre.", "Sam."],
 		"month": ["Jan", "Feb", "Mär", "Apr", "Mai", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dez"]
 	},
 	"short": {
-		"day": ["So.", "Mo.", "Di.", "Mi.", "Do.", "Fr.", "Sa."],
+		"day": ["So", "Mo", "Di", "Mi", "Do", "Fr", "Sa"],
 		"month": ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"],
 		"date": ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10",
 			"11", "12", "13", "14", "15", "16", "17", "18", "19", "20",
@@ -26,11 +26,11 @@
 	},
 
 	"relative": {
-		"yesterday": "gestern",
-		"today" : "heute",
-		"tomorrow" : "morgen",
-		"thisMonth": "1##{num} week ago|##{num} weeks ago",
-		"thisYear": "1##{num} month ago|##{num} months ago"
+		"yesterday": "Gestern",
+		"today" : "Heute",
+		"tomorrow" : "Morgen",
+		"thisMonth": "1#Vor 1 Woche|#Vor #{num} Wochen",
+		"thisYear": "1#Vor 1 Monat|#Vor #{num} Monaten"
 	}, 
 
 	"am": "vorm.",

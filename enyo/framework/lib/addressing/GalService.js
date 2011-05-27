@@ -39,6 +39,7 @@ enyo.kind({
 	},
 	// skip a failed contact query, others may return results
 	gotFailure: function(inSender, inResponse) {
+		this.warn(inResponse.errorText);
 		this.inflight--;
 		this.maybeSendResults({returnValue:true});
 	},
@@ -64,7 +65,10 @@ enyo.kind({
 		this.results = [];
 		var accounts = this.owner.accounts;
 		for (var i=0, a; a=accounts[i]; i++) {
-			this.$.contactsService.service = this.fetchAccountLookupService(a);
+			var query = this.fetchAccountLookupService(a).split('/');
+			var service = query[0], method = query.slice(1).join('/');
+			this.$.contactsService.service = service
+			this.$.contactsService.method = method;
 			this.inflight++;
 			this.$.contactsService.call({
 				accountId: a._id,

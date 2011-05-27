@@ -1,22 +1,36 @@
 /* Copyright 2009-2011 Hewlett-Packard Development Company, L.P. All rights reserved. */
 enyo.kind({
 	name: "enyo.SearchInput",
-	kind: enyo.RoundedInput,
+	kind: enyo.Input,
+	changeOnInput: true,
+	alwaysLooksFocused: true,
+	hint: "Search",
+	keypressInputDelay: 250,
 	events: {
-		onSearch: ""
+		onCancel: ""
 	},
 	components: [
-		{kind: "Image", src: "$palm-themes-Onyx/images/search-input-search.png", style: "display: block", onclick: "fireSearch"}
+		{name: "icon", kind: "CustomButton", className: "enyo-search-input-search", onclick: "iconClick"}
 	],
-	keypressHandler: function(inSender, inEvent) {
-		if (inEvent.keyCode == "13") {
-			this.fireSearch();
-		} else {
-			return this.inherited(arguments);
+	iconClick: function() {
+		if (!this.isEmpty()) {
+			this.setValue("");
+			this.doCancel();
 		}
 	},
-	fireSearch: function() {
-		this.doSearch(this.getValue());
-		//this.forceBlur();
+	inputHandler: function() {
+		this.updateIconClass();
+		return this.inherited(arguments);
+	},
+	updateIconClass: function() {
+		var empty = this.isEmpty();
+		if (empty != this.lastEmpty) {
+			this.$.icon.addRemoveClass("enyo-search-input-cancel", !empty);
+		}
+		this.lastEmpty = empty;
+	},
+	valueChanged: function() {
+		this.inherited(arguments);
+		this.updateIconClass();
 	}
 });

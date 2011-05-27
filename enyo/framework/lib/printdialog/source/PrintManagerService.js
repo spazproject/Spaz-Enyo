@@ -3,13 +3,7 @@ enyo.kind({
 	name: "PrintManagerService",
 	kind: enyo.PalmService,
 	service: "palm://com.palm.printmgr/",
-	requestKind: "PrintManagerService.Request",
-	
-	//* @protected
-	makeRequestProps: function(inProps) {
-		var p = this.inherited(arguments);
-		return p;
-	}	
+	requestKind: "PrintManagerService.Request"
 });
 
 //* @protected

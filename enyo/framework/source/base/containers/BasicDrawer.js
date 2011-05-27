@@ -63,18 +63,21 @@ enyo.kind({
 		// we toggle visibility so that if we have padding,
 		// client doesn't show through when closed
 		if (this.hasNode()) {
-			this.node.style.visibility = "visible";
+			//this.node.style.visibility = "visible";
+			this.node.style.display = "";
 		} else {
-			this.applyStyle("visibility", "visible");
+			this.applyStyle("display", "");
+			//this.applyStyle("visibility", "visible");
 		}
 		// animate opening!
 		if (this.animate && this.hasNode()) {
 			this.playAnimation();
 		} else {
 			this.applyStyle("height", this.open ? "auto" : "0px");
-			this.applyStyle("visibility", this.open ? null : "hidden");
+			this.applyStyle("display", this.open ? null : "none");
+			//this.applyStyle("visibility", this.open ? null : "hidden");
 		}
-		if (inOldValue != undefined && this.open != inOldValue) {
+		if (inOldValue !== undefined && this.open !== inOldValue) {
 			this.doOpenChanged();
 		}
 	},
@@ -96,9 +99,10 @@ enyo.kind({
 			// note: set correct control styles for end animation
 			var ds = this.domStyles;
 			ds.height = e + "px";
-			ds.visibility = this.open ? null : "hidden";
+			//ds.visibility = this.open ? null : "hidden";
+			ds.display = this.open ? null : "none";
 			//
-			a = this.createComponent({kind: "Animator", onAnimate: "stepAnimation", onEnd: "endAnimation", node: this.node, style: this.node.style, open: this.open, s: s, e: e});
+			a = this.createComponent({kind: "Animator", onAnimate: "stepAnimation", onStop: "stopAnimation", node: this.node, style: this.node.style, open: this.open, s: s, e: e});
 			a.duration = this.open ? 250 : 100;
 			a.play(s, e);
 			this.node.animation = a;
@@ -107,18 +111,16 @@ enyo.kind({
 	stepAnimation: function(inSender, inValue) {
 		inSender.style.height = Math.round(inValue) + "px";
 	},
-	endAnimation: function(inSender) {
+	stopAnimation: function(inSender) {
 		inSender.style.height = inSender.open ? "auto" : "0px";
-		inSender.style.visibility = inSender.open ? null : "hidden";
+		//inSender.style.visibility = inSender.open ? null : "hidden";
+		inSender.style.display = inSender.open ? null : "none";
 		inSender.node.animation = null;
 		inSender.destroy();
 		this.doOpenAnimationComplete();
 	},
-	//* @public
-	/**
-	Toggles the open state of the drawer.
-	*/
 	toggleOpen: function() {
 		this.setOpen(!this.open);
 	}
 });
+

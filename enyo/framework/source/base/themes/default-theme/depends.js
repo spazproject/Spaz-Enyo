@@ -11,5 +11,6 @@ enyo.depends(
 	"css/Scroller.css",
 	"css/ScrollFades.css",
 	"css/VirtualRepeater.css",
+	"css/PopupLayer.css",
 	"css/Pane.css"
 );

@@ -1,17 +1,24 @@
 /* Copyright 2009-2011 Hewlett-Packard Development Company, L.P. All rights reserved. */
 .enyo-modaldialog {
 	width: 320px;
+	border-width: 42px 24px 24px;
+	-webkit-border-image: url(../images/modaldialog.png) 42 24 24 24 stretch stretch;
 }
 .enyo-modaldialog-container {
-	margin: -4px;
+	margin: -22px -4px -4px;
 }
 .enyo-modaldialog-title {
-	font-size: 20px;
+	font-size: 1rem;
 	margin: 0 0 10px;
 	text-align: center;
 }
-.enyo-modaldialog-content .group {
-	-webkit-border-image: url(../images/dialog-group-background.png) 10 10 repeat;
-	border-width: 10px;
-	margin-bottom: 10px;
+.enyo-modaldialog-container .enyo-group,
+.enyo-modaldialog-container .group {
+	border-width: 14px;
+	-webkit-border-image: url(../images/modaldialog-group-unlabeled.png) 14 14 repeat repeat;
+	margin: 8px 0;
+}
+.enyo-modaldialog-container .enyo-group.labeled {
+	border-width: 36px 14px 14px 14px;
+	-webkit-border-image: url(../images/modaldialog-group-labeled.png) 36 14 14 14 repeat repeat;
 }

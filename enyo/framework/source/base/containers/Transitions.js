@@ -50,7 +50,7 @@ enyo.kind({
 			style1 = c.node.style;
 			style1.zIndex = 1;
 		}
-		c1 = this.pane.transitioneeForView(this.toView);
+		var c1 = this.pane.transitioneeForView(this.toView);
 		if (c1 && c1.hasNode()) {
 			style0 = c1.node.style;
 			style0.zIndex = 2;
@@ -89,7 +89,7 @@ enyo.kind({
 				}
 				self.done();
 			}
-		}
+		};
 		inStyle0[inCoord] = Math.max(inStart, 0) + "px";
 		// allow browser to adapt to changes above before starting animation timer
 		// otherwise (on slower devices) the adaptation time is conflated with the 
@@ -158,7 +158,7 @@ enyo.kind({
 				}
 				self.done();
 			}
-		}
+		};
 		// allow browser to adapt to changes above before starting animation timer
 		// otherwise (on slower devices) the adaptation time is conflated with the 
 		// first frame and the animation is not smooth

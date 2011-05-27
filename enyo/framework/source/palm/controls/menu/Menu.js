@@ -31,41 +31,46 @@ enyo.kind({
 	name: "enyo.Menu",
 	kind: enyo.Popup,
 	published: {
-		// an array of config objects or strings representing items
-		items: [],
 		// whenever the menu is opened, any sub-items will be shown closed
 		autoCloseSubItems: true
 	},
+	modal: true,
+	showFades: true,
 	className: "enyo-popup enyo-popup-menu",
-	// FIXME: scroller height is wrong.
 	chrome: [
-		{name: "client", className: "enyo-popup-inner", kind: "BasicScroller", autoVertical: true, vertical: false, layoutKind: "OrderedLayout"}
+		{name: "client", className: "enyo-menu-inner", kind: "BasicScroller", onScroll: "scrollerScroll", autoVertical: true, vertical: false, layoutKind: "OrderedLayout"}
 	],
 	defaultKind: "MenuItem",
 	//* @protected
+	create: function() {
+		this.inherited(arguments);
+		this.styleLastItem();
+		if (this.showFades) {
+			this.createChrome([{kind: "ScrollFades", className: "enyo-menu-scroll-fades", topFadeClassName: "enyo-menu-top-fade", bottomFadeClassName: "enyo-menu-bottom-fade", leftFadeClassName: "", rightFadeClassName: ""}]);
+		}
+	},
 	removeControl: function(inControl) {
 		this.inherited(arguments);
 		if (inControl == this._lastItem) {
 			this._lastItem = null;
 		}
 	},
-	show: function() {
-		if (this.autoCloseSubItems) {
-			for (var i=0, c$=this.getControls(), c; c=c$[i]; i++) {
-				enyo.call(c, "closeAll");
+	destroyControls: function() {
+		this._lastItem = null;
+		this.inherited(arguments);
+	},
+	showingChanged: function() {
+		if (this.showing) {
+			if (this.autoCloseSubItems) {
+				for (var i=0, c$=this.getControls(), c; c=c$[i]; i++) {
+					enyo.call(c, "closeAll");
+				}
 			}
 		}
 		this.inherited(arguments);
 	},
-	itemsChanged: function() {
-		this._lastItem = null;
-		this.destroyControls();
-		for (var i=0, item, c; item=this.items[i]; i++) {
-			item = enyo.isString(item) ? {caption: item} : item;
-			// we want these controls to be owned by us so we get events
-			this.createComponent(item);
-		}
-		this.render();
+	scrollerScroll: function() {
+		this.$.scrollFades && this.$.scrollFades.showHideFades(this.$.client);
 	},
 	fetchItemByValue: function(inValue) {
 		var items = this.getControls();
@@ -77,6 +82,7 @@ enyo.kind({
 	},
 	scrollIntoView: function(inY, inX) {
 		this.$.client.scrollIntoView(inY, inX);
+		this.$.client.calcAutoScrolling();
 	},
 	flow: function() {
 		this.inherited(arguments);

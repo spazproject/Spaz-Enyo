@@ -3,6 +3,7 @@
 	border-top: 1px solid rgba(255,255,255,0.5);
 	border-bottom: 1px solid rgba(0,0,0,0.2);
 	padding: 10px;
+	font-size: .9rem;
 }
 
 .enyo-held {
@@ -31,20 +32,20 @@
 	border: 0;
 }
 
-.enyo-item.rounded {
-	-webkit-border-radius: 12px;
+.enyo-group-inner > .enyo-item, .enyo-item.rounded {
+	-webkit-border-radius: 8px;
 }
 
-.enyo-item.rounded.enyo-first {
+.enyo-group-inner > .enyo-item.enyo-first, .enyo-item.rounded.enyo-first {
 	-webkit-border-bottom-right-radius: 0;
 	-webkit-border-bottom-left-radius: 0;
 }
 
-.enyo-item.rounded.enyo-middle {
+.enyo-group-inner > .enyo-item.enyo-middle, .enyo-item.rounded.enyo-middle {
 	-webkit-border-radius: 0;
 }
 
-.enyo-item.rounded.enyo-last {
+.enyo-group-inner > .enyo-item.enyo-last, .enyo-item.rounded.enyo-last {
 	-webkit-border-top-right-radius: 0;
 	-webkit-border-top-left-radius: 0;
 }

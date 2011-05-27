@@ -154,6 +154,10 @@ enyo.kind({
 		name: ""
 	},
 	//* @protected
+	statics: {
+		// for memoizing kind-prefix names in nameComponent
+		_kindPrefixi: {}
+	},
 	defaultKind: "Component",
 	wantsEvents: true,
 	toString: function() {
@@ -174,8 +178,6 @@ enyo.kind({
 	create: function(inProps) {
 		this.importProps(inProps);
 		this.ownerChanged();
-		this.registerEvents();
-		// FIXME: needs better name
 		this.initComponents();
 	},
 	//* @protected
@@ -187,7 +189,7 @@ enyo.kind({
 		// Specifically, the difference is that kindComponents are constructed
 		// as owned by this control (and this.components are not).
 		this.createComponents(this.kindComponents);
-		this.createManagedComponents(this.components);
+		this.createContainedComponents(this.components);
 	},
 	ready: function() {
 		// don't override, so instances can implement without needing inherited
@@ -200,7 +202,6 @@ enyo.kind({
 		being destroyed, unless user code keeps a reference to it.
 	*/
 	destroy: function() {
-		this.unregisterEvents();
 		this.destroyComponents();
 		this.setOwner(null);
 		// JS objects are never truly destroyed (GC'd) until all references are gone,
@@ -212,19 +213,23 @@ enyo.kind({
 		Destroys all owned components.
 	*/
 	destroyComponents: function() {
-		enyo.forEach(this.getComponents(), function(c) { 
-			c.destroy(); 
+		enyo.forEach(this.getComponents(), function(c) {
+			// This local components list could be stale as components
+			// we owned originally can be destroyed by containers, so avoid
+			// redestroying components.
+			if (!c.destroyed) {
+				c.destroy();
+			}
 		});
 	},
 	//* @protected
 	importProps: function(inProps) {
 		if (inProps) {
-			for (var n in inProps) {
+			var keys = Object.keys(inProps);
+			// will stop if key is falsey, i.e. 0, null, false; don't use these values as keys!
+			for (var i=0; n=keys[i]; i++) {
 				this[n] = inProps[n];
 			}
-		}
-		if (!this.owner) {
-			this.owner = enyo.master;
 		}
 	},
 	getId: function() {
@@ -235,41 +240,25 @@ enyo.kind({
 		var pre = this.owner && this.owner.getId();
 		return this.name ? (pre ? pre + delim : "") + this.name : "";
 	},
-	registerEvents: function() {
-		if (this.wantsEvents) {
-			enyo.$[this.id] = this;
-		}
-	},
-	unregisterEvents: function() {
-		delete enyo.$[this.id];
-	},
 	ownerChanged: function(inOldOwner) {
 		if (inOldOwner) {
 			inOldOwner.removeComponent(this);
 		}
 		if (this.owner) {
 			 this.owner.addComponent(this);
-		}
+		}/* else {
+			this.name = enyo.Component.prefixFromKindName(this.kindName);
+		}*/
 		this.id = this.makeId();
 	},
 	nameComponent: function(inComponent) {
-		var prefix = inComponent.kindName || "object";
-		var l = prefix.lastIndexOf(".");
-		if (l >= 0) {
-			prefix = prefix.slice(l+1);
-		}
-		// lower-case the leading char
-		prefix = prefix.charAt(0).toLowerCase() + prefix.slice(1);
+		var prefix = enyo.Component.prefixFromKindName(inComponent.kindName);
 		// get last memoized name index
 		var i = this._componentNameMap[prefix] || 1;
-		// make sure the name is unique
-		for (var name; Boolean(this.$[name=prefix+(i > 1 ? String(i) : "")]); i++) {
-			// blame JSLint for this empty block
-		}
 		// memoize next likely-unique id tag for this prefix
 		this._componentNameMap[prefix] = Number(i) + 1;
 		// set and return
-		return inComponent.name = name;
+		return inComponent.name = prefix + (i > 1 ? String(i) : "");
 	},
 	addComponent: function(inComponent) {
 		var n = inComponent.getName();
@@ -304,12 +293,13 @@ enyo.kind({
 		inProps.owner = inProps.owner || this;
 	},
 	getInstanceOwner: function() {
-		return this.owner != enyo.master ? this.owner : this;
+		//return this.owner != enyo.master ? this.owner : this;
+		return this.owner || this;
 	},
-	createManagedComponent: function(inInfo) {
+	createContainedComponent: function(inInfo) {
 		return this.createComponent(inInfo, {owner: this.getInstanceOwner()});
 	},
-	createManagedComponents: function(inInfos) {
+	createContainedComponents: function(inInfos) {
 		this.createComponents(inInfos, {owner: this.getInstanceOwner()});
 	},
 	//* @public
@@ -371,9 +361,11 @@ enyo.kind({
 		var fn = inObject && inMethodName && inObject[inMethodName];
 		if (fn) {
 			var args = inArgs;
-			// prepend _this_ to arguments as the event sender, unless we are chaining dispatchers
 			if (!fn._dispatcher) {
-				args = args ? enyo.cloneArray(args, 0, [this]) : [this];
+				args = [this];
+				if (inArgs) {
+					Array.prototype.push.apply(args, inArgs);
+				}
 			}
 			// call the delegate
 			return fn.apply(inObject, args || []);
@@ -385,9 +377,11 @@ enyo.kind({
 		// Violate DRY rule wrt dispatch in this one case for ease of debugging (reduce stack)
 		if (fn) {
 			var args = inArgs;
-			// prepend _this_ to arguments as the event sender, unless we are chaining dispatchers
 			if (!fn._dispatcher) {
-				args = args ? enyo.cloneArray(args, 0, [this]) : [this];
+				args = [this];
+				if (inArgs) {
+					Array.prototype.push.apply(args, inArgs);
+				}
 			}
 			// call the delegate
 			return fn.apply(this.owner, args || []);
@@ -418,20 +412,6 @@ enyo.kind({
 		var args = enyo.cloneArray(arguments, 1);
 		// indirect dispatch
 		return this.dispatch(this.owner, this[inEventName], args);
-	},
-	//* @protected
-	propertyChanged: function(n, v, old) {
-		// propagate changed notification to my owner if he has forwarded
-		// property 'n'
-		if (this.owner && this.owner.forward) {
-			var f = this.owner.forward[n];
-			if (f) {
-				var fn = (f.forward || n) + "Changed";
-				if (this.owner[fn]) {
-					this.owner[fn](old); 
-				}
-			}
-		}
 	}
 });
 
@@ -464,9 +444,6 @@ enyo.Component.subclass = function(ctor, props) {
 	}
 	if (props.events) {
 		this.publishEvents(ctor, props);
-	}
-	if (props.forward) {
-		this.forwardProperties(ctor, props);
 	}
 };
 
@@ -505,47 +482,19 @@ enyo.Component.addEvent = function(inName, inValue, inProto) {
 	}
 };
 
-enyo.Component.forwardProperties = function(ctor, props) {
-	var es = props.forward;
-	if (es) {
-		var cp = ctor.prototype;
-		for (var n in es) {
-			this.addForward(n, es[n], cp);
-		}
-	}	
+enyo.Component.prefixFromKindName = function(inKindName) {
+	var prefix = enyo.Component._kindPrefixi[inKindName];
+	if (!prefix) {
+		// memoize naming information for this kind
+		var l = inKindName.lastIndexOf(".");
+		prefix = (l >= 0) ? inKindName.slice(l+1) : inKindName;
+		// lower-case the leading char
+		prefix = prefix.charAt(0).toLowerCase() + prefix.slice(1);
+		// memoize result
+		enyo.Component._kindPrefixi[inKindName] = prefix;
+	}
+	return prefix;
 };
 
-enyo.Component.addForward = function(inName, inValue, inProto) {
-	// inValue = <name of object containing property> || { from: <name of object containing property>, as: <optional: name of new property>}
-	//
-	var priv_n = inName;
-	//
-	var o, n;
-	if (enyo.isString(inValue)) {
-		o = inValue;
-		n = priv_n;
-	} else {
-		o = inValue.from;
-		n = inValue.as || priv_n;
-	}
-	//
-	var cap_n = n.slice(0, 1).toUpperCase() + n.slice(1);
-	//
-	var get_n = "get" + cap_n;
-	if (!inProto[get_n]) {
-		inProto[get_n] = function() { 
-			return this.$[o].getProperty(priv_n);
-		};
-	}
-	//
-	var set_n = "set" + cap_n;
-	if (!inProto[set_n]) {
-		inProto[set_n] = function(v) { 
-			this.$[o].setProperty(priv_n, v); 
-		};
-	}
-};
-
-enyo.$ = {};
-
-enyo.master = new enyo.Component();
+// memo for kind-prefix names
+enyo.Component._kindPrefixi = {};

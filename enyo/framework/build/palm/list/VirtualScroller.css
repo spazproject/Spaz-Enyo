@@ -2,3 +2,7 @@
 .enyo-virtual-scroller {
 	overflow: hidden;
 }
+
+.enyo-accel-children > * {
+	-webkit-transform-style: preserve-3d;
+}

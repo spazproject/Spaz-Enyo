@@ -70,7 +70,7 @@ enyo.kind({
 	putKind: function(inProps) {
 		var params = {
 			id: inProps.dbKind
-		}
+		};
 		inProps.params = enyo.mixin(params, inProps.params);
 		return this.request(inProps);
 	},
@@ -86,9 +86,9 @@ enyo.kind({
 		};
 		// setup watch, inProps.subscribe has priority over this.subscribe
 		if (inProps.subscribe === true || inProps.subscribe === false) {
-			params.watch = inProps.subscribe
+			params.watch = inProps.subscribe;
 		} else if (this.subscribe === true || this.subscribe === false) {
-			params.watch = this.subscribe
+			params.watch = this.subscribe;
 		}
 		// include inProps.params
 		params = enyo.mixin(params, inProps.params);
@@ -111,7 +111,7 @@ enyo.kind({
 	},
 	responseWatch: function(inRequest) {
 		if (this.reCallWatches) {
-			this.reCall(inRequest);
+			enyo.call(inRequest, "reCall");
 		}
 		this.dispatch(this.owner, inRequest.onWatch, [inRequest.response, inRequest]);
 	}

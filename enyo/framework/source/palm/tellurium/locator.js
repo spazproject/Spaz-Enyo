@@ -6,7 +6,7 @@
 
 Tellurium.getTopElement = function() {
 	return document;
-}
+};
 
 /*
  * Retrieves an element given a locator.

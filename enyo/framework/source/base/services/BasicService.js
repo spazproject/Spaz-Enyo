@@ -68,7 +68,7 @@ enyo.kind({
 		};
 		if (inProps) {
 			enyo.mixin(request, inProps);
-		};
+		}
 		return request;
 	},
 	//* @public
@@ -152,12 +152,18 @@ enyo.kind({
 	//* @protected
 	processResponse: function() {
 		if (this.isFailure(this.response)) {
-			this.doRequestFailure()
+			this.failure();
 		} else {
-			this.doRequestSuccess()
+			this.success();
 		}
 		this.doRequestResponse();
 		this.finish();
+	},
+	failure: function() {
+		this.doRequestFailure()
+	},
+	success: function() {
+		this.doRequestSuccess();
 	},
 	startTimer: function() {
 		this.startTime = Date.now();

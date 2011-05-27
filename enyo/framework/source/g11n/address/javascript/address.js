@@ -121,7 +121,7 @@ enyo.g11n.Address = function (freeformAddress, params) {
 	
 	// for locales that support both latin and asian character addresses, 
 	// decide if we are parsing an asian or latin script address
-	if (addressInfo.multiformat) {
+	if (addressInfo && addressInfo.multiformat) {
 		for (i = 0; i < address.length; i++) {
 			if (enyo.g11n.Char.isIdeo(address.charAt(i))) {
 				asianChars++;
@@ -134,7 +134,7 @@ enyo.g11n.Address = function (freeformAddress, params) {
 		startAt = addressInfo.startAt[this.format];
 		// console.log("multiformat locale: format is now " + this.format);
 	} else {
-		startAt = addressInfo.startAt;
+		startAt = (addressInfo && addressInfo.startAt) || "end";
 	}
 	this.compare = (startAt === "end") ? this.endsWith : this.startsWith;
 	

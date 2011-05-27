@@ -1,7 +1,7 @@
 /* Copyright 2009-2011 Hewlett-Packard Development Company, L.P. All rights reserved. */
 /*jslint white: true, onevar: true, undef: true, eqeqeq: true, plusplus: true, bitwise: true, 
 regexp: true, newcap: true, immed: true, nomen: false, maxerr: 500 */
-/*global ContactsLib, document, enyo, console, runningInBrowser, PersonList, MockPersonMap, $L */
+/*global ContactsLib, document, enyo, console, runningInBrowser, PersonList, MockPersonMap, crb */
 
 enyo.kind({
 	name: "com.palm.library.contacts.Utils",

@@ -33,14 +33,42 @@ these events as follows:
 enyo.kind({
 	name: "enyo.AppMenu",
 	kind: enyo.Menu,
-	className: "enyo-appmenu",
+	className: "enyo-appmenu enyo-popup-float",
 	defaultKind: "AppMenuItem",
-	scrim: false,
-	create: function() {
+	published: {
+		automatic: true
+	},
+	//* @protected
+	initComponents: function() {
+		this.inherited(arguments);
+		this.createComponent({kind: "ApplicationEvents", onOpenAppMenu: "openAppMenu", onCloseAppMenu: "closeAppMenu"});
+	},
+	componentsReady: function() {
 		this.inherited(arguments);
 		this.$.client.addClass("enyo-appmenu-inner");
 	},
-	//* @protected
+	canOpen: function() {
+		return this.inherited(arguments) && !enyo.BasicPopup.modalCount;
+	},
+	openAppMenu: function() {
+		if (this.automatic) {
+			this.open();
+		}
+	},
+	closeAppMenu: function() {
+		if (this.automatic) {
+			this.close();
+		}
+	},
+	showingChanged: function() {
+		if (this.showing) {
+			// limit app menu size to screen height.
+			// FIXME: this is likely not good enough. body could be larger than we want
+			this.applyMaxSize(this.clampSize());
+		}
+		this.inherited(arguments);
+		enyo.appMenu.isOpen = this.showing;
+	}/*,
 	show: function() {
 		// limit app menu size to screen height.
 		// FIXME: this is likely not good enough. body could be larger than we want
@@ -52,6 +80,7 @@ enyo.kind({
 		this.inherited(arguments);
 		enyo.appMenu.isOpen = false;
 	}
+	*/
 });
 
 //* @protected

@@ -1,6 +1,6 @@
 /* Copyright 2009-2011 Hewlett-Packard Development Company, L.P. All rights reserved. */
 enyo.depends(
-	"$enyo-lib/systemui/enyo-systemui",
+	"$enyo-lib/systemui/",
 
 	"dialpadwidget/",
 		

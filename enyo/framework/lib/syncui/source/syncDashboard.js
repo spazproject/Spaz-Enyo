@@ -11,12 +11,22 @@ enyo.kind({
 	
 	// Generate the list of accounts
 	startSyncDashboard: function () {
-		this.$.accounts.getAccounts();
+		this.watchDelay = 1;
+		// Get the accounts.  Include those that are being deleted so the "Remove account" can be displayed
+		this.$.accounts.getAccounts({showDeleted: true});
 	},
 	
 	// The list of accounts has been obtained
 	onAccountsAvailable: function(inSender, inResponse) {
 		this.accounts = inResponse.accounts;
+		console.log("There are " + this.accounts.length + " accounts");
+		
+		// Update the account information in the sync status array
+		for (accountId in this.accountStatus) {
+			var account = SyncUIUtil.getAccount(this.accounts, accountId);
+			if (account)
+				this.accountStatus[accountId].account = account;
+		}
 
 		// Get the sync status of the accounts
 		if (!this.accountStatus) {
@@ -24,21 +34,17 @@ enyo.kind({
 			this.$.getSyncStatus.call();
 		}
 	},
-	
+
 	syncWatchFired: function() {
 		// Get the account status (after waiting a little bit to prevent multiple updates from multiple transports)
-		console.log("SyncUI.syncDashboard: watch fired, waiting 500 msec");
-		if (!this.getStatusTimer)
-			this.getStatusTimer = setTimeout(this.getAccountStatus.bind(this), 500);
+		if (!this.getStatusTimer) {
+			console.log("SyncUI.syncDashboard: watch fired, waiting " + this.watchDelay + " msec");
+			this.getStatusTimer = setTimeout(this.getAccountStatus.bind(this), this.watchDelay);
+		}
 	},
 	
 	getAccountStatus: function() {
-		console.log("SyncUI.syncDashboard: gettting account sync status");
-		if (this.getStatusTimer) {
-			console.log("SyncUI.syncDashboard: getAccountStatus - clearing timer");
-			clearTimeout(this.getStatusTimer);
-			this.getStatusTimer = null;
-		}
+		//console.log("SyncUI.syncDashboard: gettting account sync status");
 		// Get the sync status of the accounts
 		this.$.getSyncStatus.call();
 	},
@@ -48,8 +54,15 @@ enyo.kind({
 		if (!inResponse || !inResponse.returnValue)
 			return;
 		var deletedSources = [];
+
+		// Clear the timeout to allow sync watches to fire
+		if (this.getStatusTimer) {
+			clearTimeout(this.getStatusTimer);
+			delete this.getStatusTimer;
+		}
 		
 		// Create an array of accounts with account ID, dashboard (if present) and status
+		console.log("Processing " + inResponse.results.length + " sync state entries ...");
 		for (var i=0, l=inResponse.results.length; i < l; i++) {
 			var syncSource = inResponse.results[i];
 			var account = SyncUIUtil.getAccount(this.accounts, syncSource.accountId);
@@ -73,8 +86,7 @@ enyo.kind({
 				this.accountStatus[syncSource.accountId] = {"accountId": syncSource.accountId, account: account};
 				
 			// Save the "highest" status for this account (there may be multiple transports/status for a single account)
-			this.accountStatus[syncSource.accountId].status = SyncUIUtil.getHighestStatus(this.accountStatus[syncSource.accountId].status, syncSource);
-			//console.log("ac=" + syncSource.accountId + "-" + syncSource.capabilityProvider + "=" + syncSource.syncState);
+			SyncUIUtil.saveHighestStatus(this.accountStatus[syncSource.accountId], syncSource);
 		}
 
 		// Delete the status of accounts that no longer exist
@@ -92,14 +104,17 @@ enyo.kind({
 				// Did this account have a dashboard that should be removed?
 				if (syncAccount.dashboard) {
 					console.log("Removing dashboard " + syncAccount.dashboardStatus + " for account " + accountId)
-					// If a sync has finished then display a "sync done" banner
-					if (syncAccount.dashboardStatus === "INITIAL_SYNC")
-						enyo.windows.addBannerMessage(SyncUIUtil.SYNC_FINISHED, "{}", syncAccount.dashboard.smallIcon);
-					else if (syncAccount.dashboardStatus === "DELETE")
-						enyo.windows.addBannerMessage(SyncUIUtil.REMOVE_FINISHED, "{}", syncAccount.dashboard.smallIcon);
+					// If a sync or delete has finished then display a "sync/delete done" banner
+					if (syncAccount.bannerEndText) {
+						enyo.windows.addBannerMessage(syncAccount.bannerEndText, "{}", syncAccount.dashboard.smallIcon);
+						delete syncAccount.bannerEndText;
+					}
 					syncAccount.dashboard.destroy();
 					delete syncAccount.dashboard;
 					syncAccount.dashboardStatus = "IDLE";
+
+					// Be quick to put up the next dashboard
+					this.watchDelay = 1;
 				}
 				continue;
 			}
@@ -112,16 +127,24 @@ enyo.kind({
 			
 			// Save the status that corresponds to the dashboard
 			syncAccount.dashboardStatus = syncAccount.status;
-			console.log("Creating dashboard " + syncAccount.dashboardStatus + " for account " + accountId)
+			console.log("Creating dashboard " + syncAccount.dashboardStatus + " for account " + accountId + " (" + syncAccount.stateBlame + ")");
 			
 			switch(syncAccount.status) {
 				case "INITIAL_SYNC":
 					icon = SyncUIUtil.libPath + "images/notification-small-sync.png";
 					text = SyncUIUtil.SYNCING_ACCOUNT;
+					syncAccount.bannerEndText = SyncUIUtil.SYNC_FINISHED;
 					break;
 				case "DELETE":
 					icon = SyncUIUtil.libPath + "images/notification-small-sync.png";
-					text = SyncUIUtil.REMOVING_ACCOUNT;
+					if (syncAccount.account.beingDeleted) {
+						text = SyncUIUtil.REMOVING_ACCOUNT;
+						syncAccount.bannerEndText = SyncUIUtil.REMOVE_FINISHED;
+					}
+					else {
+						text = SyncUIUtil.REMOVING_ACCOUNT_DATA;
+						syncAccount.bannerEndText = SyncUIUtil.REMOVE_DATA_FINISHED;
+					}
 					break;
 				case "401_UNAUTHORIZED":
 					icon = syncAccount.account.icon.loc_32x32;
@@ -140,12 +163,13 @@ enyo.kind({
 					smallIcon: icon,
 					accountId: dashAccountId
 				});
-				
-				// Display a banner
-				if (syncAccount.status === "INITIAL_SYNC")
-					enyo.windows.addBannerMessage(SyncUIUtil.SYNCING_ACCOUNT, "{}", icon);
-				else if (syncAccount.status === "DELETE")
-					enyo.windows.addBannerMessage(SyncUIUtil.REMOVING_ACCOUNT, "{}", icon);
+			}
+
+			// Display a banner
+			if (syncAccount.status === "INITIAL_SYNC" || syncAccount.status === "DELETE") {
+				enyo.windows.addBannerMessage(text, "{}", icon);
+				// Be slow to take the dashboard down
+				this.watchDelay = 3000;
 			}
 
 			// Display the dashboard message			
@@ -157,6 +181,7 @@ enyo.kind({
 			
 			// Reset the status for the next update
 			syncAccount.status = "IDLE";
+			
 		}
 	},
 	

@@ -17,7 +17,7 @@ enyo.requiresWindow(function() {
 				}
 			}
 		);
-
+		//
 		enyo.iphoneGesture = {
 			_send: function(inType, inTouch) {
 				//console.log("iphoneGesture._send:", inType);
@@ -46,5 +46,7 @@ enyo.requiresWindow(function() {
 				document.ontouchend = enyo.dispatch;
 			}
 		};
+		//
+		enyo.iphoneGesture.connect();
 	}
 });

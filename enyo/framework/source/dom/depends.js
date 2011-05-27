@@ -7,10 +7,10 @@ enyo.depends(
 	"xhr.js",
 	"Animation.js",
 	"Dispatcher.js",
+	"ApplicationEvents.js",
 	"Gesture.js",
-	"Drag.js",
 	"DomNode.js",
 	"DomNodeBuilder.js",
-	"ManagedDomBuilder.js",
+	"ContainedDomBuilder.js",
 	"Control.js"
 );

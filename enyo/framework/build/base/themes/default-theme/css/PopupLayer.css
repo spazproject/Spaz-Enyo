@@ -1,0 +1,9 @@
+/* Copyright 2009-2011 Hewlett-Packard Development Company, L.P. All rights reserved. */
+.enyo-popup-layer {
+	z-index: 1;
+	pointer-events: none;
+}
+
+.enyo-popup-layer > .enyo-popup-float, .enyo-popup-layer > .enyo-popup {
+	pointer-events: auto;
+}

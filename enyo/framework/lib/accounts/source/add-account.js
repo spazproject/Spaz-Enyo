@@ -24,7 +24,7 @@ enyo.kind({
 	kind: "enyo.VFlexBox",
 	className:"enyo-bg",
 	published: {
-		capability:["CALENDAR","CONTACTS","DOCUMENTS","MAIL","MEMOS","MESSAGING","PHONE","PHOTO","REMOTECONTACTS","TASKS","VIDEO.UPLOAD","IM","SMS"],
+		capability:["CALENDAR","CONTACTS","DOCUMENTS","MAIL","MEMOS","MESSAGING","PHONE","PHOTO.UPLOAD","REMOTECONTACTS","TASKS","VIDEO.UPLOAD","IM","SMS"],
 	},
 	events: {
 		onAddAccount_AccountSelected: "",
@@ -33,7 +33,7 @@ enyo.kind({
 	components: [
 		{kind:"Toolbar", className:"enyo-toolbar-light accounts-header", pack:"center", components: [
 				{kind: "Image", src: AccountsUtil.libPath + "images/acounts-48x48.png"},
-				{content: AccountsUtil.PAGE_TITLE_ADD_ACCOUNT, className:""}
+				{kind: "Control", content: AccountsUtil.PAGE_TITLE_ADD_ACCOUNT}
 		]},
 		{className:"accounts-header-shadow"},
 		{kind: "Scroller", flex: 1, components: [

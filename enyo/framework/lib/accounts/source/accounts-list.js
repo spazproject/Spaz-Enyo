@@ -51,7 +51,11 @@ enyo.kind({
 	getAccountsList: function (capability, exclude, dontDisplayErrors) {
 		this.dontDisplayErrors = dontDisplayErrors;
 		console.log("getAccountsList: cap=" + capability + " excl=" + enyo.json.stringify(exclude));
-		this.$.accounts.getAccounts({capability: capability}, exclude);
+		// If a "capability" of "com.something" is given then treat this as a templateId
+		if (capability && !enyo.isArray(capability) && capability.indexOf("com.") === 0)
+			this.$.accounts.getAccounts({templateId: capability}, exclude);
+		else
+			this.$.accounts.getAccounts({capability: capability}, exclude);
 	},
 	
 	// The list of accounts has been obtained.  Render the list now

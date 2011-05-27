@@ -13,41 +13,57 @@
 	It's common to render an entire application into a document body like this:
 
 		new MyApp().renderInto(document.body);
-		
+
 	On any DomNodeBuilder-derived object, you can set the canGenerate property to false to
 	inhibit HTML generation.  It defaults to undefined.
 */
 enyo.kind({
-	name: "enyo.AbstractDomNodeBuilder",
+	name: "enyo.DomNodeBuilder",
 	kind: enyo.DomNode,
 	//* @protected
-	content: "",
+	published: {
+		/** when false, content is treated as plain text. when true, it's treated as HTML -- only use when you trust the content 
+		    because you generated it yourself or because you've already stripped off potentially malicious tags */
+		allowHtml: false,
+		/** the content that will be put inside the DOM node created */
+		content: ""
+	},
+	// if we've generated HTML or DOM
 	generated: false,
-	//* @public
-	/** Type name of the Element created by this Builder. */
-	nodeTag: "div",
-	//* @protected
+	teardownRender: function() {
+		this.node = null;
+		this.generated = false;
+	},
 	hasNode: function() {
-		return this.generated ? this.node || this.findNodeById() : null;
+		// 'generated' is used to gate access to expensive findNodeById call
+		return this.generated ? (this.node || this.findNodeById()) : null;
+	},
+	contentChanged: function() {
+		if (!this.allowHtml) {
+			this.content = enyo.string.escapeHtml(this.content);
+		}
+		this.renderContent();
 	},
 	/** Returns HTML that is rendered by this Builder. By default, returns <i>this.content</i>.*/
-	getContent: function() {
+	// FIXME: propose calling this generateInnerHtml (it's not a pure getter, helpul to assert it's HTML)
+	getInnerHtml: function() {
 		return this.content;
 	},
 	/**
 		Generates HTML that renders this node.
 	*/
 	generateHtml: function() {
-		this.generated = true;
 		if (this.canGenerate === false) {
 			return '';
 		}
 		// do this first in case content generation affects styles or attributes
-		var c = this.getContent();
+		var c = this.getInnerHtml();
 		var h = '<' 
 			+ this.nodeTag
-			+ enyo.attributesToHtml(this.getDomAttributes());
-		var s = (this.style ? this.style + ";" : "") + enyo.stylesToHtml(this.getDomStyles());
+			+ enyo.attributesToHtml(this.domAttributes);
+		// FIXME: this.style vs this.domStyles?
+		var s = (this.style ? this.style + ";" : "") 
+			+ enyo.stylesToHtml(this.domStyles);
 		if (s) {
 			h += ' style="' + s + '"';
 		}
@@ -59,20 +75,31 @@ enyo.kind({
 				+ c
 			+ '</' + this.nodeTag + '>';
 		}
+		// 'generated' is used to gate access to findNodeById in hasNode, which
+		// is expensive.
+		// NOTE: we typically use 'generated' to mean 'created in DOM'
+		// which has not actually happened at this point.
+		// We set this here to avoid having a separate walk of the 
+		// control tree. The contract is that insertion in DOM
+		// will happen synchronously to generateHtml() and before
+		// anybody should be calling hasNode().
+		this.generated = true;
 		return h;
 	},
 	//* @protected
 	/** Renders our attributes to an existing node. Null-valued attributes are removed. */
 	renderDomAttributes: function() {
-		this.attributesToNode(this.getDomAttributes());
+		this.attributesToNode(this.domAttributes);
 	},
 	/** Renders our styles to an existing node. Ignores null-valued styles, and overwrites existing styles on the node (i.e. style.cssText is replaced). */
 	renderDomStyles: function() {
-		this.stylesToNode(this.getDomStyles());
+		this.stylesToNode(this.domStyles);
 	},
 	/** Renders our content to the innerHTML of an existing node. */
 	renderDomContent: function() {
-		this.node.innerHTML = this.getContent();
+		// FIXME: generates node references (old references are strictly invalid now)
+		// so node invalidation methods are in the wrong place.
+		this.node.innerHTML = this.getInnerHtml();
 	},
 	/** Renders attributes, styles, and content to an existing DOM node. */
 	renderDom: function() {
@@ -82,10 +109,19 @@ enyo.kind({
 	},
 	/** Generates a DOM node and renders ourselves to it. If we already have a node, it's removed from DOM. The new node is returned without being inserted into DOM. */
 	renderNode: function() {
-		this.generated = true;
-		this.createNode();
-		this.renderDom();
-		this.rendered();
+		// NOTE: disallow rendering a node if there is no parent node, as we will
+		// end up with an orphaned node. Although this is not obviously an error
+		// state, too much of the rendering code assumes that nodes are
+		// rendered in-order. Rendering a node before it's parent is therefore
+		// a no-no.
+		if (this.getParentNode()) {
+			this.teardownRender();
+			this.createNode();
+			// FIXME: oddfellow, maybe roll into a createNode override
+			this.generated = true;
+			this.renderDom();
+			this.rendered();
+		}
 	},
 	//* @public
 	//* Renders this object into DOM, generating a DOM node if needed.
@@ -99,6 +135,7 @@ enyo.kind({
 	},
 	//* @protected
 	//* Renders the contents of this object into DOM, but is a no-op if this object has no DOM node.
+	// FIXME: DEPRECATED: micro-optimization vs. render, not worth the confusion
 	renderContent: function() {
 		if (this.hasNode()) {
 			this.renderDomContent();
@@ -108,6 +145,8 @@ enyo.kind({
 	//* @public
 	//* Renders this object into the existing DOM node referenced by _inParentNode_.
 	renderInto: function(inParentNode) {
+		// clean up render flags and memoizations
+		this.teardownRender();
 		// inParentNode can be a string id or a node reference
 		var pn = enyo.byId(inParentNode);
 		// 1: fit to nodes with non-auto height (NOTE: webkit td's have "0px" when unsized)
@@ -138,37 +177,22 @@ enyo.kind({
 			}
 	*/
 	rendered: function() {
+	},
+	//* @public
+	/** Shows this node (alias for _setShowing(true)_). */
+	show: function() {
+		this.setShowing(true);
+	},
+	/** Hides this node (alias for _setShowing(false)_). */
+	hide: function() {
+		this.setShowing(false);
 	}
 });
 
 //* @protected
-
 enyo.fittingClassName = "enyo-fit";
 
-//* @public
-enyo.kind({
-	name: "enyo.DomNodeBuilder",
-	kind: enyo.AbstractDomNodeBuilder,
-	//* @protected
-	/** Concrete version of AbstractNodeBuilder maintains internal hashes of domStyles and domAttributes. */
-	constructor: function() {
-		this.inherited(arguments);
-		// we have to clone these hashes because the originals belong to the prototype
-		this.domStyles = enyo.clone(this.domStyles || {});
-		this.domAttributes = enyo.clone(this.domAttributes || {});
-	},
-	/** Returns CSS styles rendered by this Builder. In this class, returns <i>this.domStyles</i>. */
-	getDomStyles: function() {
-		return this.domStyles;
-	},
-	/** Returns HTML attributes rendered by this Builder. In this class, returns <i>this.domAttributes</i>. */
-	getDomAttributes: function() {
-		return this.domAttributes;
-	}
-});
-
 //* @protected
-
 /**
 	Converts a hash to an HTML string suitable for CSS styleText. Names are CSS property names (not camel-case).
 
@@ -179,15 +203,12 @@ enyo.stylesToHtml = function(inStyles) {
 	var n, v, h = '';
 	for (n in inStyles) {
 		v = inStyles[n];
-		n = n.replace(/_/g, "");
 		if ((v !== null) && (v !== undefined) && (v !== "")) {
-			if (enyo.isIE && n == 'opacity') {
-				if (v >= 0.99) {
-					continue;
-				}
-				n = 'filter';
-				v = "progid:DXImageTransform.Microsoft.Alpha(opacity=" + Math.floor(v*100) + ")";
-			}
+			// remove underscores
+			// FIXME: we used to use underscores for some
+			// special style marking, removing as I believe 
+			// this is vestigial
+			//n = n.replace(/_/g, "");
 			h +=  n + ':' + v + ';';
 		}
 	}
@@ -206,11 +227,11 @@ enyo.attributesToHtml = function(inAttributes) {
 	var n, v, h = '';
 	for (n in inAttributes) {
 		v = inAttributes[n];
-		if (n == "className") {
-			n = "class";
-		}
 		if (v !== null && v !== "") {
-			h += ' ' + n + '="' + v + '"';
+			if (n == "className") {
+				n = "class";
+			}
+			h += ' ' + n + '="' + enyo.string.escapeHtmlAttribute(v) + '"';
 		}
 	}
 	return h;

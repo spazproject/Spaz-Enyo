@@ -2,7 +2,7 @@
 enyo.kind({
 	name: "ProgressPopup",
 	kind: "ModalDialog",
-	className: "enyo-popup print-dialog",
+	className: "enyo-popup enyo-modaldialog print-dialog",
 	published: {
 	   message: "",
 	   cancelOption: true
@@ -19,7 +19,7 @@ enyo.kind({
 	],
 	
 	//* @protected
-	create: function() {
+	componentsReady: function() {
 		this.inherited(arguments);
 		this.messageChanged();
 		this.cancelOptionChanged();
@@ -40,11 +40,16 @@ enyo.kind({
 	
 	//* @public
 	getProgressControl: function() {
+		// Make sure all components are created
+		this.validateComponents();
 		return this.$.progressBar;
 	},
 	
 	//* @public
 	showProgress: function(caption, message, cancelOption) {
+		// Make sure all components are created
+		this.validateComponents();
+		
 		if (caption !== undefined) {
 			this.setCaption(caption);
 		}

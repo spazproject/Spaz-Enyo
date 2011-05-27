@@ -16,18 +16,17 @@ enyo.kind({
 	kind: enyo.BasicInput,
 	className: "enyo-richtext",
 	placeholderClassName: "enyo-richtext-hint",
+	allowHtml: true,
 	published: {
 		richContent: true
 	},
+	disabledClassName: "enyo-richtext-disabled",
 	//* @protected
 	nodeTag: "div",
-	domAttributes: {
-		tabIndex: 0,
-		contenteditable: true
-	},
 	requiresDomMousedown: true,
 	create: function() {
 		this.inherited(arguments);
+		this.domAttributes.contenteditable = true;
 		this.richContentChanged();
 	},
 	blurHandler: function(inSender, inEvent) {

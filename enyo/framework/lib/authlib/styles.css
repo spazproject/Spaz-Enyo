@@ -55,3 +55,18 @@
     line-height: 24px;
     font-weight: bold;
 }
+
+.cust-enyo-popup{
+	-webkit-border-image: url(images/popup-bg.png) 20 20 20 20 stretch stretch;
+	-webkit-box-sizing: border-box;
+	border-width: 20px;
+	left: 0px;
+	min-width: 300px;
+	position: fixed;
+	top: 0px;
+	z-index: 120;
+}
+.dialpad-container{
+		background: url(../authlib/images/pin-grid.png) left top no-repeat;
+		margin-top: 22px;
+}

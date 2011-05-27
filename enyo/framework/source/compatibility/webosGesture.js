@@ -37,4 +37,11 @@ if (window.PalmSystem) {
 		document.addEventListener("gesturechange", enyo.dispatch);
 		document.addEventListener("gestureend", enyo.dispatch);
 	});
+} else {
+	// thunk for device-only profiler API
+	webosEvent = {
+		event: enyo.nop,
+		start: enyo.nop,
+		stop: enyo.nop
+	};
 }

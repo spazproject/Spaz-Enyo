@@ -17,7 +17,7 @@ Here's an example:
 		acceptButtonCaption: "Yes",
 		cancelButtonCaption: "No",
 		onAccept: "fetchMoreWork",
-		onCancel, "fetchABreak"
+		onCancel: "fetchABreak"
 	}
 */
 enyo.kind({
@@ -47,6 +47,7 @@ enyo.kind({
 	],
 	create: function() {
 		this.inherited(arguments);
+		this.validateComponents();
 		this.titleChanged();
 		this.messageChanged();
 		this.acceptButtonCaptionChanged();
@@ -63,7 +64,7 @@ enyo.kind({
 		if (inAcceptButtonCaption) {
 			this.setAcceptButtonCaption(inAcceptButtonCaption);
 		}
-		if (inCancelButtonCaption != undefined) {
+		if (inCancelButtonCaption !== undefined) {
 			this.setCancelButtonCaption(inCancelButtonCaption);
 		}
 		this.inherited(arguments);

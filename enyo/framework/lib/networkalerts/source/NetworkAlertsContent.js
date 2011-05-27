@@ -256,6 +256,7 @@ enyo.kind({
 						},
 						{
 							className: "body",
+							allowHtml:true,
 							content: G11N_RB.$L("Wireless network unavailable.<br/>Select different one?")
 						}
 					]

@@ -17,11 +17,10 @@ enyo.kind({
 	published: {
 		active: false
 	},
+	layoutKind: "HFlexLayout",
 	chrome: [
-		{kind: enyo.HFlexBox, align: "center", className: "enyo-activity-button-inner", components: [
-			{name: "caption", flex: 1},
-			{name: "spinner", kind: "Spinner"}
-		]}
+		{name: "caption", flex: 1},
+		{name: "spinner", kind: "Spinner", className: "enyo-activitybutton-spinner"}
 	],
 	//* @protected
 	create: function() {

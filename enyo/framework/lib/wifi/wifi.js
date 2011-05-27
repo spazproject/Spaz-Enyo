@@ -17,31 +17,38 @@ label_headerTitle_networklist		= rb.$L("Wi-Fi Setup");
 label_headerTitle_ipconfig			= rb.$L("Wi-Fi Setup");
 label_headerTitle_joinnewnetwork	= rb.$L("Join Other Network");
 label_headerTitle_joinsecurenetwork	= rb.$L("Join ");
+label_headerTitle_captiveportal		= rb.$L("No Internet Connection");
+label_headerTitle_nointernet		= rb.$L("No Internet Connection");
+label_headerTitle_testing			= rb.$L("Wi-Fi Setup");
+
 label_headerInfo_networklist		= rb.$L("Choose a network");
 label_headerInfo_ipconfig			= rb.$L("Connected to ");
 label_headerInfo_joinnewnetwork		= rb.$L("");
 label_headerInfo_joinsecurenetwork	= rb.$L("");
+label_headerInfo_captiveportal		= rb.$L("The network you have selected contains a captive portal which requires additional authentication, and cannot be used for initial setup. Try another network.");
+label_headerInfo_nointernet			= rb.$L("Cannot connect to the internet through this connection. Try another network.");
+label_headerInfo_testing			= rb.$L("Checking internet connectivity...");
 
 enyo.kind({
 	name: "WiFiPopup",
-	kind: "Popup",
-	modal: true,
-	scrim: true,
+	kind: "ModalDialog",
+	lazy: false,
 	width: "451px",
-	height: "530px",
-	showing: false,	
-	layoutKind: "VFlexLayout",
 	published: {
 		headerTitle: label_headerTitle_networklist,
 		headerInfo: label_headerInfo_networklist
 	},
 	events: {
-		onFinish: ""
+		onFinish: "",
+		onCancel: ""
 	},
+
+	caption: label_headerTitle_networklist,
+
 	components: [
-		{"content": label_headerTitle_networklist, name: "_headerTitle", style: "font-size: 18px; padding: 0px 0px 6px 0px; overflow: hidden; text-overflow:ellipsis; white-space:nowrap;" },
-		{"content": label_headerInfo_networklist , name: "_headerInfo", style: "font-size: 13px; padding: 0px 0px 10px 0px;" },
-		{flex:1, name: "wifiConfig", kind: "WiFiConfig", onViewChange: "updatePopup"}
+		{"content": label_headerInfo_networklist , name: "_headerInfo", style: "font-size: 18px;" },
+		{flex:1, name: "wifiConfig", kind: "WiFiConfig", className: "wifi-list", onViewChange: "updatePopup"},
+		{name: "cancelButton", kind: "Button", caption: rb.$L("Cancel"), showing: false, onclick: "closePopup"}
 	],
 	create: function() {
 		this.inherited(arguments);
@@ -52,33 +59,56 @@ enyo.kind({
 	start: function() {
 		this.$.wifiConfig.turnWiFiOn();
 	},
+	closePopup: function() {
+		this.$.wifiConfig.deconfigure();
+		this.close();
+		this.doCancel();
+	},
 	updatePopup: function(inSender, inViewName) {
+		var hideCancelButton = false;
 		switch (inViewName) {
 			case "IpConfig":
-				this.$._headerTitle.setContent(label_headerTitle_ipconfig);
+				hideCancelButton = true;
+				this.setCaption(label_headerTitle_ipconfig);
 				this.$._headerInfo.setContent(label_headerInfo_ipconfig +
 					this.$.wifiConfig.getJoinedNetwork().ssid);
 				break;
 			case "JoinSecureNetwork":
-				this.$._headerTitle.setContent(label_headerTitle_joinsecurenetwork +
+				hideCancelButton = true;
+				this.setCaption(label_headerTitle_joinsecurenetwork +
 					this.$.wifiConfig.getSelectedNetwork().ssid);
 				this.$._headerInfo.setContent(label_headerInfo_joinsecurenetwork);
 				break;
 			case "JoinNewNetwork":
-				this.$._headerTitle.setContent(label_headerTitle_joinnewnetwork);
+				hideCancelButton = true;
+				this.setCaption(label_headerTitle_joinnewnetwork);
 				this.$._headerInfo.setContent(label_headerInfo_joinnewnetwork);
 				break;
+			case "CaptivePortal":
+				this.setCaption(label_headerTitle_captiveportal);
+				this.$._headerInfo.setContent(label_headerInfo_captiveportal);
+				break;
+			case "NoInternet":
+				this.setCaption(label_headerTitle_nointernet);
+				this.$._headerInfo.setContent(label_headerInfo_nointernet);
+				break;
+			case "TestingInternet":
+				this.setCaption(label_headerTitle_testing);
+				this.$._headerInfo.setContent(label_headerInfo_testing);
+				break;
 			default:
-				this.$._headerTitle.setContent(label_headerTitle_networklist);
+				this.setCaption(label_headerTitle_networklist);
 				this.$._headerInfo.setContent(label_headerInfo_networklist);
 				break;
 		}
+
+		(hideCancelButton) ? this.$.cancelButton.hide() : this.$.cancelButton.show();
 	},
 	headerTitleChanged: function() {
-		this.$._headerTitle.setContent(this.headerTitle);
+		if (this.$.wifiConfig.isInNetworkView() ) this.setCaption(this.headerTitle);
 	},
 	headerInfoChanged: function() {
-		this.$._headerInfo.setContent(this.headerInfo);
+		if (this.$.wifiConfig.isInNetworkView() ) this.$._headerInfo.setContent(this.headerInfo);
 	}
 });
 
@@ -88,6 +118,8 @@ WiFi - Config
 enyo.kind({
 	name: "WiFiConfig",
 	kind: "enyo.VFlexBox",
+	lazy: false,
+	height: "410px",
 	published: {
 		liteMode: false,
 		selectedNetwork: null,
@@ -97,49 +129,46 @@ enyo.kind({
 		onViewChange: ""
 	},
 	components: [
+		{name: "GetNetworkStatus", kind: "PalmService", service: "palm://com.palm.connectionmanager/", method: "getStatus", subscribe: true, resubscribe: true, onResponse: "handleNetworkStatusResponse"},
+
 		{name: "SetRadioState", kind: "WiFiService", method: "setstate", onFailure: "handleSetStateFailure"},
 		{name: "GetConnectionStatus", kind: "WiFiService", method: "getstatus", subscribe: true, resubscribe: true, onResponse: "handleWiFiConnectionStatus"},
 		{name: "FindNetworks", kind: "WiFiService", method: "findnetworks", onResponse: "handleFindNetworksResponse"},
-		{name: "Connect", kind: "WiFiService", method: "connect", onFailure: "handleConnectFailure"},
+		{name: "Connect", kind: "WiFiService", method: "connect", onResponse: "handleConnectResponse"},
 		{name: "GetProfileInfo", kind: "WiFiService", method: "getprofile", onResponse: "handleProfileInfoResponse"},
 		{name: "DeleteProfile", kind: "WiFiService", method: "deleteprofile", onFailure: "handleDeleteProfileFailure"},
 
 		{kind: "Pane", name: "pane", flex: 1, components: [
-			{kind: "VFlexBox", components: [
-				{kind: enyo.Control, height: "100%", className: "scrollable", flex: 1, components: [
-					{kind:"Scroller", name: "scroller", className: "scrollable-inner", height: "90%", flex:1, layoutKind: "VFlexLayout", components: [
-						{kind: "HFlexBox", className: "wifi-spinner-box", name: "searchMsg", showing: false, components: [
-							{content: rb.$L("Searching for networks..."), flex: 1},
-							{kind: "Spinner", name:"searchSpinner", showing: false}
-						]},
-						{name: "list", className: "wifi-list",  kind: "VirtualRepeater", onGetItem: "updateRow", components: [
-							{kind: "Item", onclick: "itemClick", tapHighlight: true, components: [
-								{kind: "HFlexBox", components: [
-									{kind:"Image", className: "wifi-item-join", name: "joinNewIcon", src:"$enyo-lib/wifi/images/join-plus-icon.png"},
-									{className: "wifi-item-name", name: "itemName", flex:1, style: "overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" },
-									{kind:"Spacer", flex:0.1},
-									{kind:"Image", className: "wifi-item-state", name: "itemConnected", src: "$enyo-lib/wifi/images/checkmark.png"},
-									{kind:"Image", className: "wifi-item-secure", name: "itemSecure", src:"$enyo-lib/wifi/images/secure-icon.png"},
-									{kind:"Image", className: "wifi-item-strength", name: "itemStrength"}
-								]},
-								{className: "wifi-message-status", name: "itemStatus", content: ""}
-							]}
+			{kind: "Group", components: [
+				{kind: "Item", className: "enyo-first", layoutKind: "HFlexLayout", name: "searchMsg", pack: "center", showing: false, flex: 1, components: [
+					{content: rb.$L("Searching for networks..."), style: "font-size: 18px;", flex: 1},
+					{kind: "Spinner", name:"searchSpinner", style: "margin: -3px 0;", showing: false}
+				]},
+				{kind: "Scroller", height: "405px", flex: 1, components: [
+					{name: "list", kind: "VirtualRepeater", onSetupRow: "updateRow", flex: 1, components: [
+						{kind: "Item", name: "item", onclick: "itemClick", tapHighlight: true, components: [
+							{kind: "HFlexBox", components: [
+								{className: "wifi-item-name", name: "itemName", flex:1},
+								{kind:"Spacer", flex:0.1},
+								{kind:"Image", className: "wifi-item-state", name: "itemConnected", src: "$enyo-lib/wifi/images/checkmark.png"},
+								{kind:"Image", className: "wifi-item-secure", name: "itemSecure", src:"$enyo-lib/wifi/images/secure-icon.png"},
+								{kind:"Image", name: "itemStrength"}
+							]},
+							{className: "wifi-message-status", name: "itemStatus", content: ""}
 						]}
+					]},
+					{kind: "Item", className: "enyo-last", onclick: "showJoinOtherNetwork", tapHighlight: true, layoutKind: "HFlexLayout", flex: 1, components: [
+						{kind:"Image", className: "wifi-item-join", src:"$enyo-lib/wifi/images/join-plus-icon.png"},
+						{className: "wifi-item-name", content: "Join Network", flex: 1}
 					]}
 				]}
 			]},
-			{kind: "WiFiIpConfig", name: "wifiIpConfig", onBack: "showNetworkList"},
+			{kind: "WiFiIpConfig", name: "wifiIpConfig", onForget: "handleForgetNetwork", onBack: "showNetworkList"},
 			{kind: "VFlexBox", components: [
-				{kind: "Scroller", height: "100%", flex:1, layoutKind: "VFlexLayout", components: [
-					{kind: "Input", name: "joinSsid", changeOnInput: true, onkeydown: "ssidKeyDowned", onchange: "joinInfoChanged", hint: rb.$L("Enter network name..."), autoCapitalize: "lowercase", autocorrect: false, spellcheck: false, components: [
-						{content: rb.$L("SSID"), className: "wifi-label-text"}
-					]},
-					{kind: "Input", name: "joinUsername", changeOnInput: true, onkeydown: "usernameKeyDowned", onchange: "joinInfoChanged", hint: rb.$L("Enter username"), autoCapitalize: "lowercase", autocorrect: false, spellcheck: false, showing: false, components: [
-						{content: rb.$L("username"), className: "wifi-label-text"}
-					]},
-					{kind: "PasswordInput", name: "joinPassword", changeOnInput: true, onkeydown: "passwordKeyDowned", onchange: "joinInfoChanged", hint: rb.$L("Enter password"), autoCapitalize: "lowercase", autocorrect: false, spellcheck: false, showing: false, components: [
-						{content: rb.$L("password"), className: "wifi-label-text"}
-					]},
+				{kind: "VFlexBox", flex:1, components: [
+					{kind: "Input", alwaysLooksFocused: true, name: "joinSsid", changeOnInput: true, onkeydown: "ssidKeyDowned", onchange: "joinInfoChanged", hint: rb.$L("Enter network name"), autoCapitalize: "lowercase", autocorrect: false, spellcheck: false},
+					{kind: "Input", alwaysLooksFocused: true, name: "joinUsername", changeOnInput: true, onkeydown: "usernameKeyDowned", onchange: "joinInfoChanged", hint: rb.$L("Enter username"), autoCapitalize: "lowercase", autocorrect: false, spellcheck: false, showing: false, style: "margin-top: 10px;"},
+					{kind: "PasswordInput", alwaysLooksFocused: true, name: "joinPassword", changeOnInput: true, onkeydown: "passwordKeyDowned", onchange: "joinInfoChanged", hint: rb.$L("Enter password"), autoCapitalize: "lowercase", autocorrect: false, spellcheck: false, showing: false, style: "margin-top: 10px;"},
 					{kind: "RowGroup", name: "securityGroup", caption: rb.$L("NETWORK SECURITY"), components: [
 						{kind: "ListSelector", name: "securityList", onChange: "handleSecuritySelection", items: [
 							{caption: rb.$L("Open"), value: "none"},
@@ -150,8 +179,10 @@ enyo.kind({
 					]}
 				]},
 				{name: "joinMessage", content: "", className: "wifi-message-error"},
-				{kind: "ActivityButton", className: "enyo-button-dark", caption: rb.$L("JOIN"), name: "joinButton", disabled: true, onclick: "joinNetwork"},
-				{kind: "Button", caption: rb.$L("CANCEL"), onclick: "showNetworkList"}
+				{kind: "HFlexBox", components: [
+					{kind: "Button", flex: 1, style: "margin-right:10px;", caption: rb.$L("Cancel"), onclick: "discardNetwork"},
+					{kind: "ActivityButton", flex: 1, height: "42px", className: "enyo-button-dark", caption: rb.$L("Sign In"), name: "joinButton", disabled: true, onclick: "joinNetwork"}
+				]}
 			]}
 		]}
 	],
@@ -160,7 +191,14 @@ enyo.kind({
 		this.inherited(arguments);
 		this.data = [];
 		this.autoscan = null;
+		this.lastAddedProfileId = 0;
+		this.shouldDiscardNetwork = false;
 		this.$.GetConnectionStatus.call({});
+		this.$.GetNetworkStatus.call({});
+	},
+
+	isInNetworkView: function() {
+		return (0 === this.$.pane.getViewIndex() );
 	},
 
 	turnWiFiOn: function() {
@@ -170,6 +208,30 @@ enyo.kind({
 
 	turnWiFiOff: function() {
 		this.$.SetRadioState.call({"state":"disabled"});
+	},
+
+	deconfigure: function() {
+		this.cancelPendingConnection();
+		this.stopAutoScan('clear');
+		this.lastAddedProfileId = 0;
+		this.shouldDiscardNetwork = false;
+		this.selectedNetwork = null;
+	},
+
+	disconnect: function() {
+		if (null !== this.joinedNetwork) {
+			this.$.DeleteProfile.call({"profileId":this.joinedNetwork.profileId});
+		}
+		else if (null !== this.selectedNetwork && this.selectedNetwork.profileId) {
+			this.$.DeleteProfile.call({"profileId":this.selectedNetwork.profileId});
+		}
+	},
+
+	cancelPendingConnection: function() {
+		if (0 !== this.lastAddedProfileId) {
+			this.$.DeleteProfile.call({"profileId":this.lastAddedProfileId});
+			this.lastAddedProfileId = 0;
+		}
 	},
 
 	purgeWiFiProfiles: function() {
@@ -183,6 +245,12 @@ enyo.kind({
 				this.$.searchMsg.show();
 				this.$.searchSpinner.setShowing(true);
 				this.triggerAutoScan(); // force-trigger the first scan 
+
+				// show connected network if any
+				if (null !== this.joinedNetwork) {
+					this.data.push({networkInfo:this.joinedNetwork});
+					this.$.list.render();
+				}
 			}
 		}
 	},
@@ -230,26 +298,31 @@ enyo.kind({
 
 	disableJoinButtons: function(state) {
 		this.$.joinButton.setActive(false);
+		this.$.joinButton.setCaption(rb.$L("Sign In") );
 		this.$.joinButton.setDisabled(state);
 	},
 
 	showNetworkList: function() {
+		this.selectedNetwork = null;
+		this.applyStyle("height", "410px");
 		this.$.pane.selectViewByIndex(0);
 		this.doViewChange("NetworkList");
 		this.startAutoScan();
-		this.selectedNetwork = null;
 	},
 
 	showIpConfig: function(inProfile) {
 		this.selectedNetwork = null;
+		this.applyStyle("height", "410px");
 		this.$.pane.selectViewByIndex(1);
 		this.$.wifiIpConfig.setJoinedProfile(inProfile);
 		this.doViewChange("IpConfig");
 		this.stopAutoScan('clear');
 	},
 
-	showJoinOtherNetwork: function(info) {
-		this.selectedNetwork = info;
+	showJoinOtherNetwork: function() {
+		this.selectedNetwork = null;
+		this.shouldDiscardNetwork = false;
+		this.applyStyle("height", "240px");
 		this.$.pane.selectViewByIndex(2);
 		this.doViewChange("JoinNewNetwork");
 		this.stopAutoScan('clear');
@@ -271,6 +344,7 @@ enyo.kind({
 
 	showJoinSecureNetwork: function(info) {
 		this.selectedNetwork = info;
+		this.shouldDiscardNetwork = false;
 		this.$.pane.selectViewByIndex(2);
 		this.doViewChange("JoinSecureNetwork");
 		this.stopAutoScan('clear');
@@ -285,10 +359,12 @@ enyo.kind({
 		this.$.joinPassword.show();
 
 		if ("enterprise" === info.securityType) {
+			this.applyStyle("height", "220px");
 			this.$.joinUsername.show();
 			this.$.joinUsername.forceFocus();
 		}
 		else {
+			this.applyStyle("height", "150px");
 			this.$.joinUsername.hide();
 			this.$.joinPassword.forceFocus();
 		}
@@ -299,6 +375,11 @@ enyo.kind({
 	updateNetworkItem: function(info, inIndex) {
 		var isSelected = false;
 		var isJoined   = false;
+
+		if (0 === inIndex)
+		{
+			this.$.item.addClass("enyo-first");
+		}
 
 		if (null !== this.selectedNetwork &&
 			this.selectedNetwork.ssid === info.ssid)
@@ -329,13 +410,6 @@ enyo.kind({
 			var strength = ['low','average','excellent'];
 			this.$.itemStrength.setSrc('$enyo-lib/wifi/images/wifi-icon-'+strength[sb-1]+'.png');
 			this.$.itemStrength.show();
-		}
-
-		if (inIndex === (this.data.length - 1)) {
-			this.$.joinNewIcon.show();
-		}
-		else {
-			this.$.joinNewIcon.hide();
 		}
 
 		this.$.itemStatus.setContent("");
@@ -415,12 +489,18 @@ enyo.kind({
 			case "associationFailed":
 				this.$.joinMessage.setContent(this.assocFailureString(info.lastConnectError) );
 				this.$.joinButton.setActive(false);
+				this.$.joinButton.setCaption(rb.$L("Sign In") );
 				this.$.joinPassword.forceFocus();
 				break;
-			case "associated":
+			case "ipConfigured":
+			case "ipFailed":
 				this.joinedNetwork = info;
-				this.selectedNetwork = null;
-				this.showNetworkList();
+				if (null !== this.selectedNetwork ||
+						(null === this.selectedNetwork &&
+						 this.$.joinSsid.getValue() === info.ssid) ) {
+					this.selectedNetwork = null;
+					this.showNetworkList();
+				}
 				break;
 		}
 	},
@@ -431,6 +511,13 @@ enyo.kind({
 				if ("serviceEnabled" === inResponse.status) this.startAutoScan();
 				if (undefined === inResponse.networkInfo) return;
 				if (undefined === inResponse.networkInfo.connectState) return;
+
+				if ("notAssociated" === inResponse.networkInfo.connectState) {
+					this.joinedNetwork = null;
+				}
+				else if ("ipConfigured" === inResponse.networkInfo.connectState) {
+					this.joinedNetwork = inResponse.networkInfo;
+				}
 
 				switch (this.$.pane.getViewIndex() ) {
 					case 0:
@@ -456,12 +543,47 @@ enyo.kind({
 		}
 	},
 
+	handleNetworkStatusResponse: function(inSender, inResponse, inRequest) {
+		var statusMsg = "";
+
+		if (0 !== this.$.pane.getViewIndex() ) return;
+
+		if (undefined !== inResponse &&
+				false === inResponse.isInternetConnectionAvailable &&
+				undefined !== inResponse.wifi &&
+				"connected" === inResponse.wifi.state) {
+
+			switch (inResponse.wifi.onInternet) {
+				case "captivePortal":
+					this.doViewChange("CaptivePortal");
+					return;
+				case "no":
+					this.doViewChange("NoInternet");
+					return;
+				default:
+					break;
+			}
+		}
+
+		this.doViewChange("NetworkList");
+	},
+
+	handleConnectResponse: function(inSender, inResponse, inRequest) {
+		if (undefined !== inResponse &&
+				undefined !== inResponse.profileId) {
+			this.lastAddedProfileId = inResponse.profileId;
+		}
+	},
+
 	handleFindNetworksResponse: function(inSender, inResponse, inRequest) {
+
+		if (0 !== this.$.pane.getViewIndex() ) return;
+		if (null === this.autoScan) return;
+
 		if (undefined !== inResponse &&
 				true === inResponse.returnValue &&
 				undefined !== inResponse.foundNetworks) {
 			this.data = inResponse.foundNetworks;
-			this.data.push({networkInfo:{ssid:rb.$L("Join Network")}});
 			this.$.list.render();
 
 			this.$.searchMsg.hide();
@@ -498,15 +620,14 @@ enyo.kind({
 	itemClick: function(inSender, inEvent, inRowIndex) {
 		var record = this.data[inRowIndex];
 		if (record) {
-			if (inRowIndex === (this.data.length - 1)) {
-				this.showJoinOtherNetwork(record.networkInfo);
-			}
-			else if ("ipConfigured" === record.networkInfo.connectState ||
+			if ("ipConfigured" === record.networkInfo.connectState ||
 					"ipFailed" === record.networkInfo.connectState)	{
 				this.$.GetProfileInfo.call({"profileId":record.networkInfo.profileId});
+				return;
 			}
 			else if (undefined === record.networkInfo.securityType) {
 				this.delayAutoScan();
+				this.cancelPendingConnection();
 				this.$.Connect.call({"ssid":record.networkInfo.ssid});
 				this.selectedNetwork = record.networkInfo;
 				//this.$.list.renderRow(inRowIndex);
@@ -515,6 +636,7 @@ enyo.kind({
 			else if (undefined !== record.networkInfo.profileId &&
 					undefined === record.networkInfo.lastConnectError) {
 				this.delayAutoScan();
+				this.cancelPendingConnection();
 				this.$.Connect.call({"profileId":record.networkInfo.profileId});
 				this.selectedNetwork = record.networkInfo;
 				//this.$.list.renderRow(inRowIndex);
@@ -543,7 +665,6 @@ enyo.kind({
 				case 26:	// 104-bit HEX
 					if (hexPattern.test(key) ) {
 						pass = true;
-						this.selectedNetwork.isKeyInHex = true;
 					}
 					break;
 				default:
@@ -556,11 +677,28 @@ enyo.kind({
 			}
 			else if (64 == key.length && hexPattern.test(key) ) {
 				pass = true;
-				this.selectedNetwork.isKeyInHex = true;
 			}
 		}
 
 		return pass;
+	},
+
+	isKeyInHex: function(type, key) {
+		var hexPattern = new RegExp('^[A-Fa-f0-9]*$');
+		var isInHex = false;
+
+		if (hexPattern.test(key) ) {
+			if ("wep" === type &&
+					(10 === key.length || 26 === key.length) ) {
+				isInHex = true;
+			}
+			else if ("wpa-personal" === type &&
+					64 == key.length) {
+				isInHex = true;
+			}
+		}
+
+		return isInHex;
 	},
 
 	ssidKeyDowned: function(inSender, inResponse) {
@@ -587,8 +725,7 @@ enyo.kind({
 		var ssid     = this.$.joinSsid.getValue();
 		var security = this.$.securityList.getValue();
 
-		if (null === this.selectedNetwork) return;
-		if (rb.$L("Join Network") !== this.selectedNetwork.ssid) {
+		if (null !== this.selectedNetwork) {
 			ssid = this.selectedNetwork.ssid;
 			security = this.selectedNetwork.securityType;
 		}
@@ -616,6 +753,20 @@ enyo.kind({
 		if (!ssid.length || 32 < ssid.length) {
 			this.disableJoinButtons(true);
 		}
+
+		this.$.joinMessage.setContent("");
+	},
+
+	discardNetwork: function() {
+		if (this.shouldDiscardNetwork) {
+			this.cancelPendingConnection();
+			this.shouldDiscardNetwork = false;
+		}
+		this.showNetworkList();
+	},
+
+	handleForgetNetwork: function() {
+		this.joinedNetwork = null;
 	},
 
 	joinNetwork: function() {
@@ -625,12 +776,14 @@ enyo.kind({
 		var security = this.$.securityList.getValue();
 		var hidden   = true; 
 
-		if (null === this.selectedNetwork) return;
-		if (rb.$L("Join Network") !== this.selectedNetwork.ssid) {
+		if (null !== this.selectedNetwork) {
 			ssid = this.selectedNetwork.ssid;
 			security = this.selectedNetwork.securityType;
 			hidden = false;
 		}
+
+		this.cancelPendingConnection();
+		this.shouldDiscardNetwork = true;
 
 		switch (security) {
 		case "wpa-personal":
@@ -639,7 +792,7 @@ enyo.kind({
 				"wasCreatedWithJoinOther":hidden,
 				"security":{"securityType":security,
 				"simpleSecurity":{"passKey":password,
-						"isInHex":this.selectedNetwork.isKeyInHex}}});
+						"isInHex":this.isKeyInHex(security, password)}}});
 			break;
 		case "enterprise":
 			this.$.Connect.call({"ssid":ssid,
@@ -654,23 +807,27 @@ enyo.kind({
 
 		this.$.joinMessage.setContent("");
 		this.$.joinButton.setActive(true);
+		this.$.joinButton.setCaption(rb.$L("Signing In...") );
 		this.stopAutoScan(null);
 	},
 
 	handleSecuritySelection: function()	{
 		switch (this.$.securityList.getValue() ) {
 		case "none":
+			this.applyStyle("height", "240px");
 			this.$.joinUsername.hide();
 			this.$.joinPassword.hide();
 			this.$.joinSsid.forceFocus();
 			break;
 		case "wpa-personal":
 		case "wep":
+			this.applyStyle("height", "300px");
 			this.$.joinPassword.show();
 			this.$.joinUsername.hide();
 			this.$.joinPassword.forceFocus();
 			break;
 		case "enterprise":
+			this.applyStyle("height", "360px");
 			this.$.joinUsername.show();
 			this.$.joinPassword.show();
 			this.$.joinUsername.forceFocus();
@@ -687,7 +844,9 @@ WiFi - IP Configuration
 enyo.kind({
 	name: "WiFiIpConfig",
 	kind: "enyo.VFlexBox",
+	lazy: false,
 	events:	{
+		onForget: "",
 		onBack: ""
 	},
 	published: {
@@ -696,12 +855,12 @@ enyo.kind({
 	components: [
 		{name: "DeleteProfile", kind: "WiFiService", method: "deleteprofile", onFailure: "handleDeleteProfileFailure"},
 		{name: "Connect", kind: "WiFiService", method: "connect", onFailure: "handleConnectFailure"},
-		{kind: "Item", align: "center", tapHighlight: false, layoutKind: "HFlexLayout", components: [
+		{kind: "Item", className: "enyo-first", style: "margin-top: 15px;", align: "center", tapHighlight: false, layoutKind: "HFlexLayout", components: [
 			{content: rb.$L("Automatic IP settings"), flex: 1},
 			{kind: "ToggleButton", name: "dhcpToggleButton", onChange: "handleDhcpToggleButton"}
 		]},
-		{kind: enyo.Control, height: "100%", className: "scrollable", flex: 1, components: [
-			{kind: "Scroller", className: "scrollable-inner", height: "90%", flex:1, layoutKind: "VFlexLayout", components: [
+		{kind: "Group", components: [
+			{kind: "Scroller", height: "235px", flex:1, components: [
 					{kind: "Input", name: "ipField", hint: rb.$L("Enter IP address"), inputType: "number", autoKeyModifier: "num-lock", spellcheck: false, components: [
 						{content: rb.$L("ADDRESS"), className: "wifi-label-text"}
 					]},
@@ -785,6 +944,7 @@ enyo.kind({
 
 	handleForgetNetworkButton: function() {
 		var profileInfo = this.joinedProfile.wifiProfile;
+		this.doForget();		
 		this.$.DeleteProfile.call({"profileId":profileInfo.profileId});
 		this.doBack();
 	},

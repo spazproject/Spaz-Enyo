@@ -255,8 +255,8 @@ enyo.constructorForKind = function(inKind) {
 		if (!ctor) {
 			// otherwise look it up, then memoize it
 			// if inKind is an object in enyo, say "Control", then ctor = enyo["Control"]
-			// if inKind is a path under enyo, say "enyo.Button", then ctor = enyo["enyo.Button"] || enyo.enyo.Button
-			// if inKind is a fully qualified path, say "enyo.enyo.Button", then ctor = enyo["enyo.enyo.Button"] || enyo.enyo.enyo.Button || enyo.enyo.Button
+			// if inKind is a path under enyo, say "Heritage.Button", then ctor = enyo["Heritage.Button"] || enyo.Heritage.Button
+			// if inKind is a fully qualified path, say "enyo.Heritage.Button", then ctor = enyo["enyo.Heritage.Button"] || enyo.enyo.Heritage.Button || enyo.Heritage.Button
 			// Note that kind "Foo" will resolve to enyo.Foo before resolving to global "Foo". This is important or kinds like
 			// "Image" will map to built-in Image object, instead of enyo.Image control.
 			enyo._kindCtors[inKind] = ctor = enyo.Theme[inKind] || enyo[inKind] || enyo.getObject(inKind, false, enyo) || window[inKind] || enyo.getObject(inKind);

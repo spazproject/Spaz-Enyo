@@ -6,9 +6,9 @@ will release any previously tapped radio button. The onChange event is fired
 when the selected radio button is changed.
 
 	{kind: "RadioGroup", onChange: "radioButtonSelected", components: [
-		{label: "foo"},
-		{label: "bar"},
-		{label: "baz"}
+		{caption: "foo"},
+		{caption: "bar"},
+		{caption: "baz"}
 	]}
 
 To get the value (or index) of the currently selected button, use getValue():

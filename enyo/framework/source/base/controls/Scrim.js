@@ -44,7 +44,7 @@ enyo.kind({
 	name: "enyo.Scrim",
 	kind: enyo.Control,
 	showing: false,
-	className: "enyo-scrim",
+	className: "enyo-scrim enyo-popup-float",
 	create: function() {
 		this.inherited(arguments);
 		this.zStack = [];
@@ -59,7 +59,7 @@ enyo.kind({
 	},
 	showAtZIndex: function(inZIndex) {
 		this.addZIndex(inZIndex);
-		if (inZIndex != undefined) {
+		if (inZIndex !== undefined) {
 			this.setZIndex(inZIndex);
 		}
 		this.show();
@@ -76,47 +76,47 @@ enyo.kind({
 	setZIndex: function(inZIndex) {
 		this.zIndex = inZIndex;
 		this.applyStyle("z-index", inZIndex);
+	},
+	make: function() {
+		return this;
 	}
 });
 
 //* @protected
 //
-// Mock scrim instance exposing a subset of Scrim API. 
+// Scrim singleton exposing a subset of Scrim API. 
 // After a call to 'show' or 'showAtZIndex', this object
 // is replaced with a proper enyo.Scrim instance.
 //
-enyo.scrim = {
+enyo.kind({
+	name: "enyo.scrimSingleton",
+	constructor: function(inName, inClassName) {
+		this.instanceName = inName;
+		enyo.setObject(this.instanceName, this);
+		this.className = inClassName || "";
+	},
 	make: function() {
-		// FIXME:
-		// Where to render this scrim is problematic.
-		// We have no reference to find a 'root control', short
-		// of enyo.master.
-		// Simplest solution is to render the Scrim directly 
-		// into a node in document.body.
-		// Client code can make an enyo.Scrim inside a custom
-		// container if necessary, but some framework objects
-		// use enyo.scrim (e.g. Popup) and there is no hook
-		// for customization.
-		// One idea is that Popup create an enyo.Scrim in its 
-		// rootParent, and use a caching scheme to prevent
-		// proliferation.
-		// Alternatively, show* could take a parent as an 
-		// arguments and reposition the singleton scrim.
-		var s = new enyo.Scrim({parentNode: document.body});
+		// NOTE: scrim singleton is rendered in the popup layer, where all popups live.
+		var s = new enyo.Scrim({parent: enyo.getPopupLayer()});
+		s.addClass(this.className);
+		enyo.setObject(this.instanceName, s);
 		s.renderNode();
 		return s;
 	},
 	show: function() {
 		// NOTE: replaces enyo.scrim (this) with an enyo.Scrim instance so this is only invoked once.
-		enyo.scrim = enyo.scrim.make();
-		enyo.scrim.show();
+		var s = this.make();
+		s.show();
 	},
 	showAtZIndex: function(inZIndex) {
-		enyo.scrim = enyo.scrim.make();
-		enyo.scrim.showAtZIndex(inZIndex);
+		var s = this.make();
+		s.showAtZIndex(inZIndex);
 	},
-	hideAtZIndex: enyo.nop,
 	// in case somebody does this out of order
+	hideAtZIndex: enyo.nop,
 	hide: enyo.nop,
 	destroy: enyo.nop
-}
+});
+
+new enyo.scrimSingleton("enyo.scrim");
+new enyo.scrimSingleton("enyo.scrimTransparent", "enyo-scrim-transparent");

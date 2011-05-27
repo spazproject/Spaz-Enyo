@@ -43,7 +43,7 @@ enyo.kind({
 		{name: "accountModificationFromPIMApp", kind: "VFlexBox", className:"enyo-bg", components: [
 			{kind:"Toolbar", className:"enyo-toolbar-light accounts-header", pack:"center", components: [
 				{kind: "Image", src: AccountsUtil.libPath + "images/acounts-48x48.png"},
-		        {content: AccountsUtil.PAGE_TITLE_ACCOUNT_SETTINGS, className:""}
+		        {kind: "Control", content: AccountsUtil.PAGE_TITLE_ACCOUNT_SETTINGS}
 			]},
 			{className:"accounts-header-shadow"},
 			{kind: "Scroller", flex: 1, components: [
@@ -52,14 +52,7 @@ enyo.kind({
 						{kind: "Input", name: "accountName", spellcheck: false, autocorrect:false}
 					]},
 					{kind: "Accounts.credentials", name: "credentials", onCredentials_ValidationSuccess: "saveAccountCredentials"},
-					{kind: "ActivityButton", name: "removeAccountButton", label: AccountsUtil.BUTTON_REMOVE_ACCOUNT, className: "enyo-button-negative accounts-btn", onclick: "confirmAccountRemoval"}
-				]}
-			]},
-			{name: "removeConfirmDialog", kind: "ModalDialog", caption: AccountsUtil.BUTTON_REMOVE_ACCOUNT, modal: true, scrim: true, components: [
-				{content: AccountsUtil.TEXT_REMOVE_CONFIRM, className:"enyo-paragraph"},
-				{kind:"HFlexBox", components:[
-					{kind: "Button", caption: AccountsUtil.BUTTON_KEEP_ACCOUNT, id:"button-entrymodify-keep", flex:0.8, className:"enyo-button-light", onclick: "keepAccount"},
-					{kind: "Button", caption: AccountsUtil.BUTTON_REMOVE_ACCOUNT, id:"button-entrymodify-remove", flex:1, className: "enyo-button-negative", onclick: "removeAccount"}
+					{kind: "Accounts.RemoveAccount", name: "removeAccountButton", onAccountsRemove_Done: "doAccountsModify_Done"}
 				]}
 			]},
 			{name: "client"},
@@ -69,12 +62,12 @@ enyo.kind({
 				{kind: "Button", label: AccountsUtil.BUTTON_BACK, className:"accounts-toolbar-btn", onclick: "saveAccountName"}
 			]},
 			
-			{name: "modifyAccount", kind: "PalmService", service: enyo.palmServices.accounts, method: "modifyAccount", onResponse: "doAccountsModify_Done"},
-			{name: "deleteAccount", kind: "PalmService", service: enyo.palmServices.accounts, method: "deleteAccount", onResponse: "doAccountsModify_Done"}
+			{name: "modifyAccount", kind: "PalmService", service: enyo.palmServices.accounts, method: "modifyAccount", onResponse: "doAccountsModify_Done"}
 		]},
 		
 		{kind: "Accounts.credentialView", name: "changeCredentialsView", onCredentials_ValidationSuccess: "saveAccountCredentials", onCredentials_Cancel: "backHandler"},
 		{kind: "Accounts.modifyView", name: "modifyAccountView", onModifyView_ChangeLogin: "editCredentials", onModifyView_Cancel: "doAccountsModify_Done", onModifyView_Success: "doAccountsModify_Done"},
+		{kind: "Accounts.SIMAccount", name: "SIMAccountView", onSIMAccountDone: "doAccountsModify_Done"},
 		{kind: "Accounts.crossAppUI", name:"customAccountsUI", onResult: "backHandler"}
 	],
 	
@@ -92,15 +85,13 @@ enyo.kind({
 		if (this.account.templateId === "com.palm.palmprofile") {
 			throw "Not possible to edit com.palm.palmprofile account";
 		}
+		if (this.account.templateId === "com.palm.sim") {
+			this.$.SIMAccountView.showSIMInfo(account);
+			this.selectViewByName("SIMAccountView");
+		}
 		else if (account.credentialError) {
-			// There is a credentials error.  Go straight to the Credentials screen
-			if (this.template.validator.customUI) {
-				// This template has custom UI.  Launch it now
-				this.$.customAccountsUI.launchCrossAppUI(this.template.validator.customUI, {mode:"modify", account: this.account, capability: this.capability});
-				this.selectViewByName("customAccountsUI");
-			}
-			else
-				this.ModifyCredentials(account);
+			// There is a credentials error.  Go straight to the Edit Credentials screen
+			this.editCredentials(null, {account: this.account});
 		}
 		else if (!this.capability) {
 			// If no capability is provided then Accounts.modifyView provides the necessary functionality
@@ -123,10 +114,8 @@ enyo.kind({
 				this.$.accountName.value = account.alias || account.loc_name;
 				this.$.accountName.valueChanged();
 				
-				// Stop the spinner on the "Remove Account" button and enable it
-				this.$.removeAccountButton.active = false;
-				this.$.removeAccountButton.activeChanged();
-				AccountsUtil.disableControl(this.$.removeAccountButton, false);
+				// Initialize the "remove account" functionality
+				this.$.removeAccountButton.init(account, capability);
 			}
 		}
 	},
@@ -134,7 +123,9 @@ enyo.kind({
 	// Entry point for "bad credentials" dashboard
 	ModifyCredentials: function(account) {
 		this.account = account;
-		this.$.modifyAccountView.displayBadCredentialsView(account);
+		this.account.credentialError = true;
+		// Go straight to the Edit Credentials screen
+		this.editCredentials(null, {account: this.account});
 	},
 	
 	// Back was tapped.  Save the account name (the only editable field on the screen)
@@ -165,55 +156,6 @@ enyo.kind({
 		this.doAccountsModify_Done();
 	},
 	
-	confirmAccountRemoval: function() {
-		// Open the "remove confirm" dialog
-		this.$.removeConfirmDialog.openAtCenter();
-	},
-	
-	// The "Remove Account" button in the "remove confirm" dialog was tapped (PIM apps only)
-	removeAccount: function() {
-		// Close the dialog
-		this.$.removeConfirmDialog.close();
-
-		// Start the spinner on the button and disable it
-		this.$.removeAccountButton.active = true;
-		this.$.removeAccountButton.activeChanged();
-		AccountsUtil.disableControl(this.$.removeAccountButton, true);
-
-		// Reduce the array of capabilities to only those that are enabled
-		var enabledCapabilities = [];
-		for (i=0, l=this.account.capabilityProviders.length; i<l; i++) {
-			var c = this.account.capabilityProviders[i];
-			// Remove this capability from the array of capabilities.  This will disable it
-			if (c.capability === this.capability)
-				continue;
-
-			// Keep capabilities enabled if they were before
-			if (c._id)
-				enabledCapabilities.push({"id":c.id});
-		}
-		
-		// If there are no capabilities enabled then delete the account
-		if (!enabledCapabilities.length) {
-			this.$.deleteAccount.call({accountId:this.account._id});
-		}
-		else {
-			// Remove this capability from the account
-			var param = {
-				"accountId": this.account._id,
-				"object": {
-					capabilityProviders: enabledCapabilities
-				}
-			}
-			this.$.modifyAccount.call(param);
-		}
-	},
-	
-	keepAccount: function() {
-		// Close the dialog
-		this.$.removeConfirmDialog.close();
-	},
-
 	editCredentials: function(inSender, details) {
 		if (!details || !details.account)
 			return;
@@ -232,8 +174,12 @@ enyo.kind({
 	},
 	
 	backHandler: function() {
-		// Go back from the credentials view to the modify account view
-		this.$.modifyAccountView.displayModifyView(this.account);
-		this.selectViewByName("modifyAccountView");
+		if (this.account.credentialError)
+			this.doAccountsModify_Done();
+		else {
+			// Go back from the credentials view to the modify account view
+			this.$.modifyAccountView.displayModifyView(this.account);
+			this.selectViewByName("modifyAccountView");
+		}
 	}
 });

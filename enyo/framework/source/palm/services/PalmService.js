@@ -23,9 +23,6 @@ Declaring the component does not actually start a service request; it just sets 
 so you can make the request later with a minimum of configuration. Be sure to hang the component off the most 
 appropriate owner--the owner's lifecycle should fit the desired lifetime of the service call.
 
-When specifying the service property, be sure to include the trailing slash or you'll get a failure 
-when the service is combined with the method.
-
 Call the service with some parameters:
 
 	this.$.listAccounts.call({
@@ -88,16 +85,11 @@ enyo.kind({
 		/** object containing parameters for the service call */
 		params: null
 	},
-	resubscribeDelay: 10000,
 	requestKind: "PalmService.Request",
 	//* @protected
 	create: function() {
 		this.params = {};
 		this.inherited(arguments);
-	},
-	destroy: function() {
-		this.inherited(arguments);
-		enyo.job.stop(this.id + "-" + "resubscribe");
 	},
 	importProps: function(inProps) {
 		this.inherited(arguments);
@@ -109,7 +101,8 @@ enyo.kind({
 		// we will include this setup
 		var setup = {
 			service: this.service,
-			method: this.method
+			method: this.method,
+			resubscribe: this.resubscribe
 		};
 		// use the default setup, unless overridden by props
 		props = enyo.mixin(setup, props);
@@ -121,21 +114,6 @@ enyo.kind({
 			props.subscribe = true; 
 		}
 		return props;
-	},
-	responseFailure: function(inRequest) {
-		this.inherited(arguments);
-		// automatic re-subscription on failure; intended to ease recovery when services crash
-		if (this.resubscribe && this.subscribe) {
-			enyo.job(this.id + "-" + "resubscribe", enyo.hitch(this, "reCall", inRequest), this.resubscribeDelay);
-		}
-	},
-	//* @public
-	// note: works only if subscribe is true
-	reCall: function(inRequest) {
-		if (!inRequest.destroyed) {
-			inRequest.call();
-			return inRequest;
-		}
 	}
 });
 
@@ -143,9 +121,7 @@ enyo.kind({
 enyo.kind({
 	name: "enyo.PalmService.Request",
 	kind: enyo.Request,
-	create: function() {
-		this.inherited(arguments);
-	},
+	resubscribeDelay: 10000,
 	initComponents: function() {
 		this.createBridge();
 		this.inherited(arguments);
@@ -159,9 +135,11 @@ enyo.kind({
 		var p = this.params || {};
 		this.json = enyo.isString(p) ? p : enyo.json.stringify(p);
 		//this.log("bridge.call: " + this.service + this.method + "(" + this.json + ")");
-		this.bridge.call(this.service + this.method, this.json);
+		var separator = (this.service.charAt(this.service.length - 1) === "/") ? "" : "/";
+		this.bridge.call(this.service + separator + this.method, this.json);
 	},
 	destroy: function() {
+		enyo.job.stop(this.resubscribeJob);
 		this.bridge.cancel();
 		this.inherited(arguments);
 	},
@@ -169,13 +147,28 @@ enyo.kind({
 		try {
 			this.response = enyo.isString(inResponse) ? enyo.json.parse(inResponse) : inResponse;
 		} catch(x) {
-			this.warn("Failed to convert response from JSON:", x, " for response: [" + inResponse + "]" );
+			this.warn("Failed to convert response from JSON:", x, "for response: [" + inResponse + "]" );
 			this.response = null;
 		}
 	},
 	isFailure: function(inResponse) {
 		// FIXME: is falsey inResponse really a fail condition?
 		return !this.response || (this.response.errorCode || this.response.returnValue === false);
+	},
+	failure: function() {
+		this.inherited(arguments);
+		// when a request including a subscribe fails, resubscribe feature retries the call after a delay
+		// in case the failure was due to a transient server crash
+		// FIXME: there are failures that are obviously not due to server crashes, they should not trigger
+		// a retry. What does a response look like from a crashed server?
+		if (this.resubscribe && this.subscribe) {
+			this.resubscribeJob = this.id + "resubscribe";
+			enyo.job(this.resubscribeJob, enyo.bind(this, "reCall"), this.resubscribeDelay);
+		}
+	},
+	// note: works only if subscribe is true
+	reCall: function() {
+		this.call();
 	},
 	finish: function() {
 		if (!this.subscribe) {

@@ -31,11 +31,7 @@ enyo.kind({
 	
 		//TODO: do we need to get IM accounts too, for their contacts?
 		this._listObj = this.$.getAccounts.getAccounts({
-	// commented as a bug fix - was not getting messaging accounts
-	//		filterBy: {
-	//			capability: 'CONTACTS'
-	//		}, 
-			subscribe: true
+			capability: "CONTACTS"
 		});
 	},
 

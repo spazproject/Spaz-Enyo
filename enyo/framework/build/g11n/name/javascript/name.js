@@ -189,7 +189,7 @@ enyo.g11n.Name = function(name, params) {
 	var locale, langInfo, nameInfo, langInfoEn, parts = [], 
 		i, prefixArray, prefix, prefixLower,
 		suffixArray, suffix, suffixLower, 
-		asianName;
+		asianName, hpSuffix;
 	
 	if (!name || name === "") {
 		return this;
@@ -232,13 +232,20 @@ enyo.g11n.Name = function(name, params) {
 		path: "name/data",
 		locale: locale
 	});
+
+	// for DFISH-12905, pick off the part that the LDAP server automatically adds to our names in HP emails
+	i = name.search(/\s*\([^)]+\)$/);
+	if (i !== -1) {
+		hpSuffix = name.substring(i).trim();
+		name = name.substring(0,i);
+	}
+	
 	if ( !langInfo || !langInfo.name || (langInfo.name.isAsianLocale && enyo.g11n.NamePriv._isEuroName(name))) {
 		// default to English if there is no info on the particular language, or if
 		// we are parsing a euro name in an asian locale
 		langInfo = langInfoEn;
 	}
 	
-
 	nameInfo = langInfo.name;
 
 	if (!nameInfo.isAsianLocale || enyo.g11n.NamePriv._isEuroName(name)) {
@@ -313,6 +320,10 @@ enyo.g11n.Name = function(name, params) {
 				i = parts.length;
 			}
 		}
+	}
+	
+	if (hpSuffix) {
+		this.suffix = (this.suffix && this.suffix + (asianName ? '' : ' ') + hpSuffix) || hpSuffix;
 	}
 	
 	// adjoin auxillary words to their headwords

@@ -9,3 +9,7 @@
 	background: black;
 	z-index: 100;
 }
+
+.enyo-scrim.enyo-scrim-transparent {
+	opacity: 0;
+}

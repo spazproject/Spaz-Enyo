@@ -4,8 +4,8 @@
 	position: relative;
 	min-height: 54px;
 	-webkit-box-sizing: border-box;
-	-webkit-border-image: url(../images/toolbar.png) 1 4 repeat stretch;
-	border-width: 1px 4px;
+	-webkit-border-image: url(../images/toolbar.png) 2 4 repeat stretch;
+	border-width: 2px 4px;
 	background-color: #343434;
 }
 
@@ -16,4 +16,13 @@
 	-webkit-border-image: url(../images/toolbar-light.png) 1 4 repeat stretch;
 	border-width: 1px 4px;
 	background-color: #a9a9a9;
+}
+
+.enyo-toolbar-snap-out {
+	opacity: 0;
+}
+
+.enyo-toolbar-fade-in {
+	-webkit-transition: opacity 0.3s linear;
+	opacity: 1;
 }

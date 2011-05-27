@@ -13,15 +13,22 @@ enyo.kind({
 	events: {
 		onSetupRow: ""
 	},
+	rowsPerScrollerPage: 1,
 	//* @protected
-	components: [
-		{name: "scroller", kind: enyo.BufferedScroller, flex: 1, onGenerateRow: "generateRow", onAdjustTop: "adjustTop", onAdjustBottom: "adjustBottom", components: [
-			{name: "list", kind: enyo.RowServer, onSetupRow: "doSetupRow"}
-		]}
-	],
 	controlParentName: "list",
+	initComponents: function() {
+		this.createComponents([
+			{flex: 1, name: "scroller", kind: enyo.BufferedScroller, rowsPerPage: this.rowsPerScrollerPage, onGenerateRow: "generateRow", onAdjustTop: "adjustTop", onAdjustBottom: "adjustBottom", components: [
+				{name: "list", kind: enyo.RowServer, onSetupRow: "setupRow"}
+			]}
+		]);
+		this.inherited(arguments);
+	},
 	generateRow: function(inSender, inRow) {
 		return this.$.list.generateRow(inRow);
+	},
+	setupRow: function(inSender, inRow) {
+		return this.doSetupRow(inRow);
 	},
 	//* @public
 	prepareRow: function(inIndex) {
@@ -29,10 +36,14 @@ enyo.kind({
 	},
 	updateRow: function(inIndex) {
 		this.prepareRow(inIndex);
-		this.doSetupRow(inIndex);
+		this.setupRow(this, inIndex);
 	},
 	fetchRowIndex: function() {
 		return this.$.list.fetchRowIndex();
+	},
+	update: function() {
+		// adjust rendering buffers to fit display
+		this.$.scroller.updatePages();
 	},
 	refresh: function() {
 		this.$.list.saveCurrentState();

@@ -4,9 +4,8 @@
 
 .enyo-menuitem-caption {
 	text-overflow: ellipsis;
-	white-space:nowrap;
+	white-space: nowrap;
 	overflow: hidden;
-	padding: 0 0 1px 0;
 	font-size: 16px;
 }
 
@@ -23,8 +22,7 @@
 	height: 24px;
 	width: 30px;
 	background: url(../images/menuitem-arrow.png) center 0px;
-	margin-right: -5px
-	;
+	margin-right: -5px;
 }
 
 .enyo-menuitem.enyo-checked.enyo-menucheckitem-caption, .enyo-menuitem.enyo-checked .enyo-menucheckitem-caption {
@@ -33,7 +31,7 @@
 
 .enyo-menucheckitem-caption {
 	text-overflow: ellipsis;
-	white-space:nowrap;
+	white-space: nowrap;
 	overflow: hidden;
 	padding-right: 34px;
 }

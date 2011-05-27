@@ -52,7 +52,12 @@
 	enyo.cap = function(inString) {
 		return inString.slice(0, 1).toUpperCase() + inString.slice(1);
 	};
-	
+
+	//* Returns inString with the first letter un-capitalized.
+	enyo.uncap = function(inString) {
+		return inString.slice(0, 1).toLowerCase() + inString.slice(1);
+	};
+
 	//* Returns true if _it_ is a string.
 	enyo.isString = function(it) {
 		return (typeof it == "string" || it instanceof String);
@@ -67,7 +72,8 @@
 	enyo.isArray = function(it) {
 		return Object.prototype.toString.apply(it) === '[object Array]';
 	};
-	if(Array.isArray) {
+
+	if (Array.isArray) {
 		enyo.isArray = Array.isArray;
 	}
 	
@@ -203,7 +209,7 @@
 			// the value of bar.call(foo);
 			var value = fn();
 	*/
-	enyo.bind = function(scope, method/*, bound arguments*/){
+	enyo.bind  = function(scope, method/*, bound arguments*/){
 		if (arguments.length > 2) {
 			return enyo._hitchArgs.apply(enyo, arguments);
 		}
@@ -218,8 +224,7 @@
 		}
 		return !scope ? method : function(){ return method.apply(scope, arguments || []); };
 	};
-
-	// add alias for older code
+	/* add alias for older code */
 	enyo.hitch = enyo.bind;
 
 	//* @protected
@@ -236,13 +241,14 @@
 	
 	// this name is reported in inspectors as the type of objects created via delegate, 
 	// otherwise we would just use enyo.nop
-	var enyoObject = function() {};
+	enyo.instance = function() {};
 
 	// boodman/crockford delegation w/cornford optimization
 	enyo.delegate = function(obj) {
-		enyo.setPrototype(enyoObject, obj);
-		var obj = new enyoObject();
+		enyo.setPrototype(enyo.instance, obj);
+		return new enyo.instance();
+		//var obj = new enyo.instance();
 		//enyo.setPrototype(enyo.nop, null);
-		return obj;
+		//return obj;
 	};
 })();

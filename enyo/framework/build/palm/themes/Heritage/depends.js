@@ -1,7 +1,8 @@
 /* Copyright 2009-2011 Hewlett-Packard Development Company, L.P. All rights reserved. */
 enyo.depends(
 	"css/theme.css",
-	"css/Button.css",
+  "css/Button.css",
+  "css/ActivityButton.css",
 	"css/CheckBox.css",
 	"css/Input.css",
 	"css/Recessed.css",

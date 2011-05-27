@@ -31,10 +31,8 @@ enyo.kind({
 		var h = this.handles[m];
 		this.handles = [];
 		if (m <= this.max) {
-			enyo.vizLog && enyo.vizLog.log("DbPages: reset: retaining handle for page " + m);
 			this.handles[m] = h;
 		} else {
-			enyo.vizLog && enyo.vizLog.log("DbPages: reset: saving no handles, returning to 'special 0' page");
 			m = 0;
 		}
 		// NOTE: pages must be flushed somewhere else
@@ -47,6 +45,8 @@ enyo.kind({
 		if (inKey !== undefined && inKey !== null) {
 			query.page = inKey;
 		}
+		// NOTE: users query handler must not affect limit, desc, or page values
+		// 'desc' can be controlled at DbList instance
 		return this.doQuery(query);
 	},
 	queryBack: function(inKey) {
@@ -60,16 +60,6 @@ enyo.kind({
 	queryResponse: function(inResponse, inRequest) {
 		var query = inRequest.params.query || {};
 		var reverse = query.desc != this.desc;
-		/*
-		if (!("page" in query) && !reverse && inResponse.next) {
-			this.setHandle(1, inResponse.next);
-			this.log("reverse re-querying starting page 0 ", inResponse.next);
-			// special page 0 is only a starting place, query it again in reverse to get it's handle
-			this.pages[0] = null;
-			this.require(0);
-			return;
-		}
-		*/
 		if (inResponse.results && reverse) {
 			inResponse.results.reverse();
 			inResponse.handle = inResponse.next;
@@ -81,7 +71,9 @@ enyo.kind({
 		var index = inRequest.index;
 		//
 		if (!inResponse.results.length) {
-			this.pages[index] = {};
+			this.pages[index] = {
+				request: inRequest
+			};
 			return;
 		}
 		//
@@ -134,7 +126,6 @@ enyo.kind({
 		this.pages[inPageIndex].request = inRequest;
 	},
 	require: function(inPage) {
-		enyo.vizLog && enyo.vizLog.log("DbPages: require: " + inPage);
 		// if page exists, return it
 		var p = this.pages[inPage];
 		if (p) {
@@ -161,7 +152,6 @@ enyo.kind({
 	dispose: function(inPage) {
 		var p = this.pages[inPage];
 		if (p) {
-			enyo.vizLog && enyo.vizLog.log("DbPages: dispose: page " + inPage);
 			if (p.request) {
 				p.request.destroy();
 			}

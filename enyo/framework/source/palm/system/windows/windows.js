@@ -4,16 +4,16 @@ enyo.windows provides a variety of utility methods for interacting with applicat
 
 To open a window or activate an existing window, use the enyo.windows.activate. For example,
 
-	enyo.windows.activate("SearchWindow");
+	enyo.windows.activate(undefined, "SearchWindow");
 
 Or, to open the window if it does not exist, add a url (the url may be absolute or relative).
 
-	enyo.windows.activate("SearchWindow", "search/index.html");
+	enyo.windows.activate("search/index.html", "SearchWindow");
 
 To facilitate communication between application windows, parameters can be sent.
 To send parameters to the window to be activated, add a params object:
 
-	enyo.windows.activate("SearchWindow", "search/index.html", {query: "oranges"});
+	enyo.windows.activate("search/index.html", "SearchWindow", {query: "oranges"});
 
 Note that the activated window will fire a windowParamsChange event. The window parameters
 are available in the enyo.windowParams object. For example,
@@ -24,37 +24,42 @@ are available in the enyo.windowParams object. For example,
 
 To send parameters to a window without activating it, use the setWindowParams method. For example,
 
-	enyo.windows.setWindowParams("SearchWindow", {safeSearch: true});
+	var searchWindow = enyo.windows.fetchWindow("SearchWindow");
+	enyo.windows.setWindowParams(searchWindow, {safeSearch: true});
 
-When a window is activated and deactivated by the user or system, corresponding events will fire.
-To respond to activation, implement the windowActivated event; for deactivation, use windowDeactivated.
-For example,
+When a window is activated and deactivated by the user or system, corresponding events will fire
+on any created <a href="#enyo.ApplicationEvents">enyo.ApplicationEvents</a> objects.  To respond
+to activation, provide a listener for its _onWindowActivated_ event; to respond to deactivation,
+provide a hander for _onWindowDeactivated_.
 
-	windowActivatedHandler: function() {
-		this.wakeup();
-	},
-	windowDeactivatedHandler: function() {
-		this.sleep();
-	}
+	{kind: enyo.ApplicationEvents, 
+	 onWindowActivated: "wakeup",
+	 onWindowDeactivated: "sleep"},
 
 An application may be launched while it is already running (relaunch). By default, the 
 application is simply brought into focus when this happens. This can occur either when a user
 launches the running application or a system service does so. In either case, new window 
 params may be sent to the application. An application can customize its response to being 
-relaunched based on this information by implementing the applicationRelaunch event as follows:
+relaunched based on this information by implementing a handler for the _onApplicationRelaunch_
+event as follows:
 
-	applicationRelaunchHandler: function() {
+	{kind: enyo.ApplicationEvents, 
+	 onApplicationRelaunch: "relaunchHandler"},
+	...
+	relaunchHandler: function(inSender, inEvent) {
 		if (enyo.windowParams.openSearchWindow = true) {
-			enyo.windows.activate("SearchWindow", "search/index.html");
+			enyo.windows.activate("search/index.html", "SearchWindow");
 			return true;
 		}
-	}
+	},
+	...
 
-Notice the event handler activates a window and then returns true. The return value indicates 
+Notice the event handler activates a window and then returns true.  The return value indicates 
 the event has been handled and the default action, focusing the root application window, should not occur.
 
 The applicationRelaunch event is always sent to the root window of an application. The root window is, by default, 
-the first window created by the application.
+the first window created by the application.  That window-level handler passed on the event to the various
+enyo.ApplicationEvents objects that have been created.
 
 When the application is headless (specifies noWindow: true in the appinfo) the root window is always the headless, 
 non-displayed window. When the application is not headless, the root window may change. This occurs if the user 
@@ -159,11 +164,14 @@ enyo.windows = {
 	* inName {String} Name of the window. This name can be used to retrieve the window.
 	If one is not specified, a default name is supplied.
 	* inParams {Object} Data to send to the opened window. Will be available as enyo.windowParams.
+	* inAttributes {Object} Specify optional attributes for special behavior.
 	* inHeight {Integer} Height for the popup.
 	* throb: {Boolean} 'true' to enable the LED throbber.
 	*/
-	openPopup: function(inUrl, inName, inParams, inHeight, throb) {
-		var w = this.openWindow(inUrl, inName, inParams, {window: "popupalert"}, "height=" + (inHeight || 200));
+	openPopup: function(inUrl, inName, inParams, inAttributes, inHeight, throb) {
+		inAttributes = inAttributes || {};
+		inAttributes.window = "popupalert";
+		var w = this.openWindow(inUrl, inName, inParams, inAttributes, "height=" + (inHeight || 200));
 		if(throb && w.PalmSystem) {
 			w.PalmSystem.addNewContentIndicator();
 		}
@@ -175,18 +183,18 @@ enyo.windows = {
 	Activate an application window by name. If the window is not already open and a url is specified,
 	the window will be opened.
 
-	* inName {String} Name of the window to activate.
 	* inUrl {String} Url for the window to open if it is not already opened. May be absolute or relative.
+	* inName {String} Name of the window to activate.
 	* inParams {Object} Data to send to the activated window. Will be available as enyo.windowParams.
 	* inAttributes {Object} Optional window attributes. Use to customize the window type.
 	* inWindowInfo {String} Optional window information. Use to provide extra system info.
 
 	Example:
 
-		enyo.windows.activate("Search", "search/index.html", {query: "oranges"});
+		enyo.windows.activate("search/index.html", "Search", {query: "oranges"});
 
 	*/
-	activate: function(inName, inUrl, inParams, inAttributes, inWindowInfo) {
+	activate: function(inUrl, inName, inParams, inAttributes, inWindowInfo) {
 		var n = this.fetchWindow(inName);
 		if (n) {
 			this.activateWindow(n, inParams);
@@ -248,6 +256,21 @@ enyo.windows = {
 	removeBannerMessage: function(inId) {
 		this.agent.removeBannerMessage.apply(this.agent, arguments);
 	},
+	
+	/**
+	 Set webOS system properties of the window.  Pass in a window reference (use 'window' for self) to modify and JS object with name/value pairs as inProps.
+
+	 Possible property values include:
+	 <table border="1">
+	 <tr><td>blockScreenTimeout</td><td>Boolean.  If true, the screen will not dim or turn off in the absence of user activity.  If false, the timeout behavior will be reinstated.</td></tr>
+	 <tr><td>setSubtleLightbar</td><td>Boolean.  If true, the light bar will be made somewhat dimmer than normal.  If false, it will return to normal.</td></tr>
+	 <tr><td>fastAccelerometer</td><td>Boolean.  If true, the accelerometer rate will increase to 30 hz; false by default, rate is at 4 hz. Note fast rate is active only for apps when maximized.</td></tr>
+	 </table>
+	 */
+	setWindowProperties: function(inWindow, inProps) {
+		this.agent.setWindowProperties.apply(this.agent, arguments);
+	},	
+
 	/**
 	Send parameters to the given window. Application windows can communicate by sending window
 	parameters to each other. Note, this method does not activate the window; if you 
@@ -266,12 +289,17 @@ enyo.windows = {
 	//* @protected
 	// sets window params silently, no event.
 	assignWindowParams: function(inWindow, inParams) {
-		var params = inParams && enyo.isString(inParams) ? enyo.json.parse(inParams) : inParams || {};
+		var params;
+		try {
+			params = inParams && enyo.isString(inParams) ? enyo.json.parse(inParams) : inParams || {};
+		} catch(e) {
+			console.error("Invalid window params: " + e);
+			params = {};
+		}
 		inWindow.enyo = inWindow.enyo || {};
 		inWindow.enyo.windowParams = params || {};
 	},
 	// Note: facade public methods on manager.
-	// FIXME: Revisit this decision, it may become too cumbersome.
 	//* @public
 	/**
 	Returns a reference to the window object specified by the given name.

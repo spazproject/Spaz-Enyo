@@ -5,8 +5,7 @@
 	};
 
 	enyo.script = function(s) {
-		document.write('<script src="' + s + '" type="text/javascript" ' +
-		               'onerror="console.error(\'Error loading script ' + s + '\')"></script>');
+		document.write('<script src="' + s + '" type="text/javascript" onerror="console.error(\'Error loading script ' + s + '\')"></script>');
 	}
 
 	enyo.path = {
@@ -128,7 +127,7 @@
 		var parts = inPath.split("/");
 		var name = parts.pop();
 		var folder = parts.join("/") + (parts.length ? "/" : "");
-		var delim = !name  ? "/" : "-";
+		var delim = !name  ? "" : "-";
 		var manifest = inPath + delim + 'depends.js';
 		// cache the interrupted packageFolder
 		inBlock.folder = packageFolder;

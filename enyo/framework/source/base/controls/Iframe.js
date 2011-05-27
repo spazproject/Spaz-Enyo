@@ -34,6 +34,9 @@ enyo.kind({
 	create: function() {
 		this.inherited(arguments);
 		this.urlChanged();
+		enyo.mixin(this.domAttributes, {
+			onload: enyo.bubbler
+		});
 	},
 	urlChanged: function() {
 		this.setAttribute("src", this.url);
@@ -75,6 +78,12 @@ enyo.kind({
 			return n ? n.contentDocument.location.href : url;
 		} catch(e) {
 			return url;
+		}
+	},
+	//* @protected
+	setHTML: function(inUrl, inHtml) {
+		if (this.hasNode()) {
+			this.node.contentWindow.document.body.innerHTML = inHtml;
 		}
 	}
 });

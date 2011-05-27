@@ -5,8 +5,20 @@ enyo.fittingClassName = "enyo-fit";
 enyo.fetchConfigFile = function(inFile) {
 	if (inFile) {
 		var root = enyo.windows.getRootWindow();
-		if (root.enyo) {
-			return root.enyo.xhr.request({url: inFile, sync: true}).responseText;
+		inFile = enyo.makeAbsoluteUrl(root, enyo.path.rewrite(inFile));
+		if (window.PalmSystem) {
+			return palmGetResource(inFile, "const json");
+		} else {
+			if (root.enyo) {
+				var xhr = root.enyo.xhr.request({url: inFile, sync: true});
+				if (xhr.status != 404 && xhr.status != -1100 && xhr.responseText !== "") { // Mac Safari seems to return -1100 for missing files
+					try {
+						return enyo.json.parse(xhr.responseText);
+					} catch(e) {
+						enyo.warn("Could not parse", inFile, e);
+					}
+				}
+			}
 		}
 	}
 };
@@ -59,7 +71,7 @@ enyo.sendOrientationChange = function() {
 enyo.setFullScreen = function(inMode) {
 	if (window.PalmSystem) {
 		window.PalmSystem.enableFullScreenMode(inMode);
-    }
+	}
 };
 
 /**
@@ -103,32 +115,26 @@ enyo.fetchAppRootPath = function() {
 };
 
 /**
- Return the contents of the application's appinfo.json as a JS object
+ Return the contents of the application's appinfo.json as a read-only JS object
  */
 enyo.fetchAppInfo = function() {
-	var appInfo = enyo.fetchConfigFile("appinfo.json");
-	try {
-		return enyo.json.parse(appInfo);
-	} catch(e) {
-		console.warn("Could not parse appInfo: " + e);
-	}
+	return enyo.fetchConfigFile("appinfo.json");
 };
 
 /**
- Return the contents of the application's framework_config.json as a JS object
+ Return the contents of the application's framework_config.json as a read-only JS object
  */
 
 enyo.fetchFrameworkConfig = function() {
-	var fc = enyo.fetchConfigFile("framework_config.json");
-	try {
-		return enyo.json.parse(fc);
-	} catch(e) {
-		console.warn("Could not parse framework_config: " + e);
-	}
+	return enyo.fetchConfigFile("framework_config.json");
 };
 
+/**
+ Return the contents of the framework's framework_config.json as a read-only JS object
+ */
+
 enyo.fetchRootFrameworkConfig = function () {
-	var fc = enyo.fetchConfigFile("$enyo/framework_config.json");
+	return enyo.fetchConfigFile("$enyo/../framework_config.json");
 };
 
 /**

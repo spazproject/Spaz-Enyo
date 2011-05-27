@@ -30,6 +30,9 @@ enyo.kind({
 			onerror: enyo.bubbler,
 			draggable: false
 		});
+		if (this.onload) {
+			this.domAttributes.onload = enyo.bubbler;
+		}
 		this.srcChanged();
 	},
 	srcChanged: function() {

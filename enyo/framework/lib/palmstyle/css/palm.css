@@ -1,0 +1,45 @@
+/* Copyright 2009-2011 Hewlett-Packard Development Company, L.P. All rights reserved. */
+/**
+ Special Text Styles for Palm Core Apps 
+**/
+
+/* Dark Header (looks like the toolbar but acts as a header) */
+
+.enyo-header.palm-dark-header {
+	border-width: 1px 4px;
+	background-color: #343434;
+	-webkit-border-image: url(../../../source/palm/themes/Onyx/images/toolbar.png) 1 4 repeat stretch;
+}
+
+/* Paragraph */
+
+.palm-paragraph {
+	margin: .5em 0;
+}
+
+/* Small Dimmed Text */
+
+.palm-subtext {
+	font-size: .8em; /* swaitch this to .8rem after html font size is set */
+	color: grey;
+}
+
+
+
+/**
+ Modal Dialog (popup) Styles
+**/
+
+.palm-modal-dialog-title {
+	/* font-size: 1rem;  */
+	margin: 0 0 10px;
+	text-align: center;
+}
+.palm-modal-dialog-content {
+	/* font-size: .9rem; */
+}
+.palm-modal-dialog-content .group {
+	-webkit-border-image: url(../images/bg_rowgroup.png) 10 10 repeat;
+	border-width: 10px;
+	margin-bottom: 10px;
+}

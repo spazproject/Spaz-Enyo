@@ -183,7 +183,7 @@ enyo.kind({
 		}
 		this.inherited(arguments);
 	},
-	getContent: function() {
+	getInnerHtml: function() {
 		this.finishTransition();
 		this.flow();
 		return this.inherited(arguments);
@@ -192,6 +192,8 @@ enyo.kind({
 		this.lastView = this.view;
 		this.view = inView;
 		this.transitionView(this.lastView, this.view);
+		// send a message to the view and all sub-components
+		this.view.resized();
 	},
 	_selectViewBack: function(inView) {
 		this._selectView(inView);
@@ -203,9 +205,6 @@ enyo.kind({
 			this._selectView(inView);
 			this.addHistoryItem(this.lastView);
 		}
-		// send a message to the view and all sub-components
-		//this.log("broadcasting resize");
-		this.view.resized();
 		this.doSelectView(this.view, this.lastView);
 	},
 	//* @public
@@ -307,7 +306,7 @@ enyo.kind({
 	createView: function(inName) {
 		var config = this.findLazyView(inName) || this.doCreateView(inName);
 		if (config) {
-			var s = this.createManagedComponent(config);
+			var s = this.createContainedComponent(config);
 			this.flow();
 			s.render();
 			return s;
@@ -328,18 +327,24 @@ enyo.kind({
 				enyo.asyncMethod(s, s.start);
 			}
 			if (inFromView) {
+				inFromView.broadcastMessage("hidden");
 				this.dispatch(this.owner, inFromView.onHide);
 			}
 			if (this.hasNode()) {
-				this._transitioning = true;
-				this.$.transition.viewChanged(inFromView, inToView);
+				this.transitionBegin(inFromView, inToView);
 			} else {
 				this.transitionDone(inFromView, inToView);
 			}
 		}
 	},
+	transitionBegin: function(inFromView, inToView) {
+		enyo.scrimTransparent.showAtZIndex(10);
+		this._transitioning = true;
+		this.$.transition.viewChanged(inFromView, inToView);
+	},
 	transitionDone: function(inFromView, inToView) {
 		// ensure transition finishes with correct result
+		enyo.scrimTransparent.hideAtZIndex(10);
 		this._transitioning = false;
 		if (inFromView) {
 			inFromView.setShowing(false);

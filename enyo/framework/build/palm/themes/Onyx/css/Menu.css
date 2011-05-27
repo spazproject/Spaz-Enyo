@@ -4,3 +4,31 @@
 	border-width: 19px;
 	-webkit-border-image: url(../images/menu-background.png) 23 23 23 23 stretch stretch;
 }
+
+.enyo-menu-inner {
+	margin: -3px -14px;
+}
+
+.enyo-menu-scroll-fades {
+	pointer-events: none;
+}
+
+.enyo-menu-top-fade,
+.enyo-menu-bottom-fade {
+	position: absolute; 
+	pointer-events: none;
+}
+
+.enyo-menu-top-fade {
+	top: -10px;
+	height: 10px; 
+	width: 100%;
+	background: url(../images/menu-fade-arrow-up.png) top center no-repeat no-repeat;
+}
+
+.enyo-menu-bottom-fade {
+	bottom: -11px;
+	height: 10px; 
+	width: 100%;
+	background: url(../images/menu-fade-arrow-down.png) bottom center no-repeat no-repeat;
+}

@@ -153,7 +153,7 @@ enyo.kind({
 		var params = {owner:this, onTap:"alertTapped"};
 		var wCard = enyo.windows.fetchWindow("NetworkAlerts-WiFi-Alert");
 		if(!wCard)
-			this.currentActiveWindow = enyo.windows.openPopup(enyo.path.rewrite("$enyo-lib/networkalerts/source/networkalerts.html"), "NetworkAlerts-WiFi-Alert", params, 185);
+			this.currentActiveWindow = enyo.windows.openPopup(enyo.path.rewrite("$enyo-lib/networkalerts/source/networkalerts.html"), "NetworkAlerts-WiFi-Alert", params, undefined, 185);
 	},
 	
 	showPanAlert: function() {
@@ -203,7 +203,7 @@ enyo.kind({
 		var params = {owner:this, onTap:"alertTapped"};
 		var wCard = enyo.windows.fetchWindow("NetworkAlerts-FlightMode-Alert");
 		if(!wCard)
-			this.currentActiveWindow = enyo.windows.openPopup(enyo.path.rewrite("$enyo-lib/networkalerts/source/networkalerts.html"), "NetworkAlerts-FlightMode-Alert", params, 185);
+			this.currentActiveWindow = enyo.windows.openPopup(enyo.path.rewrite("$enyo-lib/networkalerts/source/networkalerts.html"), "NetworkAlerts-FlightMode-Alert", params, undefined, 185);
 	},
 	
 	isManualSelectionOn: function() {
@@ -234,7 +234,7 @@ enyo.kind({
 		var params = {owner:this, onTap:"alertTapped"};
 		var wCard = enyo.windows.fetchWindow("NetworkAlerts-ManualNetwork-Alert");
 		if(!wCard)
-			this.currentActiveWindow = enyo.windows.openPopup(enyo.path.rewrite("$enyo-lib/networkalerts/source/networkalerts.html"), "NetworkAlerts-ManualNetwork-Alert", params, 185);
+			this.currentActiveWindow = enyo.windows.openPopup(enyo.path.rewrite("$enyo-lib/networkalerts/source/networkalerts.html"), "NetworkAlerts-ManualNetwork-Alert", params, undefined, 185);
 	},	
 	
 	showBTAlert: function() {
@@ -268,7 +268,7 @@ enyo.kind({
 		var params = {owner:this, onTap:"alertTapped"};
 		var wCard = enyo.windows.fetchWindow("NetworkAlerts-BT-Alert");
 		if(!wCard)
-			this.currentActiveWindow = enyo.windows.openPopup(enyo.path.rewrite("$enyo-lib/networkalerts/source/networkalerts.html"), "NetworkAlerts-BT-Alert", params, 185);
+			this.currentActiveWindow = enyo.windows.openPopup(enyo.path.rewrite("$enyo-lib/networkalerts/source/networkalerts.html"), "NetworkAlerts-BT-Alert", params, undefined, 185);
 	},
 	
 	alertTapped: function(inSender, respMsg, event) {

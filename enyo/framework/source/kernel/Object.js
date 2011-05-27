@@ -39,15 +39,8 @@ The _myValueChanged_ method in the example above is called whenever _setMyValue_
 _Changed_ methods are called whenever setters are invoked, whether the actual value has changed
 or not.
 
-You may also implement a propertyChanged method. propertyChanged will be called whenever any
-setter is called.
-
-	propertyChanged: function(inName, inValue, inOldValue) {
-		// property inName was set to inValue (formerly had inOldValue)
-	}
-
-Note that published properties are stored as regular properties on the object prototype, so it's possible
-to query or set their values directly (but changed methods are not called if you set a property directly).
+Published properties are stored as regular properties on the object prototype, so it's possible
+to query or set their values directly (changed methods are not called if you set a property directly).
 
 	var x = myobj.myValue;
 
@@ -68,45 +61,17 @@ enyo.kind({
 	getProperty: function(n) {
 		return this[n];
 	},
+	_setProperty: function(n, v, cf) {
+		if (this[cf]) {
+			var old = this[n];
+			this[n] = v;
+			this[cf](old); 
+		} else {
+			this[n] = v;
+		}
+	},
 	setProperty: function(n, v) {
-		var old = this.getProperty(n);
-		this[n] = v;
-		if (this.propertyChanged) {
-			this.propertyChanged(n, v, old);
-		}
-		n += "Changed";
-		if (this[n]) {
-			this[n](old); 
-		}
-	},
-	// abstract
-	//propertyChanged: function(n, v, old) {
-	//},
-	__console: function(inMethod, inArgs) {
-		if (window.console) {
-			if (window.PalmSystem) {
-				// at least in early versions of webos, console.* only accept a single argument
-				inArgs = [inArgs.join(" ")];
-			}
-			if (console[inMethod]) {
-				// let some consoles be fancy
-				console[inMethod].apply(console, inArgs);
-			} else {
-				// let others be plain
-				console.log(inArgs);
-			}
-		}
-	},
-	_console: function(inMethod, inArgs) {
-		var a$ = [];
-		for (var i=0, l=inArgs.length, a; (a=inArgs[i]) || i<l; i++) {
-			if (String(a) == "[object Object]") {
-				a = enyo.json.stringify(a);
-			}
-			a$.push(a);
-		}
-		this.__console(inMethod, [inArgs.callee.caller.nom + ": "].concat(a$));
-		//this.__console(inMethod, [inArgs.callee.caller.nom + ": "].concat(enyo.cloneArray(inArgs)));
+		this._setProperty(n, v, n + "Changed");
 	},
 	//* @public
 	/**
@@ -122,15 +87,19 @@ enyo.kind({
 			});
 	*/
 	log: function() {
-		this._console("log", arguments);
+		this._log("log", arguments);
 	},
-	//** Same as _log_, except uses the console's warn method (if it exists).
+	//* Same as _log_, except uses the console's warn method (if it exists).
 	warn: function() {
-		this._console("warn", arguments);
+		this._log("warn", arguments);
 	},
-	//** Same as _log_, except uses the console's error method (if it exists).
+	//* Same as _log_, except uses the console's error method (if it exists).
 	error: function() {
-		this._console("error", arguments);
+		this._log("error", arguments);
+	},
+	//* @protected
+	_log: function(inMethod, inArgs) {
+		enyo.logging.log(inMethod, [inArgs.callee.caller.nom + ": "].concat(enyo.cloneArray(inArgs)));
 	}
 });
 
@@ -156,7 +125,7 @@ enyo.Object.addGetterSetter = function(inName, inValue, inProto) {
 	var priv_n = inName;
 	inProto[priv_n] = inValue;
 	//
-	var cap_n = inName.slice(0, 1).toUpperCase() + inName.slice(1);
+	var cap_n = priv_n.slice(0, 1).toUpperCase() + priv_n.slice(1);
 	var get_n = "get" + cap_n;
 	if (!inProto[get_n]) {
 		inProto[get_n] = function() { 
@@ -165,9 +134,10 @@ enyo.Object.addGetterSetter = function(inName, inValue, inProto) {
 	}
 	//
 	var set_n = "set" + cap_n;
+	var change_n = priv_n + "Changed";
 	if (!inProto[set_n]) {
 		inProto[set_n] = function(v) { 
-			this.setProperty(priv_n, v); 
+			this._setProperty(priv_n, v, change_n); 
 		};
 	}
 };

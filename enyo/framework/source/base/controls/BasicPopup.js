@@ -2,118 +2,196 @@
 //* @protected
 enyo.kind({
 	name: "enyo.BasicPopup",
-	kind: enyo.Control,
-	showing: false,
+	kind: enyo.LazyControl,
 	published: {
 		modal: false,
 		// only apply if modal is false
 		dismissWithClick: true,
 		dismissWithEscape: true,
+		shareScrim: true,
+		// by default show a transparent scrim when modal
+		scrimWhenModal: true,
 		scrim: false,
-		scrimClassName: ""
+		scrimClassName: "",
+		/**
+			Close automatically if the application is minimized.
+			Note, the popup will also close automatically in this case if dismissWithClick is true.
+		*/
+		autoClose: false
 	},
 	events: {
+		/**
+			Event fired right before the popup is opened. If the popup's contained components are created lazily,
+			they will be ready at this time. By handling this event, it's possible to effect popup contents before
+			the popup is displayed.
+			
+			inFirstOpen {Boolean} Flag indicating if this is the first time the popup has opened.
+		*/
+		onBeforeOpen: "",
+		/**
+			Event fired after the popup has been opened.
+		*/
 		onOpen: "",
+		/**
+			Event fired after the popup is closed.
+
+			inEvent {Event} (optional) event that triggered the close.
+			inReason {String} (optional) reason the popup was closed.
+		*/
 		onClose: ""
 	},
-	defaultZ: 120,
-	className: "enyo-popup",
 	//* @protected
+	showing: false,
+	defaultZ: 120,
+	className: "enyo-popup enyo-popup-float",
 	create: function() {
 		this.inherited(arguments);
 		// FIXME: global dispatcher may not be good enough
 		this.dispatcher = enyo.dispatcher;
-		// NOTE: parent all popups in root parent to avoid problem:
-		// webkit-transforms defeat fixed positioning.
-		this.setParent(this.findRootParent());
+		// NOTE: it's important that popups goes into an un-webkit-transformed node
+		// This is because position: fixed does not interact with webkit-transform.
+		this.setParent(enyo.getPopupLayer());
 	},
 	destroy: function() {
-		this.close();
+		this.close(null, "popup:destroyed");
 		this.inherited(arguments);
 	},
-	findRootParent: function() {
-		var o = this;
-		while (o = o.owner) {
-			if (!(o.owner instanceof enyo.Control)) {
-				return o;
-			}
-		}
-	},
-	//* @public
-	// open / close
-	toggleOpen: function() {
-		if (this.isOpen) {
-			this.close();
-		} else {
-			this.open();
-		}
-	},
-	open: function() {
-		if (this.isOpen) {
-			return;
-		}
-		this.isOpen = true;
-		this.prepareOpen();
-		this.renderOpen();
-		this.showHideScrim(this.isOpen);
-		enyo.asyncMethod(this, "afterOpen");
-	},
-	close: function(e, inReason) {
-		if (this.isOpen) {
-			this.isOpen = false;
-			this.prepareClose();
-			this.renderClose();
-			this.showHideScrim(this.isOpen);
-			this.doClose(e, inReason);
-		}
-	},
-	//* @protected
 	dispatchDomEvent: function(e) {
 		var r = this.inherited(arguments);
 		// avoid bubbling dom events if we are not modal and will therefore forward events
 		// this prevents events from being sent twice to ancestors of both the popup and the event dispatch target.
 		return !this.modal ? true : r;
 	},
-	prepareOpen: function() {
-		this._zIndex = ++enyo.BasicPopup.count * 2 + this.findZIndex() + 1;
-		// leave room for scrim
-		this.applyStyle("z-index", this._zIndex);
-		if (!this.generated) {
-			this.render();
+	//* @public
+	/**
+		If the popup is open, close it; otherwise, open it.
+	*/
+	toggleOpen: function() {
+		if (this.isOpen) {
+			this.close(null, "popup:toggled");
+		} else {
+			this.open();
 		}
-		this.dispatcher.capture(this, !this.modal);
 	},
-	prepareClose: function() {
-		if (this.showing) {
-			enyo.BasicPopup.count--;
+	/**
+		Open the popup in its current position.
+	*/
+	open: function() {
+		if (this.prepareOpen()) {
+			this.finishOpen();
 		}
-		this.dispatcher.release();
-		this._zIndex = null;
-		this.applyStyle("z-index", null);
+	},
+	/**
+		Close the popup. The inReason argument describes why the popup was closed. Any control inside a popup
+		that has a popupHandler property will close the popup when clicked and will pass the value of popupHandler
+		as the reason the popup was closed. In addition, the popup can be closed automatically in some cases and will 
+		pass a message of the form "popup:reason" in this case. For example, when a popup is open and is destroyed,
+		it is closed with the reason "popup:destroyed."
+
+		inEvent {Event} Event that triggered the close.
+		inReason {String} A reason that this popup closed.
+	*/
+	close: function(inEvent, inReason) {
+		if (this.isOpen) {
+			this.isOpen = false;
+			this.prepareClose();
+			this.renderClose();
+			this.showHideScrim(this.isOpen);
+			this.doClose(inEvent, inReason);
+		}
+	},
+	//* @protected
+	canOpen: function() {
+		return !this.isOpen;
+	},
+	prepareOpen: function() {
+		if (this.canOpen()) {
+			this.isOpen = true;
+			enyo.BasicPopup.count++;
+			// keep track of number of modal controls
+			if (this.modal) {
+				enyo.BasicPopup.modalCount++;
+			}
+			//
+			this.applyZIndex();
+			// flag for recording if we received a mousedown after opening
+			this._didOpenMousedown = false;
+			this.validateComponents();
+			this.doBeforeOpen(!this.hasOpened);
+			this.hasOpened = true;
+			if (!this.generated) {
+				this.render();
+			}
+			this.dispatcher.capture(this, !this.modal);
+			return true;
+		}
+	},
+	finishOpen: function() {
+		this.renderOpen();
+		this.showHideScrim(this.isOpen);
+		enyo.asyncMethod(this, "afterOpen");
+	},
+	renderOpen: function() {
+		this.show();
 	},
 	afterOpen: function() {
 		// Indicate that we have resized; allows controls that need to respond to being resized
 		// e.g. VirtualLists to update their size.
-		this.resized();
+		this.broadcastToControls("resize");
 		this.doOpen();
 	},
-	renderOpen: function() {
-		this.show();
+	prepareClose: function() {
+		if (this.showing) {
+			enyo.BasicPopup.count--;
+			if (this.modal) {
+				enyo.BasicPopup.modalCount--;
+			}
+		}
+		this.broadcastToControls("hidden");
+		this.dispatcher.release();
+		this._zIndex = null;
+		this.applyStyle("z-index", null);
 	},
 	renderClose: function() {
 		this.hide();
 	},
 	showHideScrim: function(inShow) {
-		if (this.scrim) {
+		if (this.scrim || (this.modal && this.scrimWhenModal)) {
+			var scrim = this.getScrim();
 			if (inShow) {
 				// move scrim to just under the popup to obscure rest of screen
-				this._scrimZ = this.findZIndex()-1;
-				enyo.scrim.showAtZIndex(this._scrimZ);
+				var i = this.getScrimZIndex();
+				this._scrimZ = i;
+				scrim.showAtZIndex(i);
 			} else {
-				enyo.scrim.hideAtZIndex(this._scrimZ);
+				scrim.hideAtZIndex(this._scrimZ);
 			}
-			enyo.call(enyo.scrim, "addRemoveClass", [this.scrimClassName, enyo.scrim.showing]);
+			enyo.call(scrim, "addRemoveClass", [this.scrimClassName, scrim.showing]);
 		}
+	},
+	getScrimZIndex: function() {
+		return this.findZIndex()-1;
+	},
+	getScrim: function() {
+		// show a transparent scrim for modal popups if scrimWhenModal is true
+		// if scrim is true, then show a regular scrim.
+		if (this.modal && this.scrimWhenModal && !this.scrim) {
+			return enyo.scrimTransparent.make();
+		}
+		if (this.shareScrim) {
+			return enyo.scrim.make();
+		} else {
+			if (!this.$.scrim) {
+				this.createComponent({name: "scrim", kind: "Scrim", parent: this.parent});
+				this.$.scrim.render();
+			}
+			return this.$.scrim;
+		}
+	},
+	applyZIndex: function() {
+		this._zIndex = enyo.BasicPopup.count * 2 + this.findZIndex() + 1;
+		// leave room for scrim
+		this.applyStyle("z-index", this._zIndex);
 	},
 	findZIndex: function() {
 		// a default z value
@@ -127,15 +205,37 @@ enyo.kind({
 	},
 	// open / close events
 	mousedownHandler: function(inSender, e) {
-		// mousedowns that are not inside this popup can dismiss us, if we are not modal and dismissWithClick is true
-		var foreignMousedown = !e.dispatchTarget.isDescendantOf(this);
-		if (!this.modal && this.dismissWithClick && e.dispatchTarget != this && foreignMousedown) {
-			this.close(e);
-		} else if (this.modal && foreignMousedown) {
-			// prevent focusing from shifting if we're modal.
+		// prevent focusing from shifting if we're modal.
+		if (this.modal && !e.dispatchTarget.isDescendantOf(this)) {
 			e.preventDefault();
 		}
-		this.fire("onmousedown", e);
+		// record that we received a mousedown after opening
+		this._didOpenMousedown = true;
+		return this.fire("onmousedown", e);
+	},
+	clickHandler: function(inSender, inEvent) {
+		// only process click if we've received a mousedown after opening.
+		// avoids a problem where popup can immediately close if it's opened when a click is pending
+		// (e.g. mousedown, focus).
+		if (this._didOpenMousedown) {
+			this.processClick(inSender, inEvent);
+		}
+		return this.doClick(inEvent);
+	},
+	processClick: function(inSender, inEvent) {
+		// dismiss on click if property is set and click was outside the popup
+		// Note, even modal popups can be dismissed with click.
+		if (this.dismissWithClick && !inEvent.dispatchTarget.isDescendantOf(this)) {
+			if (inEvent.dispatchTarget != enyo.dispatcher.rootHandler) {
+				this.close(inEvent);
+			}
+		// dismiss if the click was on a control set as a "popupHandler" 
+		} else {
+			var handler = this.findPopupHandler(inSender);
+			if (handler) {
+				this.close(inEvent, handler.popupHandler);
+			}
+		}
 	},
 	blurHandler: function(inSender, e) {
 		this.lastFocus = inSender;
@@ -151,19 +251,12 @@ enyo.kind({
 	keydownHandler: function(inSender, e, inTarget) {
 		switch (e.keyCode) {
 			case 27: 
-				if (this.dismissWithEscape && !this.modal) {
-					this.close(e);
+				if (this.dismissWithEscape) {
+					this.close(e, "popup:escape");
 					enyo.stopEvent(e);
 				}
 				return true;
 		}
-	},
-	clickHandler: function(inSender, inEvent) {
-		var handler = this.findPopupHandler(inSender);
-		if (handler) {
-			this.close(inEvent, handler.popupHandler);
-		}
-		return this.doClick();
 	},
 	findPopupHandler: function(inControl) {
 		var c = inControl;
@@ -173,7 +266,18 @@ enyo.kind({
 			}
 			c = c.parent;
 		}
+	},
+	hiddenHandler: function() {
+		this.close(null, "popup:hidden");
+	},
+	// sent when control should be auto-hidden, e.g. when window deactivates or is hidden.
+	autoHideHandler: function() {
+		if (this.dismissWithClick || this.autoClose) {
+			this.close(null, "popup:autoclose");
+		}
+		this.broadcastToControls("autoHide");
 	}
 });
 
 enyo.BasicPopup.count = 0;
+enyo.BasicPopup.modalCount = 0;

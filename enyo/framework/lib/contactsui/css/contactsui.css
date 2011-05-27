@@ -1,6 +1,6 @@
 /* Copyright 2009-2011 Hewlett-Packard Development Company, L.P. All rights reserved. */
 /* ContactList */
-/* popup */
+/* popup 
 .enyo-popup .group {
 	-webkit-border-image: url(../images/bg_rowgroup.png) 10 10 repeat;
 	border-width: 10px;
@@ -10,23 +10,25 @@
 	margin: -6px -8px;
 	-webkit-box-sizing:content-box;
 	-webkit-border-radius:10px
-}
+}*/
 /* Square search field */
-.enyo-contacts-list .contacts-search {
+.enyo-contacts-list .contacts-search.enyo-input.enyo-rounded-input {
 	margin:0 0 -3px; /* blend shadow from bg_search.png */
-}
-.enyo-contacts-list .contacts-search .enyo-rounded-box {
-	background:url(../images/bg_search.png) repeat-x 0 0;
-	-webkit-border-image:none;
-	border:0;	
+	-webkit-border-image:url(../images/bg_search.png) 0 15 repeat;
+	border-width:0 15px;	
 	height:44px;
-	padding:0 13px;
 }
-.enyo-contacts-list .contacts-search .enyo-rounded-box .enyo-rounded-box-inner {
+.enyo-contacts-list .contacts-search.enyo-input .enyo-input-input {
 	margin:0;
 	height:40px;
 }
 /* items */
+.enyo-contacts-list .message {
+	font-size:16px;
+	color:#666;
+	padding:13px 0;
+	min-height:0
+}
 .enyo-contacts-list .enyo-item {
 	padding:0 14px;
 	min-height: 68px;
@@ -34,6 +36,9 @@
 	border-style:solid none solid none;
 	border-top-color:rgba(255,255,255,0.5);
 	border-bottom-color:rgba(0,0,0,0.1);
+}
+.enyo-contacts-list .enyo-item div {
+	vertical-align:middle;
 }
 .enyo-contacts-list .enyo-item.first {
 	border-top:0;
@@ -68,7 +73,7 @@
 	width:100%;
 	background-position:50% 50%;
 	background-repeat: no-repeat;
-	background-color:#f1f1f1; /* temp*/
+	background-color:#f1f1f1;
 	background-image:url(../images/bg_icon_img.png)
 }
 .enyo-contacts-list .enyo-item .name {
@@ -76,6 +81,9 @@
 	overflow:hidden;
 	text-overflow:ellipsis;
 	max-width:200px;
+}
+.enyo-contacts-list .enyo-item .name.long {
+	max-width:230px
 }
 .enyo-contacts-list .enyo-item .favorite {
 	margin:0 0 0 8px;
@@ -86,14 +94,6 @@
 .enyo-contacts-list .enyo-item .status {
 	margin:0 0 0 10px;
 }
-.enyo-contacts-list .favorites .enyo-item .favorite,
-.enyo-contacts-list .favorites .enyo-divider-alpha {
-	display:none;
-}
-.enyo-contacts-list .favorites .enyo-item {
-	border-width:1px 0;
-}
-
 .enyo-contacts-list .divider-Label {
 	text-transform: uppercase;
 }
@@ -104,122 +104,82 @@
 }
 /* Details */
 .enyo-contacts-details {
-	background:url(../images/bg_body.png) 0 0 repeat;
-	padding:4px;
-	border-left:1px solid #a8a8a8;
-}
-.enyo-contacts-details .container {
-	-webkit-border-image: url(../images/bg_details.png) 9 repeat;
-	border-width:9px;
-}
-.enyo-contacts-details .content {
-	margin:-3px;
+	padding:0 2px;
 }
 .enyo-contacts-details .header {
 	padding:5px 13px 10px 5px;
 	border-bottom:1px solid #d8d8d8;
 }
-.enyo-contacts-details .avatar {
-	width:222px;
-	position:relative;
-	height:222px;
+.enyo-contacts-details .icon {
+	margin:0 10px 4px 2px;
 }
-.enyo-contacts-details .avatar .img {
-	height:196px;
-	width:196px;
-	top:13px;
-	position:absolute;
-	left:13px;
-	background-color:#f1f1f1;
-	background-repeat:no-repeat;
-	background-position:50% 50%;
+.enyo-contacts-details .nameinfo {
+	font-size:20px;
+	margin:0 0 4px;
 }
-.enyo-contacts-details .avatar .mask {
-	background:url(../images/bg_avatar_mask.png) no-repeat 0 0;
+.enyo-contacts-details .nameinfo div {
+	overflow:hidden;
+	text-overflow:ellipsis;
 }
 .enyo-contacts-details .name {
 	color:#222;
-	font-size:30px;
-	width:100%;
-	overflow:hidden;
-	text-overflow:ellipsis;
 	font-weight:normal;
-	padding:15px 0;
-	white-space: nowrap;
-}
-.enyo-contacts-details .nickname {
-	color:#555;
-	font-size:20px;
-	width:100%;
+	padding:0 0 0.5em;
 	overflow:hidden;
 	text-overflow:ellipsis;
+	width:100%;
 	white-space: nowrap;
 }
 .enyo-contacts-details .position {
 	color:#888;
-	font-size:20px;
-	width:100%;
-	overflow:hidden;
-	text-overflow:ellipsis;
-	white-space: nowrap;
 }
-.enyo-contacts-details .favorite {
-	width:34px;
-	height:34px;
-	margin:10px 0 0 10px;
-	background:url(../images/bg_favorite.png) no-repeat 0 0;
-}
-.enyo-contacts-details .favorite.true {
-	background-position: 0 -33px;
-}
-.enyo-contacts-details .profiles-button span {
-	background:url(../../images/btn_linked_profiles.png) no-repeat 100% 0;
-	padding:0 20px 0 0;
-}
-.enyo-contacts-details .profiles-button.enyo-button-depressed span {
-	background-position:100% -20px;
-}
-.enyo-contacts-details .profiles {
-	background:#f4f4f4;
-}
-.enyo-contacts-details .profiles .enyo-item {
-	border-top:1px dashed #ccc;
-	border-bottom:0;
-	height:73px;
-	color:#222;
-	font-weight:normal;
-	padding:0 14px;
+.enyo-contacts-details .group .enyo-scroller {
+	margin:-12px;
 }
 .enyo-contacts-details .enyo-group {
 	-webkit-border-image:none;
 	border:0;
-	border-bottom:1px solid #d8d8d8;
+	border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+	border-top:1px solid (255,255,255,0.2);
 	-webkit-border-radius:0;
 	margin:0;
+}
+.enyo-contacts-details .enyo-group .enyo-item {
+	border-top-width:1px;
+	border-bottom-width:1px;
+}
+.enyo-contacts-details .enyo-group:first-child {
+	border-top-width:0;
+}
+.enyo-contacts-details .enyo-group:first-child .enyo-item.enyo-first {
+	border-top-width:0;
 }
 .enyo-contacts-details .enyo-group-inner {
 	margin:0;
 }
 .enyo-contacts-details .enyo-group .enyo-item {
-	padding:10px 15px;
 	color:#222;
-	font-size:18px;
 }
 .enyo-contacts-details .label {
 	color:#1879cd;
 	font-weight:normal;
 	text-transform: uppercase;
-	font-size: 14px;
+	font-size:0.7rem;
 }
 .enyo-contacts-details .value {
 	overflow: hidden;
 	text-overflow: ellipsis;
 }
-.enyo-contacts-details .icon {
-	float:right;
-	height:32px;
+.enyo-contacts-details .button-arrow {
+	height:42px;
 	width:32px;
 	background: url(../images/bg_details_input_skype.png) no-repeat 50% 50%
+}
+.enyo-contacts-details .enyo-button.action .enyo-button-icon {
+	margin:-6px -8px -10px
+}
+.enyo-contacts-details .contacts-actions .enyo-button {
+	margin:0 0 10px;
 }
 
 .im-status {
@@ -246,10 +206,6 @@
 .contacts-gal-person.selected {
 	background-color:#d1e5f5;
 	border-color:#B3d9f2
-}
-.contacts-gal-arrow {
-	padding-top: 10px;
-	padding-right: 10px;
 }
 .contacts-gal-noresults {
 	color: gray;

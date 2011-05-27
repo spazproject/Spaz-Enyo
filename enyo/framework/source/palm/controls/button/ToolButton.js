@@ -5,13 +5,22 @@
 
 		{kind: "ToolButton", icon: "images/foo.png"}
 */
+
+// ToolButton has a tap target larger than area styled as a button.
 enyo.kind({
 	name: "enyo.ToolButton", 
 	kind: enyo.IconButton,
+	// do not style this as a button
 	className: "enyo-tool-button",
 	captionedClassName: "enyo-tool-button-captioned",
+	chrome: [
+		{name: "client", className: "enyo-tool-button-client"}
+	],
 	captionChanged: function() {
 		this.inherited(arguments);
-		this.addRemoveClass(this.captionedClassName, this.caption);
+		this.$.client.addRemoveClass(this.captionedClassName, this.caption);
+	},
+	setState: function(inState, inValue) {
+		this.$.client.addRemoveClass(this.cssNamespace + "-" + inState, Boolean(inValue));
 	}
 });

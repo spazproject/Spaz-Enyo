@@ -24,7 +24,7 @@ enyo.kind({
 		{kind: "VFlexBox", name:"standardModifyView", flex:1, className:"enyo-bg", components: [
 			{kind:"Toolbar", className:"enyo-toolbar-light accounts-header", pack:"center", components: [
 				{kind: "Image", name:"titleIcon"},
-		        {content: AccountsUtil.PAGE_TITLE_ACCOUNT_SETTINGS, className:""}
+		        {kind: "Control", content: AccountsUtil.PAGE_TITLE_ACCOUNT_SETTINGS}
 			]},
 			{className:"accounts-header-shadow"},
 			{kind: "Scroller", flex: 1, components: [
@@ -41,27 +41,19 @@ enyo.kind({
 						]},
 					]},
 					{name:"changeLoginButton", kind: "Button", caption: AccountsUtil.BUTTON_CHANGE_LOGIN, onclick: "changeLoginTapped", className:"accounts-btn"},
-					{name:"removeAccountButton", kind: "ActivityButton", caption: AccountsUtil.BUTTON_REMOVE_ACCOUNT, className: "enyo-button-negative accounts-btn", onclick: "confirmAccountRemoval"},
+					{name:"removeAccountButton", kind: "Accounts.RemoveAccount", className:"accounts-btn", onAccountsRemove_Done: "doModifyView_Success"},
 					{name:"createAccountButton", kind: "ActivityButton", caption: AccountsUtil.BUTTON_CREATE_ACCOUNT, onclick: "createAccountTapped", className:"enyo-button-affirmative accounts-btn"},
 				]},
 			]},
 			{className:"accounts-footer-shadow"},
 			{kind:"Toolbar", className:"enyo-toolbar-light", components:[
-				{name:"cancelButton", kind: "Button", className:"accounts-toolbar-btn", onclick: "backHandler"},
-			]},
-			{name: "removeConfirmDialog", kind: "ModalDialog", caption: AccountsUtil.BUTTON_REMOVE_ACCOUNT, modal: true, scrim: true, components: [
-				{content: AccountsUtil.TEXT_REMOVE_CONFIRM, className:"enyo-paragraph"},
-				{kind:"HFlexBox", components:[
-					{kind: "Button", caption: AccountsUtil.BUTTON_KEEP_ACCOUNT, id:"button-modify-keep", flex:0.8, className:"enyo-button-light", onclick: "keepAccount"},
-					{kind: "Button", caption: AccountsUtil.BUTTON_REMOVE_ACCOUNT, id:"button-modify-remove", flex:1, className: "enyo-button-negative", onclick: "removeAccount"}
-				]}
-			]},
+				{name:"cancelButton", kind: "Button", className:"accounts-toolbar-btn", onclick: "backHandler"}
+			]}
 		]},
 		{kind: "CrossAppUI", name:"customAccountsUI", onResult: "doModifyView_Success"},
 		
 		{name: "createAccount", kind: "PalmService", service: enyo.palmServices.accounts, method: "createAccount", onResponse: "createResponse"},
-		{name: "modifyAccount", kind: "PalmService", service: enyo.palmServices.accounts, method: "modifyAccount"},
-		{name: "deleteAccount", kind: "PalmService", service: enyo.palmServices.accounts, method: "deleteAccount", onResponse: "doModifyView_Success"}
+		{name: "modifyAccount", kind: "PalmService", service: enyo.palmServices.accounts, method: "modifyAccount"}
 	],
 	
 	// Pass in a validationResult if creating the account, or the account and template if modifying it
@@ -76,13 +68,12 @@ enyo.kind({
 		// Get the "Create Account" button back to normal
 		this.$.createAccountButton.active = false;
 		this.$.createAccountButton.activeChanged();
-		AccountsUtil.changeCaption(this.$.createAccountButton, AccountsUtil.BUTTON_CREATE_ACCOUNT);
+		this.$.createAccountButton.setCaption(AccountsUtil.BUTTON_CREATE_ACCOUNT);
 		AccountsUtil.disableControl(this.$.createAccountButton, false);
 
 		AccountsUtil.disableControl(this.$.accountName, false);
 		AccountsUtil.disableControl(this.$.changeLoginButton, false);
-		AccountsUtil.disableControl(this.$.removeAccountButton, false);
-		AccountsUtil.changeCaption(this.$.cancelButton, AccountsUtil.BUTTON_CANCEL);
+		this.$.cancelButton.setCaption(AccountsUtil.BUTTON_CANCEL);
 		
 		// Set the account name
 		this.$.accountName.value = validationResult.alias || this.template.loc_name;
@@ -125,12 +116,10 @@ enyo.kind({
 		
 		// Hide buttons not needed when modifying an account
 		this.$.createAccountButton.hide();
-		// Stop the spinner on the button
-		this.$.removeAccountButton.active = false;
-		this.$.removeAccountButton.activeChanged();
-		AccountsUtil.disableControl(this.$.removeAccountButton, false);
+		// Initialize the "remove account" functionality
+		this.$.removeAccountButton.init(account, capability);
 
-		AccountsUtil.changeCaption(this.$.cancelButton, AccountsUtil.BUTTON_BACK);
+		this.$.cancelButton.setCaption(AccountsUtil.BUTTON_BACK);
 			
 		// Set the account name
 		this.$.accountName.value = this.account.alias || this.account.loc_name;
@@ -139,7 +128,6 @@ enyo.kind({
 		// Enable all the buttons
 		AccountsUtil.disableControl(this.$.accountName, false);
 		AccountsUtil.disableControl(this.$.changeLoginButton, false);
-		AccountsUtil.disableControl(this.$.removeAccountButton, false);
 		
 		// Update the icon on the page title
 		if (this.template && this.template.icon && this.template.icon.loc_48x48)
@@ -210,36 +198,12 @@ enyo.kind({
 		});
 	},
 	
-	confirmAccountRemoval: function() {
-		// Open the "remove confirm" dialog
-		this.$.removeConfirmDialog.openAtCenter();
-	},
-	
-	// The "Remove Account" button in the "remove confirm" dialog was tapped
-	removeAccount: function() {
-		// Close the dialog
-		this.$.removeConfirmDialog.close();
-
-		// Start the spinner on the button and disable it
-		this.$.removeAccountButton.active = true;
-		this.$.removeAccountButton.activeChanged();
-		AccountsUtil.disableControl(this.$.removeAccountButton, true);
-
-		// Delete this account
-		this.$.deleteAccount.call({accountId:this.account._id});
-	},
-	
-	keepAccount: function() {
-		// Close the dialog
-		this.$.removeConfirmDialog.close();
-	},
-
 	// The "Create Account" button was tapped
 	createAccountTapped: function() {
 		// Disable the "Create Account" button
 		AccountsUtil.disableControl(this.$.createAccountButton, true);
 		// Change the text to "Creating Account..."
-		AccountsUtil.changeCaption(this.$.createAccountButton, AccountsUtil.BUTTON_CREATING_ACCOUNT);
+		this.$.createAccountButton.setCaption(AccountsUtil.BUTTON_CREATING_ACCOUNT);
 		// Start the spinner on the button
 		this.$.createAccountButton.active = true;
 		this.$.createAccountButton.activeChanged();
@@ -266,6 +230,9 @@ enyo.kind({
 	},
 	
 	createResponse: function(inSender, inResponse) {
+		// Stop the spinner on the "Create Account" button
+		this.$.createAccountButton.active = false;
+		this.$.createAccountButton.activeChanged();
 		// Hopefully the response was successful and the account was created.  Even if it wasn't, nothing more can be done here
 		this.doModifyView_Success();
 	},

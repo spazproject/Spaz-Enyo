@@ -7,5 +7,5 @@ enyo.requiresWindow(function() {
 			Tellurium.setup(window.enyo);
 			console.log("Tellurium loading...");
 		}, false);
-	};
+	}
 });

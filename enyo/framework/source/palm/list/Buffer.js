@@ -5,7 +5,7 @@ enyo.kind({
 	kind: enyo.Component,
 	events: {
 		onAcquirePage: "",
-		onDiscardPage: "",
+		onDiscardPage: ""
 	},
 	top: 0,
 	bottom: -1,

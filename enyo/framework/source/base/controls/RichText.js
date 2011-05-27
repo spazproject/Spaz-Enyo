@@ -19,21 +19,35 @@ enyo.kind({
 	name: "enyo.RichText", 
 	kind: enyo.Input,
 	published: {
-		richContent: true
+		richContent: true,
+		maxTextHeight: null,
+		/**
+		The selection property is a dom Selection object describing the selected text.
+		It cannot be set. Instead the selection can be altered by manipulated the object directly
+		via the dom selection object api.
+		For example, this.$.richText.getSelection().collapseToEnd();
+		*/
+		selection: null
 	},
 	events: {
 		onchange: ""
 	},
 	chrome: [
-		{name: "input", flex: 1, kind: enyo.BasicRichText, className: "enyo-input-input", onchange: "doChange"}
+		{name: "input", flex: 1, kind: enyo.BasicRichText, className: "enyo-input-input", onchange: "doChange"},
 	],
 	//* @protected
 	create: function() {
 		this.inherited(arguments);
 		this.richContentChanged();
+		this.maxTextHeightChanged();
 	},
 	richContentChanged: function() {
 		this.$.input.setRichContent(this.richContent);
+	},
+	maxTextHeightChanged: function() {
+		if (this.maxTextHeight) {
+			this.$.input.applyStyle("max-height", this.maxTextHeight);
+		}
 	},
 	getHtml: function() {
 		return this.$.input.getHtml();
@@ -54,5 +68,10 @@ enyo.kind({
 		if (this.hasNode()) {
 			this.$.input.render();
 		}
+	},
+	selectionChanged: function() {
+	},
+	getSelection: function() {
+		return this.hasFocus() ? window.getSelection() : null;
 	}
 });
