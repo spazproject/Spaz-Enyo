@@ -26,16 +26,18 @@ enyo.kind({
 		this.inherited(arguments);
 
 		this.loadingColumns = 0;
+		this.loadAndCreateColumns();
 		
-		// load the column set
-		this.columnData = App.Prefs.get('columns') || [];
-		this.createColumns();
-
 		AppUI.addFunction("search", function(inQuery, inAccountId){
 			this.createColumn(inAccountId, "search", inQuery);
 		}, this);
 	},
-
+	
+	loadAndCreateColumns: function() {
+		this.columnData = App.Prefs.get('columns') || [];
+		this.createColumns();
+	},
+	
 	getDefaultColumns: function() {
 		
 		var firstAccount = App.Users.getAll()[0];
@@ -55,7 +57,7 @@ enyo.kind({
 
 		return default_columns;
 	},
-
+	
 	createColumns: function() {
 		this.columnsFunction("destroy"); //destroy them all. don't want to always do this.
 
@@ -184,5 +186,23 @@ enyo.kind({
 
 	search: function(inSender, inQuery){
 		this.createColumn(inSender.info.accounts[0], "search", inQuery);
+	},
+	
+	accountAdded: function() {
+		this.createColumns();
+	},
+	
+	removeColummnsForAccount: function(inAccountId) {
+		var lengthBefore = this.columnData.length;
+		for(var i = lengthBefore - 1; i >= 0; i--) {
+			//TODO: this needs to be more intelligent when there are multiple accounts in one column.
+			if(this.columnData[i].accounts[0] === inAccountId) {
+				this.columnData.splice(i, 1);
+			}
+		}
+		if(this.columnData.length !== lengthBefore) {
+			App.Prefs.set('columns', this.columnData);
+			this.createColumns();
+		}
 	}
 });

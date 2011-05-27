@@ -2,7 +2,9 @@ enyo.kind({
 	name: "Spaz.AccountsPopup",
 	kind: enyo.Popup,
 	events: {
-		onClose: ""
+		onClose: "",
+		onAccountAdded: "",
+		onAccountRemoved: ""
 	},
 	scrim: true,
 	modal: true,
@@ -295,6 +297,7 @@ enyo.kind({
 						self.$.saveButton.setActive(false);
 						self.$.saveButton.setDisabled(false);
 						self.goTopLevel(); //this re-renders the accounts list.
+						self.doAccountAdded();
 					} else {
 						self.$.saveButton.setActive(false);
 						self.$.saveButton.setDisabled(false);
@@ -318,7 +321,7 @@ enyo.kind({
 	},
 	removeAccount: function(inSender, inEvent){
 		App.Users.remove(this.editing_acc_id);
-		//@TODO we should also delete any columns using this account
+		this.doAccountRemoved(this.editing_acc_id);
 
 		this.editing_acc_id = null;
 
