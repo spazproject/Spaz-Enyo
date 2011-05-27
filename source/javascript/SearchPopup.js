@@ -3,7 +3,6 @@ enyo.kind({
 	kind: "Popup",
 	scrim: true,
 	modal: true,
-	lazy: false,
 	width: "400px",
 	events: {
 		onClose: "",
@@ -30,7 +29,10 @@ enyo.kind({
 	create: function(){
 		this.inherited(arguments);
 	},
-	"showAtCenter": function(){
+	showAtCenter: function(){
+		if(this.lazy) {
+			this.validateComponents();
+		}
 		this.$.searchTextBox.forceFocus();
 
 		this.openAtCenter();

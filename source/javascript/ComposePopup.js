@@ -3,7 +3,6 @@ enyo.kind({
 	kind: "Popup",
 	scrim: true,
 	modal: true, //yes/no?
-	lazy: false,
 	//width: "400px",
 	events: {
 		onClose: ""
@@ -67,7 +66,10 @@ enyo.kind({
 			this.setPostingAccount(this.accounts[0].value);
 		}
 	},
-	"showAtCenter": function(){
+	showAtCenter: function(){
+		if(this.lazy) {
+			this.validateComponents();
+		}
 		this.buildAccounts();
 		
 		var width = 0;

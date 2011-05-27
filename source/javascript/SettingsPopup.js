@@ -3,7 +3,6 @@ enyo.kind({
 	kind: "Popup",
 	scrim: true,
 	modal: true,
-	lazy: false,
 	width: "400px",
 	height: "600px",
 	layoutKind: "VFlexLayout",
@@ -122,7 +121,7 @@ enyo.kind({
 	create: function(){
 		this.inherited(arguments);
 	},
-	"showAtCenter": function(){
+	showAtCenter: function(){
 		 this.openAtCenter();
 	}
 });

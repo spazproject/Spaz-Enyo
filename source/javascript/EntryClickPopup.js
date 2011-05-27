@@ -2,29 +2,26 @@ enyo.kind({
 	name: "Spaz.EntryClickPopup",
 	kind: "Popup",
 	scrim: true,
-	lazy: false,
 	events: {
 		onClose: "",
 		onShare: ""
 	},
 	components: [
-		{name: "popup", kind: "PopupList", onSelect: "itemSelect"}
-	],
-	items: [
-		"Details",
-		"Reply",
-		"Repost",
-		"Edit & Repost",
-		"Share"
+		{name: "popup", kind: "PopupList", onSelect: "itemSelect", items: [
+			"Details",
+			"Reply",
+			"Repost",
+			"Edit & Repost",
+			"Share"
+		]}
 	],
 	create: function(){
 		this.inherited(arguments);
-		this.$.popup.setItems(this.items);
 		this.entry = null;
 	},
-	"itemSelect": function(inSender, inIndex){
+	itemSelect: function(inSender, inIndex){
 
-		switch(this.items[inIndex]){
+		switch(this.$.popup.getItems()[inIndex]){
 			case "Details":
 				AppUI.viewEntry(this.entry);
 				this.$.popup.close();
@@ -54,7 +51,10 @@ enyo.kind({
 				break;
 		}		
 	},
-	"showAtEvent": function(inEntry, inEvent){
+	showAtEvent: function(inEntry, inEvent){
+		if(this.lazy) {
+			this.validateComponents();
+		}
 		this.entry = inEntry;
 		this.$.popup.openAtEvent(inEvent);
 	},
