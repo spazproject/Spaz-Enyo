@@ -6,7 +6,9 @@ enyo.kind({
 			name: "sidebar", 
 			kind: "Spaz.Sidebar", 
 			onRefreshAll: "refreshAll", 
-			onCreateColumn: "createColumn"
+			onCreateColumn: "createColumn",
+			onAccountAdded: "accountAdded",
+			onAccountRemoved: "accountRemoved"
 		},
 		{
 			name: "container", 
@@ -345,5 +347,11 @@ enyo.kind({
 	},
 	closeImageView: function(inSender) {
 		this.$.imageViewPopup.close();
+	},
+	accountAdded: function(inSender) {
+		this.$.container.accountAdded();
+	},
+	accountRemoved: function(inSender, inAccountId) {
+		this.$.container.removeColummnsForAccount(inAccountId);
 	}
 });
