@@ -80,8 +80,8 @@ enyo.kind({
 		});
 		this.applyStyle("width", 590 + width + "px");
 
-		this.$.postTextBox.forceFocus();
 		this.openAtCenter();
+		this.$.postTextBox.forceFocus();
 		//var width = this.getBounds().width + "px"
 
 	},

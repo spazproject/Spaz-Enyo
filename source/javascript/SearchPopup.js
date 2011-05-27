@@ -33,9 +33,9 @@ enyo.kind({
 		if(this.lazy) {
 			this.validateComponents();
 		}
-		this.$.searchTextBox.forceFocus();
-
 		this.openAtCenter();
+		this.$.searchTextBox.setValue("");
+		this.$.searchTextBox.forceFocus();
 		this.buildAccounts();
 	},
 	buildAccounts: function() {
