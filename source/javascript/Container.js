@@ -145,16 +145,19 @@ enyo.kind({
 		}
 	},
 	columnsFunction: function(functionName, opts){
+		var columnCount = 0;
 		_.each(this.getComponents(), function(column){
 			try {
 				if(column.kind === "Spaz.Column" || column.kind === "Spaz.SearchColumn"){
-					this.$[column.name][functionName]()				
+					columnCount++;
+					this.$[column.name][functionName]()
 				}
 			} 
 			catch (e) {
 				console.error(e);
 			}
 		}, this);
+		return columnCount;
 	},
 
 	resizeHandler: function() {
@@ -163,7 +166,9 @@ enyo.kind({
 	
 	refreshAll: function() {
 		this.loadingColumns = 0;
-		this.columnsFunction("loadNewer");
+		if(this.columnsFunction("loadNewer") === 0) {
+			this.loadFinished();
+		}
 	},
 	
 	loadStarted: function() {
