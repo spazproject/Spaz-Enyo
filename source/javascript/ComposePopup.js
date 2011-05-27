@@ -46,8 +46,13 @@ enyo.kind({
 	buildAccounts: function() {
 
 		var allusers = App.Users.getAll();
+		var last_posting_account_id = App.Prefs.get('last_posting_account_id');
+		var found_last_posting_account_id = false;
 		this.accounts = [];
 		for (var key in allusers) {
+			if(allusers[key].id === last_posting_account_id) {
+				found_last_posting_account_id = true;
+			}
 			this.accounts.push({
 				id:allusers[key].id,
 				value: allusers[key].id,
@@ -58,8 +63,9 @@ enyo.kind({
 		this.$.accountSelection.setItems(this.accounts);
 		this.$.accountSelection.setValue(this.accounts[0].value);
 
-		var last_posting_account_id = App.Prefs.get('last_posting_account_id');
-		if (last_posting_account_id) {
+		// Check if the last posting account from prefs is still here.
+		// It's possible the account was deleted.
+		if ((last_posting_account_id) && (found_last_posting_account_id)) {
 			this.setPostingAccount(last_posting_account_id);
 		}
 		else {
