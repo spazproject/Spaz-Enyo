@@ -5,7 +5,7 @@ enyo.kind({
     published: {
         mousewheel: true,
         //Dampens mousewheel delta strength
-        mousewheelDamp: 1.0
+        mousewheelDamp: 40.0
     },
     events: {
     },

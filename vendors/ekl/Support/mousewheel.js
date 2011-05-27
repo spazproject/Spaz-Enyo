@@ -20,7 +20,7 @@ enyo.dispatcher.features.push(function(e) {
             y: 0
         };
 
-        if (e.wheelDelta) { delta.x = delta.comp = e.wheelDelta/120; }
+        if (e.wheelDelta) { delta.x = delta.comp = e.wheelDelta/12; }
         if (e.detail) { delta.x = delta.comp = -event.detail/3; }
 
         delta.y = delta.x;
@@ -30,8 +30,8 @@ enyo.dispatcher.features.push(function(e) {
             delta.x = -1*delta.comp;
         }
 
-        if (e.wheelDeltaY !== undefined) { delta.y = e.wheelDeltaY/120; }
-        if (e.wheelDeltaX !== undefined) { delta.x = e.wheelDeltaX/120; }
+        if (e.wheelDeltaY !== undefined) { delta.y = e.wheelDeltaY/12; }
+        if (e.wheelDeltaX !== undefined) { delta.x = e.wheelDeltaX/12; }
 
         e.delta = delta;
     }
