@@ -49,7 +49,10 @@ enyo.kind({
 		this.$.searchBox.setShowing(false);
 		this.$.newColumnsContainer.setSelectedAccount(inValue);	//build columnSelection
 	},
-	"showAtCenter": function(){
+	showAtCenter: function(){
+		if(this.lazy) {
+			this.validateComponents();
+		}
 		this.$.searchBox.setShowing(false);
 		//this.$.avatarList.buildList();
 		this.buildAccounts();
