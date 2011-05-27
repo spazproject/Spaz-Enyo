@@ -16,20 +16,43 @@ enyo.kind({
 			{kind: "Spacer"},
 			{kind: "ToolButton", icon: "source/images/icon-close.png", style: "position: relative; bottom: 7px;", onclick: "doClose"}
 		]},	
-		{kind: "Scroller", flex: 1, components: [
+		{kind: "Scroller", flex: 1, components: [ // @TODO: scroll fades.
 			{kind: "Group", caption: "Columns", components: [
 				{kind: "Item", layoutKind: "HFlexLayout", components: [
 					{content: "Default Width"},
 					{kind: "Spacer"},
-					{kind: "ListSelector", items: [
-						
+					{kind: "ListSelector", value: "325px", items: [
+						"200px",
+						"250px",
+						"300px",
+						"325px",
+						"350px",
+						"400px",
+						"450px",
+						"500px"
 					
 					]}
 				]},
 
 			]},
 			{kind: "Group", caption: "Entries", components: [
-				{kind: "Item", content: "Text Size"}, //list selector // 10 - 20px
+				{kind: "Item", layoutKind: "HFlexLayout", components: [
+					{content: "Text Size"},
+					{kind: "Spacer"},
+					{kind: "ListSelector", value: "13px", items: [
+						"10px",
+						"11px",
+						"12px",
+						"13px",
+						"14px",
+						"15px",
+						"16px",
+						"17px",
+						"18px",
+						"19px",
+						"20px"					
+					]}
+				]},
 				{kind: "Item", layoutKind: "HFlexLayout", components: [
 					{content: "Embedded Image Preview"},
 					{kind: "Spacer"},
@@ -43,9 +66,31 @@ enyo.kind({
 					{kind: "Spacer"},
 					{kind: "CheckBox", onChange: "checkboxClicked"}
 				]},
-				{kind: "Item", content: "URL Shortening"}, //list selector
 			]},
-			{kind: "Group", caption: "Refresh", components: [
+			{kind: "Group", caption: "URL Shortening", components: [
+				{kind: "Item", layoutKind: "HFlexLayout", components: [
+					{content: "Service"},
+					{kind: "Spacer"},
+					{kind: "ListSelector", value: "bit.ly", items: [
+						"bit.ly",
+						"is.gd",
+						"t.co"
+					]}
+				]},
+			]},
+			{kind: "Group", caption: "Image Hosting", components: [
+				{kind: "Item", layoutKind: "HFlexLayout", components: [
+					{content: "Service"},
+					{kind: "Spacer"},
+					{kind: "ListSelector", value: "twitpic", items: [
+						"yfrog",
+						"twitpic",
+						"drippic",
+						"pikchur"	
+					]}
+				]},
+			]},
+			/*{kind: "Group", caption: "Refresh", components: [
 				{kind: "Item", content: "Interval"}, //list selector
 				//{kind: "Item", content: "Interval for Searches"},
 			]},
@@ -70,7 +115,7 @@ enyo.kind({
 					{kind: "Spacer"},
 					{kind: "CheckBox", onChange: "checkboxClicked"}
 				]}
-			]},
+			]},*/
 		]}
 		
 	],
