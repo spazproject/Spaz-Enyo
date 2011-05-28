@@ -4,7 +4,9 @@ enyo.depends(
 	"vendors/humane-themes/bold-dark.css",
 	"vendors/cache.js",
 	"vendors/jquery.min.js",
-	"vendors/spazcore-standard.js", // includes underscore, underscore.string
+	"vendors/spazcore.js", // includes underscore, underscore.string
+	
+	"vendors/ekl/List/",
 
 	// config
 	"source/javascript/config/auth_config.js",
@@ -26,8 +28,8 @@ enyo.depends(
 	//views
 	"source/javascript/Sidebar.js",
 	"source/javascript/Container.js", //container for columns
-		"source/javascript/Column.js",
-		"source/javascript/SearchColumn.js",
+	"source/javascript/Column.js",
+	"source/javascript/SearchColumn.js",
 	
 	//popouts
 	"source/javascript/EntryView.js",
@@ -40,6 +42,7 @@ enyo.depends(
 	"source/javascript/SettingsPopup.js",
 	"source/javascript/AccountsPopup.js",
 	"source/javascript/EntryClickPopup.js",
+	"source/javascript/ImageViewPopup.js",
 	
 	//containers
 	"source/javascript/NewColumnsContainer.js",

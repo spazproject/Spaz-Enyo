@@ -46,8 +46,13 @@ enyo.kind({
 	buildAccounts: function() {
 
 		var allusers = App.Users.getAll();
+		var last_posting_account_id = App.Prefs.get('last_posting_account_id');
+		var found_last_posting_account_id = false;
 		this.accounts = [];
 		for (var key in allusers) {
+			if(allusers[key].id === last_posting_account_id) {
+				found_last_posting_account_id = true;
+			}
 			this.accounts.push({
 				id:allusers[key].id,
 				value: allusers[key].id,
@@ -58,8 +63,9 @@ enyo.kind({
 		this.$.accountSelection.setItems(this.accounts);
 		this.$.accountSelection.setValue(this.accounts[0].value);
 
-		var last_posting_account_id = App.Prefs.get('last_posting_account_id');
-		if (last_posting_account_id) {
+		// Check if the last posting account from prefs is still here.
+		// It's possible the account was deleted.
+		if ((last_posting_account_id) && (found_last_posting_account_id)) {
 			this.setPostingAccount(last_posting_account_id);
 		}
 		else {
@@ -393,27 +399,67 @@ enyo.kind({
 	},
 	
 	
-	retweet: function(opts) {
-		
-		this.showAtCenter();
+	repost: function(opts) {
+
+		var self = this;
 		
 		opts = sch.defaults({
-			'message':null,
+			'entry':null,
 			'account_id':null
 		}, opts);
+		
+		if (!opts.entry || !opts.account_id) {
+			sch.error("No account and/or entry obj set");
+			return;
+		}
+		
+		this.setPostingAccount(opts.account_id);
+		
+		AppUtils.showBanner($L('Reposting...'));
+		this.twit.retweet(
+			opts.entry.service_id,
+			function(data){
+				AppUtils.showBanner($L('Repost succeeded'));
+			},
+			function(xhr, msg, exc){
+				AppUtils.showBanner($L('Repost failed!'));
+			}
+		);
+
 	},
 	
 	
-	retweetOldSchool: function(opts) {
+	repostManual: function(opts) {
 		
 		this.showAtCenter();
 		
 		this.clear();
 		
 		opts = sch.defaults({
-			'message':null,
+			'entry':null,
 			'account_id':null
 		}, opts);
+		
+		var text = opts.entry.text_raw;
+		var screenname = opts.entry.author_username;
+
+		text = 'RT @' + opts.entry.author_username+' '+opts.entry.text_raw;
+		
+		this.showAtCenter();
+
+		this.clear();
+		
+		this.$.postTextBox.setValue(text);
+		this.$.postTextBox.forceFocus();
+		
+		var textlen = this.$.postTextBox.getValue().length;
+		var selection = {start:textlen-1, end:textlen};
+		this.$.postTextBox.setSelection(selection);
+
+		this.postTextBoxInput();
+		this.dmUserChanged();
+		this.inReplyEntryChanged();
+
 	},
 	
 	

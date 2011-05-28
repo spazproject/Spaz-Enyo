@@ -30,9 +30,11 @@ enyo.kind({
         					{kind: "Image", width: "75px",  height: "75px", className: "avatar"},
 							{width: "10px"},
         					{kind: "VFlexBox", height: "75px", flex: 1, components: [
+        						{kind: "Spacer"},
         						{name: "realname", className: "author-realname truncating-text"},
         						{name: "username", className: "author-username"},
-        						{name: "url", className: "small"}
+        						{name: "url", className: "small"},
+        						{kind: "Spacer"}
         					]},	
         					{kind: "ToolButton", icon: "source/images/icon-close.png", style: "position: relative; bottom: 10px; right: 10px; float: right;", onclick: "doDestroy"}	
         				]},
@@ -49,6 +51,9 @@ enyo.kind({
     			]},
     			//{layoutKind: "HFlexLayout", pack: "center", components: [
     		    {kind: "Scroller", flex: 1, className: "entry-view", components: [
+    		    	{layoutKind: "VFlexLayout", align: "center", pack: "center", flex: 1, components: [
+		    			{name: "listSpinner", kind: "SpinnerLarge"}
+		    		]},
     				{name: "list", kind: "VirtualRepeater", onGetItem: "loadItem", style: "", components: [
 						{
 							name: "entryItem", 
@@ -56,13 +61,15 @@ enyo.kind({
 							onEntryClick: "entryClick"
 						},
 						{
-							name: "userItem", kind: "enyo.Item", components: [
+							name: "userItem", kind: "enyo.Item", tapHighlight: true, onclick: "userItemClick", components: [
 								{kind: "enyo.HFlexBox", components: [
 									{name: "userAvatar", kind: "enyo.Image", width: "48px", height: "48px", className: "small-avatar"},
 									{width: "10px"},
-									{kind: "enyo.VFlexBox", flex: 1, components: [
+									{kind: "enyo.VFlexBox", height: "48px", flex: 1, components: [
+										{kind: "Spacer"},
 										{name: "userRealname", style: "font-weight: bold; font-size: 16px;", className: "truncating-text"},
-										{name: "userUsername", style: "font-weight: bold; font-size: 14px;"}
+										{name: "userUsername", style: "font-weight: normal; font-size: 14px;"},
+										{kind: "Spacer"}
 									]}
 								]}
 							]
@@ -87,12 +94,16 @@ enyo.kind({
 	],
 	
 	showLoading: function(inShowing) {
-	    this.$.content.setShowing(!inShowing);
+	   	this.$.content.setShowing(!inShowing);
 	    this.$.follow.setShowing(!inShowing);
 		this.$.loading.setShowing(inShowing);
 		this.$.spinnerLarge.setShowing(inShowing);
 	},
-	
+
+	showSpinner: function(inShowing) {
+		this.$.listSpinner.setShowing(inShowing);		
+	},
+
 	showUser: function(inUsername, inService, inAccountId) {
 		this.showLoading(true);
 		this.account_id = inAccountId;
@@ -162,41 +173,46 @@ enyo.kind({
 	},
 	items: [],
 	switchDataType: function(inSender){
+		this.showSpinner(true);
+		this.items = [];
 		this.dataType = this.$.radioGroup.components[inSender.getValue()].name;
 		switch(this.dataType){
 			case "entries":
 				AppUtils.makeTwitObj(this.account_id).getUserTimeline(this.user.service_id, null, null,
 					enyo.bind(this, function(data) {
-						this.showLoading(false);
+						this.showSpinner(false);
 						this.items = AppUtils.convertToEntries(data.reverse());
 						this.$.list.render();
+						this.$.scroller.setScrollTop(0);
 					}),
 					enyo.bind(this, function() {
-						this.showLoading(false);
+						this.showSpinner(false);
 						AppUtils.showBanner("Error loading entries for " + this.$.username.getContent());
 					}));
 				break;
 			case "followers":
 				AppUtils.makeTwitObj(this.account_id).getFollowersList(this.user.service_id, null,
 					enyo.bind(this, function(data) {
-						this.showLoading(false);
+						this.showSpinner(false);
 						this.items = data;
 						this.$.list.render();
+						this.$.scroller.setScrollTop(0);
 					}),
 					enyo.bind(this, function() {
-						this.showLoading(false);
+						this.showSpinner(false);
 						AppUtils.showBanner("Error loading followers for " + this.$.username.getContent());
 					}));
 				break;
 			case "friends":
 				AppUtils.makeTwitObj(this.account_id).getFriendsList(this.user.service_id, null,
 					enyo.bind(this, function(data) {
-						this.showLoading(false);
+						this.showSpinner(false);
 						this.items = data;
 						this.$.list.render();
+						this.$.scroller.setScrollTop(0);
 					}),
 					enyo.bind(this, function() {
-						this.showLoading(false);
+						this.showSpinner(false);
 						AppUtils.showBanner("Error loading friends for " + this.$.username.getContent());
 					}));
 				break;
@@ -229,4 +245,8 @@ enyo.kind({
 	entryClick: function(inSender, inEvent){
 		this.$.entryClickPopup.showAtEvent(inSender.entry, inEvent);
 	},
+	
+	userItemClick: function(inSender, inEvent) {
+		AppUI.viewUser(this.items[inEvent.rowIndex].screen_name, this.items[inEvent.rowIndex].SC_service, this.account_id);
+	}
 });

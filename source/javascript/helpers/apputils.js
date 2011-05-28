@@ -221,6 +221,34 @@ AppUtils.getAccountAvatar = function(account_id, onSuccess, onFailure) {
 
 };
 
+AppUtils.getAccount = function(account_id, onSuccess, onFailure) {
+
+	if (!window.App.avatarCache) {
+		window.App.avatarCache = {};
+	} /*@TODO: cache?
+
+	if (window.App.avatarCache[account_id]) {
+		onSuccess(window.App.avatarCache[account_id]);
+		return;
+	}*/
+
+	var twit = AppUtils.makeTwitObj(account_id);
+	var username = App.Users.get(account_id).username;
+
+	console.log(username);
+
+	twit.getUser(
+		'@'+username,
+		function(data) {
+			window.App.avatarCache[account_id] = data.profile_image_url; //cache the avatar here for now.
+			onSuccess(data);
+		}, function(xhr, msg, exc) {
+			onFailure(xhr, msg, exc);
+		}
+	);
+
+};
+
 
 /**
  * Retrieves the custom API url for the current account, or the account with the passed id

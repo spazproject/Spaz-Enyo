@@ -9,6 +9,7 @@ enyo.kind({
 		onAddViewEvent: "",
 		onGoPreviousViewEvent: "",
 		onDestroy: "",
+		onShowImageView: ""
 	},
 	components: [
 		{className: "entry-view", width: "322px", height: "100%", layoutKind: "VFlexLayout", components: [
@@ -24,9 +25,11 @@ enyo.kind({
 						{kind: "Image", width: "75px",  height: "75px", className: "avatar"},
 						{width: "10px"},
 						{kind: "VFlexBox", height: "75px", flex: 1, components: [
-							{name: "realname", className: "author-realname truncating-text"},
-							{name: "username", onclick: "entryClick", className: "link author-username"},
-							{name: "url", className: "small"}
+							{kind: "Spacer"},
+    						{name: "realname", className: "author-realname truncating-text"},
+    						{name: "username", className: "link author-username"},
+    						{name: "url", className: "small"},
+    						{kind: "Spacer"}
 						]},	
 						{kind: "ToolButton", icon: "source/images/icon-close.png", style: "position: relative; bottom: 10px; right: 10px; float: right;", onclick: "doDestroy"}	
 					]},
@@ -46,6 +49,7 @@ enyo.kind({
 								{name: "from"}
 							]
 						},
+						{name: "images", kind: "enyo.VFlexBox", align: "center"},
 						{name: "repost", className: "repost-outer", onclick: "entryClick", showing: false},
 						{kind: "ActivityButton", name: "conversation_button", onclick: "toggleDrawer", toggling: true, content: "View Conversation"},
 						{kind: "Drawer", name: "conversation_drawer", /*caption: "Conversation",*/ open: false, onOpenChanged: "onConversationOpenChanged", components: [
@@ -96,8 +100,32 @@ enyo.kind({
 			this.$.time.setContent(sch.getRelativeTime(this.entry.publish_date));
 			if (this.entry._orig.source) {
 				this.$.from.setContent(this.entry._orig.source);
-			} 
+			}
 			this.$.entry.setContent(AppUtils.makeItemsClickable(this.entry.text));
+			
+			enyo.forEach (this.$.images.getControls(), function (control) {
+				control.destroy();
+			});
+			var siu = new SpazImageURL();
+			var imageThumbUrls = siu.getThumbsForUrls(this.entry.text);
+			var imageFullUrls = siu.getImagesForUrls(this.entry.text);
+			this.imageFullUrls = [];
+			var i = 0;
+			for (var imageUrl in imageThumbUrls) {
+				var imageComponent = this.$.images.createComponent({
+					kind: "enyo.Control",
+					flex: 1,
+					owner: this,
+					components: [
+						{style: "height: 10px;"},
+						{name: "imagePreview" + i, kind: "enyo.Image", onclick: "imageClick", src: imageThumbUrls[imageUrl]},
+						{style: "height: 10px;"}
+					]
+				});
+				imageComponent.render();
+				this.imageFullUrls.push(imageFullUrls[imageUrl]);
+				i++;
+			}
 			
 			if(!this.entry.in_reply_to_id) {
 			    this.$.conversation_button.hide();
@@ -114,6 +142,8 @@ enyo.kind({
 				this.$.repost.setShowing(true);
 
 				this.$.time.setContent(sch.getRelativeTime(this.entry.repost_orig_date));
+			} else {
+				this.$.repost.setShowing(false);			
 			}
 		} else {
 			this.doDestroy();
@@ -152,5 +182,9 @@ enyo.kind({
 	},
 	reply: function() {
 		AppUI.reply(this.entry);
+	},
+	imageClick: function(inSender) {
+		var imageIndex = parseInt(inSender.getName().replace("imagePreview", ""), 10);
+		this.doShowImageView(this.imageFullUrls, imageIndex);
 	}
 });

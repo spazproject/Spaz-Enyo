@@ -6,13 +6,20 @@ enyo.kind({
 			name: "sidebar", 
 			kind: "Spaz.Sidebar", 
 			onRefreshAll: "refreshAll", 
-			onCreateColumn: "createColumn"
+			onCreateColumn: "createColumn",
+			onAccountAdded: "accountAdded",
+			onAccountRemoved: "accountRemoved"
 		},
 		{
 			name: "container", 
 			kind: "Spaz.Container", 
 			onRefreshAllFinished: "refreshAllFinished"
 		},
+		{
+			name: "imageViewPopup",
+			kind: "Spaz.ImageViewPopup",
+			onClose: "closeImageView"
+		}
 	],
 	
 	twit: new SpazTwit(),
@@ -188,6 +195,12 @@ enyo.kind({
 		AppUI.addFunction("reply", function(inEntry){
 			this.reply(this, inEntry);
 		}, this);
+		AppUI.addFunction("repost", function(inEntry){
+			this.repost(this, inEntry);
+		}, this);
+		AppUI.addFunction("repostManual", function(inEntry){
+			this.repostManual(this, inEntry);
+		}, this);
 		//self.inherited(arguments);
 	},
 
@@ -200,7 +213,8 @@ enyo.kind({
 				kind: "Spaz.EntryView", 
 				onDestroy: "destroyEntryView" ,
 				onAddViewEvent: "addViewEvent",
-				onGoPreviousViewEvent: "goPreviousViewEvent"
+				onGoPreviousViewEvent: "goPreviousViewEvent",
+				onShowImageView: "showImageView"
 			}, {owner: this});
 			this.$.entryview.render();
 			
@@ -306,5 +320,38 @@ enyo.kind({
 				'account_id':inEntry.account_id
 			});			
 		}
+	},
+	repost: function(inSender, inEntry) {
+		if (inEntry.is_private_message) {
+			AppUtils.showBanner("Private messages cannot be reposted");
+		} else {
+			this.$.sidebar.repost({
+				'entry':inEntry,
+				'account_id':inEntry.account_id
+			});			
+		}
+	},
+	repostManual: function(inSender, inEntry) {
+		if (inEntry.is_private_message) {
+			AppUtils.showBanner("Private messages cannot be reposted");
+		} else {
+			this.$.sidebar.repostManual({
+				'entry':inEntry,
+				'account_id':inEntry.account_id
+			});			
+		}
+	},
+	showImageView: function(inSender, inUrls, inIndex) {
+		this.$.imageViewPopup.openAtCenter();
+		this.$.imageViewPopup.setImages(inUrls, inIndex);
+	},
+	closeImageView: function(inSender) {
+		this.$.imageViewPopup.close();
+	},
+	accountAdded: function(inSender) {
+		this.$.container.accountAdded();
+	},
+	accountRemoved: function(inSender, inAccountId) {
+		this.$.container.removeColummnsForAccount(inAccountId);
 	}
 });

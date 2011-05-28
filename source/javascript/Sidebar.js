@@ -5,7 +5,9 @@ enyo.kind({
 	className: "enyo-toolbar-vertical",
 	events: {
 		onRefreshAll: "",
-		onCreateColumn: ""
+		onCreateColumn: "",
+		onAccountAdded: "",
+		onAccountRemoved: ""
 	},
 	create: function(){
 		this.inherited(arguments);
@@ -25,7 +27,7 @@ enyo.kind({
 		{name: "searchPopup", kind: "Spaz.SearchPopup", onCreateColumn: "doCreateColumn", onClose: "closePopup" },
 		{name: "columnsPopup", kind: "Spaz.ColumnsPopup", onCreateColumn: "doCreateColumn", onClose: "closePopup" },
 		{name: "settingsPopup", kind: "Spaz.SettingsPopup", onClose: "closePopup" },
-		{name: "accountsPopup", kind: "Spaz.AccountsPopup", onClose: "closePopup" }
+		{name: "accountsPopup", kind: "Spaz.AccountsPopup", onClose: "closePopup", onAccountAdded: "doAccountAdded", onAccountRemoved: "doAccountRemoved" }
 	],
 	compose: function(inSender) {
 		this.$.composePopup.compose();
@@ -49,6 +51,12 @@ enyo.kind({
 	},
 	replyTo: function(inReplyArgs) {
 		this.$.composePopup.replyTo(inReplyArgs);
+	},
+	repost: function(inArgs) {
+		this.$.composePopup.repost(inArgs);
+	},
+	repostManual: function(inArgs) {
+		this.$.composePopup.repostManual(inArgs);
 	},
 	directMessage: function(inDMArgs) {
 		this.$.composePopup.directMessage(inDMArgs);

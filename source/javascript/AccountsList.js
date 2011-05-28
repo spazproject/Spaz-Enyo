@@ -21,8 +21,8 @@ enyo.kind({
 	],
 	accounts: [],
 	create: function(){
-		this.buildAccounts();
 		this.inherited(arguments);
+		this.buildAccounts();
 	},
 	buildAccounts: function() {
 		var allusers = App.Users.getAll();
@@ -34,6 +34,11 @@ enyo.kind({
 				type:allusers[key].type
 			});
 		}	
+		if(this.accounts.length === 0){
+			this.$.group.setShowing(false);
+		} else {
+			this.$.group.setShowing(true);
+		}
 	},
 	setupRow: function(inSender, inIndex){
 		var item;
