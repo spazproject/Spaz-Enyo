@@ -49,7 +49,7 @@ enyo.kind({
 								{name: "from",  allowHtml: true}
 							]
 						},
-						{name: "images", kind: "enyo.VFlexBox", align: "center"},
+						{name: "images", kind: "enyo.VFlexBox", flex: 1, align: "center"},
 						{name: "repost", allowHtml: true, className: "repost-outer", onclick: "entryClick", showing: false},
 						{kind: "ActivityButton", name: "conversation_button", onclick: "toggleDrawer", toggling: true, content: "View Conversation"},
 						{kind: "Drawer", name: "conversation_drawer", /*caption: "Conversation",*/ open: false, onOpenChanged: "onConversationOpenChanged", components: [
