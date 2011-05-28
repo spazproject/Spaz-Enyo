@@ -406,6 +406,11 @@ enyo.kind({
 
 		var self = this;
 		
+		// a superhack to get the components to render
+		this.showAtCenter();
+		this.close();
+		
+		
 		opts = sch.defaults({
 			'entry':null,
 			'account_id':null
