@@ -32,6 +32,7 @@ enyo.kind({
 			]},	
 		]}
 	],
+	oauth: null,
 	showAtCenter: function(){
 		this.openAtCenter();
 	},
@@ -147,14 +148,14 @@ enyo.kind({
 				this.createComponents([
 					{name: "secondLevel", components: [	
 						{kind: "Group", components: [
-							{kind: "ActivityButton", caption: "Get Authorization", onclick: "getPinAuthorization"},
+							{kind: "ActivityButton", caption: "Log In and Get PIN", onclick: "getTwitterPinAuthorization"},
 							{kind: "Item", components: [
-								{name: "pinInput", kind: "Input", hint: "Pin Number", autoKeyModifier: "num-lock", autoCapitalize: "lowercase", autocorrect: false, spellcheck: false}	
+								{name: "twitterPinInput", kind: "Input", hint: "Enter PIN", autoKeyModifier: "num-lock", autoCapitalize: "lowercase", autocorrect: false, spellcheck: false}	
 							]},							
 						]},
 						{kind: "HFlexBox", components: [
 							{kind: "Button", flex: 1, caption: "Cancel", onclick: "goTopLevel"},
-							{name: "saveButton", kind: "ActivityButton", flex: 1, caption: "Save", onclick: "saveAccount"}
+							{name: "saveButton", kind: "ActivityButton", flex: 1, caption: "Save", onclick: "saveTwitterAccount"}
 						]}
 					]}
 				]);
@@ -227,16 +228,70 @@ enyo.kind({
 			this.editing_acc_id = null;
 		}
 	},
-	getPinAuthorization: function(inSender, inEvent){
+	getTwitterPinAuthorization: function(inSender, inEvent){
 		//launch browser.
 		inSender.setActive(true);
-		//get stuff
-		var r = new enyo.PalmService();
-			r.service = "palm://com.palm.applicationManager/";
-			r.method = "open";
-			r.call({target: 'http://www.cnn.com'});
 		
+		if (!SPAZCORE_CONSUMERKEY_TWITTER) {
+			console.error('SPAZCORE_CONSUMERKEY_TWITTER not set, will not be able to authenticate against Twitter');
+			AppUtils.showBanner($L('SPAZCORE_CONSUMERKEY_TWITTER not set, will not be able to authenticate against Twitter'));
+			return;
+		}
+
+		this.oauth = OAuth({
+			'consumerKey':SPAZCORE_CONSUMERKEY_TWITTER,
+			'consumerSecret':SPAZCORE_CONSUMERSECRET_TWITTER,
+			'requestTokenUrl':'https://twitter.com/oauth/request_token',
+			'authorizationUrl':'https://twitter.com/oauth/authorize',
+			'accessTokenUrl':'https://twitter.com/oauth/access_token',
+		});
+		
+		this.oauth.fetchRequestToken(function(url) {
+				sch.openInBrowser(url, 'authorize');
+			},
+			function(data) {
+				AppUtils.showBanner($L('Problem getting Request Token from Twitter'));
+			}
+		);
 		inSender.setActive(false);
+	},
+	'saveTwitterAccount': function(inSender, inEvent) {
+		var self = this;
+		
+		var type = this.$.type.getValue();
+		var api_base_url = (this.$.api_base_url) ? this.$.api_base_url.getValue() : null;
+		var pin = this.$.twitterPinInput.getValue();
+		
+
+		if (pin && this.oauth) {
+			this.oauth.setVerifier(pin);
+
+			this.$.saveButton.setActive(true);
+			this.$.saveButton.setDisabled(true);
+
+			this.oauth.fetchAccessToken(function(data) {
+					var qvars = AppUtils.getQueryVars(data.text);
+					var auth_pickle = qvars.screen_name+':'+qvars.oauth_token+':'+qvars.oauth_token_secret;
+					if (this.editing_acc_id) { // edit existing
+						this.editing_acc_id = null;
+					} else { // add new
+						var newaccid = App.Users.add(qvars.screen_name.toLowerCase(), auth_pickle, type);
+						App.Users.setMeta(newaccid, 'twitter-api-base-url', api_base_url);
+					}
+					self.$.saveButton.setActive(false);
+					self.$.saveButton.setDisabled(false);
+					self.goTopLevel(); //this re-renders the accounts list.
+					self.doAccountAdded();
+				},
+				function(data) {
+					AppUtils.showBanner($L('Problem getting access token from Twitter'));
+					self.$.saveButton.setActive(false);
+					self.$.saveButton.setDisabled(false);
+				}
+			);
+		} else {
+			AppUtils.showBanner($L("You must log in enter the PIN you are given to continue", 3000));
+		}
 	},
 	"saveAccount": function(inSender, inEvent){
 		var self = this;
