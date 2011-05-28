@@ -114,12 +114,11 @@ enyo.kind({
 			for (var imageUrl in imageThumbUrls) {
 				var imageComponent = this.$.images.createComponent({
 					kind: "enyo.Control",
-					flex: 1,
+					//flex: 1,
 					owner: this,
 					components: [
 						{style: "height: 10px;"},
-						{name: "imagePreview" + i, kind: "enyo.Image", onclick: "imageClick", src: imageThumbUrls[imageUrl]},
-						{style: "height: 10px;"}
+						{name: "imagePreview" + i, kind: "enyo.Image", height: "150px", width: "150px", onclick: "imageClick", src: imageThumbUrls[imageUrl]}
 					]
 				});
 				imageComponent.render();
