@@ -192,6 +192,9 @@ enyo.kind({
 		AppUI.addFunction("viewEntry", function(inEntry){
 			this.showEntryView(this, inEntry);
 		}, this);
+		AppUI.addFunction("compose", function(inText, inAccountId){
+			this.compose(this, inText, inAccountId);
+		}, this);
 		AppUI.addFunction("reply", function(inEntry){
 			this.reply(this, inEntry);
 		}, this);
@@ -200,6 +203,9 @@ enyo.kind({
 		}, this);
 		AppUI.addFunction("repostManual", function(inEntry){
 			this.repostManual(this, inEntry);
+		}, this);
+		AppUI.addFunction("directMessage", function(inUsername, inAccountId){
+			this.directMessage(this, inUsername, inAccountId);
 		}, this);
 		//self.inherited(arguments);
 	},
@@ -306,6 +312,12 @@ enyo.kind({
 	// To keep the reply/dm logic in one place, components only pass up
 	// onReply events, and we'll figure out here whether that should be
 	// handled as a reply or as a dm.
+	compose: function (inSender, inText, inAccountId) {
+		this.$.sidebar.compose({
+			'text':inText,
+			'account_id':inAccountId
+		});
+	},
 	reply: function(inSender, inEntry) {
 		if (inEntry.is_private_message) {
 			this.$.sidebar.directMessage({
@@ -318,7 +330,7 @@ enyo.kind({
 			this.$.sidebar.replyTo({
 				'entry':inEntry,
 				'account_id':inEntry.account_id
-			});			
+			});
 		}
 	},
 	repost: function(inSender, inEntry) {
@@ -340,6 +352,16 @@ enyo.kind({
 				'account_id':inEntry.account_id
 			});			
 		}
+	},
+	mention: function(inSender, inEntry) {
+		
+	},
+	directMessage: function(inSender, inUsername, inAccountId) {
+		this.$.sidebar.directMessage({
+			'to':inUsername,
+			'text':null,
+			'account_id':inAccountId
+		});
 	},
 	showImageView: function(inSender, inUrls, inIndex) {
 		this.$.imageViewPopup.openAtCenter();

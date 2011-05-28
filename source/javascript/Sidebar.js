@@ -49,6 +49,9 @@ enyo.kind({
 	refreshAllFinished: function() {
 		this.$.refreshAll.removeClass("spinning");
 	},
+	compose: function(inArgs) {
+		this.$.composePopup.compose(inArgs);
+	},
 	replyTo: function(inReplyArgs) {
 		this.$.composePopup.replyTo(inReplyArgs);
 	},

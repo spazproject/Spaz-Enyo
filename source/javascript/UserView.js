@@ -85,7 +85,13 @@ enyo.kind({
 	        {kind: "Toolbar", components: [
 				//{kind: "GrabButton"},
 				{kind: "Spacer"},
-				{kind: "ToolButton", name: "follow", disabled: false, content: "Follow"},
+				
+				
+				// follow only enabled when we check if following. may adjust icon
+				{kind: "ToolButton", name: "follow", disabled: true, icon: "source/images/icon-start-following.png", onclick: "toggleFollow"},
+				{kind: "ToolButton", name: "mention", disabled: false, icon: "source/images/icon-mention.png", onclick: "mention"},
+				{kind: "ToolButton", name: "message", disabled: false, icon: "source/images/icon-messages.png", onclick: "message"},
+				{kind: "ToolButton", name: "block", disabled: false, icon: "source/images/icon-block.png", onclick: "block"},
 				{kind: "Spacer"}
 			]},
 			
@@ -256,5 +262,21 @@ enyo.kind({
 	
 	userItemClick: function(inSender, inEvent) {
 		AppUI.viewUser(this.items[inEvent.rowIndex].screen_name, this.items[inEvent.rowIndex].SC_service, this.account_id);
+	},
+	
+	
+	toggleFollow: function(inSender, inEvent) {
+		AppUtils.showBanner($L("Not Yet Implemented"));
+	},
+	mention: function(inSender, inEvent) {
+		AppUI.compose('@'+this.user.username+' ');
+	},
+	message: function(inSender, inEvent) {
+		AppUI.directMessage(this.user.username, this.account_id);
+	},
+	
+	
+	block: function(inSender, inEvent) {
+		AppUtils.showBanner($L("Not Yet Implemented"));
 	}
 });

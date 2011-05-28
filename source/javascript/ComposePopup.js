@@ -286,6 +286,27 @@ enyo.kind({
 			'text':null,
 			'account_id':null
 		}, opts);
+		
+		if (opts.account_id) {
+			this.setPostingAccount(opts.account_id);
+		}
+		
+		var text = opts.text;
+
+		this.showAtCenter();
+
+		this.clear();
+		
+		this.$.postTextBox.setValue(text);
+		this.$.postTextBox.forceFocus();
+		
+		var textlen = this.$.postTextBox.getValue().length;
+		var selection = {start:textlen-1, end:textlen};
+		this.$.postTextBox.setSelection(selection);
+
+		this.postTextBoxInput();
+		this.dmUserChanged();
+		this.inReplyEntryChanged();
 	},
 	
 	
