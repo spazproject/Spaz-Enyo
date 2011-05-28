@@ -97,7 +97,10 @@ enyo.kind({
 				//]},
 				{kind: "Group", /*caption: "Options",*/ components: [
 					{name: "accountInfo", kind: "Item", layoutKind: "HFlexLayout", flex: 1, owner: this, components: [
-						{name: "avatar", kind: "Image", height: "50px", width: "50px", className: "avatar", owner: this},
+						{name: "spinner", width: "50px", height: "55px", owner: this, components: [
+							{kind: "Spinner", style: "margin: auto;", showing: true},
+						]},
+						{name: "avatar", kind: "Image", height: "50px", width: "50px", className: "avatar", showing: false, owner: this},
 						{width: "10px"},
 						{kind: "VFlexBox", flex: 1, height: "50px", components: [
 							{name: "realname", flex: 1, style: "font-weight: bold", content: account.username, owner: this},
@@ -114,12 +117,18 @@ enyo.kind({
 			]}
 		]);
 		
-		AppUtils.getAccount(account_id, enyo.bind(this, function(user){
-			this.$.realname.setContent(user.name);
-			this.$.avatar.setSrc(user.profile_image_url);
-		}), function(xhr, msg, exc){
-			console.error("Couldn't find user's avatar");
-		});
+		AppUtils.getAccount(account_id, enyo.bind(this, 
+			function(user){
+				this.$.realname.setContent(user.name);
+				this.$.avatar.show();
+				this.$.avatar.setSrc(user.profile_image_url);
+				this.$.spinner.hide();
+				this.$.spinner.getControls()[0].hide();
+			}), 
+			function(xhr, msg, exc){
+				console.error("Couldn't find user's avatar");
+			}
+		);
 
 		this.render();
 		//this.createAccountEditComponents(App.Users.get(account_id));
