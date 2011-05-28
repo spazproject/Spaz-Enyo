@@ -27,13 +27,13 @@ enyo.kind({
 						{kind: "VFlexBox", height: "75px", flex: 1, components: [
 							{kind: "Spacer"},
     						{name: "realname", className: "author-realname truncating-text"},
-    						{name: "username", className: "link author-username"},
+    						{name: "username", className: "link author-username", onclick: "entryClick"},
     						{name: "url", kind: "enyo.HtmlContent", className: "small"},
     						{kind: "Spacer"}
 						]},	
 						{kind: "ToolButton", icon: "source/images/icon-close.png", style: "position: relative; bottom: 10px; right: 10px; float: right;", onclick: "doDestroy"}	
 					]},
-					{name: "bio", width: "305px", style: "padding-right: 10px", className: "small"},
+					{name: "bio", width: "305px", style: "padding-right: 10px", onclick: "entryClick", className: "small"},
 
 				]},
 			]},
@@ -96,7 +96,7 @@ enyo.kind({
 			this.$.username.setContent("@" + this.entry.author_username);
 			var url = this.entry._orig.user.url || '';
 			this.$.url.setContent(sch.autolink(enyo.string.runTextIndexer(url)), url.length);
-			this.$.bio.setContent(this.entry.author_description||'');
+			this.$.bio.setContent(AppUtils.makeItemsClickable(this.entry.author_description) || '');
 			this.$.time.setContent(sch.getRelativeTime(this.entry.publish_date));
 			if (this.entry._orig.source) {
 				this.$.from.setContent(this.entry._orig.source);

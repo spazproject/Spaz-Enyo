@@ -38,7 +38,7 @@ enyo.kind({
         					]},	
         					{kind: "ToolButton", icon: "source/images/icon-close.png", style: "position: relative; bottom: 10px; right: 10px; float: right;", onclick: "doDestroy"}	
         				]},
-        				{name: "bio", width: "305px", style: "padding-right: 10px", className: "small"},
+        				{name: "bio", width: "305px", style: "padding-right: 10px", onclick: "bioClick", className: "small"},
 
         			]},
         		]},
@@ -145,7 +145,7 @@ enyo.kind({
 			this.$.image.applyStyle("display", null);			
 			this.$.realname.setContent(this.user.fullname||this.user.username);
 			this.$.username.setContent("@" + this.user.username);
-			this.$.bio.setContent(this.user.description||'');
+			this.$.bio.setContent(AppUtils.makeItemsClickable(this.user.description) || '');
 			
 			switch(this.user.service){
 				case SPAZCORE_SERVICE_IDENTICA:
@@ -241,7 +241,15 @@ enyo.kind({
 			return true;
 		}
 	},
-	
+	bioClick: function(inSender, inEvent){
+		var className = inEvent.target.className;
+		if(_.includes(className, "username")){
+			var username = inEvent.target.getAttribute('data-user-screen_name') || inEvent.target.innerText.replace("@", "");
+			AppUI.viewUser(username, this.user.service, this.user.account_id);
+		} else if(_.includes(className, "hashtag")){
+			AppUI.search(inEvent.target.innerText, this.user.account_id);
+		}
+	},
 	entryClick: function(inSender, inEvent){
 		this.$.entryClickPopup.showAtEvent(inSender.entry, inEvent);
 	},
