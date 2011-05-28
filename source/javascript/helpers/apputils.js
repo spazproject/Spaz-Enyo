@@ -225,12 +225,14 @@ AppUtils.getAccount = function(account_id, onSuccess, onFailure) {
 
 	if (!window.App.avatarCache) {
 		window.App.avatarCache = {};
-	} /*@TODO: cache?
+	}
+	/* @TODO: cache?
 
 	if (window.App.avatarCache[account_id]) {
 		onSuccess(window.App.avatarCache[account_id]);
 		return;
-	}*/
+	}
+	*/
 
 	var twit = AppUtils.makeTwitObj(account_id);
 	var username = App.Users.get(account_id).username;
@@ -466,9 +468,21 @@ AppUtils.convertToEntries = function(item_array) {
 
 
 
-AppUtils.showBanner = function(inMessage) {
-	window.humane.timeout = 1500;
-	window.humane.waitForMove = false;
+AppUtils.showBanner = function(inMessage, timeout, waitForMove) {
+	window.humane.timeout = timeout||1500;
+	window.humane.waitForMove = waitForMove||false;
 	enyo.windows.addBannerMessage(inMessage, "{}");
 	humane(inMessage);
+};
+
+
+
+AppUtils.getQueryVars = function(qstring) {
+	var qvars = [];
+	var qvars_tmp = qstring.split('&');
+	for (var i = 0; i < qvars_tmp.length; i++) {;
+		var y = qvars_tmp[i].split('=');
+		qvars[y[0]] = decodeURIComponent(y[1]);
+	};
+	return qvars;
 };
