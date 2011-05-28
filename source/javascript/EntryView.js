@@ -33,7 +33,7 @@ enyo.kind({
 						]},	
 						{kind: "ToolButton", icon: "source/images/icon-close.png", style: "position: relative; bottom: 10px; right: 10px; float: right;", onclick: "doDestroy"}	
 					]},
-					{name: "bio", width: "305px", style: "padding-right: 10px", onclick: "entryClick", className: "small"},
+					{name: "bio", width: "305px", allowHtml: true, style: "padding-right: 10px", onclick: "entryClick", className: "small"},
 
 				]},
 			]},
@@ -49,7 +49,7 @@ enyo.kind({
 								{name: "from",  allowHtml: true}
 							]
 						},
-						{name: "images", kind: "enyo.VFlexBox", flex: 1, align: "center"},
+						{name: "images", kind: "enyo.VFlexBox", align: "center"},
 						{name: "repost", allowHtml: true, className: "repost-outer", onclick: "entryClick", showing: false},
 						{kind: "ActivityButton", name: "conversation_button", onclick: "toggleDrawer", toggling: true, content: "View Conversation"},
 						{kind: "Drawer", name: "conversation_drawer", /*caption: "Conversation",*/ open: false, onOpenChanged: "onConversationOpenChanged", components: [
@@ -165,8 +165,9 @@ enyo.kind({
 	onConversationOpenChanged: function(inSender, inEvent) {
 	    if(this.$.conversation_drawer.open){
 	        this.loadConversation();	
-	        console.log("opening drawer");    	
-	    }
+	    } else {
+			setTimeout(enyo.bind(this, function(){ this.$.detail_scroller.scrollTo(0, 0)}), 100);
+		}
 	},
 	loadConversation: function() {
 	    this.$.conversation.loadConversation();
