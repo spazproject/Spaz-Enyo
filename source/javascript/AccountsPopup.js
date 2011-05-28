@@ -13,7 +13,7 @@ enyo.kind({
 	layoutKind: "VFlexLayout",
 	components: [
 		{kind: "HFlexBox", components: [
-			{name: "topHeader", content: "Accounts", kind: "HtmlContent"},
+			{name: "topHeader", content: "Accounts"},
 			{name: "header", kind: "HFlexBox", components: [
 			
 			]},

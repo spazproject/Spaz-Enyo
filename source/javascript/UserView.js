@@ -33,12 +33,12 @@ enyo.kind({
         						{kind: "Spacer"},
         						{name: "realname", className: "author-realname truncating-text"},
         						{name: "username", className: "author-username"},
-        						{name: "url", kind: "enyo.HtmlContent", className: "small"},
+        						{name: "url", allowHtml: true, className: "small"},
         						{kind: "Spacer"}
         					]},	
         					{kind: "ToolButton", icon: "source/images/icon-close.png", style: "position: relative; bottom: 10px; right: 10px; float: right;", onclick: "doDestroy"}	
         				]},
-        				{name: "bio", width: "305px", style: "padding-right: 10px", onclick: "bioClick", className: "small"},
+        				{name: "bio", allowHtml: true, width: "305px", style: "padding-right: 10px", onclick: "bioClick", className: "small"},
 
         			]},
         		]},
