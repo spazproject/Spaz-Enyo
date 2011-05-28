@@ -104,10 +104,10 @@ enyo.kind({
 						{width: "10px"},
 						{kind: "VFlexBox", flex: 1, height: "50px", components: [
 							{name: "realname", flex: 1, style: "font-weight: bold", content: account.username, owner: this},
-							{name: "username", flex: 1, className: "link", onclick: "viewProfile", content: account.username}
+							{name: "username", flex: 1, className: "link", onclick: "viewProfile", content: "@" + account.username}
 						]}
 					]},
-					{name: "removeAccountFlexBox", kind: "Item", flex: 1, components: [
+					{name: "removeAccountFlexBox", kind: "Item", layoutKind: "HFlexLayout", flex: 1, components: [
 						{name: "promptRemoveAccount", kind: "Button", content: "Remove Account", className: "enyo-button-negative", onclick: "promptRemoveAccount", flex: 1, owner: this}
 						//{kind: "Button", flex: 1, content: "Change Credentials", account_id: account_id, onclick: "changeCredentials"},
 						// ^this may be more pain than it is worth. we would need to flesh out goDownLevel to be able to go down more than one level and so forth.
