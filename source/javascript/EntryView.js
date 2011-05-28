@@ -120,7 +120,7 @@ enyo.kind({
 					owner: this,
 					components: [
 						{style: "height: 10px;"},
-						{name: "imagePreview" + i, kind: "enyo.Image", height: "150px", width: "150px", onclick: "imageClick", src: imageThumbUrls[imageUrl]}
+						{name: "imagePreview" + i, kind: "enyo.Image", onclick: "imageClick", src: imageThumbUrls[imageUrl]}
 					]
 				});
 				imageComponent.render();
