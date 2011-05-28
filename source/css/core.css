@@ -146,6 +146,9 @@ a:active,
 	height: 32px;
 	margin: -6px -6px -10px -6px;
 }
+.enyo-tool-button {
+	padding: 0px;
+}
 
 /* for user/entry view */
 #spaz_entryview,
