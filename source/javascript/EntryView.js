@@ -71,7 +71,7 @@ enyo.kind({
 	entryChanged: function(){
 		if(this.$.entry.content !== this.entry.message){
 
-			var events = this.doAddViewEvent({type: "entry", entry: this.entry});
+			var events = this.doAddViewEvent({type: (this.entry.is_private_message === true) ? "message" : "entry", entry: this.entry});
 		    if(events.length > 1){
 		    	this.$.viewManagement.setShowing(true);
 		    	var lastEvent = events[events.length-2];
@@ -82,7 +82,9 @@ enyo.kind({
 		    		case "entry":
 			    		this.$.viewManagementText.setContent("Back to @" + lastEvent.entry.author_username + "'s Entry");
 		    			break;
-		    	
+					case "message":
+			    		this.$.viewManagementText.setContent("Back to @" + lastEvent.entry.author_username + "'s Private Message");					
+						break;
 		    	}
 		    } else {
 		    	this.$.viewManagement.setShowing(false);		    	
@@ -94,7 +96,7 @@ enyo.kind({
 			this.$.image.applyStyle("display", "");			
 			this.$.realname.setContent(this.entry.author_fullname||this.entry.author_username);
 			this.$.username.setContent("@" + this.entry.author_username);
-			var url = this.entry._orig.user.url || '';
+			var url = this.entry._orig.user ? this.entry._orig.user.url || '' : '';
 			this.$.url.setContent(sch.autolink(enyo.string.runTextIndexer(url)), url.length);
 			this.$.bio.setContent(AppUtils.makeItemsClickable(this.entry.author_description) || '');
 			this.$.time.setContent(sch.getRelativeTime(this.entry.publish_date));

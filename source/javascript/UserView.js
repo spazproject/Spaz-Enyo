@@ -135,7 +135,9 @@ enyo.kind({
 		    		case "entry":
 			    		this.$.viewManagementText.setContent("Back to @" + lastEvent.entry.author_username + "'s Entry");
 		    			break;
-		    	
+					case "message":
+			    		this.$.viewManagementText.setContent("Back to @" + lastEvent.entry.author_username + "'s Private Message");					
+						break;
 		    	}
 		    } else {
 		    	this.$.viewManagement.setShowing(false);		    	
