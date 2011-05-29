@@ -35,9 +35,9 @@ enyo.kind({
 			{name: "shortenButton", kind: "ActivityButton", style: "min-width: 100px; padding-top: 6px;", label: enyo._$L("Shorten"), onclick: "onShortenClick"},
 			{name: "sendButton", kind: "ActivityButton", style: "min-width: 100px; padding-top: 6px;", label: enyo._$L("Send"), onclick: "onSendClick"}
 		]},
-		{name: "shortenPopup", kind: "PopupSelect", components: [
-			{caption: enyo._$L("Shorten URLs"), onclick: "onShortenURLsClick"},
-			{caption: enyo._$L("Shorten Text"), onclick: "onShortenTextClick"}
+		{name: "shortenPopup", kind: "PopupSelect", onSelect:'itemSelect', items: [
+			{caption:$L("Shorten URLs"), value:'shortenURLs'},
+			{caption:$L("Shorten Text"), value:'shortenText'}
 		]}
 	],
 	create: function(){
@@ -185,6 +185,20 @@ enyo.kind({
 
 	onShortenClick: function(inSender) {
 		this.$.shortenPopup.openAroundControl(inSender);
+	},
+	
+	itemSelect: function(inSender, inSelected) {
+		switch(inSelected.value){
+			case "shortenURLs":
+				this.onShortenURLsClick();
+				break;
+			case "shortenText":
+				this.onShortenTextClick();
+				break;
+			default: 
+				console.error(inSelected.value + " has no handler");
+				break;
+		}		
 	},
 	
 	onShortenTextClick: function(inSender) {
