@@ -95,7 +95,16 @@ enyo.kind({
 				{kind: "Spacer"}
 			]},
 			
-			{name: "entryClickPopup", kind: "Spaz.EntryClickPopup"}
+			{name: "entryClickPopup", kind: "Spaz.EntryClickPopup"},
+			
+			{name: "confirmPopup", kind: "enyo.Popup", scrim : true, components: [
+				{content: enyo._$L("Block user?")},
+				{style: "height: 10px;"},
+				{kind: "enyo.HFlexBox", components: [
+					{kind: "enyo.Button", caption: enyo._$L("No"), flex: 1, onclick: "cancelBlock"},
+					{kind: "enyo.Button", className: "enyo-button-negative", caption: enyo._$L("Yes"), flex: 1, onclick: "confirmBlock"}
+				]}
+			]}
 		]}
 	],
 	
@@ -116,6 +125,7 @@ enyo.kind({
 		window.AppCache.getUser(inUsername, inService, inAccountId,
 			enyo.bind(this, function(user) {
 				this.setUser(user);
+				this.setRelationshipState();
 				this.showLoading(false);
 			}),
 			enyo.bind(this, function() {
@@ -124,6 +134,26 @@ enyo.kind({
 				this.doDestroy();
 			})
 		);
+	},
+	
+	setRelationshipState: function() {
+		
+		var self = this;
+		
+		if (App.Users.get(this.account_id).type === SPAZCORE_ACCOUNT_TWITTER) {
+			this.getTwitterRelationship();
+		} else if (this.user._orig.following !== null) { // the .following attribute exists and this is not twitter
+		
+			this.enableFollowButton(true);
+			if (this.user._orig.following === true) {  // i am following this user
+				this.user.are_following = 'yes';
+			} else {  // i am NOT following this user
+				this.user.are_following = 'no';
+			}
+			this.setFollowButtonIcon(this.user.are_following);
+			
+		}
+		
 	},
 	
 	userChanged: function(inOldValue){
@@ -277,8 +307,65 @@ enyo.kind({
 		AppUI.directMessage(this.user.username, this.account_id);
 	},
 	
-	
 	block: function(inSender, inEvent) {
-		AppUtils.showBanner($L("Not Yet Implemented"));
+		this.$.confirmPopup.openAtCenter();
+	},
+	
+	confirmBlock: function(inSender) {
+		this.$.confirmPopup.close();
+		
+		var twit = AppUtils.makeTwitObj(this.account_id);
+		twit.block(
+			this.user.service_id,
+			function(data){
+				AppUtils.showBanner($L('Blocked user'));
+			},
+			function(xhr, msg, exc){
+				AppUtils.showBanner($L('Failed to block user'));
+			}
+		);
+	},
+	
+	cancelBlock: function(inEvent) {
+		this.$.confirmPopup.close();
+	},
+	
+	getTwitterRelationship: function() {
+		var self = this;
+		
+		var twit = AppUtils.makeTwitObj(this.account_id);
+		twit.showFriendship(
+			this.user.service_id,
+			null,
+			function(data) {
+				console.log('show friendship result: %j', data);
+				if (data.relationship.target.followed_by) {
+					console.log('You are following this user!');
+					self.user.are_following = 'yes';
+				} else {
+					console.log('You are NOT following this user!');
+					self.user.are_following = 'no';
+				}
+				self.enableFollowButton(true);
+				self.setFollowButtonIcon(self.user.are_following);
+			},
+			function(xhr, msg, exc) {
+				AppUtils.showBanner($L('Could not retrieve relationship info'));
+			}
+		);
+	},
+	
+	enableFollowButton: function(enabled) {
+		this.$.follow.setDisabled(!enabled);
+	},
+	
+	setFollowButtonIcon: function(current_state) {
+		if (current_state === 'yes') {
+			this.$.follow.setIcon('source/images/icon-stop-following.png');
+		} else {
+			this.$.follow.setIcon('source/images/icon-start-following.png');
+		}
 	}
+	
+	
 });
