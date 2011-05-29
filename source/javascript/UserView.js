@@ -39,9 +39,17 @@ enyo.kind({
         					{kind: "ToolButton", icon: "source/images/icon-close.png", style: "position: relative; bottom: 10px; right: 10px; float: right;", onclick: "doDestroy"}	
         				]},
         				{name: "bio", allowHtml: true, width: "305px", style: "padding-right: 10px", onclick: "bioClick", className: "small"},
-
+						{kind: "HFlexBox", style: "margin-top: 2px; margin-right: 18px;", components: [
+							{kind: "Button", style: "padding: 0px 5px; margin-bottom: 0px; margin-left: 0px;", components: [
+								{name: "accountSelection", "kind":"ListSelector", onChange: "setRelationshipState", className: "accountSelection"}
+							]},
+							{kind: "Spacer"},
+							{kind: "ActivityButton", name: "following", caption: "Loading", disabled: true, style: "padding-top: 6px; margin-bottom: 0px;", onclick: "toggleFollow"}
+						]},
         			]},
+					
         		]},
+				
     			{name: "radioGroup", kind: "RadioGroup", onChange: "switchDataType", width: "310px", style: "padding-left: 10px; padding-top: 7px;", components: [
     			    {name: "entries", kind: "Spaz.RadioButton", label: "Entries", number: ""},
     			    {name: "followers", kind: "Spaz.RadioButton", label: "Followers", number: ""},
@@ -88,7 +96,7 @@ enyo.kind({
 				
 				
 				// follow only enabled when we check if following. may adjust icon
-				{kind: "ToolButton", name: "follow", disabled: true, icon: "source/images/icon-start-following.png", onclick: "toggleFollow"},
+				//{kind: "ToolButton", name: "follow", caption: "Following", disabled: true, /*icon: "source/images/icon-start-following.png",*/ onclick: "toggleFollow"},
 				{kind: "ToolButton", name: "mention", disabled: false, icon: "source/images/icon-mention.png", onclick: "mention"},
 				{kind: "ToolButton", name: "message", disabled: false, icon: "source/images/icon-messages.png", onclick: "message"},
 				{kind: "ToolButton", name: "block", disabled: false, icon: "source/images/icon-block.png", onclick: "block"},
@@ -110,7 +118,6 @@ enyo.kind({
 	
 	showLoading: function(inShowing) {
 	   	this.$.content.setShowing(!inShowing);
-	    this.$.follow.setShowing(!inShowing);
 		this.$.loading.setShowing(inShowing);
 		this.$.spinnerLarge.setShowing(inShowing);
 	},
@@ -125,7 +132,7 @@ enyo.kind({
 		window.AppCache.getUser(inUsername, inService, inAccountId,
 			enyo.bind(this, function(user) {
 				this.setUser(user);
-				this.setRelationshipState();
+				this.buildAccountButton();
 				this.showLoading(false);
 			}),
 			enyo.bind(this, function() {
@@ -135,12 +142,31 @@ enyo.kind({
 			})
 		);
 	},
+	buildAccountButton: function(){
+		
+		this.accounts = [];
+		var allusers = App.Users.getAll();
+		for (var key in allusers) {
+			if(allusers[key].type === this.user.service){
+				this.accounts.push({
+					id:allusers[key].id,
+					value: allusers[key].id,
+					caption:App.Users.getLabel(allusers[key].id),
+					type:allusers[key].type
+				});
+			}
+		}
+		this.$.accountSelection.setItems(this.accounts);
+		this.$.accountSelection.setValue(this.account_id);
+		
+		this.setRelationshipState();
 	
+	},
 	setRelationshipState: function() {
 		
-		var self = this;
-		
-		if (App.Users.get(this.account_id).type === SPAZCORE_ACCOUNT_TWITTER) {
+		var self = this;		
+		this.enableFollowButton(false);
+		if (App.Users.get(this.$.accountSelection.getValue()).type === SPAZCORE_ACCOUNT_TWITTER) {
 			this.getTwitterRelationship();
 		} else if (this.user._orig.following !== null) { // the .following attribute exists and this is not twitter
 		
@@ -300,8 +326,8 @@ enyo.kind({
 	toggleFollow: function(inSender, inEvent) {
 		
 		var self = this;
-		
-		var twit = AppUtils.makeTwitObj(this.account_id);
+		this.$.following.setActive(true);
+		var twit = AppUtils.makeTwitObj(this.$.accountSelection.getValue());
 		
 		if (this.user.are_following) {
 			if (this.user.are_following === 'yes') {
@@ -311,10 +337,12 @@ enyo.kind({
 						console.log('response from remove friend:', data);
 						self.user.are_following = 'no';
 						self.setFollowButtonIcon(self.user.are_following);
-						
+						self.$.following.setActive(false);
+
 						AppUtils.showBanner(enyo.macroize($L('Stopped following {$screen_name}'), {'screen_name':self.user.username}));
 					},
 					function(xhr, msg, exc){
+						self.$.following.setActive(false);
 						AppUtils.showBanner(enyo.macroize($L('Failed to stop following {$screen_name}'), {'screen_name':self.user.username}));
 					}	
 				);
@@ -325,9 +353,11 @@ enyo.kind({
 						console.log('response from add friend:', data);
 						self.user.are_following = 'yes';
 						self.setFollowButtonIcon(self.user.are_following);
+						self.$.following.setActive(false);
 						AppUtils.showBanner(enyo.macroize($L('Started following {$screen_name}'), {'screen_name':self.user.username}));
 					},
 					function(xhr, msg, exc){
+						self.$.following.setActive(false);
 						AppUtils.showBanner(enyo.macroize($L('Failed to start following {$screen_name}'), {'screen_name':self.user.username}));
 					}		
 				);
@@ -368,7 +398,7 @@ enyo.kind({
 	getTwitterRelationship: function() {
 		var self = this;
 		
-		var twit = AppUtils.makeTwitObj(this.account_id);
+		var twit = AppUtils.makeTwitObj(this.$.accountSelection.getValue());
 		twit.showFriendship(
 			this.user.service_id,
 			null,
@@ -391,14 +421,21 @@ enyo.kind({
 	},
 	
 	enableFollowButton: function(enabled) {
-		this.$.follow.setDisabled(!enabled);
+		this.$.following.setDisabled(!enabled);
 	},
 	
 	setFollowButtonIcon: function(current_state) {
+		this.$.following.setDisabled(false);
 		if (current_state === 'yes') {
-			this.$.follow.setIcon('source/images/icon-stop-following.png');
+			this.$.following.setCaption("Unfollow");
+			this.$.following.removeClass("enyo-button-affirmative");
+			this.$.following.addClass("enyo-button-negative");
+			//this.$.follow.setIcon('source/images/icon-stop-following.png');
 		} else {
-			this.$.follow.setIcon('source/images/icon-start-following.png');
+			this.$.following.setCaption("Follow");
+			this.$.following.removeClass("enyo-button-negative");
+			this.$.following.addClass("enyo-button-affirmative");
+			//this.$.follow.setIcon('source/images/icon-start-following.png');
 		}
 	}
 	
