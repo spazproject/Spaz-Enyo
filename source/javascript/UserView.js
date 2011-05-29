@@ -432,9 +432,16 @@ enyo.kind({
 			this.$.following.addClass("enyo-button-negative");
 			//this.$.follow.setIcon('source/images/icon-stop-following.png');
 		} else {
-			this.$.following.setCaption("Follow");
-			this.$.following.removeClass("enyo-button-negative");
-			this.$.following.addClass("enyo-button-affirmative");
+			if(App.Users.get(this.$.accountSelection.getValue()).username === this.user.username){ //if it IS this user
+				this.$.following.setCaption("That's you!");
+				this.$.following.removeClass("enyo-button-affirmative");
+				this.$.following.removeClass("enyo-button-negative");
+				this.enableFollowButton(false);
+			} else {
+				this.$.following.setCaption("Follow");
+				this.$.following.removeClass("enyo-button-negative");
+				this.$.following.addClass("enyo-button-affirmative");
+			}
 			//this.$.follow.setIcon('source/images/icon-start-following.png');
 		}
 	}
