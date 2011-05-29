@@ -33,7 +33,7 @@ enyo.kind({
 						]},	
 						{kind: "ToolButton", icon: "source/images/icon-close.png", style: "position: relative; bottom: 10px; right: 10px; float: right;", onclick: "doDestroy"}	
 					]},
-					{name: "bio", width: "305px", style: "padding-right: 10px", onclick: "entryClick", className: "small"},
+					{name: "bio", width: "305px", allowHtml: true, style: "padding-right: 10px", onclick: "entryClick", className: "small"},
 
 				]},
 			]},
@@ -71,7 +71,7 @@ enyo.kind({
 	entryChanged: function(){
 		if(this.$.entry.content !== this.entry.message){
 
-			var events = this.doAddViewEvent({type: "entry", entry: this.entry});
+			var events = this.doAddViewEvent({type: (this.entry.is_private_message === true) ? "message" : "entry", entry: this.entry});
 		    if(events.length > 1){
 		    	this.$.viewManagement.setShowing(true);
 		    	var lastEvent = events[events.length-2];
@@ -82,7 +82,9 @@ enyo.kind({
 		    		case "entry":
 			    		this.$.viewManagementText.setContent("Back to @" + lastEvent.entry.author_username + "'s Entry");
 		    			break;
-		    	
+					case "message":
+			    		this.$.viewManagementText.setContent("Back to @" + lastEvent.entry.author_username + "'s Private Message");					
+						break;
 		    	}
 		    } else {
 		    	this.$.viewManagement.setShowing(false);		    	
@@ -94,7 +96,7 @@ enyo.kind({
 			this.$.image.applyStyle("display", "");			
 			this.$.realname.setContent(this.entry.author_fullname||this.entry.author_username);
 			this.$.username.setContent("@" + this.entry.author_username);
-			var url = this.entry._orig.user.url || '';
+			var url = this.entry._orig.user ? this.entry._orig.user.url || '' : '';
 			this.$.url.setContent(sch.autolink(enyo.string.runTextIndexer(url)), url.length);
 			this.$.bio.setContent(AppUtils.makeItemsClickable(this.entry.author_description) || '');
 			this.$.time.setContent(sch.getRelativeTime(this.entry.publish_date));
@@ -114,12 +116,11 @@ enyo.kind({
 			for (var imageUrl in imageThumbUrls) {
 				var imageComponent = this.$.images.createComponent({
 					kind: "enyo.Control",
-					flex: 1,
+					//flex: 1,
 					owner: this,
 					components: [
 						{style: "height: 10px;"},
-						{name: "imagePreview" + i, kind: "enyo.Image", onclick: "imageClick", src: imageThumbUrls[imageUrl]},
-						{style: "height: 10px;"}
+						{name: "imagePreview" + i, kind: "enyo.Image", onclick: "imageClick", src: imageThumbUrls[imageUrl]}
 					]
 				});
 				imageComponent.render();
@@ -166,8 +167,9 @@ enyo.kind({
 	onConversationOpenChanged: function(inSender, inEvent) {
 	    if(this.$.conversation_drawer.open){
 	        this.loadConversation();	
-	        console.log("opening drawer");    	
-	    }
+	    } else {
+			setTimeout(enyo.bind(this, function(){ this.$.detail_scroller.scrollTo(0, 0)}), 100);
+		}
 	},
 	loadConversation: function() {
 	    this.$.conversation.loadConversation();

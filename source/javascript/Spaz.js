@@ -290,6 +290,7 @@ enyo.kind({
 				AppUI.viewUser(event.user.username, event.user.type, event.user.account_id);
 				break;
 			case "entry":
+			case "message":
 				AppUI.viewEntry(event.entry);
 				break;
 		}

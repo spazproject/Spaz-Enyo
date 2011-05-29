@@ -27,7 +27,7 @@ enyo.kind({
 				{name: "topLeftButton", kind: "ToolButton", style: "display: none"},
 				{name: "header", style: "padding: 0px 0px 5px 5px;", className: "truncating-text", content: ""},
 				{kind: "Spacer", flex: 1},
-				{name: "accountName", style: "color: grey; font-size: 12px"},
+				{name: "accountName", style: "color: grey; font-size: 12px; padding-left: 2px;"},
 				{name: "topRightButton", kind: "ToolButton", icon: "source/images/icon-close.png", onclick: "doDeleteClicked"},
 			]},
 			{name: "list", kind: "Spaz.VirtualList", flex: 1, style: "background-color: #D8D8D8; margin: 0px 3px; min-height: 200px;", horizontal: false, className: "timeline list", onAcquirePage:'acquirePage', onSetupRow: "setupRow", components: [
