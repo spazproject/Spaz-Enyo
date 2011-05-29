@@ -298,7 +298,42 @@ enyo.kind({
 	
 	
 	toggleFollow: function(inSender, inEvent) {
-		AppUtils.showBanner($L("Not Yet Implemented"));
+		
+		var self = this;
+		
+		var twit = AppUtils.makeTwitObj(this.account_id);
+		
+		if (this.user.are_following) {
+			if (this.user.are_following === 'yes') {
+				twit.removeFriend(
+					this.user.service_id,
+					function(data){
+						console.log('response from remove friend:', data);
+						self.user.are_following = 'no';
+						self.setFollowButtonIcon(self.user.are_following);
+						
+						AppUtils.showBanner(enyo.macroize($L('Stopped following {$screen_name}'), {'screen_name':self.user.username}));
+					},
+					function(xhr, msg, exc){
+						AppUtils.showBanner(enyo.macroize($L('Failed to stop following {$screen_name}'), {'screen_name':self.user.username}));
+					}	
+				);
+			} else {
+				twit.addFriend(
+					this.user.service_id,
+					function(data){
+						console.log('response from add friend:', data);
+						self.user.are_following = 'yes';
+						self.setFollowButtonIcon(self.user.are_following);
+						AppUtils.showBanner(enyo.macroize($L('Started following {$screen_name}'), {'screen_name':self.user.username}));
+					},
+					function(xhr, msg, exc){
+						AppUtils.showBanner(enyo.macroize($L('Failed to start following {$screen_name}'), {'screen_name':self.user.username}));
+					}		
+				);
+			}
+		}
+		
 	},
 	mention: function(inSender, inEvent) {
 		AppUI.compose('@'+this.user.username+' ');
