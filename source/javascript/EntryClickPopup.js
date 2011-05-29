@@ -47,7 +47,7 @@ enyo.kind({
 				this.clearEntry();
 				break;
 			default: 
-				console.error(this.items[inIndex] + " has no handler");
+				console.error(this.$.popup.getItems()[inIndex] + " has no handler");
 				break;
 		}		
 	},
