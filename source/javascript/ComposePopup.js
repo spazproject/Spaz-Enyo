@@ -13,7 +13,7 @@ enyo.kind({
 	},
 	isDM: false,
 	inReplyToId:null, // set this when making a reply to a specific entry
-	width: "600px",
+	width: "500px",
 	//style: "min-width: 400px;",
 	components: [
 		{layoutKind: "HFlexLayout", components: [
@@ -32,7 +32,8 @@ enyo.kind({
 			   {name: "accountSelection", "kind":"ListSelector", onChange: "onChangeAccount", className: "accountSelection"}
 			]},
 			{kind: "Spacer", style: "min-width: 50px"},
-			{name: "shortenButton", kind: "ActivityButton", style: "min-width: 100px; padding-top: 6px;", label: enyo._$L("Shorten"), onclick: "onShortenClick"},
+			{name: "imageButton", kind: "IconButton", /*@TODO*/icon: "source/images/icon-home.png", onclick: ""},
+			{name: "shortenButton", kind: "Spaz.ActivityIconButton", icon: "source/images/icon-shorten.png", style: "padding-top: 6px;", onclick: "onShortenClick"},
 			{name: "sendButton", kind: "ActivityButton", style: "min-width: 100px; padding-top: 6px;", label: enyo._$L("Send"), onclick: "onSendClick"}
 		]},
 		{name: "shortenPopup", kind: "PopupSelect", onSelect:'itemSelect', items: [
@@ -84,7 +85,7 @@ enyo.kind({
 				width = account.caption.length;			
 			}
 		});
-		this.applyStyle("width", 590 + width + "px");
+		this.applyStyle("width", 490 + width + "px");
 
 		this.openAtCenter();
 		this.$.postTextBox.forceFocus();

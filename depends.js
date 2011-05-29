@@ -55,6 +55,7 @@ enyo.depends(
 	"source/javascript/Conversation.js",
 	"source/javascript/NumberButton.js",
 	"source/javascript/RadioButton.js",
+	"source/javascript/ActivityIconButton.js",
 
 	//css
 	"source/css/core.css"
