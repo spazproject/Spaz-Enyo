@@ -8,6 +8,8 @@ enyo.kind({
 	},
 	scrim: true,
 	modal: true,
+	autoClose: false,
+	dismissWithClick: false,
 	//style: "min-height: 250px",
 	width: "400px",
 	layoutKind: "VFlexLayout",
