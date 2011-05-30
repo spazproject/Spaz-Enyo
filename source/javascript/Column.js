@@ -135,7 +135,7 @@ enyo.kind({
 			}
 
 			switch (self.info.type) {
-				case 'home':
+				case SPAZ_COLUMN_HOME:
 					loadStarted();
 					self.twit.getHomeTimeline(since_id, 50, null, null,
 						function(data) {
@@ -145,7 +145,7 @@ enyo.kind({
 						loadFinished
 					);
 					break;
-				case 'mentions':
+				case SPAZ_COLUMN_MENTIONS:
 					// this method would consistently 502 if we tried to get 200. limit to 100
 					loadStarted();
 					self.twit.getReplies(since_id, 50, null, null,
@@ -156,7 +156,7 @@ enyo.kind({
 						loadFinished
 					);
 					break;
-				case 'messages':
+				case SPAZ_COLUMN_MESSAGES:
 					loadStarted();
 					self.twit.getDirectMessages(since_id, 50, null, null,
 						function(data) {
@@ -166,7 +166,7 @@ enyo.kind({
 						loadFinished
 					);
 					break;
-				case 'search':
+				case SPAZ_COLUMN_SEARCH:
 					loadStarted();
 					self.twit.search(self.info.query, since_id, 50, null, null, null,
 						function(data) {
@@ -175,6 +175,17 @@ enyo.kind({
 						},
 						loadFinished
 					);
+					break;
+					
+				case SPAZ_COLUMN_FAVORITES:
+					loadStarted();
+					self.twit.getFavorites(since_id, null, null,
+						function(data) {
+							self.processData(data);
+							loadFinished();
+						},
+						loadFinished
+					);					
 					break;
 			}
 
