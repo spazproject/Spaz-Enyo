@@ -40,14 +40,16 @@ You should be able to run Spaz Enyo within Chrome or Safari – Enyo is designed
 
 **Chrome** enforces more restrictions on local files and cross-domain requests, so you need to disable those on the command line. I wrote a short shell script called `chrometest` to do this on OS X:
 
-    #!/bin/bash
+```` bash
+#!/bin/bash
+CHROME_EXE="/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+APP_PATH="/Users/coj/Sites/spaz-enyo/index.html"
 
-    /Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome \
-     --disable-web-security \
-     --allow-file-access-from-files \
-     --allow-file-access \
-     --log-level 3 \
-     $@
+"${CHROME_EXE}" --disable-web-security \
+    --allow-file-access-from-files \
+    --allow-file-access \
+    "${APP_PATH}" $@ &
+````
 
 With this, I can type `chrometest index.html` and open Spaz Enyo in Chrome. *This won't work if Chrome is already open, though.*
 
