@@ -63,7 +63,7 @@ enyo.kind({
 				{kind: "Spacer"},
 				{kind: "ToolButton", icon: "source/images/icon-reply.png", onclick: "reply"},
 				{kind: "ToolButton", disabled: true, icon: "source/images/icon-share.png"},
-				{kind: "ToolButton", disabled: true, icon: "source/images/icon-favorite.png"},
+				{name: "favoriteButton", onclick: "toggleFavorite", kind: "ToolButton", disabled: true, icon: "source/images/icon-favorite.png"},
 				{kind: "Spacer"}
 			]}
 		]}
@@ -146,6 +146,8 @@ enyo.kind({
 			} else {
 				this.$.repost.setShowing(false);			
 			}
+			
+			this.setFavButtonState();
 		} else {
 			this.doDestroy();
 		}
@@ -188,5 +190,55 @@ enyo.kind({
 	imageClick: function(inSender) {
 		var imageIndex = parseInt(inSender.getName().replace("imagePreview", ""), 10);
 		this.doShowImageView(this.imageFullUrls, imageIndex);
-	}
+	},
+	toggleFavorite: function(inSender){
+		var that = this;
+		var account = App.Users.get(this.entry.account_id);
+		var auth = new SpazAuth(account.type);
+		auth.load(account.auth);
+			
+		that.twit = that.twit || new SpazTwit();
+		that.twit.setBaseURLByService(account.type);
+		that.twit.setSource(App.Prefs.get('twitter-source'));
+		that.twit.setCredentials(auth);
+			
+		if (that.entry.is_favorite) {
+			console.log('UNFAVORITING %j', that.entry);
+			that.twit.unfavorite(
+				that.entry.service_id,
+				function(data) {
+					that.entry.is_favorite = false;
+					that.setFavButtonState();
+					AppUtils.showBanner($L('Removed favorite'));
+				},
+				function(xhr, msg, exc) {
+					AppUtils.showBanner($L('Error removing favorite'));
+				}
+			);
+		} else {
+			console.log('FAVORITING %j', that.entry);
+			that.twit.favorite(
+				that.entry.service_id,
+				function(data) {
+					that.entry.is_favorite = true;
+					that.setFavButtonState();
+					AppUtils.showBanner($L('Added favorite'));								
+				},
+				function(xhr, msg, exc) {
+					AppUtils.showBanner($L('Error adding favorite'));
+				}
+			);
+		}
+	}, 
+	setFavButtonState: function(){
+		if(this.entry.is_favorite === true){
+			this.$.favoriteButton.setDisabled(false);
+			this.$.favoriteButton.setIcon("source/images/icon-favorite.png");
+		} else if(this.entry.is_private_message === true){
+			this.$.favoriteButton.setDisabled(true)
+		} else {		
+			this.$.favoriteButton.setIcon("source/images/icon-favorite-outline.png");
+			this.$.favoriteButton.setDisabled(false)
+		}
+	},
 });
