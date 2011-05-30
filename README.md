@@ -50,3 +50,37 @@ With this, I can type `chrometest index.html` and open Spaz Enyo in Chrome. *Thi
 
 This should work for OS X, and Linux if you modify the path to the binary. You should be able to do something similar on Windows without too much effort.
 
+
+### Packaging for install on webOS ###
+
+I made a short PHP script to do my packaging for me. You could certainly rewrite it in some other language if you like. It strips out the .git data and the included Enyo libraries, as they are provided on device/emulator
+
+``` php
+#!/usr/bin/env php
+<?php
+
+function docmd($cmd) {
+	echo $cmd."\n";
+	shell_exec($cmd);
+}
+
+chdir("/Users/coj/Sites/spaz-enyo/vendors");
+docmd("cp spazcore-standard.js spazcore.js");
+chdir("/Users/coj/Sites/spaz-enyo");
+docmd("git checkout master");
+docmd("rm -rf ~/Desktop/spaz-enyo");
+docmd("cp -r ~/Sites/spaz-enyo ~/Desktop/");
+docmd("rm -rf ~/Desktop/spaz-enyo/.git");
+docmd("rm -rf ~/Desktop/spaz-enyo/enyo");
+docmd("rm -rf ~/Desktop/spaz-enyo/0.10");
+chdir("/Users/coj/Desktop");
+docmd("palm-package ./spaz-enyo/");
+
+$appinfo = json_decode(file_get_contents('./spaz-enyo/appinfo.json'));
+
+$filename = "{$appinfo->id}_{$appinfo->version}"."_all.ipk";
+
+
+docmd("palm-install {$filename}");
+docmd("palm-launch {$appinfo->id}");
+```
