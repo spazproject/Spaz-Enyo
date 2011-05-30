@@ -477,6 +477,59 @@ AppUtils.showBanner = function(inMessage, timeout, waitForMove) {
 
 
 
+AppUtils.showDashboard = function(opts) {
+	
+	opts = sch.defaults({
+		icon:'icon.png',
+		title:$L('Dashboard Title'),
+		text:$L('This is the dashboard message'),
+		duration:null,
+		onClick:null
+	}, opts);
+	
+	switch (AppUtils.getPlatform()) {
+		
+		case SPAZCORE_PLATFORM_WEBOS:
+			window.enyo.$.spaz.pushDashboard(opts.icon, opts.title, opts.text);
+			break;
+		
+		case SPAZCORE_PLATFORM_TITANIUM:
+			var ntfy = Titanium.Notification.createNotification();
+			ntfy.setMessage(opts.text);
+			ntfy.setIcon(opts.icon||null);
+			ntfy.setTimeout(opts.duration||null);
+			ntfy.setTitle(opts.title);
+			ntfy.setCallback(function () {
+				if (opts.onClick) {
+					opts.onClick();
+				}
+			});	
+			ntfy.show();
+			break;
+		
+		default:
+			if (window.webkitNotifications) {
+				if (window.webkitNotifications.checkPermission() === 0) {
+					window.webkitNotifications.createNotification(opts.icon, opts.title, opts.text).show();
+				} else {
+					// this can't be raised by a non-user action.
+					window.webkitNotifications.requestPermission();
+				}
+			}
+			break;
+		
+	}
+};
+
+
+AppUtils.getPlatform = function() {
+	var platform;
+	platform = sch.getPlatform();
+	return platform;
+};
+
+
+
 AppUtils.getQueryVars = function(qstring) {
 	var qvars = [];
 	var qvars_tmp = qstring.split('&');
