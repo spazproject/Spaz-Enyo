@@ -1,4 +1,4 @@
-/*********** Built 2011-05-23 13:52:06 EDT ***********/
+/*********** Built 2011-05-29 20:27:29 EDT ***********/
 /*jslint 
 browser: true,
 nomen: false,
@@ -7213,7 +7213,7 @@ sc.helpers.getPlatform = function() {
 	if (window.runtime) {
 		return SPAZCORE_PLATFORM_AIR;
 	}
-	if (window.Mojo) {
+	if (window && window.PalmSystem) {
 		return SPAZCORE_PLATFORM_WEBOS;
 	}
 	if (window.Titanium) {
@@ -8109,6 +8109,23 @@ SpazAccounts.prototype.getAuthKey = function(acc_id) {
 	}
 
 };
+
+
+/**
+ * Set account's auth key 
+ */
+SpazAccounts.prototype.setAuthKey = function(acc_id, auth_key) {
+
+	if (acc_id) {
+		var accobj = this.get(acc_id);
+		accobj.auth = auth_key;
+		this.set(acc_id, accobj);
+	} else {
+		return null;
+	}
+
+};
+
 
 /**
  * @requires SpazAuth 
