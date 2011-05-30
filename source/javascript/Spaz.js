@@ -19,7 +19,9 @@ enyo.kind({
 			name: "imageViewPopup",
 			kind: "Spaz.ImageViewPopup",
 			onClose: "closeImageView"
-		}
+		},
+		{name: "dashboard", kind:"Dashboard", onIconTap: "", onMessageTap: "messageTap", onIconTap: "iconTap", 
+					onUserClose: "dashboardClose", onLayerSwipe: "layerSwiped"}
 	],
 	
 	twit: new SpazTwit(),
@@ -31,8 +33,6 @@ enyo.kind({
 		window.App = {};
 
 		var self = this;
-	
-		console.log('INITIALIZING EVERYTHING');
 		
 		/*
 			Remap JSON parser because JSON2.js one was causing probs with unicode
@@ -170,8 +170,6 @@ enyo.kind({
 		$('span.username.clickable').live('click', function(e) {
 			
 		});
-		
-		AppUtils.showBanner('Bound global listeners');
 		
 	},
 
@@ -376,5 +374,25 @@ enyo.kind({
 	},
 	accountRemoved: function(inSender, inAccountId) {
 		this.$.container.removeColummnsForAccount(inAccountId);
+	},
+	
+	
+	pushDashboard: function(inIcon, inTitle, inText) {
+		this.$.dashboard.push({icon:inIcon, title:inTitle, text:inText});
+	},
+	popDashboard: function() {
+		this.$.dashboard.pop();
+	},
+	messageTap: function(inSender, layer) {
+		console.log("Tapped on message: "+layer.text);
+	},
+	iconTap: function(inSender, layer) {
+		console.log("Tapped on icon for message: "+layer.text);
+	},
+	dashboardClose: function(inSender) {
+		console.log("Closed dashboard.");
+	},
+	layerSwiped: function(inSender, layer) {
+		console.log("Swiped layer: "+layer.text);
 	}
 });

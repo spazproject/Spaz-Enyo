@@ -1,6 +1,8 @@
 #!/bin/bash
-
 CHROME_EXE="/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
 APP_PATH="/Users/coj/Sites/spaz-enyo/index.html"
 
-"${CHROME_EXE}" --disable-web-security --allow-file-access-from-files --allow-file-access --log-level 3 "${APP_PATH}" $@ &
+"${CHROME_EXE}" --disable-web-security \
+    --allow-file-access-from-files \
+    --allow-file-access \
+    "${APP_PATH}" $@ &
