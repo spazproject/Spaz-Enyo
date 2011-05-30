@@ -1,4 +1,7 @@
-## Spaz Enyo ##
+  
+  
+  ## Spaz Enyo ##
+
 
 Spaz. In Enyo.
 
@@ -53,9 +56,9 @@ This should work for OS X, and Linux if you modify the path to the binary. You s
 
 ### Packaging for install on webOS ###
 
-I made a short PHP script to do my packaging for me. You could certainly rewrite it in some other language if you like. It strips out the .git data and the included Enyo libraries, as they are provided on device/emulator
+I made a short PHP script to do my packaging for me. You could certainly rewrite it in some other language if you like. It strips out the .git data and the included Enyo libraries, as they are provided on device/emulator. You'll need to adjust for the paths on your own machine.
 
-``` php
+```` php
 #!/usr/bin/env php
 <?php
 
@@ -83,4 +86,64 @@ $filename = "{$appinfo->id}_{$appinfo->version}"."_all.ipk";
 
 docmd("palm-install {$filename}");
 docmd("palm-launch {$appinfo->id}");
-```
+````
+
+
+### Packaging for Titanium Desktop ###
+
+Building for Titanium Desktop is a bit more involved, as it requires a standard Titanium project folder with the following files and folder
+
+	CHANGELOG.txt
+	LICENSE.txt (symlink to Resources/LICENSE.md)
+	Resources/
+	build.sh
+	manifest
+	tiapp.xml
+	timanifest
+
+The interesting file is `build.sh`, which juggles files around and builds the .app and .dmg files. This may have some OS X-specific stuff in it.
+
+```` bash
+#!/bin/bash
+
+SRCPATH='~/Applications/Projects/Spaz HD'
+BLDPATH='/Users/coj/Desktop/SpazHD_Titanium'
+TIPATH='/Users/coj/Library/Application Support/Titanium'
+SDKPATH='/Library/Application Support/Titanium/sdk/osx/1.2.0.RC1'
+
+BLDDATE=`date +%Y%m%d-%H%M%S%Z`
+
+# let user know where we'll be working
+echo "Source Path: ${SRCPATH}"
+echo "Temp Path: ${TMPPATH}"
+echo "Build Path:  ${BLDPATH}"
+echo "--------------------------------------"
+
+rm -rf $BLDPATH
+mkdir -p $BLDPATH
+
+echo "Copying source code..."
+rm -rf /Users/coj/Applications/Projects/Spaz\ HD/Resources/*
+cp -r /Users/coj/Sites/spaz-enyo/* /Users/coj/Applications/Projects/Spaz\ HD/Resources
+rm -rf /Users/coj/Applications/Projects/Spaz\ HD/Resources/.git
+
+
+echo "Swapping in spazcore-titanium.js"
+cp "/Users/coj/Applications/Projects/Spaz HD/Resources/vendors/spazcore-titanium.js" \
+        "/Users/coj/Applications/Projects/Spaz HD/Resources/vendors/spazcore.js"
+
+ls -al "/Users/coj/Applications/Projects/Spaz HD/Resources/vendors/spazcore.js" 
+
+echo "Building..."
+echo "${SDKPATH}/tibuild.py" -r -v -p PACKAGE --type=bundle -d "${BLDPATH}" "${SRCPATH}"
+"${SDKPATH}/tibuild.py" -r -v -p PACKAGE --type=bundle -d "${BLDPATH}" "${SRCPATH}"
+
+open $BLDPATH
+
+echo "Restoring spazcore-standard.js"
+cp "/Users/coj/Applications/Projects/Spaz HD/Resources/vendors/spazcore-standard.js" \
+        "/Users/coj/Applications/Projects/Spaz HD/Resources/vendors/spazcore.js"
+
+ls -al "/Users/coj/Applications/Projects/Spaz HD/Resources/vendors/spazcore*.js"
+````
+
