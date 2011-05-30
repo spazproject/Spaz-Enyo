@@ -51,7 +51,7 @@ APP_PATH="/Users/coj/Sites/spaz-enyo/index.html"
     "${APP_PATH}" $@ &
 ````
 
-With this, I can type `chrometest index.html` and open Spaz Enyo in Chrome. *This won't work if Chrome is already open, though.*
+With this, I can type `./chrometest` and open Spaz Enyo in Chrome. *This won't work if Chrome is already open, though.*
 
 This should work for OS X, and Linux if you modify the path to the binary. You should be able to do something similar on Windows without too much effort.
 
