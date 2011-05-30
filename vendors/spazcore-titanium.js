@@ -1,4 +1,4 @@
-/*********** Built 2011-05-29 20:27:29 EDT ***********/
+/*********** Built 2011-05-30 16:34:56 EDT ***********/
 /*jslint 
 browser: true,
 nomen: false,
@@ -9319,15 +9319,18 @@ SpazImageUploader.prototype.upload = function() {
 	var onSuccess, rs;
 	if (srvc.parseResponse) {
 		/** @ignore */
-		onSuccess = function(data) {
+		onSuccess = function(data) {	
 			if (sch.isString(data)) {
 				rs = srvc.parseResponse.call(srvc, data);
 				return opts.onSuccess(rs);
-			} else if (data && data.responseString) { // webOS will return an object, not just the response string
+			} else if (data && data.responseString) { // Mojo webOS will return an object, not just the response string
 				rs = srvc.parseResponse.call(srvc, data.responseString);
 				return opts.onSuccess(rs);
+			} else if (arguments[1] && arguments[1].responseString) { // Enyo webOS will return more args than Mojo
+				rs = srvc.parseResponse.call(srvc, arguments[1].responseString);
+				return opts.onSuccess(rs);
 			} else { // I dunno what it is; just pass it to the callback
-				return opts.onSuccess(data);
+				return opts.onSuccess.apply(this, arguments);
 			}
 		};
 	} else {
@@ -12456,13 +12459,21 @@ SpazTwit.prototype._processDMTimeline = function(ret_items, opts, processing_opt
 /**
  *  
  */
-SpazTwit.prototype.getFavorites = function(page, processing_opts, onSuccess, onFailure) {	
+SpazTwit.prototype.getFavorites = function(since_id, page, processing_opts, onSuccess, onFailure) {	
 	if (!page) { page = null;}
+	if (!since_id) {
+		since_id = 1;
+	}
 	if (!processing_opts) {
 		processing_opts = {};
 	}
 	
 	var data = {};
+	if (since_id[0] == '-') {
+		data['max_id'] = since_id.replace('-', '');
+	} else {
+		data['since_id'] = since_id;
+	}
 	if (page) {
 		data['page'] = page;
 	}
