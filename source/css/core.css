@@ -172,3 +172,6 @@ a:active,
 	padding-top: 2px;
 	height: 24px;
 }
+.enyo-popup.enyo-popup-float {
+	overflow: visible !important; /* this gets set inline so we need to add !important.
+}
