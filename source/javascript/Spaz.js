@@ -13,7 +13,8 @@ enyo.kind({
 		{
 			name: "container", 
 			kind: "Spaz.Container", 
-			onRefreshAllFinished: "refreshAllFinished"
+			onRefreshAllFinished: "refreshAllFinished",
+			onShowAccountsPopup: "showAccountsPopup"
 		},
 		{
 			name: "imageViewPopup",
@@ -374,6 +375,9 @@ enyo.kind({
 	},
 	accountRemoved: function(inSender, inAccountId) {
 		this.$.container.removeColummnsForAccount(inAccountId);
+	},
+	showAccountsPopup: function(inSender) {
+		this.$.sidebar.showAccountsPopup();
 	},
 	
 	

@@ -6,6 +6,7 @@ enyo.kind({
 	style: "background-color: black",
 	events: {
 		onRefreshAllFinished: "",
+		onShowAccountsPopup: ""
 	},
 	components: [
 		{name:"columnsScroller", kind: "SnapScroller", flex: 1, vertical: false, autoVertical: false, style: "background-color: black; padding: 2px;" , components:[
@@ -43,7 +44,8 @@ enyo.kind({
 		var firstAccount = App.Users.getAll()[0];
 
 		if (!firstAccount || !firstAccount.id) {
-			AppUtils.showBanner('no accounts! you should add one');
+			AppUtils.showBanner(enyo._$L('No accounts! You should add one.'));
+			setTimeout(enyo.bind(this, this.doShowAccountsPopup, 1));
 			return [];
 		}
 
