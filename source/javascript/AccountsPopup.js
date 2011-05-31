@@ -292,7 +292,10 @@ enyo.kind({
 					self.$.saveButton.setActive(false);
 					self.$.saveButton.setDisabled(false);
 					self.goTopLevel(); //this re-renders the accounts list.
-					self.doAccountAdded();
+					self.doAccountAdded(newaccid ? newaccid.id : null);
+					if(App.Users.getAll().length === 1) {
+						self.doClose();
+					}
 				},
 				function(data) {
 					AppUtils.showBanner($L('Problem getting access token from Twitter'));
@@ -369,7 +372,10 @@ enyo.kind({
 						self.$.saveButton.setActive(false);
 						self.$.saveButton.setDisabled(false);
 						self.goTopLevel(); //this re-renders the accounts list.
-						self.doAccountAdded();
+						self.doAccountAdded(newaccid ? newaccid.id : null);
+						if(App.Users.getAll().length === 1) {
+							self.doClose();
+						}
 					} else {
 						self.$.saveButton.setActive(false);
 						self.$.saveButton.setDisabled(false);

@@ -63,5 +63,8 @@ enyo.kind({
 	},
 	directMessage: function(inDMArgs) {
 		this.$.composePopup.directMessage(inDMArgs);
+	},
+	showAccountsPopup: function() {
+		this.$.accountsPopup.showAtCenter();
 	}
 });
