@@ -370,8 +370,8 @@ enyo.kind({
 	closeImageView: function(inSender) {
 		this.$.imageViewPopup.close();
 	},
-	accountAdded: function(inSender) {
-		this.$.container.accountAdded();
+	accountAdded: function(inSender, inAccountId) {
+		this.$.container.accountAdded(inAccountId);
 	},
 	accountRemoved: function(inSender, inAccountId) {
 		this.$.container.removeColummnsForAccount(inAccountId);

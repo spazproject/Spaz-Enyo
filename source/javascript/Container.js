@@ -39,22 +39,24 @@ enyo.kind({
 		this.createColumns();
 	},
 	
-	getDefaultColumns: function() {
+	getDefaultColumns: function(inAccountId) {
+		if(!inAccountId) {
+			var firstAccount = App.Users.getAll()[0];
+			if ((firstAccount) && (firstAccount.id)) {
+				inAccountId = firstAccount.id;
+			}
+		}
 		
-		var firstAccount = App.Users.getAll()[0];
-
-		if (!firstAccount || !firstAccount.id) {
+		if (!inAccountId) {
 			AppUtils.showBanner(enyo._$L('No accounts! You should add one.'));
 			setTimeout(enyo.bind(this, this.doShowAccountsPopup, 1));
 			return [];
 		}
 
 		var default_columns = [
-			{type: SPAZ_COLUMN_HOME, accounts: [firstAccount.id]},
-			{type: SPAZ_COLUMN_MENTIONS, accounts: [firstAccount.id]},
-			// {type: "dms", display: "Messages", accounts: [App.Users.getAll()[0].id]},
-			{type: SPAZ_COLUMN_SEARCH, query: 'webos', accounts: [firstAccount.id]},
-			{type: SPAZ_COLUMN_SEARCH, query: 'spaz', accounts: [firstAccount.id]}
+			{type: SPAZ_COLUMN_HOME, accounts: [inAccountId]},
+			{type: SPAZ_COLUMN_MENTIONS, accounts: [inAccountId]},
+			{type: SPAZ_COLUMN_MESSAGES, accounts: [inAccountId]}
 		];
 
 		return default_columns;
@@ -190,7 +192,8 @@ enyo.kind({
 		this.createColumn(inSender.info.accounts[0], "search", inQuery);
 	},
 	
-	accountAdded: function() {
+	accountAdded: function(inAccountId) {
+		this.columnData = this.columnData.concat(this.getDefaultColumns(inAccountId));
 		this.createColumns();
 	},
 	
