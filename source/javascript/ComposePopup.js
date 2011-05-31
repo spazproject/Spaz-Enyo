@@ -32,7 +32,7 @@ enyo.kind({
 			   {name: "accountSelection", "kind":"ListSelector", onChange: "onChangeAccount", className: "accountSelection"}
 			]},
 			{kind: "Spacer", style: "min-width: 50px"},
-			{name: "imageButton", kind: "IconButton", /*@TODO*/icon: "source/images/icon-home.png", onclick: ""},
+			{name: "imageButton", kind: "IconButton", icon: "source/images/icon-imageattach.png", onclick: ""},
 			{name: "shortenButton", kind: "Spaz.ActivityIconButton", icon: "source/images/icon-shorten.png", style: "padding-top: 6px;", onclick: "onShortenClick"},
 			{name: "sendButton", kind: "ActivityButton", style: "min-width: 100px; padding-top: 6px;", label: enyo._$L("Send"), onclick: "onSendClick"}
 		]},
