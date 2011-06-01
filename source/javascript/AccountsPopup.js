@@ -159,7 +159,7 @@ enyo.kind({
 				this.createComponents([
 					{name: "secondLevel", components: [	
 						{kind: "Group", components: [
-							{kind: "ActivityButton", caption: "Log In and Get PIN", onclick: "getTwitterPinAuthorization"},
+							{kind: "ActivityButton", name:'getTwitterAuthButton', caption: "Log In and Get PIN", onclick: "getTwitterPinAuthorization"},
 							{kind: "Item", components: [
 								{name: "twitterPinInput", kind: "Input", hint: "Enter PIN", autoKeyModifier: "num-lock", autoCapitalize: "lowercase", autocorrect: false, spellcheck: false}	
 							]},							
@@ -241,7 +241,7 @@ enyo.kind({
 	},
 	getTwitterPinAuthorization: function(inSender, inEvent){
 		//launch browser.
-		inSender.setActive(true);
+		this.$.getTwitterAuthButton.setActive(true);
 		
 		if (!SPAZCORE_CONSUMERKEY_TWITTER) {
 			console.error('SPAZCORE_CONSUMERKEY_TWITTER not set, will not be able to authenticate against Twitter');
@@ -258,7 +258,7 @@ enyo.kind({
 		});
 		
 		this.oauth.fetchRequestToken(function(url) {
-				sch.openInBrowser(url, 'authorize');
+				this.authwindow = sch.openInBrowser(url, 'authorize');
 			},
 			function(data) {
 				AppUtils.showBanner($L('Problem getting Request Token from Twitter'));
@@ -298,7 +298,13 @@ enyo.kind({
 					}
 				},
 				function(data) {
-					AppUtils.showBanner($L('Problem getting access token from Twitter'));
+					AppUtils.showBanner($L('Problem getting access token from Twitter; must re-authorize'));
+					if (self.authwindow) {
+						self.authwindow.close();
+					}
+					self.$.twitterPinInput.setValue('');
+					self.$.getTwitterAuthButton.setCaption('Try Again');
+					self.$.getTwitterAuthButton.setActive(false);
 					self.$.saveButton.setActive(false);
 					self.$.saveButton.setDisabled(false);
 				}
