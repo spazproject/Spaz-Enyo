@@ -25,26 +25,21 @@ enyo.kind({
 			case "Details":
 				AppUI.viewEntry(this.entry);
 				this.$.popup.close();
-				this.clearEntry();
 				break;
 			case "Reply":
 				AppUI.reply(this.entry);
 				this.$.popup.close();
-				this.clearEntry();
 				break;
 			case "Repost":
 				AppUI.repost(this.entry);
 				this.$.popup.close();
-				this.clearEntry();
 				break;
 			case "Edit & Repost":
 				AppUI.repostManual(this.entry);
 				this.$.popup.close();
-				this.clearEntry();
 				break;
 			case "Share":
 				AppUtils.showBanner($L('Not yet implemented'));
-				this.clearEntry();
 				break;
 			case "Favorite":
 			case "Unfavorite":
@@ -90,7 +85,8 @@ enyo.kind({
 			default: 
 				console.error(this.$.popup.getItems()[inIndex] + " has no handler");
 				break;
-		}		
+		}	
+		this.clearEntry();
 	},
 	showAtEvent: function(inEntry, inEvent){
 		if(this.lazy) {

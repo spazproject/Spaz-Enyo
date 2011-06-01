@@ -21,14 +21,14 @@ enyo.kind({
 			{kind: "Spacer"},
 			{name: "closeButton", kind: "ToolButton", icon: "source/images/icon-close.png", style: "position: relative; bottom: 7px;", onclick: "doClose"}
 		]},
-		{kind: "HFlexBox", name: "inReplyEntryText", content: "", style: "color:#666666; font-size:14px; padding-bottom:1em;" },
-		{kind: "Control", style: "min-height: 50px", components: [
+		{kind: "HFlexBox", name: "inReplyEntryText", content: "", allowHtml: true, style: "color:#666666; font-size:14px; padding-bottom:1em;" },
+		{name: "postTextBoxContainer", kind: "Control", style: "min-height: 50px", components: [
 			{name:"postTextBox", kind: "RichText", alwaysLooksFocused: true, richContent: false, multiline: true, flex: 1, oninput: "postTextBoxInput", hint: "Type message here...", onkeydown: "postTextBoxKeydown", onfocus: "postTextBoxFocus", components: [
 				{name: "remaining", style: "color: grey; padding-left: 5px;", content: "140"}
 			]}
 		]},
 		{name: "controls", layoutKind: "HFlexLayout", style: "padding-top: 5px", components: [
-			{kind: "Button", style: "padding: 0px 5px;", components: [
+			{name: "accountSelectionButton", kind: "Button", style: "padding: 0px 5px;", components: [
 			   {name: "accountSelection", "kind":"ListSelector", onChange: "onChangeAccount", className: "accountSelection"}
 			]},
 			{kind: "Spacer", style: "min-width: 50px"},
@@ -62,7 +62,7 @@ enyo.kind({
 			});
 		}
 		this.$.accountSelection.setItems(this.accounts);
-		this.$.accountSelection.setValue(this.accounts[0].value);
+		this.setPostingAccount(this.accounts[0].value);
 
 		// Check if the last posting account from prefs is still here.
 		// It's possible the account was deleted.
@@ -85,8 +85,11 @@ enyo.kind({
 				width = account.caption.length;			
 			}
 		});
-		this.applyStyle("width", 490 + width + "px");
+		this.applyStyle("width", 490 + width + "px"); //set the width based on the longest username.
 
+		this.setAllDisabled(false);
+		this.$.postTextBoxContainer.setShowing(true);
+		
 		this.openAtCenter();
 		this.$.postTextBox.forceFocus();
 		//var width = this.getBounds().width + "px"
@@ -165,6 +168,23 @@ enyo.kind({
 					this.setAllDisabled(false);
 				})
 			);			
+		} else if(this.isRepost){
+		
+			this.twit.retweet(
+				this.repostEntry.service_id,
+				enyo.bind(this, function(data){
+					this.repostEntry = null;
+					this.isRepost = null;
+					
+					this.$.sendButton.setActive(false);
+					this.setAllDisabled(false);
+					AppUI.refresh();					
+					this.close();
+				}), 
+				enyo.bind(this, function(xhr, msg, exc){
+					this.$.sendButton.setActive(false);
+				})
+			);
 		} else {
 			this.twit.update(this.$.postTextBox.getValue(), null, this.inReplyToId,
 				enyo.bind(this, function() {
@@ -441,11 +461,17 @@ enyo.kind({
 	repost: function(opts) {
 
 		var self = this;
-		
-		// a superhack to get the components to render
+
+		this.isRepost = true; 
+
 		this.showAtCenter();
-		this.close();
 		
+		this.clear();
+
+		this.$.composeHeader.setContent('Repost');
+
+		// a superhack to get the components to render
+		//this.close();
 		
 		opts = sch.defaults({
 			'entry':null,
@@ -456,19 +482,14 @@ enyo.kind({
 			sch.error("No account and/or entry obj set");
 			return;
 		}
-		
+		this.repostEntry = opts.entry;
 		this.setPostingAccount(opts.account_id);
+		this.$.inReplyEntryText.show();
 		
-		AppUtils.showBanner($L('Reposting...'));
-		this.twit.retweet(
-			opts.entry.service_id,
-			function(data){
-				AppUtils.showBanner($L('Repost succeeded'));
-			},
-			function(xhr, msg, exc){
-				AppUtils.showBanner($L('Repost failed!'));
-			}
-		);
+		this.$.inReplyEntryText.setContent("<span style='font-weight: bold'>@" + opts.entry.author_username + ":</span> " + opts.entry.text);
+		this.$.postTextBoxContainer.setShowing(false);
+		this.setRepostDisabled(true);
+
 
 	},
 	
@@ -503,7 +524,8 @@ enyo.kind({
 		this.postTextBoxInput();
 		this.dmUserChanged();
 		this.inReplyEntryChanged();
-
+		this.$.accountSelection.setValue(opts.entry.account_id);
+	
 	},
 	
 	
@@ -533,6 +555,22 @@ enyo.kind({
 		} else {
 			this.$.postTextBox.applyStyle("color", "black");			
 		}
+	},
+	setRepostDisabled: function(inDisabled) {
+		enyo.forEach (this.getComponents(),
+			function(component) {
+				// The closeButton should always remain enabled
+				if ((component.setDisabled) && (component.getName() !== "closeButton") && (!_.includes(component.getName(), "accountSelection")) && (component.getName() !== "sendButton")){
+					component.setDisabled(inDisabled);
+				}
+			}
+		);
+		if(inDisabled){
+			this.$.postTextBox.applyStyle("color", "gray");
+		} else {
+			this.$.postTextBox.applyStyle("color", "black");			
+		}
 	}
+	
 });
 

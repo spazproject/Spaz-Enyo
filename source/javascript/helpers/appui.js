@@ -17,6 +17,10 @@ AppUI = {
 			() 
 			- refresh all columns 
 			- source/javascript/Sidebar.js 
+		rerenderTimelines
+			()
+			- re-render all timelines, gets all favorites again
+			- source/javascript/Container.js
 		viewUser
 			(inUsername, inService, inAccountId)
 			- show the userView
