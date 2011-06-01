@@ -167,11 +167,18 @@ a:active,
 	top: 0px;
 }
 
+/* fixes for our css */
+
 .enyo-item.enyo-menuitem.enyo-listselector-item.enyo-menucheckitem-caption {
 	font-size: 16px;
 	padding-top: 2px;
 	height: 24px;
 }
 .enyo-popup.enyo-popup-float {
-	overflow: visible !important; /* this gets set inline so we need to add !important.
+	overflow: visible !important; /* this gets set inline so we need to add !important.*/
+}
+
+.enyo-button-disabled {
+	opacity: 0.4;
+	/*color: rgba(255,254,255,0.4);*/
 }

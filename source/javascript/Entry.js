@@ -19,7 +19,8 @@ enyo.kind({
 					{kind: "HFlexBox", height: "18px", components: [
 						{name: "username", className: "text username author"},
 						{name: "reposterIcon", kind: "Image", height: "13px", src: "source/images/reposted.png", style: "position: relative; bottom: 4px; padding: 0px 3px;", showing: false},
-						{name: "reposterUsername", className: "text username author", showing: false}
+						{name: "reposterUsername", className: "text username author", showing: false},
+						{name: "favoriteIcon", kind: "Image", height: "13px", src: "source/images/favorited.png", style: "position: relative; bottom: 4px; padding: 0px 3px;", showing: false},
 					]},
 					{name: "text", allowHtml: true, className: "text"},
 					{name: "timeFrom", allowHtml: true, className: "small"},
@@ -52,6 +53,12 @@ enyo.kind({
 			this.applyStyle("background-color", "rgba(0, 255, 0, .1)");
 		} else {
 			this.applyStyle("background-color", null);			
+		}
+		
+		if(this.entry.is_favorite){
+			this.$.favoriteIcon.setShowing(true);
+		} else {
+			this.$.favoriteIcon.setShowing(false);
 		}
 			
 	},

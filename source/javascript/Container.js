@@ -32,6 +32,9 @@ enyo.kind({
 		AppUI.addFunction("search", function(inQuery, inAccountId){
 			this.createColumn(inAccountId, "search", inQuery);
 		}, this);
+		AppUI.addFunction("rerenderTimelines", function(){
+			this.columnsFunction("refreshList");
+		}, this);
 	},
 	
 	loadAndCreateColumns: function() {

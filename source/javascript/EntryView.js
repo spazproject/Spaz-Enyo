@@ -209,6 +209,7 @@ enyo.kind({
 				function(data) {
 					that.entry.is_favorite = false;
 					that.setFavButtonState();
+					AppUI.rerenderTimelines();
 					AppUtils.showBanner($L('Removed favorite'));
 				},
 				function(xhr, msg, exc) {
@@ -222,6 +223,7 @@ enyo.kind({
 				function(data) {
 					that.entry.is_favorite = true;
 					that.setFavButtonState();
+					AppUI.rerenderTimelines();
 					AppUtils.showBanner($L('Added favorite'));								
 				},
 				function(xhr, msg, exc) {

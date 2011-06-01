@@ -284,5 +284,13 @@ enyo.kind({
 			this.$.header.applyStyle("width", accountNameBounds.left - headerBounds.left + "px");
 			this.$.header.setContent(_.capitalize(this.info.type));
 		}
+	},
+	refreshList: function(){
+		this.$.list.refresh();
+		
+		if(this.info.type === SPAZ_COLUMN_FAVORITES){
+			this.entries = [];
+			this.loadData();
+		}
 	}
 });

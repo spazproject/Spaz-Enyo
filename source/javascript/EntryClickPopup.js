@@ -65,6 +65,7 @@ enyo.kind({
 						function(data) {
 							that.entry.is_favorite = false;
 							AppUtils.showBanner($L('Removed favorite'));
+							AppUI.rerenderTimelines();
 						},
 						function(xhr, msg, exc) {
 							AppUtils.showBanner($L('Error removing favorite'));
@@ -76,7 +77,9 @@ enyo.kind({
 						that.entry.service_id,
 						function(data) {
 							that.entry.is_favorite = true;
-							AppUtils.showBanner($L('Added favorite'));								
+							AppUtils.showBanner($L('Added favorite'));
+							AppUI.rerenderTimelines();
+							
 						},
 						function(xhr, msg, exc) {
 							AppUtils.showBanner($L('Error adding favorite'));
