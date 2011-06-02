@@ -178,6 +178,9 @@ enyo.kind({
 		var self = this
 		  , inheritedArgs = arguments;
 
+		// this lets the popups positon properly when keyboard shows
+		enyo.keyboard.setResizesWindow(false);
+
 		// init window.App
 		self.initAppObject(function() {
 		    self.inherited(inheritedArgs);

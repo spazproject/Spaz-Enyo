@@ -14,6 +14,7 @@ enyo.kind({
 	isDM: false,
 	inReplyToId:null, // set this when making a reply to a specific entry
 	width: "500px",
+	showKeyboardWhenOpening:true, // opens the keyboard and positions the popup correctly
 	//style: "min-width: 400px;",
 	components: [
 		{layoutKind: "HFlexLayout", components: [
@@ -43,6 +44,10 @@ enyo.kind({
 	],
 	create: function(){
 		this.inherited(arguments);
+	},
+	close: function(){
+		this.inherited(arguments);
+		enyo.keyboard.setManualMode(false); // closes the keyboard
 	},
 	buildAccounts: function() {
 
