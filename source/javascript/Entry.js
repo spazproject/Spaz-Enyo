@@ -18,9 +18,9 @@ enyo.kind({
 				{kind: "VFlexBox", flex: 1, components: [
 					{kind: "HFlexBox", height: "18px", components: [
 						{name: "username", className: "text username author"},
-						{name: "reposterIcon", kind: "Image", height: "13px", src: "source/images/reposted.png", style: "position: relative; bottom: 4px; padding: 0px 3px;", showing: false},
+						{name: "reposterIcon", kind: "Image", height: "13px", src: "source/images/reposted.png", style: "position: relative; bottom: 2px; padding: 0px 3px;", showing: false},
 						{name: "reposterUsername", className: "text username author", showing: false},
-						{name: "favoriteIcon", kind: "Image", height: "13px", src: "source/images/favorited.png", style: "position: relative; bottom: 4px; padding: 0px 3px;", showing: false},
+						{name: "favoriteIcon", kind: "Image", height: "13px", src: "source/images/favorited.png", style: "position: relative; bottom: 2px; padding: 0px 3px;", showing: false},
 					]},
 					{name: "text", allowHtml: true, className: "text"},
 					{name: "timeFrom", allowHtml: true, className: "small"},
