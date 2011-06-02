@@ -1,6 +1,6 @@
 enyo.kind({
 	name: "Spaz.ColumnsPopup",
-	kind: "Popup",
+	kind: Spaz.Popup,
 	scrim: true,
 	modal: true,
 	width: "500px",
@@ -56,7 +56,7 @@ enyo.kind({
 		this.$.searchBox.setShowing(false);
 		//this.$.avatarList.buildList();
 		this.buildAccounts();
-		this.openAtCenter();
+		this.openAtHalfCenter();
 	},
 	newSearchColumn: function(inSender, inEvent){
 		this.doCreateColumn(this.$.accountSelection.getValue(), "search", this.$.searchTextBox.getValue());

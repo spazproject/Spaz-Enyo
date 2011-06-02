@@ -25,6 +25,7 @@ enyo.depends(
 
 	//core
 	"source/javascript/Spaz.js",
+	"source/javascript/SpazPopup.js",
 	
 	//views
 	"source/javascript/Sidebar.js",

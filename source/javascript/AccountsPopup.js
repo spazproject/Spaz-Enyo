@@ -1,6 +1,6 @@
 enyo.kind({
 	name: "Spaz.AccountsPopup",
-	kind: enyo.Popup,
+	kind: Spaz.Popup,
 	events: {
 		onClose: "",
 		onAccountAdded: "",
@@ -36,7 +36,7 @@ enyo.kind({
 	],
 	oauth: null,
 	showAtCenter: function(){
-		this.openAtCenter();
+		this.openAtHalfCenter();
 	},
 	"goTopLevel": function(inSender, InEvent){
 		this.editing_acc_id = null; // reset this
