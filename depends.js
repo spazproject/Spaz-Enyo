@@ -5,6 +5,7 @@ enyo.depends(
 	"vendors/cache.js",
 	"vendors/jsOAuth-1.1.js",
 	"vendors/jquery.min.js",
+	"vendors/jquery.embedly.js",
 	"vendors/spazcore.js", // includes underscore, underscore.string
 	
 	"vendors/ekl/List/",

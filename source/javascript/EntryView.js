@@ -112,21 +112,37 @@ enyo.kind({
 			var imageThumbUrls = siu.getThumbsForUrls(this.entry.text);
 			var imageFullUrls = siu.getImagesForUrls(this.entry.text);
 			this.imageFullUrls = [];
-			var i = 0;
-			for (var imageUrl in imageThumbUrls) {
-				var imageComponent = this.$.images.createComponent({
-					kind: "enyo.Control",
-					//flex: 1,
-					owner: this,
-					components: [
-						{style: "height: 10px;"},
-						{name: "imagePreview" + i, kind: "enyo.Image", onclick: "imageClick", src: imageThumbUrls[imageUrl]}
-					]
-				});
-				imageComponent.render();
-				this.imageFullUrls.push(imageFullUrls[imageUrl]);
-				i++;
+			if ((imageThumbUrls) && (imageThumbUrls.length > 0)) {
+				var i = 0;
+				for (var imageUrl in imageThumbUrls) {
+					var imageComponent = this.$.images.createComponent({
+						kind: "enyo.Control",
+						owner: this,
+						components: [
+							{style: "height: 10px;"},
+							{name: "imagePreview" + i, kind: "enyo.Image", onclick: "imageClick", src: imageThumbUrls[imageUrl]}
+						]
+					});
+					imageComponent.render();
+					this.imageFullUrls.push(imageFullUrls[imageUrl]);
+					i++;
+				}
 			}
+			else {
+				enyo.forEach (sc.helpers.extractURLs(this.entry.text), enyo.bind(this, function (url) {
+					$.embedly(url, {}, enyo.bind(this, function(oembed) {
+						var embedlyComponent = this.$.images.createComponent({
+							kind: "enyo.Control",
+							owner: this,
+							components: [
+								{style: "height: 10px;"},
+								{kind: "enyo.Image", style: "max-width: 100%;", onclick: "embedlyClick", src: oembed.thumbnail_url}
+							]
+						});
+						embedlyComponent.render();
+					}));
+				}));
+			};
 			
 			if(!this.entry.in_reply_to_id) {
 			    this.$.conversation_button.hide();
