@@ -65,7 +65,8 @@ enyo.kind({
 				{kind: "ToolButton", disabled: true, icon: "source/images/icon-share.png"},
 				{name: "favoriteButton", onclick: "toggleFavorite", kind: "ToolButton", disabled: true, icon: "source/images/icon-favorite.png"},
 				{kind: "Spacer"}
-			]}
+			]},
+			{name: "browser", kind: "enyo.PalmService", service: "palm://com.palm.applicationManager/", method: "open"}
 		]}
 	],
 	entryChanged: function(){
@@ -136,7 +137,10 @@ enyo.kind({
 							owner: this,
 							components: [
 								{style: "height: 10px;"},
-								{kind: "enyo.Image", style: "max-width: 100%;", onclick: "embedlyClick", src: oembed.thumbnail_url}
+								{kind: "enyo.Image", style: "max-width: 100%;", onclick: "embedlyClick", src: oembed.thumbnail_url, url: oembed.url},
+								{kind: "enyo.HFlexBox", pack: "center", components: [
+									{content: oembed.title, className: "small"}
+								]}
 							]
 						});
 						embedlyComponent.render();
@@ -206,6 +210,11 @@ enyo.kind({
 	imageClick: function(inSender) {
 		var imageIndex = parseInt(inSender.getName().replace("imagePreview", ""), 10);
 		this.doShowImageView(this.imageFullUrls, imageIndex);
+	},
+	embedlyClick: function(inSender) {
+		if(inSender.url) {
+			this.$.browser.call({id: "com.palm.app.browser", params: {target: inSender.url}});
+		}
 	},
 	toggleFavorite: function(inSender){
 		var that = this;
