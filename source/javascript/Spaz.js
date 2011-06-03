@@ -301,7 +301,9 @@ enyo.kind({
 		this.$.container.createColumn(inAccountId, inColumn, inQuery);	
 	},
 	resizeHandler: function() {
-		this.$.container.resizeHandler();
+		enyo.forEach (this.getComponents(), function(component) {
+			component.resizeHandler && component.resizeHandler();
+		});
 	},
 	
 	refreshAll: function() {
