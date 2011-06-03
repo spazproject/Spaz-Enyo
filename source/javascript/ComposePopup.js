@@ -1,6 +1,6 @@
 enyo.kind({
 	name: "Spaz.ComposePopup",
-	kind: "Popup",
+	kind: "Spaz.Popup",
 	scrim: true,
 	modal: true, //yes/no?
 	//width: "400px",
@@ -14,7 +14,7 @@ enyo.kind({
 	isDM: false,
 	inReplyToId:null, // set this when making a reply to a specific entry
 	width: "500px",
-	showKeyboardWhenOpening:true, // opens the keyboard and positions the popup correctly
+	// showKeyboardWhenOpening:true, // opens the keyboard and positions the popup correctly
 	//style: "min-width: 400px;",
 	components: [
 		{layoutKind: "HFlexLayout", components: [
@@ -47,7 +47,7 @@ enyo.kind({
 	},
 	close: function(){
 		this.inherited(arguments);
-		enyo.keyboard.setManualMode(false); // closes the keyboard
+		// enyo.keyboard.setManualMode(false); // closes the keyboard
 	},
 	buildAccounts: function() {
 
@@ -95,7 +95,7 @@ enyo.kind({
 		this.setAllDisabled(false);
 		this.$.postTextBoxContainer.setShowing(true);
 		
-		this.openAtCenter();
+		this.openAtHalfCenter();
 		this.$.postTextBox.forceFocus();
 		//var width = this.getBounds().width + "px"
 
@@ -339,10 +339,7 @@ enyo.kind({
 		
 		this.$.postTextBox.setValue(text);
 		this.$.postTextBox.forceFocus();
-		
-		var textlen = this.$.postTextBox.getValue().length;
-		var selection = {start:textlen-1, end:textlen};
-		this.$.postTextBox.setSelection(selection);
+		this.cursorToEnd();
 
 		this.postTextBoxInput();
 		this.dmUserChanged();
@@ -405,11 +402,7 @@ enyo.kind({
 		
 		this.$.postTextBox.setValue(text);
 		this.$.postTextBox.forceFocus();
-
-		// try to select the text in order to position the cursor at the end
-		var textlen = this.$.postTextBox.getValue().length;
-		var selection = {start:textlen-1, end:textlen};
-		this.$.postTextBox.setSelection(selection);
+		this.cursorToEnd();
 
 
 		this.postTextBoxInput();
@@ -448,6 +441,7 @@ enyo.kind({
 		
 		this.$.postTextBox.setValue(text);
 		this.$.postTextBox.forceFocus();
+		this.cursorToEnd();
 
 		// try to select the text in order to position the cursor at the end
 		var textlen = this.$.postTextBox.getValue().length;
@@ -521,10 +515,7 @@ enyo.kind({
 		
 		this.$.postTextBox.setValue(text);
 		this.$.postTextBox.forceFocus();
-		
-		var textlen = this.$.postTextBox.getValue().length;
-		var selection = {start:textlen-1, end:textlen};
-		this.$.postTextBox.setSelection(selection);
+		this.cursorToEnd();
 
 		this.postTextBoxInput();
 		this.dmUserChanged();
@@ -561,6 +552,7 @@ enyo.kind({
 			this.$.postTextBox.applyStyle("color", "black");			
 		}
 	},
+	
 	setRepostDisabled: function(inDisabled) {
 		enyo.forEach (this.getComponents(),
 			function(component) {
@@ -575,6 +567,16 @@ enyo.kind({
 		} else {
 			this.$.postTextBox.applyStyle("color", "black");			
 		}
+	},
+	
+	cursorToEnd : function() {
+		this.$.postTextBox.forceSelect();
+		window.setTimeout(function() {window.getSelection().collapseToEnd();}, 1);
+	},
+
+	cursorToStart : function() {
+		this.$.postTextBox.forceSelect();
+		window.setTimeout(function() {window.getSelection().collapseToStart();}, 1);
 	}
 	
 });
