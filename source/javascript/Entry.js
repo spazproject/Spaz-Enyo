@@ -18,9 +18,13 @@ enyo.kind({
 				{kind: "VFlexBox", flex: 1, components: [
 					{kind: "HFlexBox", height: "18px", components: [
 						{name: "username", className: "text username author"},
+						{name: "recipientContainer", showing:false, kind: "HFlexBox", components:[
+							{name: "receipientArrow", allowHtml: true, content:"&rarr;", style:"position: relative; bottom: 4px; padding: 0px 3px;"},
+							{name: "recipientUsername", className: "text username recipient author"}
+						]},
 						{name: "reposterIcon", kind: "Image", height: "13px", src: "source/images/reposted.png", style: "position: relative; bottom: 4px; padding: 0px 3px;", showing: false},
 						{name: "reposterUsername", className: "text username author", showing: false},
-						{name: "favoriteIcon", kind: "Image", height: "13px", src: "source/images/favorited.png", style: "position: relative; bottom: 4px; padding: 0px 3px;", showing: false},
+						{name: "favoriteIcon", kind: "Image", height: "13px", src: "source/images/favorited.png", style: "position: relative; bottom: 4px; padding: 0px 3px;", showing: false}
 					]},
 					{name: "text", allowHtml: true, className: "text"},
 					{name: "timeFrom", allowHtml: true, className: "small"},
@@ -30,6 +34,14 @@ enyo.kind({
 	],
 	entryChanged: function(){
 		this.$.username.setContent(this.entry.author_username);
+		
+		if (this.entry.recipient_username && this.entry.is_private_message) {
+			this.$.recipientUsername.setContent(this.entry.recipient_username);
+			this.$.recipientContainer.show();
+		} else {
+			this.$.recipientContainer.hide();
+		}
+		
 		this.$.text.setContent(AppUtils.makeItemsClickable(enyo.string.runTextIndexer(this.entry.text)));
 		if (this.entry._orig.source) {
 			this.$.timeFrom.setContent(sch.getRelativeTime(this.entry.publish_date) + " from <span class='link'>" + this.entry._orig.source + "</span>");
