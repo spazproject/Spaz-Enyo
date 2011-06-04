@@ -218,7 +218,7 @@ enyo.kind({
 					this.$.followers.setNumber(this.user._orig.followers_count);
 					this.$.friends.setNumber(this.user._orig.friends_count);
 					this.$.entries.setNumber(this.user._orig.statuses_count);
-					var url = this.user._orig.url || '';
+					var url = this.author_url || '';
 					this.$.url.setContent(sch.autolink(enyo.string.runTextIndexer(url)), url.length);
 					this.$.radioGroup.setValue(0);
 					this.switchDataType(this.$.radioGroup);

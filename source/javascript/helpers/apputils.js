@@ -306,6 +306,7 @@ AppUtils.convertToUser = function(srvc_user) {
 	user.service_id  = srvc_user.id;
 	user.avatar      = srvc_user.profile_image_url;
 	user.avatar_bigger = AppUtils.getBiggerAvatar(user);
+	user.url         = srvc_user.url;
 	user._orig       = _.extend({},srvc_user);
 	
 	
@@ -352,6 +353,7 @@ AppUtils.convertToEntry = function(item) {
 				entry.author_fullname = item.sender.name;
 				entry.author_id  = item.sender.id;
 				entry.author_avatar = item.sender.profile_image_url;
+				entry.author_url = item.sender.url;
 
 				entry.recipient_username = item.recipient.screen_name;
 				entry.recipient_description = item.recipient.description;
@@ -378,12 +380,14 @@ AppUtils.convertToEntry = function(item) {
 					entry.author_fullname = item.retweeted_status.user.name;
 					entry.author_id  = item.retweeted_status.user.id;
 					entry.author_avatar = item.retweeted_status.user.profile_image_url;
+					entry.author_url = item.retweeted_status.user.url;
 					
 					entry.reposter_username = item.user.screen_name;
 					entry.reposter_description = item.user.description;
 					entry.reposter_fullname = item.user.name;
 					entry.reposter_id  = item.user.id;
 					entry.reposter_avatar = item.user.profile_image_url;
+					entry.reposter_url = item.user.url;
 					
 					if (item.retweeted_status.in_reply_to_screen_name) {
 						entry.recipient_username = item.retweeted_status.in_reply_to_screen_name;

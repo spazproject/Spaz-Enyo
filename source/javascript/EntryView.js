@@ -96,7 +96,7 @@ enyo.kind({
 			this.$.image.applyStyle("display", "");			
 			this.$.realname.setContent(this.entry.author_fullname||this.entry.author_username);
 			this.$.username.setContent("@" + this.entry.author_username);
-			var url = this.entry._orig.user ? this.entry._orig.user.url || '' : '';
+			var url = this.entry.author_url || '';
 			this.$.url.setContent(sch.autolink(enyo.string.runTextIndexer(url)), url.length);
 			this.$.bio.setContent(AppUtils.makeItemsClickable(this.entry.author_description) || '');
 			this.$.time.setContent(sch.getRelativeTime(this.entry.publish_date));
