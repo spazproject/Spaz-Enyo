@@ -3,7 +3,7 @@ enyo.kind({
 	kind: Spaz.Popup,
 	scrim: true,
 	modal: true,
-	width: "500px",
+	width: "600px",
 	events: {
 		onClose: "",
 		onCreateColumn: ""

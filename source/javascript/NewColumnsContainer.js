@@ -20,7 +20,7 @@ enyo.kind({
 		this.destroyComponents();
 
 		_.each(columns, function(column){
-			this.createComponent({name: column, flex: 1, kind: "IconButton", toggling: true, label: _.capitalize(column), icon: "source/images/icon-"+column+".png", onclick: "newColumn"});
+			this.createComponent({name: column, flex: 1, kind: "IconButton", style: "font-size:12px;", toggling: true, label: _.capitalize(column), icon: "source/images/icon-"+column+".png", onclick: "newColumn"});
 		}, this);
 
 		this.render();
