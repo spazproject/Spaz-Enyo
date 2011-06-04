@@ -4,14 +4,9 @@ enyo.kind({
 	width: "322px",
 	style: "margin: 3px;", 
 	events: {
-		onShowUserView: "",
-		onShowEntryView: "",
 		onDeleteClicked: "",
 		onLoadStarted: "",
 		onLoadFinished: "",
-		onReply: "",
-		onDirectMessage: "",
-
 		onMoveColumnRight: "",
 		onMoveColumnLeft: ""
 	},
@@ -27,18 +22,22 @@ enyo.kind({
 	},
 	components: [
 		{layoutKind: "VFlexLayout", components: [
-			{kind: "Toolbar", defaultKind: "Control", content: "Home", style: "color: white;", components: [
-				//gotta do this crap to get the header title to center and not be a button. "defaultKind" in Toolbar is key.
+			{kind: "Toolbar", height: "42px", defaultKind: "Control", onclick: "scrollToTop", content: "Home", style: "min-height: 42px; color: white; color: white; padding-left: 5px;", components: [
+				//gotta do this to get the header title to center and not be a button. "defaultKind" in Toolbar is key.
 				{name: "topLeftButton", kind: "ToolButton", style: "display: none"},
-				{name: "header", style: "padding: 0px 0px 5px 10px;", className: "truncating-text", content: ""},
+				{name: "header", style: "padding: 0px 0px 5px 5px;", className: "truncating-text", content: ""},
 				{kind: "Spacer", flex: 1},
-				{name: "accountName", style: "color: grey; font-size: 12px"},
+				{name: "accountName", style: "color: grey; font-size: 12px; padding-left: 2px;"},
 				{name: "topRightButton", kind: "ToolButton", icon: "source/images/icon-close.png", onclick: "doDeleteClicked"},
 			]},
-			{name: "list", kind: "Spaz.VirtualList", flex: 1, style: "background-color: #D8D8D8; margin: 0px 3px; min-height: 200px;", horizontal: false, className: "timeline list", onSetupRow: "setupRow", components: [
-				{name: "item", kind: "Spaz.Entry", onclick: "entryClick"}
+			{name: "list", kind: "Spaz.VirtualList", flex: 1, style: "background-color: #D8D8D8; margin: 0px 3px; min-height: 200px;", horizontal: false, className: "timeline list", onAcquirePage:'acquirePage', onSetupRow: "setupRow", components: [
+				{
+					name: "item", 
+					kind: "Spaz.Entry",
+					onEntryClick: "entryClick"
+				}
 			]},
-			{kind: "Toolbar", style: "color: white;", components: [
+			{kind: "Toolbar", height: "42px", onclick: "scrollToBottom", style: "min-height: 42px; color: white;", components: [
 				{name: "moveColumnLeftButton", onclick: "doMoveColumnLeft", kind: "ToolButton", icon: "source/images/icon-back.png"},
 				{kind: "Spacer"},
 				{name: "refresh", kind: "ToolButton", icon: "source/images/icon-refresh.png", onclick:"loadNewer"},
@@ -49,7 +48,7 @@ enyo.kind({
 			]}
 		]},
 
-		{name: "entryClickPopup", kind: "Spaz.EntryClickPopup", onShowEntryView: "doShowEntryView", onReply: "doReply", onDirectMessage: "doDirectMessage"}
+		{name: "entryClickPopup", kind: "Spaz.EntryClickPopup"}
 	],
 	entries: [],
 	create: function(){
@@ -57,27 +56,38 @@ enyo.kind({
      	this.infoChanged();
      	setTimeout(enyo.bind(this, this.resizeHandler), 1);
 
-     	if(this.name === "Column0"){
+		this.checkArrows();     
+	},
+	checkArrows: function(){
+		if(this.name === "Column0"){
      		this.$.moveColumnLeftButton.setDisabled(true);
      	}
 		if(this.name === "Column" + (this.owner.columnData.length-1)){
      		this.$.moveColumnRightButton.setDisabled(true);			
 		}
 	},
-	
 	infoChanged: function(){
-		this.$.header.setContent(_.capitalize(this.info.type));
+		// don't set header contents here - wait until the column is
+		// rendered and then manually resize header to fit.
 		this.$.accountName.setContent(App.Users.getLabel(this.info.accounts[0]));
 	},
 
 	loadNewer:function() {
 		this.loadData({'mode':'newer'});
+		sch.debug('Loading newer entries');
 	},
 
 	loadOlder:function() {
 		this.loadData({'mode':'older'});
+		sch.debug('Loading older entries');
 	},
 
+	acquirePage:function(inSender, inPage) {
+		var index = inPage * inSender.pageSize;
+		if (index > -1 && !this.entries[index] && this.entries.length > 0) {
+			this.loadOlder();
+		}
+	},
 
 	/**
 	 * @param string [opts.mode] newer or older
@@ -109,13 +119,7 @@ enyo.kind({
 				}
 
 				if (opts.mode === 'older') {
-					if (self.info.type === 'search') {
-						throw {
-							message:'Search columns do not yet support loading older messages',
-							name:'UserException'
-						};
-					}
-					since_id = (_.last(self.entries).service_id)*-1;
+					since_id = '-'+(_.last(self.entries).service_id);
 				}
 			} else {
 				since_id = 1;
@@ -129,10 +133,11 @@ enyo.kind({
 				self.$.refresh.removeClass("spinning");
 				self.doLoadFinished();
 			}
+
 			switch (self.info.type) {
-				case 'home':
+				case SPAZ_COLUMN_HOME:
 					loadStarted();
-					self.twit.getHomeTimeline(since_id, 200, null, null,
+					self.twit.getHomeTimeline(since_id, 50, null, null,
 						function(data) {
 							self.processData(data);
 							loadFinished();
@@ -140,10 +145,10 @@ enyo.kind({
 						loadFinished
 					);
 					break;
-				case 'mentions':
+				case SPAZ_COLUMN_MENTIONS:
 					// this method would consistently 502 if we tried to get 200. limit to 100
 					loadStarted();
-					self.twit.getReplies(since_id, 100, null, null,
+					self.twit.getReplies(since_id, 50, null, null,
 						function(data) {
 							self.processData(data);
 							loadFinished();
@@ -151,9 +156,9 @@ enyo.kind({
 						loadFinished
 					);
 					break;
-				case 'messages':
+				case SPAZ_COLUMN_MESSAGES:
 					loadStarted();
-					self.twit.getDirectMessages(since_id, 200, null, null,
+					self.twit.getDirectMessages(since_id, 50, null, null,
 						function(data) {
 							self.processData(data);
 							loadFinished();
@@ -161,22 +166,33 @@ enyo.kind({
 						loadFinished
 					);
 					break;
-				case 'search':
+				case SPAZ_COLUMN_SEARCH:
 					loadStarted();
-					self.twit.search(self.info.query, since_id, 200, null, null, null,
+					self.twit.search(self.info.query, since_id, 50, null, null, null,
 						function(data) {
 							self.processData(data);
 							loadFinished();
 						},
 						loadFinished
 					);
+					break;
+					
+				case SPAZ_COLUMN_FAVORITES:
+					loadStarted();
+					self.twit.getFavorites(since_id, null, null,
+						function(data) {
+							self.processData(data);
+							loadFinished();
+						},
+						loadFinished
+					);					
 					break;
 			}
 
 
 		} catch(e) {
 			console.error(e);
-			AppUtils.showBanner('you probably need to make an account');
+			// AppUtils.showBanner('you probably need to make an account');
 		}
 	},
 	processData: function(data) {
@@ -199,57 +215,89 @@ enyo.kind({
 					/* convert to our internal format */
 					data = AppUtils.convertToEntries(data);
 					
-
+					/* concat to existing entries */
 					this.entries = [].concat(data.reverse(), this.entries);
-					this.entries.sort(function(a,b){
-						return b.service_id - a.service_id; // newest first
-					});
 					
-					// add in the account used to get this entry. this seems sloppy here.
-					for (var j = this.entries.length - 1; j >= 0; j--){
-						this.entries[j].account_id = this.info.accounts[0];
-					}
+					/* sort our good stuff */
+					this.sortEntries();
+					
+					/* add more entry properties */
+					this.entries = this.setAdditionalEntryProperties(this.entries);					
 					
 					this.$.list.refresh();
 					this.resizeHandler();
 					break;
-			}			
+			}
 		}
 	},
+	
+	setAdditionalEntryProperties : function(entries) {
+		// add in the account used to get this entry. this seems sloppy here.
+		for (var j = entries.length - 1; j >= 0; j--){
+			entries[j].account_id = this.info.accounts[0];
+			
+			var acc_username = App.Users.get(this.info.accounts[0]).username;
+			var acc_service  = App.Users.get(this.info.accounts[0]).type;
+			
+			if (acc_username === this.entries[j].author_username
+				&& acc_service === this.entries[j].service) {
+				entries[j].is_author = true;
+			}
+		}
+		return entries;
+	},
+	
+	sortEntries: function() {
+		this.entries.sort(function(a,b){
+			
+			return b.service_id - a.service_id; // newest first
+		});
+	},
+	
 	setupRow: function(inSender, inIndex) {
 		if (this.entries[inIndex]) {
 			var entry = this.entries[inIndex];
 			this.$.item.setEntry(entry);
 			
-			//this.$.item.applyStyle("background-color", inSender.isSelected(inIndex) ? "rgba(218,235,251,0.4)" : null);
-
 			return true;
 		}
 	},
 	entryClick: function(inSender, inEvent, inRowIndex) {
-		switch(inEvent.target.className){
-			case "username":
-			case "username author":
-			case "username clickable":
-				this.doShowUserView(inEvent.target.getAttribute('data-user-screen_name'), App.Users.get(this.info.accounts[0]).type, this.info.accounts[0]);
-				break;
-			case "hashtag":
-
-				break;
-			case "small":
-				this.doShowEntryView(this.entries[inRowIndex]);
-				break;
-			case "avatar": //we may want to move toward a default situation.
-			case "text":
-			case "enyo-vflexbox":
-			case "enyo-item entry enyo-hflexbox":
-				this.$.entryClickPopup.showAtEvent(this.entries[inRowIndex], inEvent);
-				break;
-
+		if (this.$.entryClickPopup.getEntry() === this.entries[inRowIndex]) {
+			// we've clicked on the same item as last time, so don't show the popup again
+			this.$.entryClickPopup.clearEntry();
+		}
+		else {
+			// different item than last time, show the popup
+			this.$.entryClickPopup.showAtEvent(this.entries[inRowIndex], inEvent);
 		}
 	},
+	scrollToTop: function(){
+		this.$.list.punt();
+	},
+	scrollToBottom: function(){
+		//this.$.list.$.scroller.scrollToBottom();
+	},
 	resizeHandler: function(inHeight) {
-		this.$.list.applyStyle("height", window.innerHeight - 117 + "px");
+		this.$.list.applyStyle("height", window.innerHeight - 93 + "px"); // - 117 for fatter toolbars.
 		this.$.list.resizeHandler();
+	},
+	rendered: function() {
+		this.inherited(arguments);
+		if (this.hasNode()) {
+			this.$.header.setContent("");
+			var headerBounds = this.$.header.getBounds();
+			var accountNameBounds = this.$.accountName.getBounds();
+			this.$.header.applyStyle("width", accountNameBounds.left - headerBounds.left + "px");
+			this.$.header.setContent(_.capitalize(this.info.type));
+		}
+	},
+	refreshList: function(){
+		this.$.list.refresh();
+		
+		if(this.info.type === SPAZ_COLUMN_FAVORITES){
+			this.entries = [];
+			this.loadData();
+		}
 	}
 });

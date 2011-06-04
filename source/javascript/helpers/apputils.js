@@ -221,6 +221,36 @@ AppUtils.getAccountAvatar = function(account_id, onSuccess, onFailure) {
 
 };
 
+AppUtils.getAccount = function(account_id, onSuccess, onFailure) {
+
+	if (!window.App.avatarCache) {
+		window.App.avatarCache = {};
+	}
+	/* @TODO: cache?
+
+	if (window.App.avatarCache[account_id]) {
+		onSuccess(window.App.avatarCache[account_id]);
+		return;
+	}
+	*/
+
+	var twit = AppUtils.makeTwitObj(account_id);
+	var username = App.Users.get(account_id).username;
+
+	console.log(username);
+
+	twit.getUser(
+		'@'+username,
+		function(data) {
+			window.App.avatarCache[account_id] = data.profile_image_url; //cache the avatar here for now.
+			onSuccess(data);
+		}, function(xhr, msg, exc) {
+			onFailure(xhr, msg, exc);
+		}
+	);
+
+};
+
 
 /**
  * Retrieves the custom API url for the current account, or the account with the passed id
@@ -272,10 +302,16 @@ AppUtils.convertToUser = function(srvc_user) {
 	user.username    = srvc_user.screen_name;
 	user.description = srvc_user.description;
 	user.fullname    = srvc_user.name;
+	user.service 	 = srvc_user.SC_service;
 	user.service_id  = srvc_user.id;
 	user.avatar      = srvc_user.profile_image_url;
+	user.avatar_bigger = AppUtils.getBiggerAvatar(user);
+	user.url         = srvc_user.url;
 	user._orig       = _.extend({},srvc_user);
 	
+	
+	
+	//following: true
 	return user;
 };
 
@@ -304,6 +340,12 @@ AppUtils.convertToEntry = function(item) {
 			entry.text          = item.text;
 			entry.text_raw      = item.SC_text_raw;
 			entry.publish_date  = item.SC_created_at_unixtime;
+
+			if (item.favorited) {
+				entry.is_favorite = true;
+			} else {
+				entry.is_favorite = false;
+			}
 			
 			if (item.SC_is_dm) {
 				entry.author_username = item.sender.screen_name;
@@ -311,6 +353,7 @@ AppUtils.convertToEntry = function(item) {
 				entry.author_fullname = item.sender.name;
 				entry.author_id  = item.sender.id;
 				entry.author_avatar = item.sender.profile_image_url;
+				entry.author_url = item.sender.url;
 
 				entry.recipient_username = item.recipient.screen_name;
 				entry.recipient_description = item.recipient.description;
@@ -321,23 +364,67 @@ AppUtils.convertToEntry = function(item) {
 				entry.is_private_message = true;
 
 			} else {
-
-				entry.author_username = item.user.screen_name;
-				entry.author_description = item.user.description;
-				entry.author_fullname = item.user.name;
-				entry.author_id  = item.user.id;
-				entry.author_avatar = item.user.profile_image_url;
-
-				if (item.in_reply_to_screen_name) {
-					entry.recipient_username = item.in_reply_to_screen_name;
-					entry.recipient_id  = item.in_reply_to_user_id;
-				}
 				
-				if (item.in_reply_to_status_id) {
-					entry.in_reply_to_id = item.in_reply_to_status_id;
-				}				
-			}
+				if (item.SC_is_retweet) { // Twitter API retweets are a curious circumstance
+					
+					entry.is_repost = true;
+					
+					entry.text          = item.retweeted_status.text;
+					entry.text_raw      = item.retweeted_status.text;
+					
+					entry.repost_orig_date  = sc.helpers.httpTimeToInt(item.retweeted_status.created_at);
+					entry.repost_orig_id    = item.retweeted_status.id;
+					
+					entry.author_username = item.retweeted_status.user.screen_name;
+					entry.author_description = item.retweeted_status.user.description;
+					entry.author_fullname = item.retweeted_status.user.name;
+					entry.author_id  = item.retweeted_status.user.id;
+					entry.author_avatar = item.retweeted_status.user.profile_image_url;
+					entry.author_url = item.retweeted_status.user.url;
+					
+					entry.reposter_username = item.user.screen_name;
+					entry.reposter_description = item.user.description;
+					entry.reposter_fullname = item.user.name;
+					entry.reposter_id  = item.user.id;
+					entry.reposter_avatar = item.user.profile_image_url;
+					entry.reposter_url = item.user.url;
+					
+					if (item.retweeted_status.in_reply_to_screen_name) {
+						entry.recipient_username = item.retweeted_status.in_reply_to_screen_name;
+						entry.recipient_id  = item.retweeted_status.in_reply_to_user_id;
+					}
 
+					if (item.retweeted_status.in_reply_to_status_id) {
+						entry.in_reply_to_id = item.retweeted_status.in_reply_to_status_id;
+					}
+					
+				} else {
+					
+					entry.author_username = item.user.screen_name;
+					entry.author_description = item.user.description;
+					entry.author_fullname = item.user.name;
+					entry.author_id  = item.user.id;
+					entry.author_avatar = item.user.profile_image_url;
+
+					if (item.SC_is_reply) {
+						entry.is_mention = true; // mentions the authenticated user
+					}
+
+					if (item.in_reply_to_screen_name) {
+						entry.recipient_username = item.in_reply_to_screen_name;
+						entry.recipient_id  = item.in_reply_to_user_id;
+					}
+
+					if (item.in_reply_to_status_id) {
+						entry.in_reply_to_id = item.in_reply_to_status_id;
+					}					
+
+				}
+
+			}
+			
+			entry.author_avatar_bigger = AppUtils.getBiggerAvatar(entry);
+			
 			// copy to _orig
 			entry._orig = _.extend({},item);
 
@@ -352,6 +439,32 @@ AppUtils.convertToEntry = function(item) {
 };
 
 
+AppUtils.getBiggerAvatar = function(entry_or_user) {
+	var bigger_url, username, avatar_url;
+	
+	if (entry_or_user.author_username) { // is entry
+		username = entry_or_user.author_username;
+		avatar_url = entry_or_user.author_avatar;
+	} else { // is user
+		username = entry_or_user.username;
+		avatar_url = entry_or_user.avatar;	
+	}
+	
+	
+	switch(entry_or_user.service) {
+		case SPAZCORE_SERVICE_TWITTER:
+			bigger_url = avatar_url.replace(/_normal\.([a-zA-Z]+)$/, "_bigger.$1");
+			break;
+		case SPAZCORE_SERVICE_IDENTICA: // we abuse their API to get a 302 to the proper URL
+			bigger_url = 'http://identi.ca/api/users/profile_image/'+username+'.json?size=bigger';
+			break;
+		default: // no idea.
+			bigger_url = avatar_url;
+	}
+	
+	return bigger_url;
+};
+
 
 AppUtils.convertToEntries = function(item_array) {
 	
@@ -365,9 +478,74 @@ AppUtils.convertToEntries = function(item_array) {
 
 
 
-AppUtils.showBanner = function(inMessage) {
-	window.humane.timeout = 1500;
-	window.humane.waitForMove = false;
+AppUtils.showBanner = function(inMessage, timeout, waitForMove) {
+	window.humane.timeout = timeout||1500;
+	window.humane.waitForMove = waitForMove||false;
 	enyo.windows.addBannerMessage(inMessage, "{}");
 	humane(inMessage);
+};
+
+
+
+AppUtils.showDashboard = function(opts) {
+	
+	opts = sch.defaults({
+		icon:'icon.png',
+		title:$L('Dashboard Title'),
+		text:$L('This is the dashboard message'),
+		duration:null,
+		onClick:null
+	}, opts);
+	
+	switch (AppUtils.getPlatform()) {
+		
+		case SPAZCORE_PLATFORM_WEBOS:
+			window.enyo.$.spaz.pushDashboard(opts.icon, opts.title, opts.text);
+			break;
+		
+		case SPAZCORE_PLATFORM_TITANIUM:
+			var ntfy = Titanium.Notification.createNotification();
+			ntfy.setMessage(opts.text);
+			ntfy.setIcon(opts.icon||null);
+			ntfy.setTimeout(opts.duration||null);
+			ntfy.setTitle(opts.title);
+			ntfy.setCallback(function () {
+				if (opts.onClick) {
+					opts.onClick();
+				}
+			});	
+			ntfy.show();
+			break;
+		
+		default:
+			if (window.webkitNotifications) {
+				if (window.webkitNotifications.checkPermission() === 0) {
+					window.webkitNotifications.createNotification(opts.icon, opts.title, opts.text).show();
+				} else {
+					// this can't be raised by a non-user action.
+					window.webkitNotifications.requestPermission();
+				}
+			}
+			break;
+		
+	}
+};
+
+
+AppUtils.getPlatform = function() {
+	var platform;
+	platform = sch.getPlatform();
+	return platform;
+};
+
+
+
+AppUtils.getQueryVars = function(qstring) {
+	var qvars = [];
+	var qvars_tmp = qstring.split('&');
+	for (var i = 0; i < qvars_tmp.length; i++) {;
+		var y = qvars_tmp[i].split('=');
+		qvars[y[0]] = decodeURIComponent(y[1]);
+	};
+	return qvars;
 };

@@ -7,20 +7,22 @@ enyo.kind({
 		onAccountClick: "",
 	},
 	components: [
-		{kind: "VirtualRepeater", onGetItem: "setupRow", className: "timeline list", flex: 1, components: [
-			{kind: "Item", tapHighlight: true, className: "entry", layoutKind: "HFlexLayout", onclick: "doAccountClick", components: [
-				{name: "icon", kind: "Image", style: "padding-right: 5px"},
-				{name: "label", content: "", style: "font-size: 16px; vertical-align: middle; padding-right: 5px"},
-				// {name: "username", content: "", style: "font-size: 16px; vertical-align: middle; padding-right: 5px"},
-				// {kind: "Spacer"},
-				// {name: "realname", content: "", style: "font-size: 16px; color: grey; vertical-align: middle;"},
+		{kind: "Group", components: [
+			{kind: "VirtualRepeater", onSetupRow: "setupRow", className: "timeline list", flex: 1, components: [
+				{kind: "Item", tapHighlight: true, className: "entry", layoutKind: "HFlexLayout", onclick: "doAccountClick", components: [
+					{name: "icon", kind: "Image", style: "padding-right: 5px"},
+					{name: "label", content: "", style: "font-size: 16px; padding-top: 3px; padding-right: 5px"},
+					// {name: "username", content: "", style: "font-size: 16px; vertical-align: middle; padding-right: 5px"},
+					// {kind: "Spacer"},
+					// {name: "realname", content: "", style: "font-size: 16px; color: grey; vertical-align: middle;"},
+				]}
 			]}
 		]}
 	],
 	accounts: [],
 	create: function(){
-		this.buildAccounts();
 		this.inherited(arguments);
+		this.buildAccounts();
 	},
 	buildAccounts: function() {
 		var allusers = App.Users.getAll();
@@ -32,6 +34,11 @@ enyo.kind({
 				type:allusers[key].type
 			});
 		}	
+		if(this.accounts.length === 0){
+			this.$.group.setShowing(false);
+		} else {
+			this.$.group.setShowing(true);
+		}
 	},
 	setupRow: function(inSender, inIndex){
 		var item;

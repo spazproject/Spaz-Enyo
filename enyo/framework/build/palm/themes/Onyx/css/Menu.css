@@ -1,6 +1,0 @@
-/* Copyright 2009-2011 Hewlett-Packard Development Company, L.P. All rights reserved. */
-.enyo-popup.enyo-popup-menu {
-	min-width: inherit;
-	border-width: 19px;
-	-webkit-border-image: url(../images/menu-background.png) 23 23 23 23 stretch stretch;
-}

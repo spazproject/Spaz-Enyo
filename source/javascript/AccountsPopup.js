@@ -1,17 +1,21 @@
 enyo.kind({
 	name: "Spaz.AccountsPopup",
-	kind: enyo.Popup,
+	kind: Spaz.Popup,
 	events: {
-		onClose: ""
+		onClose: "",
+		onAccountAdded: "",
+		onAccountRemoved: ""
 	},
 	scrim: true,
 	modal: true,
+	autoClose: false,
+	dismissWithClick: false,
 	//style: "min-height: 250px",
 	width: "400px",
 	layoutKind: "VFlexLayout",
 	components: [
 		{kind: "HFlexBox", components: [
-			{name: "topHeader", content: "Accounts", kind: "HtmlContent"},
+			{name: "topHeader", content: "Accounts"},
 			{name: "header", kind: "HFlexBox", components: [
 			
 			]},
@@ -20,18 +24,29 @@ enyo.kind({
 		]},	
 		//very thin divider
 		{name: "accountsList", kind: "Spaz.AccountsList", onAccountClick: "viewAccountFromListTap"},
-		{kind: "Button", caption: "Add an Account", onclick: "newAccount"}
+		{kind: "Button", caption: "Add an Account", onclick: "newAccount"},
+		
+		{name: "typeButton", kind: "Button", style: "padding: 0px 5px;", showing: false, components: [
+		   {name: "type", "kind":"ListSelector", onChange: "changeService", className: "accountSelection", value: SPAZCORE_SERVICE_TWITTER, items: [
+				    {caption: "Twitter", value: SPAZCORE_SERVICE_TWITTER},
+				    {caption: "Identi.ca", value: SPAZCORE_SERVICE_IDENTICA},
+				    {caption: $L("Status.net/Custom"), value: SPAZCORE_SERVICE_CUSTOM},
+			]},	
+		]}
 	],
+	oauth: null,
 	showAtCenter: function(){
-		this.openAtCenter();
+		this.openAtHalfCenter();
 	},
 	"goTopLevel": function(inSender, InEvent){
 		this.editing_acc_id = null; // reset this
 
 		this.$.header.destroyComponents();
 		
-		this.$.secondLevel.destroy();		
-
+		this.$.secondLevel.destroy();	
+		
+		this.$.typeButton.setShowing(false);
+	
 		this.createComponents(
 			[
 				{name: "accountsList", kind: "Spaz.AccountsList", onAccountClick: "viewAccountFromListTap"},
@@ -68,9 +83,10 @@ enyo.kind({
 	},
 	viewAccount: function(account_id){		
 		this.editing_acc_id = account_id;
-
+		
 		this.goDownLevel(account_id);
 
+		var account = App.Users.get(account_id);
 		if (this.$.secondLevel) {
 			this.$.secondLevel.destroy();
 		}
@@ -81,8 +97,19 @@ enyo.kind({
 						//{name: "accountInfo", content: App.Users.getLabel(account_id)},
 					//]},
 				//]},
-				{kind: "Group", caption: "Options", components: [
-					{name: "removeAccountFlexBox", kind: "HFlexBox", components: [
+				{kind: "Group", /*caption: "Options",*/ components: [
+					{name: "accountInfo", kind: "Item", layoutKind: "HFlexLayout", flex: 1, owner: this, components: [
+						{name: "spinner", width: "50px", height: "55px", owner: this, components: [
+							{kind: "Spinner", style: "margin: auto;", showing: true},
+						]},
+						{name: "avatar", kind: "Image", height: "50px", width: "50px", className: "avatar", showing: false, owner: this},
+						{width: "10px"},
+						{kind: "VFlexBox", flex: 1, height: "50px", components: [
+							{name: "realname", flex: 1, style: "font-weight: bold", content: account.username, owner: this},
+							{name: "username", flex: 1, className: "link", onclick: "viewProfile", content: "@" + account.username}
+						]}
+					]},
+					{name: "removeAccountFlexBox", kind: "Item", layoutKind: "HFlexLayout", flex: 1, components: [
 						{name: "promptRemoveAccount", kind: "Button", content: "Remove Account", className: "enyo-button-negative", onclick: "promptRemoveAccount", flex: 1, owner: this}
 						//{kind: "Button", flex: 1, content: "Change Credentials", account_id: account_id, onclick: "changeCredentials"},
 						// ^this may be more pain than it is worth. we would need to flesh out goDownLevel to be able to go down more than one level and so forth.
@@ -91,6 +118,19 @@ enyo.kind({
 				{kind: "Button", content: "Back", onclick: "goTopLevel", flex: 1}
 			]}
 		]);
+		
+		AppUtils.getAccount(account_id, enyo.bind(this, 
+			function(user){
+				this.$.realname.setContent(user.name);
+				this.$.avatar.show();
+				this.$.avatar.setSrc(user.profile_image_url);
+				this.$.spinner.hide();
+				this.$.spinner.getControls()[0].hide();
+			}), 
+			function(xhr, msg, exc){
+				console.error("Couldn't find user's avatar");
+			}
+		);
 
 		this.render();
 		//this.createAccountEditComponents(App.Users.get(account_id));
@@ -103,6 +143,9 @@ enyo.kind({
 		this.goDownLevel("new");
 		this.createAccountEditComponents();
 	},
+	changeService: function(inSender){
+		this.createAccountEditComponents();	
+	},
 	createAccountEditComponents: function(accountObject) {
 
 		// @TODO - show custom api url input if STATUSNET or CUSTOM
@@ -110,34 +153,65 @@ enyo.kind({
 		if (this.$.secondLevel) {
 			this.$.secondLevel.destroy();
 		}
-
-		this.createComponents([
-			{name: "secondLevel", components: [
-				{kind: "Group", components: [
-					{kind: "Item", components: [
-						{name: "username", kind: "Input", hint: "username", autoCapitalize: "lowercase", autocorrect: false, spellcheck: false},
-					]},
-					{kind: "Item", components: [
-						{name: "password", kind: "PasswordInput", hint: "password"},
-					]},
-					{kind: "Item", components: [
-						{name: "type", kind: "ListSelector", value: SPAZCORE_SERVICE_TWITTER, items: [
-						    {caption: "Twitter", value: SPAZCORE_SERVICE_TWITTER},
-						    {caption: "Identi.ca", value: SPAZCORE_SERVICE_IDENTICA},
-						    {caption: $L("Status.net/Custom"), value: SPAZCORE_SERVICE_CUSTOM},
-						]},					
-					]},
-					{kind: "Item", components: [
-						{name: "api_base_url", kind: "Input", hint: "Custom API URL"}
+		this.$.typeButton.setShowing(true);
+		switch(this.$.type.getValue()){
+			case SPAZCORE_SERVICE_TWITTER:
+				this.createComponents([
+					{name: "secondLevel", components: [	
+						{kind: "Group", components: [
+							{kind: "ActivityButton", name:'getTwitterAuthButton', caption: "Log In and Get PIN", onclick: "getTwitterPinAuthorization"},
+							{kind: "Item", components: [
+								{name: "twitterPinInput", kind: "Input", hint: "Enter PIN", autoKeyModifier: "num-lock", autoCapitalize: "lowercase", autocorrect: false, spellcheck: false}	
+							]},							
+						]},
+						{kind: "HFlexBox", components: [
+							{kind: "Button", flex: 1, caption: "Cancel", onclick: "goTopLevel"},
+							{name: "saveButton", kind: "ActivityButton", flex: 1, caption: "Save", onclick: "saveTwitterAccount"}
+						]}
 					]}
-					
-				]},
-				{kind: "HFlexBox", components: [
-					{kind: "Button", flex: 1, caption: "Cancel", onclick: "goTopLevel"},
-					{name: "saveButton", kind: "ActivityButton", flex: 1, caption: "Save", onclick: "saveAccount"}
-				]}
-			]}
-		]);
+				]);
+				break;
+			case SPAZCORE_SERVICE_IDENTICA:
+				this.createComponents([
+					{name: "secondLevel", components: [	
+						{kind: "Group", components: [
+							{kind: "Item", components: [
+								{name: "username", kind: "Input", hint: "username", autoCapitalize: "lowercase", autocorrect: false, spellcheck: false},
+							]},
+							{kind: "Item", components: [
+								{name: "password", kind: "PasswordInput", hint: "password"},
+							]},							
+						]},
+						{kind: "HFlexBox", components: [
+							{kind: "Button", flex: 1, caption: "Cancel", onclick: "goTopLevel"},
+							{name: "saveButton", kind: "ActivityButton", flex: 1, caption: "Save", onclick: "saveAccount"}
+						]}
+					]}
+				]);
+				break;
+			case SPAZCORE_SERVICE_CUSTOM: 
+				this.createComponents([
+					{name: "secondLevel", components: [	
+						{kind: "Group", components: [
+							{kind: "Item", components: [
+								{name: "username", kind: "Input", hint: "username", autoCapitalize: "lowercase", autocorrect: false, spellcheck: false},
+							]},
+							{kind: "Item", components: [
+								{name: "password", kind: "PasswordInput", hint: "password"},
+							]},	
+							{kind: "Item", components: [
+								{name: "api_base_url", kind: "Input", hint: "Custom API URL"}
+							]}						
+						]},
+						{kind: "HFlexBox", components: [
+							{kind: "Button", flex: 1, caption: "Cancel", onclick: "goTopLevel"},
+							{name: "saveButton", kind: "ActivityButton", flex: 1, caption: "Save", onclick: "saveAccount"}
+						]}
+					]}
+				]);
+				break;
+
+		}		
 
 		this.render();
 
@@ -164,9 +238,80 @@ enyo.kind({
 		} else {
 			this.editing_acc_id = null;
 		}
+	},
+	getTwitterPinAuthorization: function(inSender, inEvent){
+		//launch browser.
+		this.$.getTwitterAuthButton.setActive(true);
+		
+		if (!SPAZCORE_CONSUMERKEY_TWITTER) {
+			console.error('SPAZCORE_CONSUMERKEY_TWITTER not set, will not be able to authenticate against Twitter');
+			AppUtils.showBanner($L('SPAZCORE_CONSUMERKEY_TWITTER not set, will not be able to authenticate against Twitter'));
+			return;
+		}
+
+		this.oauth = OAuth({
+			'consumerKey':SPAZCORE_CONSUMERKEY_TWITTER,
+			'consumerSecret':SPAZCORE_CONSUMERSECRET_TWITTER,
+			'requestTokenUrl':'https://twitter.com/oauth/request_token',
+			'authorizationUrl':'https://twitter.com/oauth/authorize',
+			'accessTokenUrl':'https://twitter.com/oauth/access_token',
+		});
+		
+		this.oauth.fetchRequestToken(function(url) {
+				this.authwindow = sch.openInBrowser(url, 'authorize');
+			},
+			function(data) {
+				AppUtils.showBanner($L('Problem getting Request Token from Twitter'));
+			}
+		);
+		inSender.setActive(false);
+	},
+	'saveTwitterAccount': function(inSender, inEvent) {
+		var self = this;
+		
+		var type = this.$.type.getValue();
+		var api_base_url = (this.$.api_base_url) ? this.$.api_base_url.getValue() : null;
+		var pin = this.$.twitterPinInput.getValue();
 		
 
-	
+		if (pin && this.oauth) {
+			this.oauth.setVerifier(pin);
+
+			this.$.saveButton.setActive(true);
+			this.$.saveButton.setDisabled(true);
+
+			this.oauth.fetchAccessToken(function(data) {
+					var qvars = AppUtils.getQueryVars(data.text);
+					var auth_pickle = qvars.screen_name+':'+qvars.oauth_token+':'+qvars.oauth_token_secret;
+					if (this.editing_acc_id) { // edit existing
+						this.editing_acc_id = null;
+					} else { // add new
+						var newaccid = App.Users.add(qvars.screen_name.toLowerCase(), auth_pickle, type);
+						App.Users.setMeta(newaccid, 'twitter-api-base-url', api_base_url);
+					}
+					self.$.saveButton.setActive(false);
+					self.$.saveButton.setDisabled(false);
+					self.goTopLevel(); //this re-renders the accounts list.
+					self.doAccountAdded(newaccid ? newaccid.id : null);
+					if(App.Users.getAll().length === 1) {
+						self.doClose();
+					}
+				},
+				function(data) {
+					AppUtils.showBanner($L('Problem getting access token from Twitter; must re-authorize'));
+					if (self.authwindow) {
+						self.authwindow.close();
+					}
+					self.$.twitterPinInput.setValue('');
+					self.$.getTwitterAuthButton.setCaption('Try Again');
+					self.$.getTwitterAuthButton.setActive(false);
+					self.$.saveButton.setActive(false);
+					self.$.saveButton.setDisabled(false);
+				}
+			);
+		} else {
+			AppUtils.showBanner($L("You must log in enter the PIN you are given to continue", 3000));
+		}
 	},
 	"saveAccount": function(inSender, inEvent){
 		var self = this;
@@ -174,14 +319,33 @@ enyo.kind({
 		var type = this.$.type.getValue()
 			,username = this.$.username.getValue()
 			,password = this.$.password.getValue()
-			,api_base_url = this.$.api_base_url.getValue();
+			,api_base_url = (this.$.api_base_url) ? this.$.api_base_url.getValue() : null;
 
 		var twit = new SpazTwit();
 
 		/*
+			prevent duplicate account
+		*/
+
+		var dupAcct = false;
+		var allUsers = App.Users.getAll();
+		
+		for (i=0;i<allUsers.length;i++) {
+			if ((username == allUsers[i].username) && (type == allUsers[i].type)) {
+				dupAcct=true;
+			}
+		}
+
+		if (dupAcct) {
+			self.$.saveButton.setActive(false);
+			self.$.saveButton.setDisabled(false);
+			AppUtils.showBanner($L('Add account failed!<br>Reason: duplicate'));
+		}
+
+		/*
 			now verify credentials against the Service API
 		*/
-		if (username && password) {
+		if (username && password && !dupAcct) {
 			if (type !== SPAZCORE_SERVICE_CUSTOM) {
 				twit.setBaseURLByService(type);
 			} else {
@@ -214,6 +378,10 @@ enyo.kind({
 						self.$.saveButton.setActive(false);
 						self.$.saveButton.setDisabled(false);
 						self.goTopLevel(); //this re-renders the accounts list.
+						self.doAccountAdded(newaccid ? newaccid.id : null);
+						if(App.Users.getAll().length === 1) {
+							self.doClose();
+						}
 					} else {
 						self.$.saveButton.setActive(false);
 						self.$.saveButton.setDisabled(false);
@@ -230,18 +398,24 @@ enyo.kind({
 		this.$.promptRemoveAccount.destroy();
 		this.$.removeAccountFlexBox.createComponents([
 			{kind: "Button", flex: 1, content: "Cancel", onclick: "goBackToViewAccount", owner: this},
-			{kind: "Button", flex: 1, content: "Are you Sure?", className: "enyo-button-negative", onclick: "removeAccount", owner: this}
+			{kind: "Button", flex: 1, content: "Are you sure?", className: "enyo-button-negative", onclick: "removeAccount", owner: this}
 		]);
 		this.$.removeAccountFlexBox.render();
 
 	},
 	removeAccount: function(inSender, inEvent){
 		App.Users.remove(this.editing_acc_id);
-		//@TODO we should also delete any columns using this account
+		this.doAccountRemoved(this.editing_acc_id);
 
 		this.editing_acc_id = null;
 
 		this.goTopLevel(); //this re-renders the accounts list.
+	},
+	viewProfile: function(inSender, inEvent){
+		var user = App.Users.get(this.editing_acc_id);
+		AppUI.viewUser(user.username, user.type, this.editing_acc_id);	
+
+		this.doClose();
 	},
 	goBackToViewAccount: function(inSender, inEvent){
 		var id = this.editing_acc_id;

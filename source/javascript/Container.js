@@ -5,11 +5,8 @@ enyo.kind({
 	height: "100%",
 	style: "background-color: black",
 	events: {
-		onShowEntryView: "",
-		onShowUserView: "",
 		onRefreshAllFinished: "",
-		onReply: "",
-		onDirectMessage: ""
+		onShowAccountsPopup: ""
 	},
 	columnData: [],
 	components: [
@@ -31,33 +28,44 @@ enyo.kind({
 		this.inherited(arguments);
 
 		this.loadingColumns = 0;
+		this.loadAndCreateColumns();
 		
-		// load the column set
-		// this.columnData = App.Prefs.get('columns') || [];
+		AppUI.addFunction("search", function(inQuery, inAccountId){
+			this.createColumn(inAccountId, "search", inQuery);
+		}, this);
+		AppUI.addFunction("rerenderTimelines", function(){
+			this.columnsFunction("refreshList");
+		}, this);
+	},
+	
+	loadAndCreateColumns: function() {
+		this.columnData = App.Prefs.get('columns') || [];
 		this.createColumns();
 	},
-
-	getDefaultColumns: function() {
+	
+	getDefaultColumns: function(inAccountId) {
+		if(!inAccountId) {
+			var firstAccount = App.Users.getAll()[0];
+			if ((firstAccount) && (firstAccount.id)) {
+				inAccountId = firstAccount.id;
+			}
+		}
 		
-		var firstAccount = App.Users.getAll()[0];
-
-		if (!firstAccount || !firstAccount.id) {
-			AppUtils.showBanner('no accounts! you should add one');
+		if (!inAccountId) {
+			AppUtils.showBanner(enyo._$L('No accounts! You should add one.'));
+			setTimeout(enyo.bind(this, this.doShowAccountsPopup, 1));
 			return [];
 		}
 
 		var default_columns = [
-			// {type: SPAZ_COLUMN_HOME, accounts: [firstAccount.id]},
-			{type: SPAZ_COLUMN_UNIFIED, accounts: [firstAccount.id]},
-			{type: SPAZ_COLUMN_MENTIONS, accounts: [firstAccount.id]},
-			// {type: "dms", display: "Messages", accounts: [App.Users.getAll()[0].id]},
-			{type: SPAZ_COLUMN_SEARCH, query: 'webos', accounts: [firstAccount.id]},
-			{type: SPAZ_COLUMN_SEARCH, query: 'spaz', accounts: [firstAccount.id]}
+			{type: SPAZ_COLUMN_HOME, accounts: [inAccountId]},
+			{type: SPAZ_COLUMN_MENTIONS, accounts: [inAccountId]},
+			{type: SPAZ_COLUMN_MESSAGES, accounts: [inAccountId]}
 		];
 
 		return default_columns;
 	},
-
+	
 	createColumns: function() {
 		this.columnsFunction("destroy"); //destroy them all. don't want to always do this.
 
@@ -71,13 +79,9 @@ enyo.kind({
 				name:'Column'+i,
 				info: this.columnData[i],
 				kind: "Spaz.Column",
-				onShowEntryView: "doShowEntryView",
-				onShowUserView: "doShowUserView",
 				onDeleteClicked: "deleteColumn",
 				onLoadStarted: "loadStarted",
 				onLoadFinished: "loadFinished",
-				onReply: "doReply",
-				onDirectMessage: "doDirectMessage",
 				onMoveColumnLeft: "moveColumnLeft",
 				onMoveColumnRight: "moveColumnRight",
 				owner: this //@TODO there is an issue here with scope. when we create kinds like this dynamically, the event handlers passed is the scope `this.$.columnsScroller` rather than `this` which is what we want in this case since `doShowEntryView` belongs to `this`. It won't be a big deal here, because if we need the column kinds, we can call this.getComponents() and filter out the scroller itself.
@@ -92,7 +96,7 @@ enyo.kind({
 		};
 		this.$.columnsScroller.createComponents(cols);
 		this.$.columnsScroller.render();
-		setTimeout(enyo.bind(this, this.refreshAll), 1);
+		setTimeout(AppUI.refresh, 1);
 	},
 	createColumn: function(inAccountId, inColumn, inQuery){
 		this.columnData.push({type: inColumn, accounts: [inAccountId], query: inQuery});
@@ -101,6 +105,9 @@ enyo.kind({
 		App.Prefs.set('columns', this.columnData);
 
 		this.createColumns();
+
+		this.$.columnsScroller.snapTo(this.columnData.length-1);
+
 	},
 	moveColumnLeft: function(inSender){
 		var del_idx = parseInt(inSender.name.replace('Column', ''), 10);
@@ -145,22 +152,24 @@ enyo.kind({
 			this.columnToDelete.destroy();
 			this.columnToDelete = null;
             this.$.columnsScroller.resizeHandler();
+
+            this.columnsFunction("checkArrows");
+
 		}
 	},
 	columnsFunction: function(functionName, opts){
+		var columnCount = 0;
 		_.each(this.getComponents(), function(column){
-			// try {
-				if(column.kind === "Spaz.Column"
-					|| column.kind === "Spaz.SearchColumn"
-					|| column.kind === "Spaz.UnifiedColumn"
-				  ){
-					this.$[column.name][functionName]()				
+			try {
+				if(column.kind === "Spaz.Column" || column.kind === "Spaz.SearchColumn" || column.kind === "Spaz.UnifiedColumn"){
+					columnCount++;
+					this.$[column.name][functionName]();
 				}
-			// } 
-			// catch (e) {
-			// 	console.error(e);
-			// }
+			} catch (e) {
+				console.error(e);
+			}
 		}, this);
+		return columnCount;
 	},
 
 	resizeHandler: function() {
@@ -169,7 +178,9 @@ enyo.kind({
 	
 	refreshAll: function() {
 		this.loadingColumns = 0;
-		this.columnsFunction("loadNewer");
+		if(this.columnsFunction("loadNewer") === 0) {
+			this.loadFinished();
+		}
 	},
 	
 	loadStarted: function() {
@@ -180,6 +191,29 @@ enyo.kind({
 		this.loadingColumns--;
 		if (this.loadingColumns <= 0) {
 			this.doRefreshAllFinished();
+		}
+	},
+
+	search: function(inSender, inQuery){
+		this.createColumn(inSender.info.accounts[0], "search", inQuery);
+	},
+	
+	accountAdded: function(inAccountId) {
+		this.columnData = this.columnData.concat(this.getDefaultColumns(inAccountId));
+		this.createColumns();
+	},
+	
+	removeColummnsForAccount: function(inAccountId) {
+		var lengthBefore = this.columnData.length;
+		for(var i = lengthBefore - 1; i >= 0; i--) {
+			//TODO: this needs to be more intelligent when there are multiple accounts in one column.
+			if(this.columnData[i].accounts[0] === inAccountId) {
+				this.columnData.splice(i, 1);
+			}
+		}
+		if(this.columnData.length !== lengthBefore) {
+			App.Prefs.set('columns', this.columnData);
+			this.createColumns();
 		}
 	}
 });

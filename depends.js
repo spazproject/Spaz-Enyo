@@ -3,8 +3,12 @@ enyo.depends(
 	"vendors/humane.js",
 	"vendors/humane-themes/bold-dark.css",
 	"vendors/cache.js",
+	"vendors/jsOAuth-1.1.js",
 	"vendors/jquery.min.js",
-	"vendors/spazcore-standard.js", // includes underscore, underscore.string
+	"vendors/jquery.embedly.js",
+	"vendors/spazcore.js", // includes underscore, underscore.string
+	
+	"vendors/ekl/List/",
 
 	// config
 	"source/javascript/config/auth_config.js",
@@ -15,12 +19,14 @@ enyo.depends(
 
 	// helpers
 	"source/javascript/helpers/apputils.js",
+	"source/javascript/helpers/appui.js",
 
 	// models
 	"source/javascript/models/cache.js",
 
 	//core
 	"source/javascript/Spaz.js",
+	"source/javascript/SpazPopup.js",
 	
 	//views
 	"source/javascript/Sidebar.js",
@@ -40,6 +46,7 @@ enyo.depends(
 	"source/javascript/SettingsPopup.js",
 	"source/javascript/AccountsPopup.js",
 	"source/javascript/EntryClickPopup.js",
+	"source/javascript/ImageViewPopup.js",
 	
 	//containers
 	"source/javascript/NewColumnsContainer.js",
@@ -49,6 +56,9 @@ enyo.depends(
 	"source/javascript/VirtualList.js",
 	"source/javascript/Entry.js",
 	"source/javascript/Conversation.js",
+	"source/javascript/NumberButton.js",
+	"source/javascript/RadioButton.js",
+	"source/javascript/ActivityIconButton.js",
 
 	//css
 	"source/css/core.css"

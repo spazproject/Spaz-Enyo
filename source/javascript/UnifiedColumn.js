@@ -23,8 +23,8 @@ enyo.kind({
 
 		var self = this;
 
-		// try {
-			var since_id;
+			var home_since_id, replies_since_id, dm_since_id, dmsent_since_id;
+			home_since_id = replies_since_id = dm_since_id = dmsent_since_id = 1;
 			var account = App.Users.get(self.info.accounts[0]);
 			var auth = new SpazAuth(account.type);
 			auth.load(account.auth);
@@ -36,20 +36,18 @@ enyo.kind({
 
 			if (this.entries.length > 0) {
 				if (opts.mode === 'newer') {
-					since_id = _.first(this.entries).service_id;
+					home_since_id = this.getMaxIdOfType(SPAZCORE_SECTION_HOME);
+					replies_since_id = this.getMaxIdOfType(SPAZCORE_SECTION_REPLIES);
+					dm_since_id = this.getMaxIdOfType(SPAZCORE_SECTION_DMS);
+					dmsent_since_id = this.getMaxIdOfType(SPAZCORE_SECTION_DMSENT);
 				}
 
 				if (opts.mode === 'older') {
-					if (self.info.type === 'search') {
-						throw {
-							message:'Search columns do not yet support loading older messages',
-							name:'UserException'
-						};
-					}
-					since_id = (_.last(self.entries).service_id)*-1;
+					home_since_id = '-' + this.getMinIdOfType(SPAZCORE_SECTION_HOME);
+					replies_since_id = '-' + this.getMinIdOfType(SPAZCORE_SECTION_REPLIES);
+					dm_since_id = '-' + this.getMinIdOfType(SPAZCORE_SECTION_DMS);
+					dmsent_since_id = '-' + this.getMinIdOfType(SPAZCORE_SECTION_DMSENT);
 				}
-			} else {
-				since_id = 1;
 			}
 
 			function loadStarted() {
@@ -64,10 +62,14 @@ enyo.kind({
 				case 'unified':
 					loadStarted();
 					self.twit.getCombinedTimeline({
-							home_count:200,
-							replies_count:80,
-							dm_count:100,
-							dmsent_count:100
+							'home_count':200,
+							'replies_count':80,
+							'dm_count':100,
+							'dmsent_count':100,
+							'home_since':home_since_id,
+							'replies_since':replies_since_id,
+							'dm_since':dm_since_id,
+							'dmsent_since':dmsent_since_id
 						},
 						function(data) {
 							self.processData(data);
@@ -101,6 +103,7 @@ enyo.kind({
 								return true;
 							}
 						};
+						return false;
 					});
 
 					/* convert to our internal format */
@@ -109,13 +112,30 @@ enyo.kind({
 
 					this.entries = [].concat(data.reverse(), this.entries);
 					this.entries.sort(function(a,b){
-						return b.service_id - a.service_id; // newest first
+						return b.publish_date - a.publish_date; // newest first by date
+					});
+					console.log("Sorted by publish date. length now "+this.entries.length);
+					
+					
+					var last_home_entry = this.getLastHomeTimelineEntry();
+					console.log("last_home_entry.publish_date", last_home_entry.publish_date);
+					
+					this.entries = _.reject(this.entries, function(item) {
+						if ((item.publish_date < last_home_entry.publish_date)
+								&& (item._orig.SC_timeline_from !== SPAZCORE_SECTION_HOME)) {
+							return true;
+						}
 					});
 					
-					// add in the account used to get this entry. this seems sloppy here.
-					for (var j = this.entries.length - 1; j >= 0; j--){
-						this.entries[j].account_id = this.info.accounts[0];
-					}
+					console.log("rejected non-home items with older pub date. length now "+this.entries.length);
+					
+					console.log('current HOME entries:'+this.getHomeEntries().length);
+					console.log('current MENTION entries:'+this.getMentionEntries().length);
+					console.log('current DMS entries:'+this.getDMEntries().length);
+					console.log('current DMSENT entries:'+this.getDMSentEntries().length);
+					
+					/* add more entry properties */
+					this.entries = this.setAdditionalEntryProperties(this.entries);
 					
 					this.$.list.refresh();
 					this.resizeHandler();
@@ -123,4 +143,102 @@ enyo.kind({
 			}			
 		}
 	},
+	
+	
+	getLastHomeTimelineEntry : function() {
+		
+		var entries = this.getHomeEntries();
+		var last_home_entry = "999999999999999999999999999999999";
+		
+		if (entries.length > 0) {
+			last_home_entry = _.min(entries, function(item) {
+				return item.service_id;
+			});			
+		}
+		
+		return last_home_entry;
+	},
+	
+	
+	
+	getMaxIdOfType : function(type) {
+		
+		var entries = this.getEntriesOfType(type);
+		
+		var rs = _.max(entries, function(entry) {
+			if (entry._orig.SC_timeline_from === type) {
+				return entry.service_id;
+			} else {
+				return '1'; // this will always be more than a numeric string
+			}
+		});
+		if (rs) {
+			return rs.service_id;
+		} else {
+			return '1';
+		}
+	},
+	
+	
+	
+	getMinIdOfType : function(type) {
+		
+		var entries = this.getEntriesOfType(type);
+		
+		var rs = _.min(entries, function(entry) {
+			if (entry._orig.SC_timeline_from === type) {
+				return entry.service_id;
+			} else {
+				return 'AAAAAA'; // this will always be more than a numeric string
+			}
+		});
+		if (rs) {
+			return rs.service_id;
+		} else {
+			return '999999999999999999999999999999';
+		}
+	},
+	
+	
+	getEntriesOfType : function(type) {
+		var entries = [];
+		
+		switch(type) {
+			case SPAZCORE_SECTION_HOME:
+				entries = this.getHomeEntries();
+				break;
+			case SPAZCORE_SECTION_REPLIES:
+				entries = this.getMentionEntries();
+				break;
+			case SPAZCORE_SECTION_DMS:
+				entries = this.getDMEntries();
+				break;
+			case SPAZCORE_SECTION_DMSENT:
+				entries = this.getDMSentEntries();
+				break;
+		}
+		return entries;
+	},
+	
+	getHomeEntries : function() {
+		return _.select(this.entries, function(entry) {
+			return entry._orig.SC_timeline_from === SPAZCORE_SECTION_HOME;
+		});
+	},
+	getMentionEntries : function() {
+		return _.select(this.entries, function(entry) {
+			return entry._orig.SC_timeline_from === SPAZCORE_SECTION_REPLIES;
+		});
+	},
+	getDMEntries : function() {
+		return _.select(this.entries, function(entry) {
+			return entry._orig.SC_timeline_from === SPAZCORE_SECTION_DMS;
+		});
+	},
+	getDMSentEntries : function() {
+		return _.select(this.entries, function(entry) {
+			return entry._orig.SC_timeline_from === SPAZCORE_SECTION_DMSENT;
+		});
+	}
+	
 });

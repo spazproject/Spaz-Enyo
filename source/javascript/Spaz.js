@@ -2,8 +2,27 @@ enyo.kind({
 	name: "Spaz",
 	kind: enyo.HFlexBox,
 	components: [
-		{name: "sidebar", kind: "Spaz.Sidebar", onRefreshAll: "refreshAll", onCreateColumn: "createColumn"},
-		{name: "container", kind: "Spaz.Container", onShowUserView: "showUserView", onShowEntryView: "showEntryView", onReply: "reply", onDirectMessage: "directMessage", onRefreshAllFinished: "refreshAllFinished"},
+		{
+			name: "sidebar", 
+			kind: "Spaz.Sidebar", 
+			onRefreshAll: "refreshAll", 
+			onCreateColumn: "createColumn",
+			onAccountAdded: "accountAdded",
+			onAccountRemoved: "accountRemoved"
+		},
+		{
+			name: "container", 
+			kind: "Spaz.Container", 
+			onRefreshAllFinished: "refreshAllFinished",
+			onShowAccountsPopup: "showAccountsPopup"
+		},
+		{
+			name: "imageViewPopup",
+			kind: "Spaz.ImageViewPopup",
+			onClose: "closeImageView"
+		},
+		{name: "dashboard", kind:"Dashboard", onIconTap: "", onMessageTap: "messageTap", onIconTap: "iconTap", 
+					onUserClose: "dashboardClose", onLayerSwipe: "layerSwiped"}
 	],
 	
 	twit: new SpazTwit(),
@@ -15,8 +34,6 @@ enyo.kind({
 		window.App = {};
 
 		var self = this;
-	
-		console.log('INITIALIZING EVERYTHING');
 		
 		/*
 			Remap JSON parser because JSON2.js one was causing probs with unicode
@@ -155,13 +172,14 @@ enyo.kind({
 			
 		});
 		
-		AppUtils.showBanner('Bound global listeners');
-		
 	},
 
 	create: function(){
 		var self = this
 		  , inheritedArgs = arguments;
+
+		// this lets the popups positon properly when keyboard shows
+		enyo.keyboard.setResizesWindow(false);
 
 		// init window.App
 		self.initAppObject(function() {
@@ -170,54 +188,122 @@ enyo.kind({
 
 		self.bindGlobalListeners();
 
-
+		AppUI.addFunction("viewUser", function(inUsername, inService, inAccountId){
+			this.showUserView(this, inUsername, inService, inAccountId);
+		}, this);
+		AppUI.addFunction("viewEntry", function(inEntry){
+			this.showEntryView(this, inEntry);
+		}, this);
+		AppUI.addFunction("compose", function(inText, inAccountId){
+			this.compose(this, inText, inAccountId);
+		}, this);
+		AppUI.addFunction("reply", function(inEntry){
+			this.reply(this, inEntry);
+		}, this);
+		AppUI.addFunction("repost", function(inEntry){
+			this.repost(this, inEntry);
+		}, this);
+		AppUI.addFunction("repostManual", function(inEntry){
+			this.repostManual(this, inEntry);
+		}, this);
+		AppUI.addFunction("directMessage", function(inUsername, inAccountId){
+			this.directMessage(this, inUsername, inAccountId);
+		}, this);
 		//self.inherited(arguments);
 	},
+
 	showEntryView: function(inSender, inEntry){
 		console.log("showing entryView");
 		if(!this.$.entryview){
 			
-			this.createComponent({name: "entryview", kind: "Spaz.EntryView", onDestroy: "destroyEntryView"}, {owner: this});
+			this.createComponent({
+				name: "entryview", 
+				kind: "Spaz.EntryView", 
+				onDestroy: "destroyEntryView" ,
+				onAddViewEvent: "addViewEvent",
+				onGoPreviousViewEvent: "goPreviousViewEvent",
+				onShowImageView: "showImageView"
+			}, {owner: this});
 			this.$.entryview.render();
 			
 			//this.$.container.refreshList();
 
 		} 
+		if(this.$.userview){
+			this.destroyUserView(true);
+		}
 		this.$.entryview.setEntry(inEntry);
 		
 	},
 
 	"destroyEntryView": function(inSender, inEvent){
 		this.$.entryview.destroy();
+		if(inSender !== true){
+			this.viewEvents = [];
+		}
 
 		//this.render();
 		//this.$.container.refreshList();
 	},
+	
 	showUserView: function(inSender, inUsername, inService, inAccountId) {
 		console.log("showing entryView");
 		if(!this.$.userview){
-			
-			this.createComponent({name: "userview", kind: "Spaz.UserView", onDestroy: "destroyUserView"}, {owner: this});
-			this.$.userview.render();
-			
+			this.createComponent(
+				{
+					name: "userview", 
+					kind: "Spaz.UserView", 
+					onDestroy: "destroyUserView",
+					onAddViewEvent: "addViewEvent",
+					onGoPreviousViewEvent: "goPreviousViewEvent"
+				}, 
+				{owner: this}
+			);
+			this.$.userview.render();			
 			//this.$.container.refreshList();
 
 		} 
+		if(this.$.entryview){
+			this.destroyEntryView(true);
+		}
 		this.$.userview.showUser(inUsername, inService, inAccountId);
-		
+			
 	},
-	
 	"destroyUserView": function(inSender, inEvent){
 		this.$.userview.destroy();
-
+		if(inSender !== true){
+			this.viewEvents = [];
+		}
 		//this.render();
 		//this.$.container.refreshList();
+	},
+	viewEvents: [],
+	addViewEvent: function(inSender, inEvent){
+		this.viewEvents.push(inEvent);
+		return this.viewEvents;
+		console.log("pushed event");
+		console.log(inEvent);		
+	},
+	goPreviousViewEvent: function(inSender){
+		this.viewEvents.pop(); //get rid of current level
+		var event = this.viewEvents.pop(); // get rid of the level you are going to. it will be re-added automatically 
+		switch(event.type){
+			case "user":
+				AppUI.viewUser(event.user.username, event.user.type, event.user.account_id);
+				break;
+			case "entry":
+			case "message":
+				AppUI.viewEntry(event.entry);
+				break;
+		}
 	},
 	createColumn: function(inSender, inAccountId, inColumn, inQuery){
 		this.$.container.createColumn(inAccountId, inColumn, inQuery);	
 	},
 	resizeHandler: function() {
-		this.$.container.resizeHandler();
+		enyo.forEach (this.getComponents(), function(component) {
+			component.resizeHandler && component.resizeHandler();
+		});
 	},
 	
 	refreshAll: function() {
@@ -228,11 +314,94 @@ enyo.kind({
 		this.$.sidebar.refreshAllFinished();
 	},
 	
-	reply: function(inSender, inOpts) {
-		this.$.sidebar.$.composePopup.replyTo(inOpts);
+	// To keep the reply/dm logic in one place, components only pass up
+	// onReply events, and we'll figure out here whether that should be
+	// handled as a reply or as a dm.
+	compose: function (inSender, inText, inAccountId) {
+		this.$.sidebar.compose({
+			'text':inText,
+			'account_id':inAccountId
+		});
 	},
-
-	directMessage: function(inSender, inOpts) {
-		this.$.sidebar.$.composePopup.directMessage(inOpts);
+	reply: function(inSender, inEntry) {
+		if (inEntry.is_private_message) {
+			this.$.sidebar.directMessage({
+				'to':inEntry.author_username,
+				'text':null,
+				'entry':inEntry,
+				'account_id':inEntry.account_id
+			});
+		} else {
+			this.$.sidebar.replyTo({
+				'entry':inEntry,
+				'account_id':inEntry.account_id
+			});
+		}
+	},
+	repost: function(inSender, inEntry) {
+		if (inEntry.is_private_message) {
+			AppUtils.showBanner("Private messages cannot be reposted");
+		} else {
+			this.$.sidebar.repost({
+				'entry':inEntry,
+				'account_id':inEntry.account_id
+			});			
+		}
+	},
+	repostManual: function(inSender, inEntry) {
+		if (inEntry.is_private_message) {
+			AppUtils.showBanner("Private messages cannot be reposted");
+		} else {
+			this.$.sidebar.repostManual({
+				'entry':inEntry,
+				'account_id':inEntry.account_id
+			});			
+		}
+	},
+	mention: function(inSender, inEntry) {
+		
+	},
+	directMessage: function(inSender, inUsername, inAccountId) {
+		this.$.sidebar.directMessage({
+			'to':inUsername,
+			'text':null,
+			'account_id':inAccountId
+		});
+	},
+	showImageView: function(inSender, inUrls, inIndex) {
+		this.$.imageViewPopup.openAtCenter();
+		this.$.imageViewPopup.setImages(inUrls, inIndex);
+	},
+	closeImageView: function(inSender) {
+		this.$.imageViewPopup.close();
+	},
+	accountAdded: function(inSender, inAccountId) {
+		this.$.container.accountAdded(inAccountId);
+	},
+	accountRemoved: function(inSender, inAccountId) {
+		this.$.container.removeColummnsForAccount(inAccountId);
+	},
+	showAccountsPopup: function(inSender) {
+		this.$.sidebar.showAccountsPopup();
+	},
+	
+	
+	pushDashboard: function(inIcon, inTitle, inText) {
+		this.$.dashboard.push({icon:inIcon, title:inTitle, text:inText});
+	},
+	popDashboard: function() {
+		this.$.dashboard.pop();
+	},
+	messageTap: function(inSender, layer) {
+		console.log("Tapped on message: "+layer.text);
+	},
+	iconTap: function(inSender, layer) {
+		console.log("Tapped on icon for message: "+layer.text);
+	},
+	dashboardClose: function(inSender) {
+		console.log("Closed dashboard.");
+	},
+	layerSwiped: function(inSender, layer) {
+		console.log("Swiped layer: "+layer.text);
 	}
 });

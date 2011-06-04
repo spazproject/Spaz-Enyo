@@ -1,6 +1,13 @@
 enyo.kind({
 	name: "Spaz.Conversation",
 	kind: "VFlexBox",
+	events: {
+	    onStart: "",
+	    onEntryLoaded: "",
+	    onSuccess: "",
+	    onDone: "",
+	    onError: ""
+	},
 	published: {
 		entry: {}
 	},
@@ -8,7 +15,13 @@ enyo.kind({
 		/*{name: "list", kind: "Spaz.VirtualList", flex: 1, style: "background-color: #D8D8D8;min-height: 150px;", horizontal: false, className: "conversation list", onSetupRow: "setupRow", components: [
 			{name: "item", kind: "Spaz.Entry", onclick: "entryClick"}
 		]}*/
-		{name: "list", className: "conversation list", components: []}
+		{name: "list", kind: "VirtualRepeater", onSetupRow: "setupRow", components: [
+			{name: "item", kind: "Spaz.Entry", onEntryClick: "entryClick"}
+		]},
+		//{name: "list", className: "conversation list", components: []},
+		
+		{name: "entryClickPopup", kind: "Spaz.EntryClickPopup"}
+
 	],
 	
 	entries: [],
@@ -32,11 +45,14 @@ enyo.kind({
 		if(self.entries.length > 0) {
 		    return true; //Conversation already loaded
 	    }
+	    
+	    self.doStart();
 		
 		self.twit = AppUtils.makeTwitObj(self.entry.account_id);
         
         self.twit.getOne(self.entry.in_reply_to_id, onRetrieved, function() {
-            //On Error
+            self.doError();
+            self.doDone();
         });
         
         function onRetrieved(status_obj) {
@@ -44,26 +60,39 @@ enyo.kind({
             
             self._addEntry(child);
             
-            if(child.in_reply_to_id)
+            self.doEntryLoaded(child);
+            
+            if(child.in_reply_to_id) {
                 self.twit.getOne(child.in_reply_to_id, onRetrieved, function() {
-                    //On Error
+                    self.doError();
+                    self.doDone();
                 });
+            } else {
+                self.doSuccess();
+                self.doDone();
+            }
         };
 	},
 	
 	_addEntry: function(entry) {
         this.entries.push(entry);
         
-        var item = this.$.list.createComponent({kind: "Spaz.Entry"}, {owner: this.$.list});
-        item.setEntry(entry);
+        //this.$.list.renderRow(this.entries.length-1);
+       	this.$.list.render();
 
-	    this.$.list.render();
+	},
+	setupRow: function(inSender, inIndex){
+		if(this.entries[inIndex]){
+			this.$.item.setEntry(this.entries[inIndex]);
+			return true;
+		}
+	},
+	entryClick: function(inSender, inEvent){
+		this.$.entryClickPopup.showAtEvent(inSender.entry, inEvent);
 	},
 	
 	clearConversationMessages: function() {
 	    this.entries = [];
-	    this.$.list.destroyComponents();
-	},
-	
-	entryClick: function(inSender, inEvent, inRowIndex) {}
+	    this.$.list.render();
+	}
 })

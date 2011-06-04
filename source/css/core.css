@@ -1,6 +1,8 @@
 /* global */
-truncating-text {
+.truncating-text {
 	text-overflow: ellipsis;
+	overflow: hidden;
+	white-space: nowrap;
 }
 body, input, button {
 	font-size: 20px;
@@ -16,22 +18,38 @@ a,
 a:active,
 .hashtag:active,
 .link:active,
-.username:active {
+.username:active,
+.underlineOnClick:active {
 	text-decoration: underline;
+}
+
+
+
+/* all avatars */
+.avatar, .small-avatar {
+	-webkit-border-radius: 5px;
 }
 
 
 /* Entries */
 .entry .avatar {
-	padding-right: 10px;
-	/*-webkit-border-radius: 5px;*/
+	margin-right: 10px;
+}
+.entry .small-avatar {
+	position: absolute;
+	margin-left: -30px;
+	margin-top: 30px;
+	/*right: 28px;
+	top: 8px;*/
+	/*display: ;*/
 }
 .entry .username.author {
 	font-weight: bold;
 	color: black;
 }
 .entry .text {
-	font-size: 14px;
+	font-size: 13px;
+	padding-right: 2px;
 }
 .entry .action-separator {
 	width: 12px;
@@ -48,22 +66,30 @@ a:active,
 	padding: 0px 5px 0px 0px;
 }
 
-.entry-view {
-	
+.viewManagement {
+	min-height: 30px;
+	height: 30px;
+	padding-left: 2px;
+}
+
+.entry-view .repost-outer {
+	text-align: center;
+	padding-bottom: 8px;
+}
+.entry-view .repost {
+	font-size: 14px;
+	text-align: center;
+	background-color: rgba(255, 255, 255, .4);
+	-webkit-border-radius: 10px;
+	padding: 3px 10px;
 
 }
 .entry-view .header,
 .user-view .header {
 	padding: 5px 10px 10px 10px;
 }
-.entry-view .username,
-.entry-view .realname,
-.user-view .username,
-.user-view .realname {
-	padding-left: 10px;
-}
-.entry-view .realname,
-.user-view .realname {
+.entry-view .author-realname,
+.user-view .author-realname {
 	font-weight: bold;
 	font-size: 20px;
 }
@@ -108,7 +134,51 @@ a:active,
 
 .spinning {
 	-webkit-animation-name: spinning;
-	-webkit-animation-duration: 2.0s;
+	-webkit-animation-duration: 1.5s;
 	-webkit-animation-iteration-count: infinite;
 	-webkit-animation-timing-function: linear;
+}
+
+.enyo-button-number {
+	display: inline-block;
+	vertical-align: baseline;
+	width: 100%;
+	height: 32px;
+	margin: -6px -6px -10px -6px;
+}
+.enyo-tool-button {
+	padding: 0px;
+}
+
+/* for user/entry view */
+#spaz_entryview,
+#spaz_userview {
+    position: relative;
+    -moz-box-shadow: 0px 0px 10px #000000;
+    -webkit-box-shadow: 0px 0px 10px #000000;
+    box-shadow: 0px 0px 10px #000000;
+}
+
+.enyo-imageviewpopup {
+	min-width: 300px;
+	z-index: 120;
+	position: fixed;
+	left: 0px;
+	top: 0px;
+}
+
+/* fixes for our css */
+
+.enyo-item.enyo-menuitem.enyo-listselector-item.enyo-menucheckitem-caption {
+	font-size: 16px;
+	padding-top: 2px;
+	height: 24px;
+}
+.enyo-popup.enyo-popup-float {
+	overflow: visible !important; /* this gets set inline so we need to add !important.*/
+}
+
+.enyo-button-disabled {
+	opacity: 0.4;
+	/*color: rgba(255,254,255,0.4);*/
 }

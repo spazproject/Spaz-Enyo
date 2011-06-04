@@ -1,11 +1,18 @@
 enyo.kind({
 	name: "Spaz.Sidebar",
-	width: "50px",
+	//width: "50px",
 	kind: "VFlexBox",
 	className: "enyo-toolbar-vertical",
 	events: {
 		onRefreshAll: "",
-		onCreateColumn: ""
+		onCreateColumn: "",
+		onAccountAdded: "",
+		onAccountRemoved: ""
+	},
+	create: function(){
+		this.inherited(arguments);
+		
+		AppUI.addFunction("refresh", this.refreshAll, this);
 	},
 	components: [
 		{kind: "ToolButton", icon: "source/images/icon-compose.png", onclick: "compose", popup:"composePopup"},
@@ -20,7 +27,7 @@ enyo.kind({
 		{name: "searchPopup", kind: "Spaz.SearchPopup", onCreateColumn: "doCreateColumn", onClose: "closePopup" },
 		{name: "columnsPopup", kind: "Spaz.ColumnsPopup", onCreateColumn: "doCreateColumn", onClose: "closePopup" },
 		{name: "settingsPopup", kind: "Spaz.SettingsPopup", onClose: "closePopup" },
-		{name: "accountsPopup", kind: "Spaz.AccountsPopup", onClose: "closePopup" }
+		{name: "accountsPopup", kind: "Spaz.AccountsPopup", onClose: "closePopup", onAccountAdded: "doAccountAdded", onAccountRemoved: "doAccountRemoved" }
 	],
 	compose: function(inSender) {
 		this.$.composePopup.compose();
@@ -41,5 +48,23 @@ enyo.kind({
 	},
 	refreshAllFinished: function() {
 		this.$.refreshAll.removeClass("spinning");
+	},
+	compose: function(inArgs) {
+		this.$.composePopup.compose(inArgs);
+	},
+	replyTo: function(inReplyArgs) {
+		this.$.composePopup.replyTo(inReplyArgs);
+	},
+	repost: function(inArgs) {
+		this.$.composePopup.repost(inArgs);
+	},
+	repostManual: function(inArgs) {
+		this.$.composePopup.repostManual(inArgs);
+	},
+	directMessage: function(inDMArgs) {
+		this.$.composePopup.directMessage(inDMArgs);
+	},
+	showAccountsPopup: function() {
+		this.$.accountsPopup.showAtCenter();
 	}
 });

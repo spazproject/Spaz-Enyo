@@ -8,6 +8,7 @@ enyo.kind({
 		onClose: "",
 		onCreateColumn: ""
 	},
+	showKeyboardWhenOpening:true, // opens the keyboard and positions the popup correctly
 	components: [
 		{layoutKind: "HFlexLayout", components: [
 			{content: "Search"},
@@ -29,11 +30,18 @@ enyo.kind({
 	create: function(){
 		this.inherited(arguments);
 	},
-	"showAtCenter": function(){
+	close: function(){
+		this.inherited(arguments);
+		enyo.keyboard.setManualMode(false); // closes the keyboard
+	},
+	showAtCenter: function(){
+		if(this.lazy) {
+			this.validateComponents();
+		}
+		this.$.searchTextBox.setValue("");
 		this.$.searchTextBox.forceFocus();
-
-		this.openAtCenter();
 		this.buildAccounts();
+		this.openAtCenter();
 	},
 	buildAccounts: function() {
 

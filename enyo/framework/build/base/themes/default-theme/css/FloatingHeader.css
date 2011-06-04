@@ -1,8 +1,0 @@
-/* Copyright 2009-2011 Hewlett-Packard Development Company, L.P. All rights reserved. */
-.enyo-floating-header {
-	position: absolute;
-	left: 0;
-	top: 0;
-	right: 0;
-	z-index: 2;
-}
