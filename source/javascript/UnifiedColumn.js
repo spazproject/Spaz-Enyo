@@ -60,6 +60,7 @@ enyo.kind({
 			}
 			switch (self.info.type) {
 				case 'unified':
+				case 'home':
 					loadStarted();
 					self.twit.getCombinedTimeline({
 							'home_count':200,

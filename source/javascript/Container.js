@@ -89,7 +89,7 @@ enyo.kind({
 			if(col.info.type === SPAZ_COLUMN_SEARCH){
 				col.kind = "Spaz.SearchColumn";
 			}
-			if(col.info.type === SPAZ_COLUMN_UNIFIED){
+			if(col.info.type === SPAZ_COLUMN_HOME){
 				col.kind = "Spaz.UnifiedColumn";
 			}
 			cols.push(col);
