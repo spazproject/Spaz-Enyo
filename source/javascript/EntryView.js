@@ -189,25 +189,29 @@ enyo.kind({
 			}
 		} else {
 			jQuery('#spaz_entryview_entry').embedly({
-				urls:SPAZ_EMBEDLY_REGEX_WEBOS,
 				maxWidth: 300,
 				maxHeight:300,
 				'method':'afterParent',
 				'wrapElement':'div',
 				'className':'thumbnails',
 				'success':function(oembed, dict) {
-					var embedlyComponent = self.$.images.createComponent({
-						kind: "enyo.Control",
-						owner: self,
-						components: [
-							{style: "height: 10px;"},
-							// {kind: "enyo.Image", style: "max-width: 100%;", onclick: "embedlyClick", src: oembed.thumbnail_url, url: oembed.url},
-							{kind: "enyo.HFlexBox", pack: "center", components: [
-								{name: "oembed_code", allowHtml: true, content:oembed.code}
-							]}
-						]
-					});
-					embedlyComponent.render();
+					
+					if (oembed.code.indexOf('<embed') === -1) { // webOS won't render Flash inside an app. DERP.
+						var embedlyComponent = self.$.images.createComponent({
+							kind: "enyo.Control",
+							owner: self,
+							components: [
+								{style: "height: 10px;"},
+								// {kind: "enyo.Image", style: "max-width: 100%;", onclick: "embedlyClick", src: oembed.thumbnail_url, url: oembed.url},
+								{kind: "enyo.HFlexBox", pack: "center", components: [
+									{name: "oembed_code", allowHtml: true, content:oembed.code}
+								]}
+							]
+						});
+						embedlyComponent.render();
+					} else {
+						console.log("skipping oembed with <embed> tag in it", oembed.code);
+					}
 				}
 			});
 		};
