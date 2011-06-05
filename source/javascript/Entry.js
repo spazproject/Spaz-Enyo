@@ -19,12 +19,12 @@ enyo.kind({
 					{kind: "HFlexBox", height: "18px", components: [
 						{name: "username", className: "text username author"},
 						{name: "recipientContainer", showing:false, kind: "HFlexBox", components:[
-							{name: "receipientArrow", allowHtml: true, content:"&rarr;", style:"position: relative; bottom: 4px; padding: 0px 3px;"},
+							{name: "receipientArrow", allowHtml: true, content:"&rarr;", style:"position: relative; bottom: 5px; padding: 0px 3px;"},
 							{name: "recipientUsername", className: "text username recipient author"}
 						]},
-						{name: "reposterIcon", kind: "Image", height: "13px", src: "source/images/reposted.png", style: "position: relative; bottom: 4px; padding: 0px 3px;", showing: false},
+						{name: "reposterIcon", kind: "Image", height: "13px", src: "source/images/reposted.png", style: "position: relative; bottom: 5px; padding: 0px 3px;", showing: false},
 						{name: "reposterUsername", className: "text username author", showing: false},
-						{name: "favoriteIcon", kind: "Image", height: "13px", src: "source/images/favorited.png", style: "position: relative; bottom: 4px; padding: 0px 3px;", showing: false}
+						{name: "favoriteIcon", kind: "Image", height: "13px", src: "source/images/favorited.png", style: "position: relative; bottom: 5px; padding: 0px 3px;", showing: false}
 					]},
 					{name: "text", allowHtml: true, className: "text"},
 					{name: "timeFrom", allowHtml: true, className: "small"},
