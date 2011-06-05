@@ -77,49 +77,17 @@ enyo.kind({
 			default_preferences is from default_preferences.js, loaded in index.html
 		*/
 		App.Prefs = new SpazPrefs(SPAZ_DEFAULT_PREFS, null, {
-			'timeline-maxentries': {
-				'onGet': function(key, value){
-					if (App.Prefs.get('timeline-friends-getcount') > value) {
-						value = App.Prefs.get('timeline-friends-getcount');
+			'network-refreshinterval' : {
+				'onGet': function(key, value) {
+					if (value < (5*60*1000)) { // 5 min
+						value = (5*60*1000);
 					}
 					sch.debug(key + ':' + value);
 					return value;
 				},
-				'onSet': function(key, value){
-					if (App.Prefs.get('timeline-friends-getcount') > value) {
-						value = App.Prefs.get('timeline-friends-getcount');
-					}
-					sch.debug(key + ':' + value);
-					return value;					
-				}
-			},
-			'timeline-maxentries-dm': {
-				'onGet': function(key, value){
-					if (App.Prefs.get('timeline-dm-getcount') > value) {
-						value = App.Prefs.get('timeline-dm-getcount');
-					}
-					sch.debug(key + ':' + value);
-					return value;
-				},
-				'onSet': function(key, value){
-					if (App.Prefs.get('timeline-dm-getcount') > value) {
-						value = App.Prefs.get('timeline-dm-getcount');
-					}
-					sch.debug(key + ':' + value);
-					return value;					
-				}
-			},
-			'timeline-maxentries-reply': {
-				'onGet': function(key, value){
-					if (App.Prefs.get('timeline-replies-getcount') > value) {
-						value = App.Prefs.get('timeline-replies-getcount');
-					}
-					sch.debug(key + ':' + value);
-					return value;
-				},
-				'onSet': function(key, value){
-					if (App.Prefs.get('timeline-replies-getcount') > value) {
-						value = App.Prefs.get('timeline-replies-getcount');
+				'onSet': function(key, value) {
+					if (value < (5*60*1000)) { // 5 min
+						value = (5*60*1000);
 					}
 					sch.debug(key + ':' + value);
 					return value;					
@@ -130,6 +98,7 @@ enyo.kind({
 			App.Users = new SpazAccounts(App.Prefs);
 			prefsLoadedCallback();
 		});
+		
 		
 		// /*
 		// 	model for saving Tweets to Depot. We replace on every start to make sure we don't go over-budget
@@ -168,9 +137,9 @@ enyo.kind({
 			return false;
 		});
 		
-		$('span.username.clickable').live('click', function(e) {
-			
-		});
+		// $('span.username.clickable').live('click', function(e) {
+		// 	
+		// });
 		
 	},
 
@@ -209,7 +178,30 @@ enyo.kind({
 		AppUI.addFunction("directMessage", function(inUsername, inAccountId){
 			this.directMessage(this, inUsername, inAccountId);
 		}, this);
-		//self.inherited(arguments);
+		
+		
+		// Refresher methods
+		AppUI.addFunction("startAutoRefresher", function() {
+			if (App.Prefs.get('network-refresh-auto')) {
+				console.log('Starting auto-refresher', App.Prefs.get('network-refreshinterval'));
+				App._refresher = setInterval(function() {
+					console.log("Auto-refreshing");
+					AppUI.refresh();
+				}, App.Prefs.get('network-refreshinterval'));
+			}
+		}, this);
+		AppUI.addFunction("stopAutoRefresher", function() {
+			console.log("Clearing auto-refresher");
+			clearInterval(App._refresher);
+		}, this);
+		AppUI.addFunction("restartAutoRefresher", function() {
+			console.log("Restarting auto-refresher");
+			AppUI.stopAutoRefresher();
+			AppUI.startAutoRefresher();
+		}, this);
+		
+		// start the auto-refresher
+		AppUI.startAutoRefresher();
 	},
 
 	showEntryView: function(inSender, inEntry){
@@ -280,9 +272,9 @@ enyo.kind({
 	viewEvents: [],
 	addViewEvent: function(inSender, inEvent){
 		this.viewEvents.push(inEvent);
-		return this.viewEvents;
 		console.log("pushed event");
 		console.log(inEvent);		
+		return this.viewEvents;
 	},
 	goPreviousViewEvent: function(inSender){
 		this.viewEvents.pop(); //get rid of current level
@@ -386,12 +378,6 @@ enyo.kind({
 	},
 	
 	
-	pushDashboard: function(inIcon, inTitle, inText) {
-		this.$.dashboard.push({icon:inIcon, title:inTitle, text:inText});
-	},
-	popDashboard: function() {
-		this.$.dashboard.pop();
-	},
 	messageTap: function(inSender, layer) {
 		console.log("Tapped on message: "+layer.text);
 	},
@@ -403,5 +389,14 @@ enyo.kind({
 	},
 	layerSwiped: function(inSender, layer) {
 		console.log("Swiped layer: "+layer.text);
+	},
+
+
+	pushDashboard: function(inIcon, inTitle, inText) {
+		this.$.dashboard.push({icon:inIcon, title:inTitle, text:inText});
+	},
+	popDashboard: function() {
+		this.$.dashboard.pop();
 	}
+	
 });
