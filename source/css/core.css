@@ -96,7 +96,16 @@ a:active,
 
 .entry-view .message {
 	font-size: 18px;
+	overflow:hidden;
 }
+	.entry-view .message a[href] {
+		text-overflow: ellipsis;
+		overflow: hidden;
+		white-space: nowrap;
+		display:inline-block;
+		max-width:80%;
+	}
+
 
 .entry-view .small,
 .user-view .small {
