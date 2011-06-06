@@ -102,6 +102,8 @@ enyo.kind({
 
 		var self = this;
 
+
+
 		try {
 			var since_id;
 			var account = App.Users.get(self.info.accounts[0]);
@@ -116,6 +118,8 @@ enyo.kind({
 			if (this.entries.length > 0) {
 				if (opts.mode === 'newer') {
 					since_id = _.first(this.entries).service_id;
+					// mark all existing as read
+					this.markAllAsRead();
 				}
 
 				if (opts.mode === 'older') {
@@ -150,7 +154,7 @@ enyo.kind({
 					loadStarted();
 					self.twit.getReplies(since_id, 50, null, null,
 						function(data) {
-							self.processData(data);
+							self.processData(data, opts);
 							loadFinished();
 						},
 						loadFinished
@@ -160,7 +164,7 @@ enyo.kind({
 					loadStarted();
 					self.twit.getDirectMessages(since_id, 50, null, null,
 						function(data) {
-							self.processData(data);
+							self.processData(data, opts);
 							loadFinished();
 						},
 						loadFinished
@@ -170,7 +174,7 @@ enyo.kind({
 					loadStarted();
 					self.twit.search(self.info.query, since_id, 50, null, null, null,
 						function(data) {
-							self.processData(data);
+							self.processData(data, opts);
 							loadFinished();
 						},
 						loadFinished
@@ -181,7 +185,7 @@ enyo.kind({
 					loadStarted();
 					self.twit.getFavorites(since_id, null, null,
 						function(data) {
-							self.processData(data);
+							self.processData(data, opts);
 							loadFinished();
 						},
 						loadFinished
@@ -195,9 +199,17 @@ enyo.kind({
 			// AppUtils.showBanner('you probably need to make an account');
 		}
 	},
-	processData: function(data) {
+	processData: function(data, opts) {
 		var self = this;
+		
+		opts = sch.defaults({
+			'mode':'newer',
+			'since_id':null,
+			'max_id':null
+		}, opts);
+		
 		if (data) {
+			console.log('adding new data');
 			switch (this.info.type) {
 				default:
 					
@@ -208,26 +220,62 @@ enyo.kind({
 						for (var i = 0; i < self.entries.length; i++) {
 							if (item.id === self.entries[i].service_id) {
 								return true;
+							} else {
+								if (opts.mode === 'older') {
+									item.read = true;
+								} else {
+									item.read = false;
+								}
 							}
 						};
 					});
+					
+					if (data.length > 0) {
+						/* convert to our internal format */
+						data = AppUtils.convertToEntries(data);
+						
+						// mark new as read or not read, depending on mode
+						for (var i = data.length - 1; i >= 0; i--){
+							if (opts.mode === 'older') {
+								data[i].read = true;
+							} else {
+								data[i].read = false;
+							}
+						}
 
-					/* convert to our internal format */
-					data = AppUtils.convertToEntries(data);
-					
-					/* concat to existing entries */
-					this.entries = [].concat(data.reverse(), this.entries);
-					
-					/* sort our good stuff */
-					this.sortEntries();
-					
-					/* add more entry properties */
-					this.entries = this.setAdditionalEntryProperties(this.entries);					
-					
-					this.$.list.refresh();
-					this.resizeHandler();
+
+						/* concat to existing entries */
+						this.entries = [].concat(data.reverse(), this.entries);
+
+						/* sort our good stuff */
+						this.sortEntries();
+
+						/* add more entry properties */
+						this.entries = this.setAdditionalEntryProperties(this.entries);					
+
+						this.$.list.refresh();
+						this.resizeHandler();
+					}
 					break;
 			}
+		} else {
+			console.log('No new data');
+		}
+	},
+	
+	markAllAsRead: function() {
+		console.log('Marking all as read');
+		var changed = 0;
+		for (var i = this.entries.length - 1; i >= 0; i--){
+			if (this.entries[i].read !== true) {
+				// console.log('marking '+ this.entries[i].text_raw+ ' as read');
+				this.entries[i].read = true;
+				changed++;
+			}
+		}
+		if (changed > 0) {
+			console.log(changed + ' changed; refreshing list');
+			this.$.list.refresh();
 		}
 	},
 	
@@ -243,13 +291,13 @@ enyo.kind({
 				&& acc_service === this.entries[j].service) {
 				entries[j].is_author = true;
 			}
+
 		}
 		return entries;
 	},
 	
 	sortEntries: function() {
 		this.entries.sort(function(a,b){
-			
 			return b.service_id - a.service_id; // newest first
 		});
 	},
@@ -258,7 +306,6 @@ enyo.kind({
 		if (this.entries[inIndex]) {
 			var entry = this.entries[inIndex];
 			this.$.item.setEntry(entry);
-			
 			return true;
 		}
 	},

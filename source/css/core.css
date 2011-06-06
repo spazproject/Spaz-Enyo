@@ -60,6 +60,14 @@ a:active,
 	font-size: 11px;
 }
 
+.entry.read .entrytext {
+	color:#666666;
+}
+.entry.read .author, .entry.read .recipient, .entry.read .entryHeaderIcon {
+	color:#666666;
+}
+
+
 
 /* fixes padding */
 .enyo-header-inner {
