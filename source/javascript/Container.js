@@ -173,7 +173,9 @@ enyo.kind({
 	},
 
 	resizeHandler: function() {
-		this.columnsFunction("resizeHandler");
+		enyo.forEach (this.getComponents(), function(component) {
+			component.resizeHandler && component.resizeHandler();
+		});
 	},
 	
 	refreshAll: function() {
