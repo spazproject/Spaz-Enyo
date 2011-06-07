@@ -24,7 +24,9 @@ enyo.kind({
 						]},
 						{name: "reposterIcon", kind: "Image", height: "13px", src: "source/images/reposted.png", style: "position: relative; bottom: 5px; padding: 0px 3px;", showing: false},
 						{name: "reposterUsername", className: "text username author", showing: false},
-						{name: "favoriteIcon", kind: "Image", height: "13px", src: "source/images/favorited.png", style: "position: relative; bottom: 5px; padding: 0px 3px;", showing: false}
+						{name: "favoriteIcon", kind: "Image", height: "13px", src: "source/images/favorited.png", style: "position: relative; bottom: 5px; padding: 0px 3px;", showing: false},
+						{kind: "Spacer"},
+						{name: "unreadIcon", kind: "Image", height: "13px", src: "source/images/unread.png", style: "position: relative; bottom: 5px; padding: 0px;", showing: false}
 					]},
 					{name: "text", allowHtml: true, className: "entrytext text"},
 					{name: "timeFrom", allowHtml: true, className: "small"},
@@ -74,9 +76,11 @@ enyo.kind({
 		}
 		
 		if (this.entry.read === true) {
-			this.$.item.addClass('read');
+			this.$.unreadIcon.setShowing(false);
+			//this.$.item.addClass('read');
 		} else {
-			this.$.item.removeClass('read');
+			this.$.unreadIcon.setShowing(true);
+			//this.$.item.removeClass('read');
 		}
 			
 	},
