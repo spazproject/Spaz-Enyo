@@ -100,13 +100,9 @@ enyo.kind({
 	},
 	createColumn: function(inAccountId, inColumn, inQuery){
 		
-		if (!inLastReadTime) { inLastReadTime = 1; }
-		
 		var colattr = {type: inColumn, accounts: [inAccountId], query: inQuery };
 		
-		var columnhash = sch.MD5(JSON.stringify(colattr));
-		
-		this.columnData.push({type: inColumn, accounts: [inAccountId], query: inQuery, hash:columnhash});
+		this.columnData.push({type: inColumn, accounts: [inAccountId], query: inQuery});
 
 		// save the column set
 		App.Prefs.set('columns', this.columnData);
