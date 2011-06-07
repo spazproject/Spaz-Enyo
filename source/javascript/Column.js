@@ -28,7 +28,7 @@ enyo.kind({
 				{name: "header", style: "padding: 0px 0px 5px 5px;", className: "truncating-text", content: ""},
 				{kind: "Spacer", flex: 1},
 				{name: "accountName", style: "color: grey; font-size: 12px; padding-left: 2px;"},
-				{name: "topRightButton", kind: "ToolButton", icon: "source/images/icon-close.png", onclick: "doDeleteClicked"},
+				{name: "topRightButton", kind: "ToolButton", icon: "source/images/icon-close.png", onclick: "doDeleteClicked"}
 			]},
 			{name: "list", kind: "Spaz.VirtualList", flex: 1, style: "background-color: #D8D8D8; margin: 0px 3px; min-height: 200px;", horizontal: false, className: "timeline list", onAcquirePage:'acquirePage', onSetupRow: "setupRow", components: [
 				{
@@ -102,7 +102,7 @@ enyo.kind({
 
 		var self = this;
 
-
+		
 
 		try {
 			var since_id;
@@ -116,7 +116,7 @@ enyo.kind({
 			self.twit.setCredentials(auth);
 
 			if (this.entries.length > 0) {
-				if (opts.mode === 'newer') {
+				if (opts.mode === 'newer') {					
 					since_id = _.first(this.entries).service_id;
 					// mark all existing as read
 					this.markAllAsRead();
@@ -198,6 +198,7 @@ enyo.kind({
 			console.error(e);
 			// AppUtils.showBanner('you probably need to make an account');
 		}
+		
 	},
 	processData: function(data, opts) {
 		var self = this;
@@ -211,7 +212,7 @@ enyo.kind({
 		if (data) {
 			console.log('adding new data');
 			switch (this.info.type) {
-				default:
+				default:					
 					
 					/* check for duplicates based on the .id property */
 					/* we do this before conversion to save converting stuff
@@ -261,6 +262,10 @@ enyo.kind({
 		} else {
 			console.log('No new data');
 		}
+		
+		this.markOlderAsRead();
+		
+		this.setLastRead();
 	},
 	
 	markAllAsRead: function() {
@@ -274,9 +279,24 @@ enyo.kind({
 			}
 		}
 		if (changed > 0) {
-			console.log(changed + ' changed; refreshing list');
 			this.$.list.refresh();
 		}
+	},
+	
+	markOlderAsRead: function() {
+		var last_read_date = this.getLastRead();
+		var changed = 0;
+		for (var i = 0; i < this.entries.length; i++){
+			if (this.entries[i].publish_date <= last_read_date) {
+				this.entries[i].read = true;
+				changed++;
+			} else {
+			}
+			
+		}
+		if (changed > 0) {
+			this.$.list.refresh();
+		}		
 	},
 	
 	setAdditionalEntryProperties : function(entries) {
@@ -346,5 +366,31 @@ enyo.kind({
 			this.entries = [];
 			this.loadData();
 		}
+	},
+	
+	getColAttr: function() {
+		return {type: this.info.type, accounts: this.info.accounts, query: this.info.query };
+	},
+	
+	getHash: function() {
+		return sch.MD5(JSON.stringify(this.getColAttr()));
+	},
+	
+	getLastRead: function() {
+		return LastRead.get(this.getHash());
+	},
+	
+	setLastRead: function() {
+		var last_read_date = 1;
+
+		if (this.entries.length > 0) {
+			// find newest publish_date
+			// we assume we're newest first	
+			var newest_item = _.max(this.entries, function(item) { return item.publish_date; });
+			last_read_date = newest_item.publish_date;
+		}
+		
+		LastRead.set(this.getHash(), last_read_date);
+		
 	}
 });

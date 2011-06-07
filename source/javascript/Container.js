@@ -99,7 +99,14 @@ enyo.kind({
 		setTimeout(AppUI.refresh, 1);
 	},
 	createColumn: function(inAccountId, inColumn, inQuery){
-		this.columnData.push({type: inColumn, accounts: [inAccountId], query: inQuery});
+		
+		if (!inLastReadTime) { inLastReadTime = 1; }
+		
+		var colattr = {type: inColumn, accounts: [inAccountId], query: inQuery };
+		
+		var columnhash = sch.MD5(JSON.stringify(colattr));
+		
+		this.columnData.push({type: inColumn, accounts: [inAccountId], query: inQuery, hash:columnhash});
 
 		// save the column set
 		App.Prefs.set('columns', this.columnData);
@@ -109,6 +116,7 @@ enyo.kind({
 		this.$.columnsScroller.snapTo(this.columnData.length-1);
 
 	},
+
 	moveColumnLeft: function(inSender){
 		var del_idx = parseInt(inSender.name.replace('Column', ''), 10);
 		var column = this.columnData.splice(del_idx, 1)[0];

@@ -23,6 +23,7 @@ enyo.depends(
 
 	// models
 	"source/javascript/models/cache.js",
+	"source/javascript/models/lastread.js",
 
 	//core
 	"source/javascript/Spaz.js",

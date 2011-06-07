@@ -23,75 +23,75 @@ enyo.kind({
 
 		var self = this;
 
+		try {
+			var home_since_id, replies_since_id, dm_since_id, dmsent_since_id;
+			home_since_id = replies_since_id = dm_since_id = dmsent_since_id = 1;
+			var account = App.Users.get(self.info.accounts[0]);
+			var auth = new SpazAuth(account.type);
+			auth.load(account.auth);
 
+			self.twit = new SpazTwit();
+			self.twit.setBaseURLByService(account.type);
+			self.twit.setSource(App.Prefs.get('twitter-source'));
+			self.twit.setCredentials(auth);
 
-		var home_since_id, replies_since_id, dm_since_id, dmsent_since_id;
-		home_since_id = replies_since_id = dm_since_id = dmsent_since_id = 1;
-		var account = App.Users.get(self.info.accounts[0]);
-		var auth = new SpazAuth(account.type);
-		auth.load(account.auth);
+			if (this.entries.length > 0) {
+				if (opts.mode === 'newer') {
+					home_since_id = this.getMaxIdOfType(SPAZCORE_SECTION_HOME);
+					replies_since_id = this.getMaxIdOfType(SPAZCORE_SECTION_REPLIES);
+					dm_since_id = this.getMaxIdOfType(SPAZCORE_SECTION_DMS);
+					dmsent_since_id = this.getMaxIdOfType(SPAZCORE_SECTION_DMSENT);
+					// mark all existing as read
+					this.markAllAsRead();
+				}
 
-		self.twit = new SpazTwit();
-		self.twit.setBaseURLByService(account.type);
-		self.twit.setSource(App.Prefs.get('twitter-source'));
-		self.twit.setCredentials(auth);
-
-		if (this.entries.length > 0) {
-			if (opts.mode === 'newer') {
-				home_since_id = this.getMaxIdOfType(SPAZCORE_SECTION_HOME);
-				replies_since_id = this.getMaxIdOfType(SPAZCORE_SECTION_REPLIES);
-				dm_since_id = this.getMaxIdOfType(SPAZCORE_SECTION_DMS);
-				dmsent_since_id = this.getMaxIdOfType(SPAZCORE_SECTION_DMSENT);
-				// mark all existing as read
-				this.markAllAsRead();
+				if (opts.mode === 'older') {
+					home_since_id = '-' + this.getMinIdOfType(SPAZCORE_SECTION_HOME);
+					replies_since_id = '-' + this.getMinIdOfType(SPAZCORE_SECTION_REPLIES);
+					dm_since_id = '-' + this.getMinIdOfType(SPAZCORE_SECTION_DMS);
+					dmsent_since_id = '-' + this.getMinIdOfType(SPAZCORE_SECTION_DMSENT);
+				}
 			}
 
-			if (opts.mode === 'older') {
-				home_since_id = '-' + this.getMinIdOfType(SPAZCORE_SECTION_HOME);
-				replies_since_id = '-' + this.getMinIdOfType(SPAZCORE_SECTION_REPLIES);
-				dm_since_id = '-' + this.getMinIdOfType(SPAZCORE_SECTION_DMS);
-				dmsent_since_id = '-' + this.getMinIdOfType(SPAZCORE_SECTION_DMSENT);
+			function loadStarted() {
+				self.$.refresh.addClass("spinning");
+				self.doLoadStarted();
 			}
-		}
-
-		function loadStarted() {
-			self.$.refresh.addClass("spinning");
-			self.doLoadStarted();
-		}
-		function loadFinished() {
-			self.$.refresh.removeClass("spinning");
-			self.doLoadFinished();
-		}
-		switch (self.info.type) {
-			case 'unified':
-			case 'home':
-				loadStarted();
-				self.twit.getCombinedTimeline({
-						'home_count':200,
-						'replies_count':80,
-						'dm_count':100,
-						'dmsent_count':100,
-						'home_since':home_since_id,
-						'replies_since':replies_since_id,
-						'dm_since':dm_since_id,
-						'dmsent_since':dmsent_since_id
-					},
-					function(data) {
-						self.processData(data, opts);
-						loadFinished();
-					},
-					function() {
-						loadFinished();
-					}
-				);
-				break;
-		}
+			function loadFinished() {
+				self.$.refresh.removeClass("spinning");
+				self.doLoadFinished();
+			}
+			switch (self.info.type) {
+				case 'unified':
+				case 'home':
+					loadStarted();
+					self.twit.getCombinedTimeline({
+							'home_count':200,
+							'replies_count':80,
+							'dm_count':100,
+							'dmsent_count':100,
+							'home_since':home_since_id,
+							'replies_since':replies_since_id,
+							'dm_since':dm_since_id,
+							'dmsent_since':dmsent_since_id
+						},
+						function(data) {
+							self.processData(data, opts);
+							loadFinished();
+						},
+						function() {
+							loadFinished();
+						}
+					);
+					break;
+			}
 
 
-		// } catch(e) {
-		// 	console.error(e);
-		// 	AppUtils.showBanner('you probably need to make an account');
-		// }
+		} catch(e) {
+			console.error(e);
+			// AppUtils.showBanner('you probably need to make an account');
+		}
+				
 	},
 	processData: function(data, opts) {
 		var self = this;
@@ -170,8 +170,13 @@ enyo.kind({
 					this.resizeHandler();
 
 					break;
-			}			
+			}
 		}
+
+		this.markOlderAsRead();
+		
+		this.setLastRead();
+
 	},
 	
 	
