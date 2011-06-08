@@ -4,7 +4,7 @@ var SPAZ_DEFAULT_PREFS = {
 	'last_type':null,
 	'last_userid':null,
 	
-	'app-theme':'Dreadnaught',
+	//'app-theme':'Dreadnaught',
 
 	'users':[], // an array of user objects with properties { 'id', 'username', 'password', 'type', 'meta' }	
 	'always-go-to-my-timeline':false,
@@ -60,7 +60,7 @@ var SPAZ_DEFAULT_PREFS = {
 
     'twitter-source': 'spaz',
 
-	'timeline-text-size': 'tall', // also grande, venti
+	'entry-text-size': '13px', // also grande, venti
 	
 	'post-rt-cursor-position': 'beginning', // 'beginning' or 'end'
 	'post-send-on-enter': true,
