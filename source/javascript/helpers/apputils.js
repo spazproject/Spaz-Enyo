@@ -165,6 +165,12 @@ AppUtils.SMSTweet = function(tweetobj) {
 };
 
 
+AppUtils.copyTweet = function(tweetobj) {
+    enyo.dom.setClipboard(tweetobj.text);
+    AppUtils.showBanner(enyo._$L("Post copied to clipboard"));
+};
+
+
 /**
  * Given a theme label, deactivates all themes CSS and activates the chosen theme CSS
  */

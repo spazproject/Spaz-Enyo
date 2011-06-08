@@ -67,8 +67,7 @@ enyo.kind({
 		AppUtils.SMSTweet(this.entry);
 	},
 	clipboardClicked: function(inSender) {
-		enyo.dom.setClipboard(this.entry.text);
-		AppUtils.showBanner(enyo._$L("Post copied to clipboard"));
+        AppUtils.copyTweet(this.entry);
 	},
 	showAtEvent: function(inEntry, inEvent){
 		if(this.lazy) {
