@@ -242,7 +242,7 @@ enyo.kind({
 		this.dataType = this.$.radioGroup.components[inSender.getValue()].name;
 		switch(this.dataType){
 			case "entries":
-				AppUtils.makeTwitObj(this.account_id).getUserTimeline(this.user.service_id, null, null,
+				AppUtils.makeTwitObj(this.account_id).getUserTimeline(this.user.service_id, 50, null,
 					enyo.bind(this, function(data) {
 						this.showSpinner(false);
 						this.items = AppUtils.convertToEntries(data.reverse());
