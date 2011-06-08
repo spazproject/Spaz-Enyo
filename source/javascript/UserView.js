@@ -292,8 +292,8 @@ enyo.kind({
 				case "entries":
 					this.$.entryItem.setShowing(true);
 					this.$.userItem.setShowing(false);
-                    // Make sure the entry gets the account id, needed for reposting. Dunno if
-                    // this is the right place to add this - seems kinda hackish.
+					// Make sure the entry gets the account id, needed for reposting. Dunno if
+					// this is the right place to add this - seems kinda hackish.
 					this.$.entryItem.setEntry(enyo.mixin(this.items[inIndex], {account_id: this.account_id}));
 					break;
 				case "followers":
