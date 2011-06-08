@@ -2,8 +2,8 @@ enyo.kind({
 	name: "Spaz",
 	kind: enyo.HFlexBox,
 	components: [
-	    {name: "slider", kind: enyo.SlidingPane, flex: 1, dismissDistance: 25, components: [
-	        {name: "main", layoutKind: enyo.HFlexLayout, components: [
+	    {name: "slider", kind: enyo.SlidingPane, flex: 1, dismissDistance: 100, components: [
+	        {name: "main", layoutKind: enyo.HFlexLayout, flex: 1, components: [
 	            {
         			name: "sidebar", 
         			kind: "Spaz.Sidebar", 
@@ -20,8 +20,8 @@ enyo.kind({
         		}
 	        ]},
 	        
-            {name: "detail", fixedWidth: true, width: 322, lazy: true, dismissible: true, showing: false, components: [
-            
+	        {name: "detail", layoutKind: enyo.VFlexLayout, fixedWidth: true, width: "322px", dismissible: true, showing: false, components: [
+                {name: "detailContent", kind: enyo.Pane, transitionKind: "enyo.transitions.Fade", flex: 1}
             ]}
 	    ]},
 		
@@ -212,36 +212,57 @@ enyo.kind({
 		// start the auto-refresher
 		AppUI.startAutoRefresher();
 	},
+	
+	showDetailPane: function() {
+        
+        if (!this.$.detail.showing) {
+    	    this.$.slider.selectViewByName("main");
+    	    this.$.detail.setShowing(true);
+        }
+	},
+	
+	hideDetailPane: function() {
+    	this.$.slider.selectViewByName("main");
+	    this.$.detail.setShowing(false);
+	},
 
 	showEntryView: function(inSender, inEntry){
 		console.log("showing entryView");
-		if(!this.$.entryview){
-			
-			this.createComponent({
-				name: "entryview", 
+		
+		var entryName = 'entry-' + inEntry.spaz_id;
+		
+		if (!this.$.detailContent.validateView(entryName)) {
+			this.$.detailContent.createComponent({
+				name: entryName, 
 				kind: "Spaz.EntryView", 
 				onDestroy: "destroyEntryView" ,
 				onAddViewEvent: "addViewEvent",
 				onGoPreviousViewEvent: "goPreviousViewEvent",
 				onShowImageView: "showImageView"
 			}, {owner: this});
-			this.$.entryview.render();
+			this.$[entryName].render();
 			
 			//this.$.container.refreshList();
-
-		} 
-		if(this.$.userview){
-			this.destroyUserView(true);
 		}
-		this.$.entryview.setEntry(inEntry);
+		
+		this.$[entryName].setEntry(inEntry);
+		
+		
+    	this.$.detailContent.selectViewByName(entryName);
+    	
+    	this.showDetailPane();
+	    //this.$.detail.setShowing(true);
 		
 	},
 
 	"destroyEntryView": function(inSender, inEvent){
-		this.$.entryview.destroy();
-		if(inSender !== true){
-			this.viewEvents = [];
-		}
+	    
+	    this.hideDetailPane();
+	            // 
+	           // this.$.entryview.destroy();
+	           // if(inSender !== true){
+	           //  this.viewEvents = [];
+	           // }
 
 		//this.render();
 		//this.$.container.refreshList();
@@ -249,32 +270,35 @@ enyo.kind({
 	
 	showUserView: function(inSender, inUsername, inService, inAccountId) {
 		console.log("showing entryView");
-		if(!this.$.userview){
-			this.createComponent(
-				{
-					name: "userview", 
-					kind: "Spaz.UserView", 
-					onDestroy: "destroyUserView",
-					onAddViewEvent: "addViewEvent",
-					onGoPreviousViewEvent: "goPreviousViewEvent"
-				}, 
-				{owner: this}
-			);
-			this.$.userview.render();			
+		
+		var userId = 'user-' + inUsername + '-' + inService + '-' + inAccountId;
+		
+		if (!this.$.detailContent.validateView(userId)) {
+			this.$.detailContent.createComponent({
+				name: userId, 
+				kind: "Spaz.UserView", 
+				onDestroy: "destroyUserView",
+				onAddViewEvent: "addViewEvent",
+				onGoPreviousViewEvent: "goPreviousViewEvent"
+			}, {owner: this});
+			this.$[userId].render();
+			
+    		this.$[userId].showUser(inUsername, inService, inAccountId);
 			//this.$.container.refreshList();
-
-		} 
-		if(this.$.entryview){
-			this.destroyEntryView(true);
 		}
-		this.$.userview.showUser(inUsername, inService, inAccountId);
+		
+		
+    	this.$.detailContent.selectViewByName(userId);
+    	
+    	this.showDetailPane();
 			
 	},
 	"destroyUserView": function(inSender, inEvent){
-		this.$.userview.destroy();
-		if(inSender !== true){
-			this.viewEvents = [];
-		}
+	    this.hideDetailPane();
+		// this.$.userview.destroy();
+		//        if(inSender !== true){
+		//            this.viewEvents = [];
+		//        }
 		//this.render();
 		//this.$.container.refreshList();
 	},
