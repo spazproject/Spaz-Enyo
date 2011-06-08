@@ -6,7 +6,8 @@ enyo.kind({
 		onEntryClick: ""	
 	},
 	published: {
-		entry: ""
+		entry: "",
+		ignoreUnread: false
 	},
 	components: [
 		{className: "entry", kind: "Item", onclick: "entryClick", flex: 1, tapHighlight: true, style: "padding-right: 5px;", components: [
@@ -75,10 +76,10 @@ enyo.kind({
 			this.$.favoriteIcon.setShowing(false);
 		}
 		
-		if (this.entry.read === true) {
+		if (this.entry.read === true ) {
 			this.$.unreadIcon.setShowing(false);
 			//this.$.item.addClass('read');
-		} else {
+		} else if(this.ignoreUnread === false){
 			this.$.unreadIcon.setShowing(true);
 			//this.$.item.removeClass('read');
 		}

@@ -66,6 +66,7 @@ enyo.kind({
 						{
 							name: "entryItem", 
 							kind: "Spaz.Entry",
+							ignoreUnread: true,
 							onEntryClick: "entryClick"
 						},
 						{
