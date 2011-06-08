@@ -66,6 +66,8 @@ enyo.kind({
 	smsClicked: function(inSender) {
 	},
 	clipboardClicked: function(inSender) {
+		enyo.dom.setClipboard(this.entry.text);
+		AppUtils.showBanner(enyo._$L("Post copied to clipboard"));
 	},
 	showAtEvent: function(inEntry, inEvent){
 		if(this.lazy) {
@@ -79,22 +81,22 @@ enyo.kind({
 		this.$.menu.openAtEvent(inEvent);
 				
 		var components = [
-			{caption: "Details", onclick: "detailsClicked"},
-			{caption: "Reply", onclick: "replyClicked"}
+			{caption: enyo._$L("Details"), onclick: "detailsClicked"},
+			{caption: enyo._$L("Reply"), onclick: "replyClicked"}
 		];
 		
 		if(this.entry.is_favorite){
-			components.push({caption: "Unfavorite", onclick: "favoriteClicked"});
+			components.push({caption: enyo._$L("Unfavorite"), onclick: "favoriteClicked"});
 		} else if(!this.entry.is_private_message){
-			components.push({caption: "Favorite", onclick: "favoriteClicked"});
+			components.push({caption: enyo._$L("Favorite"), onclick: "favoriteClicked"});
 		}
 		
-		components.push({caption: "Share", onclick: "shareClicked", components: [
-			{caption: "Repost", onclick: "repostClicked"},
-			{caption: "Edit & Repost", onclick: "editRepostClicked"},
-			{caption: "Email", onclick: "emailClicked"},
-			{caption: "SMS/IM", onclick: "smsClicked"},
-			{caption: "Copy To Clipboard", onclick: "clipboardClicked"}
+		components.push({caption: enyo._$L("Share"), onclick: "shareClicked", components: [
+			{caption: enyo._$L("Repost"), onclick: "repostClicked"},
+			{caption: enyo._$L("Edit & Repost"), onclick: "editRepostClicked"},
+			{caption: enyo._$L("Email"), onclick: "emailClicked"},
+			{caption: enyo._$L("SMS/IM"), onclick: "smsClicked"},
+			{caption: enyo._$L("Copy To Clipboard"), onclick: "clipboardClicked"}
 		]});
 		
 		this.$.menu.createComponents(components, {owner:this});
