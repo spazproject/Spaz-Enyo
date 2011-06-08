@@ -97,15 +97,14 @@ enyo.kind({
 		this.$.columnsScroller.createComponents(cols);
 		this.$.columnsScroller.render();
 		setTimeout(AppUI.refresh, 1);
+		
+		App.Prefs.set('columns', this.columnData);		
 	},
 	createColumn: function(inAccountId, inColumn, inQuery){
 		
 		var colattr = {type: inColumn, accounts: [inAccountId], query: inQuery };
 		
 		this.columnData.push({type: inColumn, accounts: [inAccountId], query: inQuery});
-
-		// save the column set
-		App.Prefs.set('columns', this.columnData);
 
 		this.createColumns();
 
@@ -120,7 +119,6 @@ enyo.kind({
 
 		this.createColumns();
 
-		App.Prefs.set('columns', this.columnData);
 
 	},
 	moveColumnRight: function(inSender){
@@ -130,7 +128,6 @@ enyo.kind({
 
 		this.createColumns();	
 
-		App.Prefs.set('columns', this.columnData);
 
 	},
 	deleteColumn: function(inSender) {
@@ -218,7 +215,6 @@ enyo.kind({
 			}
 		}
 		if(this.columnData.length !== lengthBefore) {
-			App.Prefs.set('columns', this.columnData);
 			this.createColumns();
 		}
 	}
