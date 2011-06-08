@@ -3,7 +3,7 @@ enyo.kind({
 	kind: "Popup",
 	components: [
 		// menu contents are built up dynamically in showAtEvent()
-		{name: "menu", kind: "enyo.Menu"}
+		{name: "menu", kind: "enyo.Menu", onBeforeOpen: "beforeOpen"}
 	],
 	create: function(){
 		this.inherited(arguments);
@@ -74,12 +74,13 @@ enyo.kind({
 			this.validateComponents();
 		}
 		this.entry = inEntry;
-		
+		this.$.menu.openAtEvent(inEvent);
+	},
+	beforeOpen: function(inSender) {
 		enyo.forEach (this.$.menu.getControls(), function (control) {
 			 control.destroy();
 		});
-		this.$.menu.openAtEvent(inEvent);
-				
+		
 		var components = [
 			{caption: enyo._$L("Details"), onclick: "detailsClicked"},
 			{caption: enyo._$L("Reply"), onclick: "replyClicked"}
