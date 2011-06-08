@@ -2,6 +2,7 @@ enyo.kind({
 	name: "Spaz",
 	kind: enyo.HFlexBox,
 	components: [
+		{kind: enyo.ApplicationEvents, onApplicationRelaunch: "relaunchHandler"},
 		{
 			name: "sidebar", 
 			kind: "Spaz.Sidebar", 
@@ -26,6 +27,139 @@ enyo.kind({
 	],
 	
 	twit: new SpazTwit(),
+	
+	windowParamsChangeHandler: function(inParams) {
+		AppUtils.showBanner('windowParamsChangeHandler: '+JSON.stringify(enyo.windowParams));
+		AppUtils.showBanner('windowParamsChangeHandler inParams: '+JSON.stringify(inParams));
+
+    	// capture any parameters associated with this app instance
+    	var params = enyo.windowParams;
+	},
+	
+	// called when app is opened or reopened
+    relaunchHandler: function() {
+    	this.processLaunchParams(enyo.windowParams);
+    },
+
+	processLaunchParams: function(inParams) {
+		/*
+			for compatibility with Bad Kitty and Twee APIs
+		*/
+		if (inParams.tweet) {
+			inParams.action = 'prepPost';
+			inParams.msg = inParams.tweet;
+		}
+		if (inParams.user) {
+			inParams.action = 'user';
+			inParams.userid = inParams.user;
+		}
+		
+		if (!inParams.account) {
+			var acc_id = this.getLaunchParamsAccount(inParams);
+			if (acc_id) {
+				inParams.account = acc_id;
+			}
+		}
+		
+		console.log(JSON.stringify(inParams));
+		
+		switch(inParams.action) {
+
+			/**
+			 * {
+			 *   action:"prepPost",
+			 *   msg:"Some Text",
+			 *   account:"ACCOUNT_HASH" // optional
+			 * }
+			 */
+			case 'prepPost':
+			case 'post':
+				AppUI.compose(inParams.msg, inParams.account);
+				break;
+
+			// /**
+			//  * {
+			//  *   action:"user",
+			//  *   userid:"funkatron"
+			//  * }
+			//  */
+			// case 'user':
+			// 	// appAssistant.loadAccount(inParams.account||null);
+			// 	// stageController.pushScene('user-detail', '@'+inParams.userid);
+			// 	break;
+
+			/**
+			 * {
+			 *   action:"search",
+			 *   account:"ACCOUNT_HASH",
+			 *   query:"spaz source:spaz"
+			 * }
+			 */			
+			case 'search':
+				AppUI.search(inParams.query, inParams.account);
+				break;
+
+			// /**
+			//  * {
+			//  *   action:"status",
+			//  *   statusid:24426249322
+			//  * }
+			//  */
+			// case 'status':
+			// 	// stageController.pushScene('message-detail', inParams.statusid);
+			// 	break;
+
+			// 
+			// case "tweetNowPlaying":
+			// 	// if(inParams.returnValue === true){
+			// 	// 	var tweet = "#NowPlaying " + inParams.nowPlaying.title
+			// 	// 	if(inParams.nowPlaying.artist !== ""){
+			// 	// 		tweet += " by " + inParams.nowPlaying.artist;
+			// 	// 	}
+			// 	// 	if (tweet.length > 112){
+			// 	// 		tweet = tweet.truncate(112, ' [...]');//truncate is a prototype function
+			// 	// 	}
+			// 	// 	
+			// 	// 	var suffix = " on @Koto_Player, via @Spaz";
+			// 	// 	stageController.sendEventToCommanders({'type':Mojo.Event.command, 'command':'addTextToPost', text: tweet + suffix});
+			// 	// } else {
+			// 	// 	//Mojo.Controller.getAppController().getStageController(SPAZ_MAIN_STAGENAME).activeScene().showBanner("Not Playing Anything");
+			// 	// 	//banner error?
+			// 	// 	Mojo.Log.error("not playing anything");
+			// 	// }
+			// 	break;
+			case 'bgcheck':
+				AppUI.refresh();
+				break;
+		}
+	},
+	
+	getLaunchParamsAccount: function(inParams) {
+		// what user do we use to process action?
+		if (!inParams.account) {
+			var rs;
+			if (inParams.username && inParams.service) {
+				rs = App.Users.getByUsernameAndType(inParams.username, inParams.service)[0];
+			} else if (inParams.username) {
+				rs = App.Users.getByUsername(inParams.username)[0];
+			} else if (inParams.service) {
+				rs = App.Users.getByType(inParams.service)[0];
+			} else {
+				rs = App.Users.getAll()[0];
+			}
+			
+			if (rs) {
+				return rs.id;
+			} else {
+				return null;
+			}
+			
+		} else {
+			return inParams.account;
+		}
+		
+	},
+	
 	
 	initAppObject: function(prefsLoadedCallback) {
 		/**
@@ -202,6 +336,8 @@ enyo.kind({
 		
 		// start the auto-refresher
 		AppUI.startAutoRefresher();
+		
+		this.processLaunchParams(enyo.windowParams);
 	},
 
 	showEntryView: function(inSender, inEntry){

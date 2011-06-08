@@ -1,7 +1,7 @@
 {
 	"title": "Spaz HD",
 	"id": "com.funkatron.app.spaz-hd",
-	"version": "0.1.8",
+	"version": "0.1.9",
 	"vendor": "Funkatron Productions",
 	"vendorurl": "http://funkatron.com",
 	"copyright": "© Copyright 2009-2011 Funkatron Productions",
@@ -9,5 +9,18 @@
 	"type": "web",
 	"main": "index.html",
 	"icon": "icon.png",
-	"uiRevision":2
+	"uiRevision":2,
+	
+	"universalSearch": {
+		"action" :  { 
+			"displayName" : "Post with Spaz HD",
+			"url"         : "com.funkatron.app.spaz-hd",
+			"launchParam" : {"action":"prepPost", "msg":"#{searchTerms}"}
+		},
+		"search" : {
+			"displayName" : "Spaz HD",
+			"url"         : "com.funkatron.app.spaz-hd",
+			"launchParam" : {"action":"search", "query":"#{searchTerms}"}
+		}
+	}
 }

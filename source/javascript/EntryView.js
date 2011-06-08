@@ -62,11 +62,18 @@ enyo.kind({
 	        {kind: "Toolbar", components: [
 				{kind: "Spacer"},
 				{kind: "ToolButton", icon: "source/images/icon-reply.png", onclick: "reply"},
-				{kind: "ToolButton", disabled: true, icon: "source/images/icon-share.png"},
+				{kind: "ToolButton", icon: "source/images/icon-share.png", onclick: "share"},
 				{name: "favoriteButton", onclick: "toggleFavorite", kind: "ToolButton", disabled: true, icon: "source/images/icon-favorite.png"},
 				{kind: "Spacer"}
 			]},
-			{name: "browser", kind: "enyo.PalmService", service: "palm://com.palm.applicationManager/", method: "open"}
+			{name: "browser", kind: "enyo.PalmService", service: "palm://com.palm.applicationManager/", method: "open"},
+			{name: "sharePopup", kind: "enyo.PopupSelect", onSelect: "sharePopupSelected", items: [
+				{caption: enyo._$L("Repost")},
+				{caption: enyo._$L("Edit & Repost")},
+				{caption: enyo._$L("Email")},
+				{caption: enyo._$L("SMS/IM")},
+				{caption: enyo._$L("Copy To Clipboard")}
+			]}
 		]}
 	],
 	entryChanged: function(){
@@ -252,6 +259,9 @@ enyo.kind({
 	reply: function() {
 		AppUI.reply(this.entry);
 	},
+	share: function(inSender) {
+		this.$.sharePopup.openAroundControl(inSender);
+	},
 	imageClick: function(inSender) {
 		var imageIndex = parseInt(inSender.getName().replace("imagePreview", ""), 10);
 		this.doShowImageView(this.imageFullUrls, imageIndex);
@@ -311,6 +321,28 @@ enyo.kind({
 		} else {		
 			this.$.favoriteButton.setIcon("source/images/icon-favorite-outline.png");
 			this.$.favoriteButton.setDisabled(false);
+		}
+	},
+	sharePopupSelected: function(inSender, inSelected) {
+		switch(inSelected.getValue()) {
+			case enyo._$L("Repost"):
+				AppUI.repost(this.entry);
+				break;
+			case enyo._$L("Edit & Repost"):
+				AppUI.repostManual(this.entry);
+				break;
+			case enyo._$L("Email"):
+				AppUtils.emailTweet(this.entry);
+				break;
+			case enyo._$L("SMS/IM"):
+				AppUtils.SMSTweet(this.entry);
+				break;
+			case enyo._$L("Copy To Clipboard"):
+				AppUtils.copyTweet(this.entry);
+				break;
+			default:
+				console.error(inSelected.getValue() + " has no handler");
+				break;
 		}
 	}
 });
