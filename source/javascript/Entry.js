@@ -6,7 +6,8 @@ enyo.kind({
 		onEntryClick: ""	
 	},
 	published: {
-		entry: ""
+		entry: "",
+		ignoreUnread: false
 	},
 	components: [
 		{className: "entry", kind: "Item", onclick: "entryClick", flex: 1, tapHighlight: true, style: "padding-right: 5px;", components: [
@@ -24,10 +25,13 @@ enyo.kind({
 						]},
 						{name: "reposterIcon", kind: "Image", height: "13px", src: "source/images/reposted.png", style: "position: relative; bottom: 5px; padding: 0px 3px;", showing: false},
 						{name: "reposterUsername", className: "text username author", showing: false},
-						{name: "favoriteIcon", kind: "Image", height: "13px", src: "source/images/favorited.png", style: "position: relative; bottom: 5px; padding: 0px 3px;", showing: false}
+						{name: "favoriteIcon", kind: "Image", height: "13px", src: "source/images/favorited.png", style: "position: relative; bottom: 5px; padding: 0px 3px;", showing: false},
 					]},
 					{name: "text", allowHtml: true, className: "entrytext text"},
-					{name: "timeFrom", allowHtml: true, className: "small"},
+					{kind: "HFlexBox", height: "13px", components: [
+						{name: "unreadIcon", kind: "Image", height: "13px", src: "source/images/unread.png", style: "position: relative; bottom: 5px; padding: 0px 3px 0px 0px;", showing: false},
+						{name: "timeFrom", allowHtml: true, className: "small"},
+					]}
 				]},		
 			]}
 		]}
@@ -57,14 +61,31 @@ enyo.kind({
 			this.$.reposterUsername.setContent(this.entry.reposter_username);
 			this.$.reposterAvatar.setSrc(this.entry.reposter_avatar);
 		}
+		//this.entry.read = false;
 		if(this.entry.is_private_message === true){
-			this.applyStyle("background-color", "rgba(255, 0, 0, .1)");
+			//if(this.entry.read === false){
+			//	this.applyStyle("background-color", "rgba(255, 0, 0, .2)");
+			//} else {
+				this.applyStyle("background-color", "rgba(255, 0, 0, .1)");			
+			//}
 		} else if(this.entry.is_mention === true){
-			this.applyStyle("background-color", "rgba(0, 95, 200, .1)");
+			//if(this.entry.read === false){
+			//	this.applyStyle("background-color", "rgba(0, 95, 200, .2)");
+			//} else {
+				this.applyStyle("background-color", "rgba(0, 95, 200, .1)");
+			//}
 		} else if(this.entry.is_author === true){
-			this.applyStyle("background-color", "rgba(0, 255, 0, .1)");
+			//if(this.entry.read === false){
+			//	this.applyStyle("background-color", "rgba(0, 255, 0, .2)");
+			//} else {			
+				this.applyStyle("background-color", "rgba(0, 255, 0, .1)");
+			//}
 		} else {
-			this.applyStyle("background-color", null);			
+			//if(this.entry.read === false){
+			//	this.applyStyle("background-color", "rgba(0, 0, 0, .1)");
+			//} else {
+				this.applyStyle("background-color", null);		
+			//}
 		}
 		
 		if(this.entry.is_favorite){
@@ -73,10 +94,12 @@ enyo.kind({
 			this.$.favoriteIcon.setShowing(false);
 		}
 		
-		if (this.entry.read === true) {
-			this.$.item.addClass('read');
-		} else {
-			this.$.item.removeClass('read');
+		if (this.entry.read === true ) {
+			this.$.unreadIcon.setShowing(false);
+			//this.$.item.addClass('read');
+		} else if(this.ignoreUnread === false){
+			this.$.unreadIcon.setShowing(true);
+			//this.$.item.removeClass('read');
 		}
 			
 	},

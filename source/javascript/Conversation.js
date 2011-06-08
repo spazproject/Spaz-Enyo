@@ -16,7 +16,7 @@ enyo.kind({
 			{name: "item", kind: "Spaz.Entry", onclick: "entryClick"}
 		]}*/
 		{name: "list", kind: "VirtualRepeater", onSetupRow: "setupRow", components: [
-			{name: "item", kind: "Spaz.Entry", onEntryClick: "entryClick"}
+			{name: "item", kind: "Spaz.Entry", ignoreUnread: true, onEntryClick: "entryClick"}
 		]},
 		//{name: "list", className: "conversation list", components: []},
 		
