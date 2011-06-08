@@ -37,7 +37,7 @@ enyo.kind({
 				{kind: "Item", layoutKind: "HFlexLayout", components: [
 					{content: "Text Size"},
 					{kind: "Spacer"},
-					{kind: "ListSelector", value: "", preferenceProperty: "entry-text-size", onChange: "setPreference", items: [
+					{kind: "ListSelector", value: "", preferenceProperty: "entry-text-size", rerender: true, onChange: "setPreference", items: [
 						"10px",
 						"11px",
 						"12px",
@@ -141,6 +141,10 @@ enyo.kind({
 			App.Prefs.set(inSender.preferenceProperty, inSender.getChecked());
 		} else {
 			App.Prefs.set(inSender.preferenceProperty, inValue);
+		}
+		
+		if(inSender.rerender){
+			AppUI.rerenderTimelines();
 		}
 		
 	},
