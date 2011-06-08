@@ -122,18 +122,52 @@ AppUtils.sendEmail = function(opts) {
 		'text':text
 	};
 	
+	var email_srvc = new enyo.PalmService({
+		service: 'palm://com.palm.applicationManager/',
+		method: 'open',
+	});
+	email_srvc.call({
+		id: 'com.palm.app.email',
+		params: email_params
+	});
+};
 
-	//@TODO THIS NEEDS TO BE REDONE FOR Enyo!
-	var email_srvc = opts.controller.serviceRequest(
-		'palm://com.palm.applicationManager',
-		{
-			method: 'open',
-			parameters: {
-				id: 'com.palm.app.email',
-				params: email_params
+
+AppUtils.emailTweet = function(tweetobj) {
+	var message = "From @" + tweetobj.author_username + ":<br><br>"
+				+ sch.autolink(tweetobj.text_raw) + "<br><br>"
+				+ sch.autolink("Shared from Spaz HD http://getspaz.com")+"\n\n";
+	AppUtils.sendEmail({
+		msg: message,
+		subject: "A tweet by @" + tweetobj.author_username + " shared from Spaz HD"
+	});
+};
+
+
+AppUtils.SMSTweet = function(tweetobj) {	
+	var message = ""
+				+ "From @" + tweetobj.author_username + ":\n"
+				+ tweetobj.text_raw + "\n\n"
+				+ "Shared from Spaz HD http://getspaz.com\n\n";
+	
+	var sms_srvc = new enyo.PalmService({
+		service: 'palm://com.palm.applicationManager/',
+		method: 'open',
+	});
+	sms_srvc.call({
+		id: "com.palm.app.messaging",
+		params: {
+			compose: {
+				messageText: message
 			}
 		}
-	);
+	});
+};
+
+
+AppUtils.copyTweet = function(tweetobj) {
+    enyo.dom.setClipboard(tweetobj.text);
+    AppUtils.showBanner(enyo._$L("Post copied to clipboard"));
 };
 
 

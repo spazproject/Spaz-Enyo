@@ -330,14 +330,7 @@ enyo.kind({
 		}
 	},
 	entryClick: function(inSender, inEvent, inRowIndex) {
-		if (this.$.entryClickPopup.getEntry() === this.entries[inRowIndex]) {
-			// we've clicked on the same item as last time, so don't show the popup again
-			this.$.entryClickPopup.clearEntry();
-		}
-		else {
-			// different item than last time, show the popup
-			this.$.entryClickPopup.showAtEvent(this.entries[inRowIndex], inEvent);
-		}
+		this.$.entryClickPopup.showAtEvent(this.entries[inRowIndex], inEvent);
 	},
 	scrollToTop: function(){
 		this.$.list.punt();
@@ -347,7 +340,9 @@ enyo.kind({
 	},
 	resizeHandler: function(inHeight) {
 		this.$.list.applyStyle("height", window.innerHeight - 93 + "px"); // - 117 for fatter toolbars.
-		this.$.list.resizeHandler();
+        enyo.forEach (this.getComponents(), function(component) {
+			component.resizeHandler && component.resizeHandler();
+		});
 	},
 	rendered: function() {
 		this.inherited(arguments);
