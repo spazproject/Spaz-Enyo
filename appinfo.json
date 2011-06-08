@@ -9,5 +9,18 @@
 	"type": "web",
 	"main": "index.html",
 	"icon": "icon.png",
-	"uiRevision":2
+	"uiRevision":2,
+	
+	"universalSearch": {
+		"action" :  { 
+			"displayName" : "Post with Spaz HD",
+			"url"         : "com.funkatron.app.spaz-hd",
+			"launchParam" : {"action":"prepPost", "msg":"#{searchTerms}"}
+		},
+		"search" : {
+			"displayName" : "Spaz HD",
+			"url"         : "com.funkatron.app.spaz-hd",
+			"launchParam" : {"action":"search", "query":"#{searchTerms}"}
+		}
+	}
 }
