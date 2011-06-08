@@ -133,6 +133,17 @@ AppUtils.sendEmail = function(opts) {
 };
 
 
+AppUtils.emailTweet = function(tweetobj) {
+	var message = "From @"+tweetobj.author_username + ":<br><br>"
+				+ sch.autolink(tweetobj.text_raw) + "<br><br>"
+				+ sch.autolink("Shared from Spaz HD http://getspaz.com")+"\n\n";
+	AppUtils.sendEmail({
+		msg: message,
+		subject: "A tweet by @" + tweetobj.author_username + " shared from Spaz HD"
+	});
+};
+
+
 /**
  * Given a theme label, deactivates all themes CSS and activates the chosen theme CSS
  */

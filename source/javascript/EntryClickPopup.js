@@ -1,12 +1,8 @@
 enyo.kind({
 	name: "Spaz.EntryClickPopup",
 	kind: "Popup",
-	scrim: true,
-	events: {
-		onClose: "",
-		onShare: ""
-	},
 	components: [
+		// menu contents are built up dynamically in showAtEvent()
 		{name: "menu", kind: "enyo.Menu"}
 	],
 	create: function(){
@@ -64,6 +60,13 @@ enyo.kind({
 	editRepostClicked: function(inSender) {
 		AppUI.repostManual(this.entry);
 	},
+	emailClicked: function(inSender) {
+		AppUtils.emailTweet(this.entry);
+	},
+	smsClicked: function(inSender) {
+	},
+	clipboardClicked: function(inSender) {
+	},
 	showAtEvent: function(inEntry, inEvent){
 		if(this.lazy) {
 			this.validateComponents();
@@ -76,22 +79,25 @@ enyo.kind({
 		this.$.menu.openAtEvent(inEvent);
 				
 		var components = [
-			{name: "details", owner: this, caption: "Details", onclick: "detailsClicked"},
-			{name: "reply", owner: this, caption: "Reply", onclick: "replyClicked"}
+			{caption: "Details", onclick: "detailsClicked"},
+			{caption: "Reply", onclick: "replyClicked"}
 		];
 		
 		if(this.entry.is_favorite){
-			components.push({name: "unfavorite", owner: this, caption: "Unfavorite", onclick: "favoriteClicked"});
+			components.push({caption: "Unfavorite", onclick: "favoriteClicked"});
 		} else if(!this.entry.is_private_message){
-			components.push({name: "favorite", owner: this, caption: "Favorite", onclick: "favoriteClicked"});
+			components.push({caption: "Favorite", onclick: "favoriteClicked"});
 		}
 		
-		components.push({name: "shareMenu", owner: this, caption: "Share", components: [
-			{name: "repost", owner: this, caption: "Repost", onclick: "repostClicked"},
-			{name: "editRepost", owner: this, caption: "Edit & Repost", onclick: "editRepostClicked"}
+		components.push({caption: "Share", onclick: "shareClicked", components: [
+			{caption: "Repost", onclick: "repostClicked"},
+			{caption: "Edit & Repost", onclick: "editRepostClicked"},
+			{caption: "Email", onclick: "emailClicked"},
+			{caption: "SMS/IM", onclick: "smsClicked"},
+			{caption: "Copy To Clipboard", onclick: "clipboardClicked"}
 		]});
 		
-		this.$.menu.createComponents(components);
+		this.$.menu.createComponents(components, {owner:this});
 		this.$.menu.render();
 	}
 });
