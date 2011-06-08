@@ -4,7 +4,7 @@ enyo.kind({
 	scrim: true,
 	modal: true,
 	width: "400px",
-	height: "600px",
+	height: "400px",
 	layoutKind: "VFlexLayout",
 	events: {
 		onClose: ""
@@ -16,7 +16,7 @@ enyo.kind({
 			{kind: "ToolButton", icon: "source/images/icon-close.png", style: "position: relative; bottom: 7px;", onclick: "doClose"}
 		]},	
 		{kind: "Scroller", flex: 1, components: [ // @TODO: scroll fades.
-			{kind: "Group", caption: "Columns", components: [
+			/*{kind: "Group", caption: "Columns", components: [
 				{kind: "Item", layoutKind: "HFlexLayout", components: [
 					{content: "Default Width"},
 					{kind: "Spacer"},
@@ -31,14 +31,13 @@ enyo.kind({
 						"500px"
 					
 					]}
-				]},
-
-			]},
+				]},   //@TODO: implement
+			]},*/
 			{kind: "Group", caption: "Entries", components: [
 				{kind: "Item", layoutKind: "HFlexLayout", components: [
 					{content: "Text Size"},
 					{kind: "Spacer"},
-					{kind: "ListSelector", value: "13px", items: [
+					{kind: "ListSelector", value: "", preferenceProperty: "entry-text-size", onChange: "setPreference", items: [
 						"10px",
 						"11px",
 						"12px",
@@ -52,25 +51,25 @@ enyo.kind({
 						"20px"					
 					]}
 				]},
-				{kind: "Item", layoutKind: "HFlexLayout", components: [
+				/*{kind: "Item", layoutKind: "HFlexLayout", components: [
 					{content: "Embedded Image Preview"},
 					{kind: "Spacer"},
 					{kind: "CheckBox", onChange: "checkboxClicked"}
-				]},
+				]},*/
 
 			]},
 			{kind: "Group", caption: "Compose", components: [
 				{kind: "Item", layoutKind: "HFlexLayout", components: [
 					{content: "Enter Posts"},
 					{kind: "Spacer"},
-					{kind: "CheckBox", onChange: "checkboxClicked"}
+					{kind: "CheckBox", preferenceProperty: "post-send-on-enter", onChange: "setPreference"}
 				]},
 			]},
 			{kind: "Group", caption: "URL Shortening", components: [
 				{kind: "Item", layoutKind: "HFlexLayout", components: [
 					{content: "Service"},
 					{kind: "Spacer"},
-					{kind: "ListSelector", value: "bit.ly", items: [
+					{kind: "ListSelector", value: "bit.ly", preferenceProperty: "url-shortener", onChange: "setPreference", items: [
 						"bit.ly",
 						"is.gd",
 						"t.co"
@@ -81,11 +80,13 @@ enyo.kind({
 				{kind: "Item", layoutKind: "HFlexLayout", components: [
 					{content: "Service"},
 					{kind: "Spacer"},
-					{kind: "ListSelector", value: "twitpic", items: [
-						"yfrog",
-						"twitpic",
+					{kind: "ListSelector", preferenceProperty: "image-uploader", onChange: "setPreference", items: [
 						"drippic",
-						"pikchur"	
+						"pikchur",	
+						"twitpic",
+						"twitgoo",
+						"identi.ca",
+						"statusnet"
 					]}
 				]},
 			]},
@@ -122,6 +123,27 @@ enyo.kind({
 		this.inherited(arguments);
 	},
 	showAtCenter: function(){
-		 this.openAtCenter();
-	}
+		
+		this.openAtCenter();
+		
+		_.each(this.getComponents(), function(component){
+			if(component.preferenceProperty){
+				component.kind
+				if(component.kind === "CheckBox"){
+					component.setChecked(App.Prefs.get(component.preferenceProperty));
+				} else {
+					component.setValue(App.Prefs.get(component.preferenceProperty));
+				}
+			}
+		});
+	},
+	setPreference: function(inSender, inValue){
+		console.log(inSender, inValue);
+		if(inSender.kind === "CheckBox"){
+			App.Prefs.set(inSender.preferenceProperty, inSender.getChecked());
+		} else {
+			App.Prefs.set(inSender.preferenceProperty, inValue);
+		}
+		
+	},
 });
