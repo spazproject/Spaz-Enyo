@@ -134,12 +134,33 @@ AppUtils.sendEmail = function(opts) {
 
 
 AppUtils.emailTweet = function(tweetobj) {
-	var message = "From @"+tweetobj.author_username + ":<br><br>"
+	var message = "From @" + tweetobj.author_username + ":<br><br>"
 				+ sch.autolink(tweetobj.text_raw) + "<br><br>"
 				+ sch.autolink("Shared from Spaz HD http://getspaz.com")+"\n\n";
 	AppUtils.sendEmail({
 		msg: message,
 		subject: "A tweet by @" + tweetobj.author_username + " shared from Spaz HD"
+	});
+};
+
+
+AppUtils.SMSTweet = function(tweetobj) {	
+	var message = ""
+				+ "From @" + tweetobj.author_username + ":\n"
+				+ tweetobj.text_raw + "\n\n"
+				+ "Shared from Spaz HD http://getspaz.com\n\n";
+	
+	var sms_srvc = new enyo.PalmService({
+		service: 'palm://com.palm.applicationManager/',
+		method: 'open',
+	});
+	sms_srvc.call({
+		id: "com.palm.app.messaging",
+		params: {
+			compose: {
+				messageText: message
+			}
+		}
 	});
 };
 

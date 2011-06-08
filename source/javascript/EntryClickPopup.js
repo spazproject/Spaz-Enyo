@@ -64,6 +64,7 @@ enyo.kind({
 		AppUtils.emailTweet(this.entry);
 	},
 	smsClicked: function(inSender) {
+		AppUtils.SMSTweet(this.entry);
 	},
 	clipboardClicked: function(inSender) {
 		enyo.dom.setClipboard(this.entry.text);
