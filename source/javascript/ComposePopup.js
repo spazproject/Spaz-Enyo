@@ -299,7 +299,7 @@ enyo.kind({
 			inEvent.preventDefault();
 			return;
 		}
-		if (inEvent.keyCode === 13) {
+		if (inEvent.keyCode === 13 && App.Prefs.get("post-send-on-enter") === true) {
 			if(this.$.sendButton.disabled === false){
 				// Enter to send - this should be a pref evenutally.
 				this.onSendClick();

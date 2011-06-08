@@ -69,11 +69,7 @@ enyo.kind({
 				{kind: "Item", layoutKind: "HFlexLayout", components: [
 					{content: "Service"},
 					{kind: "Spacer"},
-					{kind: "ListSelector", value: "bit.ly", preferenceProperty: "url-shortener", onChange: "setPreference", items: [
-						"bit.ly",
-						"is.gd",
-						"t.co"
-					]}
+					{name: "shurl", kind: "ListSelector", preferenceProperty: "url-shortener", onChange: "setPreference", items: []}
 				]},
 			]},
 			{kind: "Group", caption: "Image Hosting", components: [
@@ -136,6 +132,8 @@ enyo.kind({
 				}
 			}
 		});
+		var shurl = new SpazShortURL();
+		this.$.shurl.setItems(shurl.getServiceLabels());
 	},
 	setPreference: function(inSender, inValue){
 		console.log(inSender, inValue);
