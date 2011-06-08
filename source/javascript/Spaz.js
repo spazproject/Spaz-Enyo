@@ -2,20 +2,29 @@ enyo.kind({
 	name: "Spaz",
 	kind: enyo.HFlexBox,
 	components: [
-		{
-			name: "sidebar", 
-			kind: "Spaz.Sidebar", 
-			onRefreshAll: "refreshAll", 
-			onCreateColumn: "createColumn",
-			onAccountAdded: "accountAdded",
-			onAccountRemoved: "accountRemoved"
-		},
-		{
-			name: "container", 
-			kind: "Spaz.Container", 
-			onRefreshAllFinished: "refreshAllFinished",
-			onShowAccountsPopup: "showAccountsPopup"
-		},
+	    {name: "slider", kind: enyo.SlidingPane, flex: 1, dismissDistance: 25, components: [
+	        {name: "main", layoutKind: enyo.HFlexLayout, components: [
+	            {
+        			name: "sidebar", 
+        			kind: "Spaz.Sidebar", 
+        			onRefreshAll: "refreshAll", 
+        			onCreateColumn: "createColumn",
+        			onAccountAdded: "accountAdded",
+        			onAccountRemoved: "accountRemoved"
+        		},
+        		{
+        			name: "container", 
+        			kind: "Spaz.Container", 
+        			onRefreshAllFinished: "refreshAllFinished",
+        			onShowAccountsPopup: "showAccountsPopup"
+        		}
+	        ]},
+	        
+            {name: "detail", fixedWidth: true, width: 322, lazy: true, dismissible: true, showing: false, components: [
+            
+            ]}
+	    ]},
+		
 		{
 			name: "imageViewPopup",
 			kind: "Spaz.ImageViewPopup",
