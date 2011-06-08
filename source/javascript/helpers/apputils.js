@@ -122,18 +122,14 @@ AppUtils.sendEmail = function(opts) {
 		'text':text
 	};
 	
-
-	//@TODO THIS NEEDS TO BE REDONE FOR Enyo!
-	var email_srvc = opts.controller.serviceRequest(
-		'palm://com.palm.applicationManager',
-		{
-			method: 'open',
-			parameters: {
-				id: 'com.palm.app.email',
-				params: email_params
-			}
-		}
-	);
+	var email_srvc = new enyo.PalmService({
+		service: 'palm://com.palm.applicationManager/',
+		method: 'open',
+	});
+	email_srvc.call({
+		id: 'com.palm.app.email',
+		params: email_params
+	});
 };
 
 
