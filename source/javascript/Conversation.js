@@ -2,11 +2,11 @@ enyo.kind({
 	name: "Spaz.Conversation",
 	kind: "VFlexBox",
 	events: {
-	    onStart: "",
-	    onEntryLoaded: "",
-	    onSuccess: "",
-	    onDone: "",
-	    onError: ""
+		onStart: "",
+		onEntryLoaded: "",
+		onSuccess: "",
+		onDone: "",
+		onError: ""
 	},
 	published: {
 		entry: {}
@@ -31,54 +31,56 @@ enyo.kind({
 	},
 	
 	entryChanged: function() {
-	    this.clearConversationMessages();
+		this.clearConversationMessages();
 	},
 	
 	loadConversation: function() {
 		var self = this;
 		
 		if(!self.entry.in_reply_to_id) {
-		    this.clearConversationMessages();
-		    return false;
-	    }
+			this.clearConversationMessages();
+			return false;
+		}
 		
 		if(self.entries.length > 0) {
-		    return true; //Conversation already loaded
-	    }
-	    
-	    self.doStart();
+			return true; //Conversation already loaded
+		}
+		
+		self.doStart();
 		
 		self.twit = AppUtils.makeTwitObj(self.entry.account_id);
-        
-        self.twit.getOne(self.entry.in_reply_to_id, onRetrieved, function() {
-            self.doError();
-            self.doDone();
-        });
-        
-        function onRetrieved(status_obj) {
-            var child = AppUtils.convertToEntry(status_obj);
-            
-            self._addEntry(child);
-            
-            self.doEntryLoaded(child);
-            
-            if(child.in_reply_to_id) {
-                self.twit.getOne(child.in_reply_to_id, onRetrieved, function() {
-                    self.doError();
-                    self.doDone();
-                });
-            } else {
-                self.doSuccess();
-                self.doDone();
-            }
-        };
+		
+		self.twit.getOne(self.entry.in_reply_to_id, onRetrieved, function() {
+			self.doError();
+			self.doDone();
+		});
+		
+		function onRetrieved(status_obj) {
+			var child = AppUtils.convertToEntry(status_obj);
+			
+			self._addEntry(child);
+			
+			self.doEntryLoaded(child);
+			
+			if(child.in_reply_to_id) {
+				self.twit.getOne(child.in_reply_to_id, onRetrieved, function() {
+					self.doError();
+					self.doDone();
+				});
+			} else {
+				self.doSuccess();
+				self.doDone();
+			}
+		};
 	},
 	
 	_addEntry: function(entry) {
-        this.entries.push(entry);
-        
-        //this.$.list.renderRow(this.entries.length-1);
-       	this.$.list.render();
+		// Make sure the entry gets the account id, needed for reposting. Dunno if
+		// this is the right place to add this - seems kinda hackish.
+		this.entries.push(enyo.mixin(entry, {account_id: this.entry.account_id}));
+		
+		//this.$.list.renderRow(this.entries.length-1);
+		this.$.list.render();
 
 	},
 	setupRow: function(inSender, inIndex){
@@ -92,7 +94,7 @@ enyo.kind({
 	},
 	
 	clearConversationMessages: function() {
-	    this.entries = [];
-	    this.$.list.render();
+		this.entries = [];
+		this.$.list.render();
 	}
 })
