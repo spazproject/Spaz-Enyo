@@ -316,7 +316,7 @@ enyo.kind({
 		
 		// Refresher methods
 		AppUI.addFunction("startAutoRefresher", function() {
-			if (App.Prefs.get('network-refresh-auto')) {
+			if (App.Prefs.get('network-refreshinterval') > 0) {
 				console.log('Starting auto-refresher', App.Prefs.get('network-refreshinterval'));
 				App._refresher = setInterval(function() {
 					console.log("Auto-refreshing");

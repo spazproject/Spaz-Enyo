@@ -97,4 +97,4 @@ enyo.kind({
 		this.entries = [];
 		this.$.list.render();
 	}
-})
+});

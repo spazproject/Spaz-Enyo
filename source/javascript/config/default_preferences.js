@@ -15,15 +15,16 @@ var SPAZ_DEFAULT_PREFS = {
     'vibration-enabled': true,
     'wilhelm-enabled': true,
 
-    'network-refreshinterval': 900000,
-    'network-searchrefreshinterval': 900000,
+    //'network-refreshinterval': 900000,
+    //'network-searchrefreshinterval': 900000,
+	'network-refreshinterval': 900000,
 
     'network-autoadjustrefreshinterval': true,
 
-	'notify-newmessages':true,
+	'notify-newmessages':false,
 	'notify-mentions':true,
 	'notify-dms':true,
-	'notify-searchresults':true,
+	'notify-searchresults':false,
 	
 	'network-refresh-auto':true,
 	'network-refresh-wake':false,
