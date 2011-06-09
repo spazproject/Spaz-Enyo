@@ -1,6 +1,7 @@
 enyo.kind({
 	name: "Spaz.EntryView",
 	kind: "VFlexBox",
+	style: "background-color: #D8D8D8",
 	width: "322px",
 	published: {
 		entry: {}
@@ -14,7 +15,7 @@ enyo.kind({
 	components: [
 		{className: "entry-view", width: "322px", height: "100%", layoutKind: "VFlexLayout", components: [
 			{name: "viewManagement", kind: "Toolbar", defaultKind: "Control", onclick: "doGoPreviousViewEvent", className: "viewManagement truncating-text", showing: false, content: "", components: [
-				{name: "leftArrowIcon", kind: "Image", src: "source/images/icon-back.png", style: "position: relative; bottom: 1px;"},
+				{name: "leftArrowIcon", kind: "Image", src: "source/images/icon-back.png", style: "position: relative; bottom: 2px;"},
 				{name: "viewManagementText", content: "", className: "underlineOnClick", style: "color: #ccc; font-size: 14px;"},
 				{kind: "Spacer"}
 

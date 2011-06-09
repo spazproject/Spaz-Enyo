@@ -1,12 +1,8 @@
 enyo.kind({
 	name: "Spaz.UserView",
 	kind: "VFlexBox",
-	//kind: "Toaster", 
-	//flyInFrom: "right",
 	width: "322px",
-	//height: "100%",
-	//style: "background-color: #D8D8D8;",
-	//flex: 1,
+	style: "background-color: #D8D8D8",
 	published: {
 		user: ''
 	},
@@ -18,7 +14,7 @@ enyo.kind({
 	components: [
 		{name: "user_view", className: "user-view", width: "322px", height: "100%", layoutKind: "VFlexLayout", components: [
 			{name: "viewManagement", kind: "Toolbar", defaultKind: "Control", onclick: "doGoPreviousViewEvent", className: "viewManagement truncating-text", showing: false, content: "", components: [
-				{name: "leftArrowIcon", kind: "Image", src: "source/images/icon-back.png", style: "position: relative; bottom: 1px;"},
+				{name: "leftArrowIcon", kind: "Image", src: "source/images/icon-back.png", style: "position: relative; bottom: 2px;"},
 				{name: "viewManagementText", content: "", className: "underlineOnClick", style: "color: #ccc; font-size: 14px;"},
 				{kind: "Spacer"}
 
