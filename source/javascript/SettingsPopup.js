@@ -4,7 +4,7 @@ enyo.kind({
 	scrim: true,
 	modal: true,
 	width: "400px",
-	height: "400px",
+	height: "500px",
 	layoutKind: "VFlexLayout",
 	events: {
 		onClose: ""
@@ -37,7 +37,7 @@ enyo.kind({
 				{kind: "Item", layoutKind: "HFlexLayout", components: [
 					{content: "Text Size"},
 					{kind: "Spacer"},
-					{kind: "ListSelector", value: "", preferenceProperty: "entry-text-size", onChange: "setPreference", items: [
+					{kind: "ListSelector", value: "", preferenceProperty: "entry-text-size", rerender: true, onChange: "setPreference", items: [
 						"10px",
 						"11px",
 						"12px",
@@ -65,15 +65,40 @@ enyo.kind({
 					{kind: "CheckBox", preferenceProperty: "post-send-on-enter", onChange: "setPreference"}
 				]},
 			]},
+			{kind: "Group", caption: "Refresh", components: [
+				{kind: "Item", layoutKind: "HFlexLayout", components: [
+					{content: "Interval"},
+					{kind: "Spacer"},
+					{kind: "ListSelector", value: "", preferenceProperty: "network-refreshinterval", onChange: "setRefreshPreference", items: [
+						{caption:$L('Never'), value:0}, 
+						{caption:$L('5min'),  value:300000}, 
+						{caption:$L('10min'), value:600000},
+						{caption:$L('15min'), value:900000},
+						{caption:$L('30min'), value:1800000},
+						{caption:$L('1hr'),   value:3600000},
+						{caption:$L('2hr'),   value:7200000},
+						{caption:$L('4hr'),   value:14400000},
+						{caption:$L('8hr'),   value:28800000}
+										
+					]}
+				]},
+				
+				//{kind: "Item", content: "Interval for Searches"},
+			]},
+			/*{kind: "Group", caption: "Notify", components: [
+				{kind: "Item", layoutKind: "HFlexLayout", components: [
+					{content: "Mentions"},
+					{kind: "Spacer"},
+					{kind: "CheckBox", preferenceProperty: "network-refreshinterval", onChange: "setPreference"}
+				]},
+				
+				//{kind: "Item", content: "Interval for Searches"},
+			]},*/
 			{kind: "Group", caption: "URL Shortening", components: [
 				{kind: "Item", layoutKind: "HFlexLayout", components: [
 					{content: "Service"},
 					{kind: "Spacer"},
-					{kind: "ListSelector", value: "bit.ly", preferenceProperty: "url-shortener", onChange: "setPreference", items: [
-						"bit.ly",
-						"is.gd",
-						"t.co"
-					]}
+					{name: "shurl", kind: "ListSelector", preferenceProperty: "url-shortener", onChange: "setPreference", items: []}
 				]},
 			]},
 			{kind: "Group", caption: "Image Hosting", components: [
@@ -90,10 +115,7 @@ enyo.kind({
 					]}
 				]},
 			]},
-			/*{kind: "Group", caption: "Refresh", components: [
-				{kind: "Item", content: "Interval"}, //list selector
-				//{kind: "Item", content: "Interval for Searches"},
-			]},
+			/*
 			{kind: "Group", caption: "Notify", components: [
 				{kind: "Item", layoutKind: "HFlexLayout", components: [
 					{content: "New Entries"},
@@ -136,6 +158,8 @@ enyo.kind({
 				}
 			}
 		});
+		var shurl = new SpazShortURL();
+		this.$.shurl.setItems(shurl.getServiceLabels());
 	},
 	setPreference: function(inSender, inValue){
 		console.log(inSender, inValue);
@@ -145,5 +169,13 @@ enyo.kind({
 			App.Prefs.set(inSender.preferenceProperty, inValue);
 		}
 		
+		if(inSender.rerender){
+			AppUI.rerenderTimelines();
+		}
+		
 	},
+	setRefreshPreference: function(inSender, inValue){
+		this.setPreference(inSender, inValue);
+		AppUI.restartAutoRefresher();
+	}
 });

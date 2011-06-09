@@ -88,6 +88,8 @@ enyo.kind({
 			//}
 		}
 		
+		this.$.text.applyStyle("font-size", App.Prefs.get("entry-text-size"));
+		
 		if(this.entry.is_favorite){
 			this.$.favoriteIcon.setShowing(true);
 		} else {
