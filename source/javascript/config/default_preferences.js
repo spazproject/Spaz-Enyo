@@ -15,8 +15,9 @@ var SPAZ_DEFAULT_PREFS = {
     'vibration-enabled': true,
     'wilhelm-enabled': true,
 
-    'network-refreshinterval': 900000,
-    'network-searchrefreshinterval': 900000,
+    //'network-refreshinterval': 900000,
+    //'network-searchrefreshinterval': 900000,
+	'network-refreshinterval': 900000,
 
     'network-autoadjustrefreshinterval': true,
 
