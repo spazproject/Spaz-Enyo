@@ -15,14 +15,16 @@ enyo.kind({
 		AppUI.addFunction("refresh", this.refreshAll, this);
 	},
 	components: [
+		{kind: "ToolButton", icon: "source/images/icon-spaz.png", onclick: "openPopup", popup:"aboutPopup"},		
+		{kind: "ToolButton", icon: "source/images/icon-settings.png", onclick: "openPopup", popup:"settingsPopup"},
+		{kind: "ToolButton", icon: "source/images/icon-new-account.png", onclick: "openPopup", popup:"accountsPopup"},
+		{kind: "ToolButton", icon: "source/images/icon-new-column.png", onclick: "openPopup", popup: "columnsPopup"},
+		{kind: "Spacer"},
 		{kind: "ToolButton", icon: "source/images/icon-compose.png", onclick: "compose", popup:"composePopup"},
 		{kind: "ToolButton", icon: "source/images/icon-search.png", onclick: "openPopup", popup: "searchPopup"},
 		{name: "refreshAll", kind: "ToolButton", icon: "source/images/icon-refresh.png", onclick: "refreshAll"},
-		{kind: "Spacer"},
-		{kind: "ToolButton", icon: "source/images/icon-new-column.png", onclick: "openPopup", popup: "columnsPopup"},
-		{kind: "ToolButton", icon: "source/images/icon-new-account.png", onclick: "openPopup", popup:"accountsPopup"},
-		{kind: "ToolButton", icon: "source/images/icon-settings.png", onclick: "openPopup", popup:"settingsPopup"},
 		
+		{name: "aboutPopup", kind: "Spaz.AboutPopup", onClose: "closePopup" },
 		{name: "composePopup", kind: "Spaz.ComposePopup", onClose: "closePopup" },
 		{name: "searchPopup", kind: "Spaz.SearchPopup", onCreateColumn: "doCreateColumn", onClose: "closePopup" },
 		{name: "columnsPopup", kind: "Spaz.ColumnsPopup", onCreateColumn: "doCreateColumn", onClose: "closePopup" },
