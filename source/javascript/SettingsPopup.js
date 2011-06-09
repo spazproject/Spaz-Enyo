@@ -15,7 +15,7 @@ enyo.kind({
 			{kind: "Spacer"},
 			{kind: "ToolButton", icon: "source/images/icon-close.png", style: "position: relative; bottom: 7px;", onclick: "doClose"}
 		]},	
-		{kind: "Scroller", flex: 1, components: [ // @TODO: scroll fades.
+		{kind: "FadeScroller", flex: 1, components: [ // @TODO: scroll fades.
 			/*{kind: "Group", caption: "Columns", components: [
 				{kind: "Item", layoutKind: "HFlexLayout", components: [
 					{content: "Default Width"},
@@ -85,15 +85,30 @@ enyo.kind({
 				
 				//{kind: "Item", content: "Interval for Searches"},
 			]},
-			/*{kind: "Group", caption: "Notify", components: [
+			{kind: "Group", caption: "Notify", components: [
+				{kind: "Item", layoutKind: "HFlexLayout", components: [
+					{content: "New Entries"},
+					{kind: "Spacer"},
+					{kind: "CheckBox", preferenceProperty: "notify-newmessages", onChange: "setPreference"}
+				]},
 				{kind: "Item", layoutKind: "HFlexLayout", components: [
 					{content: "Mentions"},
 					{kind: "Spacer"},
-					{kind: "CheckBox", preferenceProperty: "network-refreshinterval", onChange: "setPreference"}
+					{kind: "CheckBox", preferenceProperty: "notify-mentions", onChange: "setPreference"}
+				]},
+				{kind: "Item", layoutKind: "HFlexLayout", components: [
+					{content: "Private Messages"},
+					{kind: "Spacer"},
+					{kind: "CheckBox", preferenceProperty: "notify-dms", onChange: "setPreference"}
+				]},
+				{kind: "Item", layoutKind: "HFlexLayout", components: [
+					{content: "Search Results"},
+					{kind: "Spacer"},
+					{kind: "CheckBox", preferenceProperty: "notify-searchresults", onChange: "setPreference"}
 				]},
 				
 				//{kind: "Item", content: "Interval for Searches"},
-			]},*/
+			]},
 			{kind: "Group", caption: "URL Shortening", components: [
 				{kind: "Item", layoutKind: "HFlexLayout", components: [
 					{content: "Service"},
@@ -160,6 +175,7 @@ enyo.kind({
 		});
 		var shurl = new SpazShortURL();
 		this.$.shurl.setItems(shurl.getServiceLabels());
+	
 	},
 	setPreference: function(inSender, inValue){
 		console.log(inSender, inValue);
