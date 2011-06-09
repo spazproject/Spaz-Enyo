@@ -54,6 +54,9 @@ enyo.kind({
 			);
 		}
 	},
+	deleteClicked: function(inSender) {
+		AppUI.deleteEntry(this.entry);
+	},
 	repostClicked: function(inSender) {
 		AppUI.repost(this.entry);
 	},
@@ -90,6 +93,10 @@ enyo.kind({
 			components.push({caption: enyo._$L("Unfavorite"), onclick: "favoriteClicked"});
 		} else if(!this.entry.is_private_message){
 			components.push({caption: enyo._$L("Favorite"), onclick: "favoriteClicked"});
+		}
+		
+		if((this.entry.is_author) || (this.entry.is_private_message)) {
+			components.push({caption: enyo._$L("Delete"), onclick: "deleteClicked"});
 		}
 		
 		components.push({caption: enyo._$L("Share"), onclick: "shareClicked", components: [

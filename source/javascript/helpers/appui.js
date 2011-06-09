@@ -37,5 +37,12 @@ AppUI = {
 			(inQuery, inAccountId)
 			- create search column 
 			- source/javascript/Container.js
-
+		deleteEntry
+			(inEntry)
+			- delete the entry from the service
+			- source/javascript/Spaz.js
+		removeEntryById
+			(inEntryId)
+			- search for and remove the entry with the given id from each column
+			- source/javascript/Container.js
 	*/

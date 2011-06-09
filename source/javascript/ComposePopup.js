@@ -522,7 +522,7 @@ enyo.kind({
 		this.postTextBoxInput();
 		this.dmUserChanged();
 		this.inReplyEntryChanged();
-		this.$.accountSelection.setValue(opts.entry.account_id);
+		this.setPostingAccount(opts.entry.account_id);
 	
 	},
 	

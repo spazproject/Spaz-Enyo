@@ -36,6 +36,9 @@ enyo.kind({
 		AppUI.addFunction("rerenderTimelines", function(){
 			this.columnsFunction("refreshList");
 		}, this);
+		AppUI.addFunction("removeEntryById", function(inEntryId) {
+			this.removeEntryById(inEntryId);
+		}, this);
 	},
 	
 	loadAndCreateColumns: function() {
@@ -217,5 +220,11 @@ enyo.kind({
 		if(this.columnData.length !== lengthBefore) {
 			this.createColumns();
 		}
+	},
+	
+	removeEntryById: function (inEntryId) {
+		enyo.forEach(this.getComponents(), function (component) {
+			component.removeEntryById && component.removeEntryById(inEntryId);
+		});
 	}
 });

@@ -387,5 +387,14 @@ enyo.kind({
 		
 		LastRead.set(this.getHash(), last_read_date);
 		
+	},
+	
+	removeEntryById: function(inEntryId) {
+		for (var i = this.entries.length - 1; i >= 0; i--) {
+			if (this.entries[i].service_id === inEntryId) {
+				this.entries.splice(i, 1);
+			}
+		}
+		this.$.list.refresh();
 	}
 });
