@@ -312,6 +312,9 @@ enyo.kind({
 		AppUI.addFunction("directMessage", function(inUsername, inAccountId){
 			this.directMessage(this, inUsername, inAccountId);
 		}, this);
+		AppUI.addFunction("deleteEntry", function(inEntry) {
+			this.deleteEntry(this, inEntry);
+		}, this);
 		
 		
 		// Refresher methods
@@ -495,6 +498,40 @@ enyo.kind({
 			'text':null,
 			'account_id':inAccountId
 		});
+	},
+	deleteEntry: function(inSender, inEntry) {
+		//@TODO: should we confirm?
+		var account = App.Users.get(inEntry.account_id);
+		var auth = new SpazAuth(account.type);
+		auth.load(account.auth);
+			
+		var twit = new SpazTwit();
+		twit.setBaseURLByService(account.type);
+		twit.setSource(App.Prefs.get('twitter-source'));
+		twit.setCredentials(auth);
+		
+		if(inEntry.is_author) {
+			twit.destroy(inEntry.service_id,
+				enyo.bind(this, function(data) {
+					AppUI.removeEntryById(inEntry.service_id);
+					AppUtils.showBanner(enyo._$L("Deleted entry"));
+				}),
+				enyo.bind(this, function() {
+					AppUtils.showBanner(enyo._$L("Error deleting entry"));
+				})
+			);
+		}
+		else if(inEntry.is_private_message) {
+			twit.destroyDirectMessage(inEntry.service_id,
+				enyo.bind(this, function(data) {
+					AppUI.removeEntryById(inEntry.service_id);
+					AppUtils.showBanner(enyo._$L("Deleted message"));
+				}),
+				enyo.bind(this, function() {
+					AppUtils.showBanner(enyo._$L("Error deleting message"));
+				})
+			);
+		}
 	},
 	showImageView: function(inSender, inUrls, inIndex) {
 		this.$.imageViewPopup.openAtCenter();
