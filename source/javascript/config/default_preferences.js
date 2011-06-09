@@ -21,10 +21,10 @@ var SPAZ_DEFAULT_PREFS = {
 
     'network-autoadjustrefreshinterval': true,
 
-	'notify-newmessages':true,
+	'notify-newmessages':false,
 	'notify-mentions':true,
 	'notify-dms':true,
-	'notify-searchresults':true,
+	'notify-searchresults':false,
 	
 	'network-refresh-auto':true,
 	'network-refresh-wake':false,
