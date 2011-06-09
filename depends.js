@@ -32,9 +32,9 @@ enyo.depends(
 	//views
 	"source/javascript/Sidebar.js",
 	"source/javascript/Container.js", //container for columns
-		"source/javascript/Column.js",
-		"source/javascript/SearchColumn.js",
-		"source/javascript/UnifiedColumn.js",
+	"source/javascript/Column.js",
+	"source/javascript/SearchColumn.js",
+	"source/javascript/UnifiedColumn.js",
 	
 	//popouts
 	"source/javascript/EntryView.js",
@@ -48,6 +48,7 @@ enyo.depends(
 	"source/javascript/AccountsPopup.js",
 	"source/javascript/EntryClickPopup.js",
 	"source/javascript/ImageViewPopup.js",
+	"source/javascript/AboutPopup.js",
 	
 	//containers
 	"source/javascript/NewColumnsContainer.js",

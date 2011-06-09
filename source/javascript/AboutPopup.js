@@ -3,32 +3,21 @@ enyo.kind({
 	kind: "Popup",
 	scrim: true,
 	modal: true,
-	width: "400px",
 	events: {
 		onClose: "",
 	},
 	components: [
-		{layoutKind: "HFlexLayout", components: [
-			{content: "About Spaz"},
-			{kind: "Spacer"},
-			{kind: "ToolButton", icon: "source/images/icon-close.png", style: "position: relative; bottom: 7px;", onclick: "doClose"}
-		]},	
-		{kind: "HFlexBox", onclick: "entryClick", components: [
+		{kind: "enyo.ToolButton", style: "position: absolute; right: -10px; top: -10px; z-index: 100;", icon: "source/images/icon-close.png", onclick: "doClose"},
+		{kind: "enyo.Image", style: "position: absolute; right: 20px; top: 60px; opacity: 0.2; width: 90%; z-index: -100", src: "spaz-icon-flat-512.png"},
+		{name: "scroller", kind: "enyo.BasicScroller", width: "500px", height: "600px", onclick: "entryClick", components: [
 			{kind: "HtmlContent", style: "font-size: 14px", srcId: "aboutContent"}
-		]},
-		
+		]}
 	],
-	create: function(){
-		this.inherited(arguments);
-	},
-	close: function(){
-		this.inherited(arguments);
-	},
 	showAtCenter: function(){
 		if(this.lazy) {
 			this.validateComponents();
 		}
-		
+		this.$.scroller.setScrollTop(0);
 		this.openAtCenter();
 	},
 	entryClick: function(inSender, inEvent) {
@@ -41,5 +30,5 @@ enyo.kind({
 			AppUI.search(inEvent.target.innerText);
 			this.doClose();
 		}
-	},
+	}
 });
