@@ -98,7 +98,7 @@ enyo.kind({
 		this.openAtHalfCenter();
 		this.$.postTextBox.forceFocus();
 		//var width = this.getBounds().width + "px"
-
+		
 	},
 
 	dmUserChanged: function(){
@@ -290,6 +290,8 @@ enyo.kind({
 		this.postTextBoxInput();
 		this.dmUserChanged();
 		this.inReplyEntryChanged();
+		this.isDM = false;
+		this.isRepost = false;
 	},
 	
 	postTextBoxKeydown: function(inSender, inEvent) {
@@ -461,11 +463,11 @@ enyo.kind({
 
 		var self = this;
 
-		this.isRepost = true; 
-
 		this.showAtCenter();
-		
+
 		this.clear();
+		
+		this.isRepost = true; 
 
 		this.$.composeHeader.setContent('Repost');
 
