@@ -510,18 +510,7 @@ enyo.kind({
 		twit.setSource(App.Prefs.get('twitter-source'));
 		twit.setCredentials(auth);
 		
-		if(inEntry.is_author) {
-			twit.destroy(inEntry.service_id,
-				enyo.bind(this, function(data) {
-					AppUI.removeEntryById(inEntry.service_id);
-					AppUtils.showBanner(enyo._$L("Deleted entry"));
-				}),
-				enyo.bind(this, function() {
-					AppUtils.showBanner(enyo._$L("Error deleting entry"));
-				})
-			);
-		}
-		else if(inEntry.is_private_message) {
+		if(inEntry.is_private_message) {
 			twit.destroyDirectMessage(inEntry.service_id,
 				enyo.bind(this, function(data) {
 					AppUI.removeEntryById(inEntry.service_id);
@@ -529,6 +518,17 @@ enyo.kind({
 				}),
 				enyo.bind(this, function() {
 					AppUtils.showBanner(enyo._$L("Error deleting message"));
+				})
+			);
+		}
+		else if(inEntry.is_author) {
+			twit.destroy(inEntry.service_id,
+				enyo.bind(this, function(data) {
+					AppUI.removeEntryById(inEntry.service_id);
+					AppUtils.showBanner(enyo._$L("Deleted entry"));
+				}),
+				enyo.bind(this, function() {
+					AppUtils.showBanner(enyo._$L("Error deleting entry"));
 				})
 			);
 		}

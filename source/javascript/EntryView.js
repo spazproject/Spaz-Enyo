@@ -65,6 +65,7 @@ enyo.kind({
 				{kind: "ToolButton", icon: "source/images/icon-reply.png", onclick: "reply"},
 				{kind: "ToolButton", icon: "source/images/icon-share.png", onclick: "share"},
 				{name: "favoriteButton", onclick: "toggleFavorite", kind: "ToolButton", disabled: true, icon: "source/images/icon-favorite.png"},
+				{name: "deleteButton", kind: "ToolButton", icon: "source/images/icon-delete.png", onclick: "deleteEntry"},
 				{kind: "Spacer"}
 			]},
 			{name: "browser", kind: "enyo.PalmService", service: "palm://com.palm.applicationManager/", method: "open"},
@@ -165,6 +166,8 @@ enyo.kind({
 			}
 			
 			this.setFavButtonState();
+			
+			this.$.deleteButton.setShowing((this.entry.is_author) || (this.entry.is_private_message));
 		} else {
 			this.doDestroy();
 		}
@@ -345,5 +348,8 @@ enyo.kind({
 				console.error(inSelected.getValue() + " has no handler");
 				break;
 		}
+	},
+	deleteEntry: function() {
+		AppUI.deleteEntry(this.entry);
 	}
 });
