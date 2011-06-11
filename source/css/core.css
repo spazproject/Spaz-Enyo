@@ -11,7 +11,8 @@ body, input, button {
 a,
 .username,
 .hashtag,
-.link {
+.link,
+.clickable {
 	color: #2D76B9;
 }
 
@@ -19,7 +20,8 @@ a:active,
 .hashtag:active,
 .link:active,
 .username:active,
-.underlineOnClick:active {
+.underlineOnClick:active,
+.clickable:active {
 	text-decoration: underline;
 }
 
@@ -198,4 +200,29 @@ a:active,
 .enyo-button-disabled {
 	opacity: 0.4;
 	/*color: rgba(255,254,255,0.4);*/
+}
+
+
+#aboutContentMain {
+	margin-right:170px;
+}
+
+#teamMembersContent {
+	width:150px;
+	float:right;
+	padding-left:10px;
+	font-size:90%;
+}
+
+#teamMembersContent h2 {
+	margin-top:0;
+}
+
+#teamMembersContent ul {
+	margin:0;
+	padding:0;
+}
+#teamMembersContent ul li {
+	list-style:none;
+	margin-bottom:5px;
 }
