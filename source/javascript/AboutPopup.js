@@ -8,9 +8,11 @@ enyo.kind({
 	},
 	components: [
 		{kind: "enyo.VFlexBox", width:"400px", height:"400px", components: [
-			{kind: "PageHeader", className: "enyo-header-dark", name:"header", height:"50px", style:"border-radius:10px", components:[
+		   	{kind: "enyo.Image", style: "position: absolute; right: 20px; top: 0px; opacity: 0.1; width: 90%; z-index: -100", src: "spaz-icon-flat-512.png"},
+ 
+			{kind: "HFlexBox", className: "enyo-header-dark", name:"header", style:"border-radius:10px", components:[
 				{kind: "HtmlContent", content:enyo.fetchAppInfo().title + ' v' + enyo.fetchAppInfo().version, style: "padding-left: 10px", flex:1},
-				{kind: "enyo.ToolButton", icon: "source/images/icon-close.png", onclick: "doClose", align:"right"},
+				{kind: "enyo.ToolButton", icon: "source/images/icon-close.png", style: "position: relative; bottom: 4px;", onclick: "doClose", align:"right"},
 				// {kind: "enyo.Image", style: "position: absolute; left:-100px; top:-100px; opacity: 0.2; width: 90%; z-index: -100", src: "spaz-icon-flat-512.png"},
 			]},
 			
@@ -19,10 +21,10 @@ enyo.kind({
 				{kind: "HtmlContent", name:"licenseContent", style: "font-size: 14px", srcId: "licenseContent"}
 			]},
 			
-			{kind: "Toolbar", style: "border-radius:10px", height:"50px", components: [
-				{caption: $L("Get Help"), style:"color:#000;", onclick:"openHelp"},
-				{caption: $L("Volunteer Now"), style:"color:#000;", onclick:"openVolunteerInfo"},
-				{caption: $L("View License"), style:"color:#000;",  onclick:"toggleLicense", toggling:true}
+			{kind: "HFlexBox", style: "border-radius:10px", height:"50px", components: [
+				{kind: "Button", caption: $L("Get Help"), style:"color:#000; padding-top: 6px;", onclick:"openHelp"},
+				{kind: "Button", flex: 1, caption: $L("Volunteer Now"), style:"color:#000; padding-top: 6px;", onclick:"openVolunteerInfo"},
+				{kind: "Button", flex: 1, caption: $L("View License"), style:"color:#000; padding-top: 6px;",  onclick:"toggleLicense", toggling:true}
 			]}
 		]},
 
