@@ -252,7 +252,7 @@ enyo.kind({
 						this.sortEntries();
 
 						/* add more entry properties */
-						this.entries = this.setAdditionalEntryProperties(this.entries);					
+						this.entries = AppUtils.setAdditionalEntryProperties(this.entries, this.info.accounts[0]);
 
 						this.$.list.refresh();
 						this.resizeHandler();
@@ -297,23 +297,6 @@ enyo.kind({
 		if (changed > 0) {
 			this.$.list.refresh();
 		}		
-	},
-	
-	setAdditionalEntryProperties : function(entries) {
-		// add in the account used to get this entry. this seems sloppy here.
-		for (var j = entries.length - 1; j >= 0; j--){
-			entries[j].account_id = this.info.accounts[0];
-			
-			var acc_username = App.Users.get(this.info.accounts[0]).username;
-			var acc_service  = App.Users.get(this.info.accounts[0]).type;
-			
-			if (acc_username === this.entries[j].author_username
-				&& acc_service === this.entries[j].service) {
-				entries[j].is_author = true;
-			}
-
-		}
-		return entries;
 	},
 	
 	sortEntries: function() {

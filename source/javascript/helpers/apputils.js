@@ -479,6 +479,24 @@ AppUtils.convertToEntry = function(item) {
 };
 
 
+AppUtils.setAdditionalEntryProperties = function(entries, account_id) {
+	// add in the account used to get this entry. this seems sloppy here.
+	for (var j = entries.length - 1; j >= 0; j--){
+		entries[j].account_id = account_id;
+		
+		var acc_username = App.Users.get(account_id).username;
+		var acc_service  = App.Users.get(account_id).type;
+		
+		if (acc_username === entries[j].author_username
+			&& acc_service === entries[j].service) {
+			entries[j].is_author = true;
+		}
+
+	}
+	return entries;
+};
+
+
 AppUtils.getBiggerAvatar = function(entry_or_user) {
 	var bigger_url, username, avatar_url;
 	

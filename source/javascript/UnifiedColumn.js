@@ -164,7 +164,7 @@ enyo.kind({
 					console.log('current DMSENT entries:'+this.getDMSentEntries().length);
 				
 					/* add more entry properties */
-					this.entries = this.setAdditionalEntryProperties(this.entries);
+					this.entries = AppUtils.setAdditionalEntryProperties(this.entries, this.info.accounts[0]);
 				
 					this.$.list.refresh();
 					this.resizeHandler();

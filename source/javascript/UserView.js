@@ -243,6 +243,7 @@ enyo.kind({
 					enyo.bind(this, function(data) {
 						this.showSpinner(false);
 						this.items = AppUtils.convertToEntries(data.reverse());
+						this.items = AppUtils.setAdditionalEntryProperties(this.items, this.account_id);
 						this.$.list.render();
 						this.$.scroller.setScrollTop(0);
 					}),
@@ -304,6 +305,7 @@ enyo.kind({
 			return true;
 		}
 	},
+		
 	bioClick: function(inSender, inEvent){
 		var className = inEvent.target.className;
 		if(_.includes(className, "username")){
