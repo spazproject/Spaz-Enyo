@@ -234,19 +234,36 @@ enyo.kind({
 	},
 	
 	onShortenURLsClick: function(inSender) {
-		//@TODO Hardcoding to use jmp for now, we should grab this from a pref
 		var urls = sc.helpers.extractURLs(this.$.postTextBox.getValue());
 		if (urls.length > 0) {
 			this.$.shortenButton.setActive(true);
 			this.$.shortenButton.setDisabled(true);
 			
-			new SpazShortURL(SPAZCORE_SHORTURL_SERVICE_JMP).shorten(urls, {
-				apiopts: {
-					version:'2.0.1',
-					format:'json',
-					login: 'spazcore',
-					apiKey: 'R_f3b86681a63a6bbefc7d8949fd915f1d'
-				},
+			var shortener = App.Prefs.get('url-shortener');
+			var apiopts = {};
+			
+			switch (shortener) {
+				case SPAZCORE_SHORTURL_SERVICE_ISGD:
+				case SPAZCORE_SHORTURL_SERVICE_GOOGLE:
+				case SPAZCORE_SHORTURL_SERVICE_GOLOOKAT:
+					break;
+					
+				default:
+					console.log("Unknown shortener: " + shortener + ", falling back to " + SPAZCORE_SHORTURL_SERVICE_JMP);
+					shortener = SPAZCORE_SHORTURL_SERVICE_JMP;
+				case SPAZCORE_SHORTURL_SERVICE_BITLY:
+				case SPAZCORE_SHORTURL_SERVICE_JMP:
+					apiopts = {
+						version:'2.0.1',
+						format:'json',
+						login: 'spazcore',
+						apiKey: 'R_f3b86681a63a6bbefc7d8949fd915f1d'
+					};
+					break;
+			}
+			
+			new SpazShortURL(shortener).shorten(urls, {
+				apiopts: apiopts,
 				onSuccess: enyo.bind(this, function(inData) {
 					this.$.postTextBox.setValue(this.$.postTextBox.getValue().replace(inData.longurl, inData.shorturl));
 					this.$.postTextBox.forceFocus();
