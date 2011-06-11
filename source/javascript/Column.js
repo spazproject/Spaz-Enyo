@@ -332,8 +332,10 @@ enyo.kind({
 	entryClick: function(inSender, inEvent, inRowIndex) {
 		this.$.entryClickPopup.showAtEvent(this.entries[inRowIndex], inEvent);
 	},
-	scrollToTop: function(){
-		this.$.list.punt();
+	scrollToTop: function(inSender, inEvent){
+		if(inEvent.dispatchTarget.className !== "enyo-button-icon"){
+			this.$.list.punt();		
+		}
 	},
 	scrollToBottom: function(){
 		//this.$.list.$.scroller.scrollToBottom();

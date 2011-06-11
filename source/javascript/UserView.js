@@ -431,7 +431,7 @@ enyo.kind({
 			this.$.following.addClass("enyo-button-negative");
 			//this.$.follow.setIcon('source/images/icon-stop-following.png');
 		} else {
-			if(App.Users.get(this.$.accountSelection.getValue()).username === this.user.username){ //if it IS this user
+			if(App.Users.get(this.$.accountSelection.getValue()).username.toLowerCase() === this.user.username.toLowerCase()){ //if it IS this user
 				this.$.following.setCaption("That's you!");
 				this.$.following.removeClass("enyo-button-affirmative");
 				this.$.following.removeClass("enyo-button-negative");
