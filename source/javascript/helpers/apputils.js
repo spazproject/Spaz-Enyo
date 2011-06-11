@@ -328,6 +328,12 @@ AppUtils.makeTwitObj = function(account_id) {
 
 
 
+AppUtils.getAuthObj = function(account_id) {
+	var auth = App.Users.getAuthObject(account_id);
+	return auth;
+};
+
+
 AppUtils.convertToUser = function(srvc_user) {
 	
 	var user = {};
