@@ -21,31 +21,29 @@ enyo.kind({
 		}
 	},
 	components: [
-		{layoutKind: "VFlexLayout", components: [
-			{kind: "Toolbar", height: "42px", defaultKind: "Control", onclick: "scrollToTop", content: "Home", style: "min-height: 42px; color: white; color: white; padding-left: 5px;", components: [
-				//gotta do this to get the header title to center and not be a button. "defaultKind" in Toolbar is key.
-				{name: "topLeftButton", kind: "ToolButton", style: "display: none"},
-				{name: "header", style: "padding: 0px 0px 5px 5px;", className: "truncating-text", content: ""},
-				{kind: "Spacer", flex: 1},
-				{name: "accountName", style: "color: grey; font-size: 12px; padding-left: 2px;"},
-				{name: "topRightButton", kind: "ToolButton", icon: "source/images/icon-close.png", onclick: "deleteClicked"}
-			]},
-			{name: "list", kind: "Spaz.VirtualList", flex: 1, style: "background-color: #D8D8D8; margin: 0px 3px; min-height: 200px;", horizontal: false, className: "timeline list", onAcquirePage:'acquirePage', onSetupRow: "setupRow", components: [
-				{
-					name: "item", 
-					kind: "Spaz.Entry",
-					onEntryClick: "entryClick"
-				}
-			]},
-			{kind: "Toolbar", height: "42px", onclick: "scrollToBottom", style: "min-height: 42px; color: white;", components: [
-				{name: "moveColumnLeftButton", onclick: "doMoveColumnLeft", kind: "ToolButton", icon: "source/images/icon-back.png"},
-				{kind: "Spacer"},
-				{name: "refresh", kind: "ToolButton", icon: "source/images/icon-refresh.png", onclick:"loadNewer"},
-				{kind: "Spacer"},
-				{name: "moveColumnRightButton", onclick: "doMoveColumnRight", kind: "ToolButton", icon: "source/images/icon-forward.png"}
+		{kind: "Toolbar", height: "42px", defaultKind: "Control", onclick: "scrollToTop", content: "Home", style: "min-height: 42px; color: white; color: white; padding-left: 5px;", components: [
+			//gotta do this to get the header title to center and not be a button. "defaultKind" in Toolbar is key.
+			{name: "topLeftButton", kind: "ToolButton", style: "display: none"},
+			{name: "header", style: "padding: 0px 0px 5px 5px;", className: "truncating-text", content: ""},
+			{kind: "Spacer", flex: 1},
+			{name: "accountName", style: "color: grey; font-size: 12px; padding-left: 2px;"},
+			{name: "topRightButton", kind: "ToolButton", icon: "source/images/icon-close.png", onclick: "deleteClicked"}
+		]},
+		{name: "list", kind: "Spaz.VirtualList", flex: 1, style: "background-color: #D8D8D8; margin: 0px 3px; min-height: 200px;", horizontal: false, className: "timeline list", onAcquirePage:'acquirePage', onSetupRow: "setupRow", components: [
+			{
+				name: "item", 
+				kind: "Spaz.Entry",
+				onEntryClick: "entryClick"
+			}
+		]},
+		{kind: "Toolbar", height: "42px", onclick: "scrollToBottom", style: "min-height: 42px; color: white;", components: [
+			{name: "moveColumnLeftButton", onclick: "doMoveColumnLeft", kind: "ToolButton", icon: "source/images/icon-back.png"},
+			{kind: "Spacer"},
+			{name: "refresh", kind: "ToolButton", icon: "source/images/icon-refresh.png", onclick:"loadNewer"},
+			{kind: "Spacer"},
+			{name: "moveColumnRightButton", onclick: "doMoveColumnRight", kind: "ToolButton", icon: "source/images/icon-forward.png"}
 
-				//{kind: "ToolButton", icon: "source/images/icon-clear.png"}, @TODO. make this clear the current tweets, or remove it completely
-			]}
+			//{kind: "ToolButton", icon: "source/images/icon-clear.png"}, @TODO. make this clear the current tweets, or remove it completely
 		]},
 
 		{name: "entryClickPopup", kind: "Spaz.EntryClickPopup"}
@@ -54,8 +52,6 @@ enyo.kind({
 	create: function(){
 		this.inherited(arguments);
      	this.infoChanged();
-     	setTimeout(enyo.bind(this, this.resizeHandler), 1);
-
 		this.checkArrows();     
 	},
 	checkArrows: function(){
@@ -255,7 +251,6 @@ enyo.kind({
 						this.entries = AppUtils.setAdditionalEntryProperties(this.entries, this.info.accounts[0]);
 
 						this.$.list.refresh();
-						this.resizeHandler();
 					}
 					break;
 			}
@@ -320,12 +315,6 @@ enyo.kind({
 	},
 	scrollToBottom: function(){
 		//this.$.list.$.scroller.scrollToBottom();
-	},
-	resizeHandler: function(inHeight) {
-		this.$.list.applyStyle("height", window.innerHeight - 93 + "px"); // - 117 for fatter toolbars.
-        enyo.forEach (this.getComponents(), function(component) {
-			component.resizeHandler && component.resizeHandler();
-		});
 	},
 	rendered: function() {
 		this.inherited(arguments);

@@ -1,7 +1,7 @@
 enyo.kind({
 	name: "Spaz.Container",
 	flex: 1,
-	kind: "Control",
+	kind: enyo.VFlexBox,
 	height: "100%",
 	style: "background-color: black",
 	events: {
@@ -10,8 +10,7 @@ enyo.kind({
 	},
 	columnData: [],
 	components: [
-		{name:"columnsScroller", kind: "SnapScroller", flex: 1, vertical: false, autoVertical: false, style: "background-color: black; padding: 2px;" , components:[
-			{kind: "ScrollFades"}
+		{name:"columnsScroller", kind: "SnapScroller", className: "enyo-hflexbox", flex: 1, vertical: false, autoVertical: false, style: "background-color: black; padding: 2px;", components:[
 		]},
 		{name: "confirmPopup", kind: "enyo.Popup", scrim : true, components: [
 			{content: enyo._$L("Delete Column?")},
@@ -26,7 +25,7 @@ enyo.kind({
 
 	create: function(){
 		this.inherited(arguments);
-
+		
 		this.loadingColumns = 0;
 		this.loadAndCreateColumns();
 		
@@ -155,7 +154,6 @@ enyo.kind({
 
 			this.columnToDelete.destroy();
 			this.columnToDelete = null;
-            this.$.columnsScroller.resizeHandler();
 
             this.columnsFunction("checkArrows");
 
@@ -174,12 +172,6 @@ enyo.kind({
 			}
 		}, this);
 		return columnCount;
-	},
-
-	resizeHandler: function() {
-		enyo.forEach (this.getComponents(), function(component) {
-			component.resizeHandler && component.resizeHandler();
-		});
 	},
 	
 	refreshAll: function() {
