@@ -28,7 +28,7 @@ enyo.kind({
 				{name: "header", style: "padding: 0px 0px 5px 5px;", className: "truncating-text", content: ""},
 				{kind: "Spacer", flex: 1},
 				{name: "accountName", style: "color: grey; font-size: 12px; padding-left: 2px;"},
-				{name: "topRightButton", kind: "ToolButton", icon: "source/images/icon-close.png", onclick: "doDeleteClicked"}
+				{name: "topRightButton", kind: "ToolButton", icon: "source/images/icon-close.png", onclick: "deleteClicked"}
 			]},
 			{name: "list", kind: "Spaz.VirtualList", flex: 1, style: "background-color: #D8D8D8; margin: 0px 3px; min-height: 200px;", horizontal: false, className: "timeline list", onAcquirePage:'acquirePage', onSetupRow: "setupRow", components: [
 				{
@@ -333,9 +333,7 @@ enyo.kind({
 		this.$.entryClickPopup.showAtEvent(this.entries[inRowIndex], inEvent);
 	},
 	scrollToTop: function(inSender, inEvent){
-		if(inEvent.dispatchTarget.className !== "enyo-button-icon"){
-			this.$.list.punt();		
-		}
+		this.$.list.punt();
 	},
 	scrollToBottom: function(){
 		//this.$.list.$.scroller.scrollToBottom();
@@ -398,5 +396,12 @@ enyo.kind({
 			}
 		}
 		this.$.list.refresh();
+	},
+	
+	deleteClicked: function(inSender, inEvent) {
+		this.doDeleteClicked();
+		
+		// we've handled this event, stop it from propagating up
+		return true;
 	}
 });
