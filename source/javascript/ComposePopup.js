@@ -2,7 +2,9 @@ enyo.kind({
 	name: "Spaz.ComposePopup",
 	kind: "Spaz.Popup",
 	scrim: true,
-	modal: true, //yes/no?
+	modal: true,
+	autoClose: false,
+	dismissWithClick: false,
 	//width: "400px",
 	events: {
 		onClose: ""
@@ -14,9 +16,10 @@ enyo.kind({
 	isDM: false,
 	inReplyToId:null, // set this when making a reply to a specific entry
 	width: "500px",
-	// showKeyboardWhenOpening:true, // opens the keyboard and positions the popup correctly
+	showKeyboardWhenOpening:false, // opens the keyboard and positions the popup correctly
 	//style: "min-width: 400px;",
 	components: [
+		{name:'filePicker', kind: "FilePicker", fileType:["image"], allowMultiSelect:false, onPickFile: "handleResult"},
 		{layoutKind: "HFlexLayout", components: [
 			{name: "composeHeader", content: "New Entry", style: "padding-bottom: 0px"},
 			{kind: "Spacer"},
@@ -33,7 +36,7 @@ enyo.kind({
 			   {name: "accountSelection", "kind":"ListSelector", onChange: "onChangeAccount", className: "accountSelection"}
 			]},
 			{kind: "Spacer", style: "min-width: 50px"},
-			{name: "imageButton", kind: "IconButton", icon: "source/images/icon-imageattach.png", onclick: ""},
+			{name: "imageButton", kind: "IconButton", icon: "source/images/icon-imageattach.png", onclick: "showFilePicker"},
 			{name: "shortenButton", kind: "Spaz.ActivityIconButton", icon: "source/images/icon-shorten.png", style: "padding-top: 6px;", onclick: "onShortenClick"},
 			{name: "sendButton", kind: "ActivityButton", style: "min-width: 100px; padding-top: 6px;", label: enyo._$L("Send"), onclick: "onSendClick"}
 		]},
@@ -44,10 +47,12 @@ enyo.kind({
 	],
 	create: function(){
 		this.inherited(arguments);
+		enyo.keyboard.setManualMode(true);
 	},
 	close: function(){
 		this.inherited(arguments);
-		// enyo.keyboard.setManualMode(false); // closes the keyboard
+		enyo.keyboard.hide();
+		enyo.keyboard.setManualMode(false);
 	},
 	buildAccounts: function() {
 
@@ -97,6 +102,8 @@ enyo.kind({
 		
 		this.openAtHalfCenter();
 		this.$.postTextBox.forceFocus();
+		
+		enyo.keyboard.show();
 		//var width = this.getBounds().width + "px"
 		
 	},
@@ -596,7 +603,102 @@ enyo.kind({
 	cursorToStart : function() {
 		this.$.postTextBox.forceSelect();
 		window.setTimeout(function() {window.getSelection().collapseToStart();}, 1);
+	},
+	
+	
+	
+	/********************************
+	 * pickin files 
+	 ********************************/
+	showFilePicker: function(inSender, inEvent) {
+		enyo.keyboard.setManualMode(false);
+		this.$.filePicker.pickFile();
+	},
+	
+	handleResult: function(inSender, msg) {
+		this.$.filePicker.close();
+		
+		enyo.keyboard.forceShow();
+		
+		if (msg && msg[0] && msg[0].fullPath) {
+			AppUtils.showBanner($L("Uploading image"));
+			this.upload(msg[0].fullPath);
+		}
+	},
+	
+	upload:function(inFileUrl) {
+		
+		var image_upl_status = this.$.postTextBox.getValue();
+		
+		if (this.isDM) {
+		    image_upl_status = 'from '+enyo.fetchAppInfo().title;
+		}
+		
+		
+		var self = this;
+		
+		var auth = AppUtils.getAuthObj(this.$.accountSelection.getValue());
+		
+		var image_uploader = new SpazImageUploader();
+		
+		var image_uploader_srvc = App.Prefs.get('image-uploader') || 'twitpic';
+
+		
+		this.image_uploader_opts = {
+			'auth_obj': auth,
+			'service' : image_uploader_srvc, // @TODO use pref
+			'file_url': inFileUrl,
+			'extra': {
+				'message':image_upl_status
+			},
+			'onProgress':_.bind(this.onUploadProgress, this),
+			'onSuccess':_.bind(this.onUploadSuccess, this),
+			'onFailure':_.bind(this.onUploadFailure, this),
+			'platform' : { // need this for webOS to upload
+				'owner' : this,
+				'componentName':'uploaderMe'
+			}
+		};
+
+
+		// force pikchur uploading if using identi.ca
+		if (App.Users.get(this.$.accountSelection.getValue()).type === SPAZCORE_ACCOUNT_IDENTICA) {
+			this.image_uploader_opts['service'] = 'pikchur';
+			this.image_uploader_opts['extra']['service'] = 'identi.ca';
+		}
+		
+		image_uploader.setOpts(this.image_uploader_opts);
+
+		image_uploader.upload();
+	},
+	
+	onUploadProgress: function(inResponse) {
+		enyo.error(enyo.json.stringify(inResponse));
+	},
+	
+	onUploadSuccess: function(inResponse) { // onSuccess
+		if (inResponse.url) {
+			var msg = this.$.postTextBox.getValue();
+			if (msg.length > 0) {
+				this.$.postTextBox.setValue([msg, inResponse.url].join(' '));
+			} else {
+				this.$.postTextBox.setValue(inResponse.url);
+			}
+			this.postTextBoxInput();
+			
+			AppUtils.showBanner($L("Image uploaded"));
+		} else if (inResponse.error && typeof inResponse.error === 'string') {
+			AppUtils.showBanner($L("Posting image failed:") + " " + inResponse.error);
+		} else {
+			AppUtils.showBanner($L("Posting image failed"));
+		}
+	},
+	
+	onUploadFailure: function(inSender, inResponse) { // onFailure
+		AppUtils.showBanner('Posting image FAILED');
+		AppUtils.showBanner("Error!");
 	}
 	
+
 });
 
