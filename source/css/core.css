@@ -166,7 +166,7 @@ a:active,
 	margin: -6px -6px -10px -6px;
 }
 .enyo-tool-button {
-	padding: 0px;
+	padding: 1px 0px 1px 0px;
 }
 
 /* for user/entry view */
