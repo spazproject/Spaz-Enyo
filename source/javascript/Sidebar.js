@@ -17,7 +17,7 @@ enyo.kind({
 	components: [
 		{kind: "ToolButton", icon: "source/images/icon-spaz.png", onclick: "openPopup", popup:"aboutPopup"},		
 		{kind: "ToolButton", icon: "source/images/icon-settings.png", onclick: "openPopup", popup:"settingsPopup"},
-		{kind: "ToolButton", icon: "source/images/icon-new-account.png", onclick: "openPopup", popup:"accountsPopup"},
+		{kind: "ToolButton", icon: "source/images/icon-accounts.png", onclick: "openPopup", popup:"accountsPopup"},
 		{kind: "ToolButton", icon: "source/images/icon-new-column.png", onclick: "openPopup", popup: "columnsPopup"},
 		{kind: "Spacer"},
 		{kind: "ToolButton", icon: "source/images/icon-compose.png", onclick: "compose", popup:"composePopup"},
