@@ -187,6 +187,21 @@ enyo.kind({
 						loadFinished
 					);					
 					break;
+				 case SPAZ_COLUMN_SENT:
+				 	loadStarted();
+				 	window.AppCache.getUser(account.username, account.type, account.id,
+				 		function(user){
+				 			self.twit.getUserTimeline(user.service_id, 50, null,
+						 		function(data) {
+						 			self.processData(data, opts);
+						 			loadFinished();
+						 		},
+					 			loadFinished
+				 			);
+				 		},
+				 		loadFinished
+				 	);
+				 	break;
 			}
 
 
