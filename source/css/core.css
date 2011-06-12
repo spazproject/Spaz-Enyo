@@ -169,7 +169,10 @@ a:active,
 	padding: 0px;
 }
 .enyo-toolbar-vertical .enyo-tool-button {
-	padding: 1px 0px 1px 0px;
+	padding: 1px 0px 0px 0px;
+}
+.enyo-toolbar-vertical .enyo-tool-button:last-child {
+	padding: 1px 0px;
 }
 
 /* for user/entry view */
