@@ -380,12 +380,6 @@ AppUtils.convertToEntry = function(item) {
 			entry.text          = item.text;
 			entry.text_raw      = item.SC_text_raw;
 			entry.publish_date  = item.SC_created_at_unixtime;
-
-			if (item.favorited) {
-				entry.is_favorite = true;
-			} else {
-				entry.is_favorite = false;
-			}
 			
 			if (item.SC_is_dm) {
 				entry.author_username = item.sender.screen_name;
@@ -457,6 +451,12 @@ AppUtils.convertToEntry = function(item) {
 
 					if (item.in_reply_to_status_id) {
 						entry.in_reply_to_id = item.in_reply_to_status_id;
+					}
+					
+					if (item.favorited) {
+						entry.is_favorite = true;
+					} else {
+						entry.is_favorite = false;
 					}					
 
 				}
