@@ -21,10 +21,11 @@ enyo.kind({
 		}
 	},
 	components: [
-		{kind: "Toolbar", height: "42px", defaultKind: "Control", onclick: "scrollToTop", content: "Home", style: "min-height: 42px; color: white; color: white; padding-left: 5px;", components: [
+		{kind: "Toolbar", height: "42px", defaultKind: "Control", onclick: "scrollToTop", style: "min-height: 42px; color: white; color: white; padding-left: 5px;", components: [
 			//gotta do this to get the header title to center and not be a button. "defaultKind" in Toolbar is key.
 			{name: "topLeftButton", kind: "ToolButton", style: "display: none"},
 			{name: "header", style: "padding: 0px 0px 5px 5px;", className: "truncating-text", content: ""},
+			{name: "unreadCount", style: "font-size: 12px; margin: 2px 0px 0px 4px; padding: 3px;background-color: #4B99D7; -webkit-border-radius: 5px;", align: "left", showing: false, content: "" },
 			{kind: "Spacer", flex: 1},
 			{name: "accountName", style: "color: grey; font-size: 12px; padding-left: 2px;"},
 			{name: "topRightButton", kind: "ToolButton", icon: "source/images/icon-close.png", onclick: "deleteClicked"}
@@ -266,6 +267,7 @@ enyo.kind({
 						this.entries = AppUtils.setAdditionalEntryProperties(this.entries, this.info.accounts[0]);
 
 						this.$.list.refresh();
+
 					}
 					break;
 			}
@@ -290,6 +292,7 @@ enyo.kind({
 		}
 		if (changed > 0) {
 			this.$.list.refresh();
+			this.countUnread();
 		}
 	},
 	
@@ -306,7 +309,24 @@ enyo.kind({
 		}
 		if (changed > 0) {
 			this.$.list.refresh();
+			this.countUnread();
 		}		
+	},
+	countUnread: function() {
+		var count = 0;
+		_.each(this.entries, function(entry){
+			if(entry.read === false){
+				count++;
+			}
+		});
+		if(count > 0){
+			this.$.unreadCount.show();
+			this.$.unreadCount.setContent(count);			
+		} else {
+			this.$.unreadCount.hide();
+		}
+
+
 	},
 	
 	sortEntries: function() {
@@ -337,7 +357,8 @@ enyo.kind({
 			this.$.header.setContent("");
 			var headerBounds = this.$.header.getBounds();
 			var accountNameBounds = this.$.accountName.getBounds();
-			this.$.header.applyStyle("width", accountNameBounds.left - headerBounds.left + "px");
+			var unreadCountBounds = this.$.unreadCount.getBounds();
+			this.$.header.applyStyle("width", accountNameBounds.left + unreadCountBounds - headerBounds.left + "px");
 			this.$.header.setContent(_.capitalize(this.info.type));
 		}
 	},
