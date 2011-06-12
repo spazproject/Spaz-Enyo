@@ -23,7 +23,15 @@ enyo.kind({
 			onClose: "closeImageView"
 		},
 		{name: "dashboard", kind:"Dashboard", onIconTap: "", onMessageTap: "messageTap", onIconTap: "iconTap", 
-					onUserClose: "dashboardClose", onLayerSwipe: "layerSwiped"}
+					onUserClose: "dashboardClose", onLayerSwipe: "layerSwiped"},
+		{name: "deleteEntryPopup", kind: "enyo.Popup", scrim : true, components: [
+			{content: enyo._$L("Delete Entry?")},
+			{style: "height: 10px;"},
+			{kind: "enyo.HFlexBox", components: [
+				{kind: "enyo.Button", caption: enyo._$L("Cancel"), flex: 1, onclick: "cancelEntryDeletion"},
+				{kind: "enyo.Button", className: "enyo-button-negative", caption: enyo._$L("Delete"), flex: 1, onclick: "confirmEntryDeletion"}
+			]}
+		]}
 	],
 	
 	twit: new SpazTwit(),
@@ -312,6 +320,9 @@ enyo.kind({
 		AppUI.addFunction("directMessage", function(inUsername, inAccountId){
 			this.directMessage(this, inUsername, inAccountId);
 		}, this);
+		AppUI.addFunction("confirmDeleteEntry", function(inEntry) {
+			this.confirmDeleteEntry(this, inEntry);
+		}, this);
 		AppUI.addFunction("deleteEntry", function(inEntry) {
 			this.deleteEntry(this, inEntry);
 		}, this);
@@ -565,6 +576,20 @@ enyo.kind({
 	},
 	popDashboard: function() {
 		this.$.dashboard.pop();
+	},
+	confirmDeleteEntry: function(inSender, inEntry) {
+		this.entryToDelete = inEntry;
+		this.$.deleteEntryPopup.openAtCenter();
+	},
+	cancelEntryDeletion: function(inSender) {
+		this.$.deleteEntryPopup.close();
+		this.entryToDelete = null;
+	},
+	confirmEntryDeletion: function(inSender) {
+		this.$.deleteEntryPopup.close();
+		if (this.entryToDelete) {
+			AppUI.deleteEntry(this.entryToDelete);
+			this.entryToDelete = null;
+		}
 	}
-	
 });

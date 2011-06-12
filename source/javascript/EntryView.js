@@ -350,6 +350,6 @@ enyo.kind({
 		}
 	},
 	deleteEntry: function() {
-		AppUI.deleteEntry(this.entry);
+		AppUI.confirmDeleteEntry(this.entry);
 	}
 });

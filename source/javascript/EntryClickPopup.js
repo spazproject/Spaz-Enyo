@@ -55,7 +55,7 @@ enyo.kind({
 		}
 	},
 	deleteClicked: function(inSender) {
-		AppUI.deleteEntry(this.entry);
+		AppUI.confirmDeleteEntry(this.entry);
 	},
 	repostClicked: function(inSender) {
 		AppUI.repost(this.entry);

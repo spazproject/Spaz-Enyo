@@ -37,6 +37,10 @@ AppUI = {
 			(inQuery, inAccountId)
 			- create search column 
 			- source/javascript/Container.js
+		confirmDeleteEntry
+			(inEntry)
+			- show confirm entry dialog
+			- source/javascript/Spaz.js
 		deleteEntry
 			(inEntry)
 			- delete the entry from the service
