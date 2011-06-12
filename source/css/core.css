@@ -166,6 +166,9 @@ a:active,
 	margin: -6px -6px -10px -6px;
 }
 .enyo-tool-button {
+	padding: 0px;
+}
+.enyo-toolbar-vertical .enyo-tool-button {
 	padding: 1px 0px 1px 0px;
 }
 
@@ -225,4 +228,10 @@ a:active,
 #teamMembersContent ul li {
 	list-style:none;
 	margin-bottom:5px;
+}
+
+.entry .entryHeaderIcon{
+	position: relative;
+	top: 1px;
+	padding: 0px 3px;
 }

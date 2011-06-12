@@ -10,100 +10,59 @@ enyo.kind({
 		ignoreUnread: false
 	},
 	components: [
-		{className: "entry", kind: "Item", onclick: "entryClick", flex: 1, tapHighlight: true, style: "padding-right: 5px;", components: [
-			{kind: "HFlexBox", components: [
-				{kind: "VFlexBox", components: [
+		{className: "entry", kind: "Item", layoutKind: "HFlexLayout", onclick: "entryClick", flex: 1, tapHighlight: true, style: "padding-right: 5px;", components: [
+			{kind: "Control", components: [
 					{name: "authorAvatar", kind: "Image", width: "50px", height: "50px", className: "avatar"},
 					{name: "reposterAvatar", kind: "Image", width: "25px", height: "25px", className: "small-avatar", showing: false}
-				]},
-				{kind: "VFlexBox", flex: 1, components: [
-					{kind: "HFlexBox", height: "18px", components: [
-						{name: "username", className: "text username author"},
-						{name: "recipientContainer", showing:false, kind: "HFlexBox", components:[
-							{name: "receipientArrow", allowHtml: true, className: "entryHeaderIcon", content:"&rarr;", style:"position: relative; bottom: 5px; padding: 0px 3px;"},
-							{name: "recipientUsername", className: "text username recipient author"}
-						]},
-						{name: "reposterIcon", kind: "Image", height: "13px", src: "source/images/reposted.png", style: "position: relative; bottom: 5px; padding: 0px 3px;", showing: false},
-						{name: "reposterUsername", className: "text username author", showing: false},
-						{name: "favoriteIcon", kind: "Image", height: "13px", src: "source/images/favorited.png", style: "position: relative; bottom: 5px; padding: 0px 3px;", showing: false},
-					]},
-					{name: "text", allowHtml: true, className: "entrytext text"},
-					{kind: "HFlexBox", height: "13px", components: [
-						{name: "unreadIcon", kind: "Image", height: "13px", src: "source/images/unread.png", style: "position: relative; bottom: 5px; padding: 0px 3px 0px 0px;", showing: false},
-						{name: "timeFrom", allowHtml: true, className: "small"},
-					]}
-				]},		
-			]}
+			]},
+			{name: "text", allowHtml: true, flex: 1, className: "entrytext text"},
 		]}
 	],
 	entryChanged: function(){
-		this.$.username.setContent(this.entry.author_username);
-		
-		if (this.entry.recipient_username && this.entry.is_private_message) {
-			this.$.recipientUsername.setContent(this.entry.recipient_username);
-			this.$.recipientContainer.show();
-		} else {
-			this.$.recipientContainer.hide();
-		}
-		
-		this.$.text.setContent(AppUtils.makeItemsClickable(enyo.string.runTextIndexer(this.entry.text)));
-		if (this.entry._orig.source) {
-			this.$.timeFrom.setContent(sch.getRelativeTime(this.entry.publish_date) + " from <span class='link'>" + this.entry._orig.source + "</span>");
-		} else {
-			this.$.timeFrom.setContent(sch.getRelativeTime(this.entry.publish_date));
-		}		
 		this.$.authorAvatar.setSrc(this.entry.author_avatar);
 
-		this.$.reposterUsername.setShowing(this.entry.is_repost);
-		this.$.reposterIcon.setShowing(this.entry.is_repost);
-		this.$.reposterAvatar.setShowing(this.entry.is_repost);
-		if(this.entry.is_repost === true){
-			this.$.reposterUsername.setContent(this.entry.reposter_username);
+		var toMacroize = "<span class='text username author'>{$author_username}</span>";
+
+		if (this.entry.recipient_username && this.entry.is_private_message) {
+			toMacroize += "<span style='padding: 0px 3px; position: relative; bottom: 1px'>&rarr;</span>";
+			toMacroize += "<span class = 'text username recipient author'>{$recipient_username}</span>";			
+		} else if(this.entry.is_repost === true){
+			toMacroize += "<img height = '13px' class='entryHeaderIcon' src = 'source/images/reposted.png'></img>";
+			toMacroize += "<span class='text username author'>{$reposter_username}</span>";
 			this.$.reposterAvatar.setSrc(this.entry.reposter_avatar);
-		}
-		//this.entry.read = false;
-		if(this.entry.is_private_message === true){
-			//if(this.entry.read === false){
-			//	this.applyStyle("background-color", "rgba(255, 0, 0, .2)");
-			//} else {
-				this.applyStyle("background-color", "rgba(255, 0, 0, .1)");			
-			//}
-		} else if(this.entry.is_mention === true){
-			//if(this.entry.read === false){
-			//	this.applyStyle("background-color", "rgba(0, 95, 200, .2)");
-			//} else {
-				this.applyStyle("background-color", "rgba(0, 95, 200, .1)");
-			//}
-		} else if(this.entry.is_author === true){
-			//if(this.entry.read === false){
-			//	this.applyStyle("background-color", "rgba(0, 255, 0, .2)");
-			//} else {			
-				this.applyStyle("background-color", "rgba(0, 255, 0, .1)");
-			//}
-		} else {
-			//if(this.entry.read === false){
-			//	this.applyStyle("background-color", "rgba(0, 0, 0, .1)");
-			//} else {
-				this.applyStyle("background-color", null);		
-			//}
-		}
-		
-		this.$.text.applyStyle("font-size", App.Prefs.get("entry-text-size"));
-		
+		} 
 		if(this.entry.is_favorite){
-			this.$.favoriteIcon.setShowing(true);
+			toMacroize += "<img height = '13px' class='entryHeaderIcon' src = 'source/images/favorited.png'></img>";
+		}
+
+		toMacroize += "<br/>";
+		toMacroize += AppUtils.makeItemsClickable(enyo.string.runTextIndexer(this.entry.text));
+		toMacroize += "<br/>";
+
+		if (this.entry.read === false && this.ignoreUnread === false ) {	
+			toMacroize += "<img src='source/images/unread.png' height= '13px' style='padding: 0px 3px 0px 0px;' class='entryHeaderIcon'></img> ";
+		}
+		toMacroize += "<span class='small' height = '13px'>" 
+		toMacroize += sch.getRelativeTime(this.entry.publish_date);
+		if (this.entry._orig.source) {
+			toMacroize += " from <span class = 'link'>{$_orig.source}</span>";
+		}
+		toMacroize += "</span>"			
+
+		if(this.entry.is_private_message === true){
+			this.applyStyle("background-color", "rgba(255, 0, 0, .1)");			
+		} else if(this.entry.is_mention === true){
+			this.applyStyle("background-color", "rgba(0, 95, 200, .1)");
+		} else if(this.entry.is_author === true){
+			this.applyStyle("background-color", "rgba(0, 255, 0, .1)");
 		} else {
-			this.$.favoriteIcon.setShowing(false);
+			this.applyStyle("background-color", null);		
 		}
-		
-		if (this.entry.read === true ) {
-			this.$.unreadIcon.setShowing(false);
-			//this.$.item.addClass('read');
-		} else if(this.ignoreUnread === false){
-			this.$.unreadIcon.setShowing(true);
-			//this.$.item.removeClass('read');
-		}
-			
+
+		this.$.text.applyStyle("font-size", App.Prefs.get("entry-text-size"));
+
+		this.$.text.setContent(enyo.macroize(toMacroize, this.entry));
+
 	},
 	entryClick: function(inSender, inEvent, inRowIndex) {
 		var className = inEvent.target.className;
