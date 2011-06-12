@@ -23,6 +23,7 @@ enyo.kind({
 
 		var toMacroize = "<span class='text username author'>{$author_username}</span>";
 
+		this.$.reposterAvatar.setShowing(this.entry.is_repost);
 		if (this.entry.recipient_username && this.entry.is_private_message) {
 			toMacroize += "<span style='padding: 0px 3px; position: relative; bottom: 1px'>&rarr;</span>";
 			toMacroize += "<span class = 'text username recipient author'>{$recipient_username}</span>";			
@@ -30,9 +31,6 @@ enyo.kind({
 			toMacroize += "<img height = '13px' class='entryHeaderIcon' src = 'source/images/reposted.png'></img>";
 			toMacroize += "<span class='text username author'>{$reposter_username}</span>";
 			this.$.reposterAvatar.setSrc(this.entry.reposter_avatar);
-			this.$.reposterAvatar.show();
-		} else if(this.entry.is_repost === false){
-			this.$.reposterAvatar.hide();
 		}
 		if(this.entry.is_favorite){
 			toMacroize += "<img height = '13px' class='entryHeaderIcon' src = 'source/images/favorited.png'></img>";
