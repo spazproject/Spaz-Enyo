@@ -463,6 +463,10 @@ AppUtils.convertToEntry = function(item) {
 
 			}
 			
+			if (entry.SC_is_search) {
+				entry.is_search_result = true;
+			}
+			
 			entry.author_avatar_bigger = AppUtils.getBiggerAvatar(entry);
 			
 			// copy to _orig
