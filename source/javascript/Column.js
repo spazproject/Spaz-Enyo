@@ -246,6 +246,9 @@ enyo.kind({
 					if (data.length > 0) {
 						/* convert to our internal format */
 						data = AppUtils.convertToEntries(data);
+
+						/* add more entry properties */
+						data = AppUtils.setAdditionalEntryProperties(data, this.info.accounts[0]);
 						
 						// mark new as read or not read, depending on mode
 						for (var i = data.length - 1; i >= 0; i--){
@@ -253,6 +256,7 @@ enyo.kind({
 								data[i].read = true;
 							} else {
 								data[i].read = false;
+								AppUI.addEntryToNotifications(data[i]);
 							}
 						}
 
@@ -263,11 +267,8 @@ enyo.kind({
 						/* sort our good stuff */
 						this.sortEntries();
 
-						/* add more entry properties */
-						this.entries = AppUtils.setAdditionalEntryProperties(this.entries, this.info.accounts[0]);
-
 						this.$.list.refresh();
-
+						
 					}
 					break;
 			}
