@@ -238,3 +238,19 @@ a:active,
 	top: 1px;
 	padding: 0px 3px;
 }
+
+.unreadCountBadge {
+	margin: 0px 4px;
+	line-height: 30px;
+	font-weight: bold;
+	font-size: 14px;
+	height: 30px;
+	min-width: 20px;
+	text-align: center;
+	vertical-align: baseline;
+	-webkit-border-image: url(../images/unread-count-badge.png) 0 12 0 12 repeat stretch;
+	-webkit-box-sizing: border-box;
+	border-width: 0px 12px 0px 12px;
+	position: relative;
+	/*bottom: 1px;*/
+}
