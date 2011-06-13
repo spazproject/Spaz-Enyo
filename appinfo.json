@@ -9,6 +9,7 @@
 	"type": "web",
 	"main": "index.html",
 	"icon": "icon.png",
+	"miniicon": "miniicon.png",
 	"uiRevision":2,
 	
 	"universalSearch": {
