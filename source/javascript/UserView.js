@@ -183,7 +183,7 @@ enyo.kind({
 		
 		if(this.$.username.getContent() !== "@" + this.user.username){
 							
-			var events = this.doAddViewEvent({type: "user", user: this.user});
+			var events = this.doAddViewEvent({type: "user", user: enyo.mixin(this.user, {account_id: this.account_id})});
 		   	if(events.length > 1){
 		    	this.$.viewManagement.setShowing(true);
 		    	var lastEvent = events[events.length-2];
