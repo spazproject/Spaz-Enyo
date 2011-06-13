@@ -25,7 +25,7 @@ enyo.kind({
 			//gotta do this to get the header title to center and not be a button. "defaultKind" in Toolbar is key.
 			{name: "topLeftButton", kind: "ToolButton", style: "display: none"},
 			{name: "header", style: "padding: 0px 0px 5px 5px;", className: "truncating-text", content: ""},
-			{name: "unreadCount", /*style: "font-size: 12px; margin: 2px 0px 0px 4px; padding: 3px 4px 3px 6px;background-color: rgba(75, 153, 215, .7); -webkit-border-radius: 5px;",*/ align: "left", className: "unreadCountBadge", showing: false, content: "" },
+			{name: "unreadCount", /*style: "font-size: 12px; margin: 2px 0px 0px 4px; padding: 3px 4px 3px 6px;background-color: rgba(75, 153, 215, .7); -webkit-border-radius: 5px;",*/ align: "left", className: "unreadCountBadge", showing: false, onclick: "unreadClicked", content: "" },
 			{kind: "Spacer", flex: 1},
 			{name: "accountName", style: "color: grey; font-size: 12px; padding-left: 2px;"},
 			{name: "topRightButton", kind: "ToolButton", icon: "source/images/icon-close.png", onclick: "deleteClicked"}
@@ -412,6 +412,14 @@ enyo.kind({
 	
 	deleteClicked: function(inSender, inEvent) {
 		this.doDeleteClicked();
+		
+		// we've handled this event, stop it from propagating up
+		return true;
+	},
+	
+	unreadClicked: function(inSender, inEvent) {
+		// @TODO Maybe some fancy animation to hide the unread count?
+		this.markAllAsRead();
 		
 		// we've handled this event, stop it from propagating up
 		return true;
