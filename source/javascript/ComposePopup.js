@@ -51,8 +51,9 @@ enyo.kind({
 	},
 	close: function(){
 		this.inherited(arguments);
-		enyo.keyboard.hide();
+		
 		enyo.keyboard.setManualMode(false);
+		enyo.keyboard.forceHide();
 	},
 	buildAccounts: function() {
 
