@@ -145,10 +145,8 @@ AppUtils.emailTweet = function(tweetobj) {
 
 
 AppUtils.SMSTweet = function(tweetobj) {	
-	var message = ""
-				+ "From @" + tweetobj.author_username + ":\n"
-				+ tweetobj.text_raw + "\n\n"
-				+ "Shared from Spaz HD http://getspaz.com\n\n";
+	var message = "From @" + tweetobj.author_username + ": " + tweetobj.text_raw + " "
+				+ "Shared from Spaz HD http://getspaz.com";
 	
 	var sms_srvc = new enyo.PalmService({
 		service: 'palm://com.palm.applicationManager/',
