@@ -10,6 +10,7 @@ enyo.kind({
 	},
 	columnData: [],
 	components: [
+		{kind: "Spaz.Notifier", name:"notifier"},
 		{name:"columnsScroller", kind: "SnapScroller", className: "enyo-hflexbox", flex: 1, vertical: false, autoVertical: false, style: "background-color: black; padding: 2px;", components:[
 		]},
 		{name: "confirmPopup", kind: "enyo.Popup", scrim : true, components: [
@@ -37,6 +38,12 @@ enyo.kind({
 		}, this);
 		AppUI.addFunction("removeEntryById", function(inEntryId) {
 			this.removeEntryById(inEntryId);
+		}, this);
+		AppUI.addFunction("addEntryToNotifications", function(inEntry) {
+			this.$.notifier.addEntry(inEntry);
+		}, this);
+		AppUI.addFunction("raiseNotifications", function() {
+			this.$.notifier.raiseNotifications();
 		}, this);
 	},
 	
@@ -189,6 +196,7 @@ enyo.kind({
 		this.loadingColumns--;
 		if (this.loadingColumns <= 0) {
 			this.doRefreshAllFinished();
+			AppUI.raiseNotifications();
 		}
 	},
 
