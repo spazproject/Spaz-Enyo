@@ -15,13 +15,13 @@ enyo.kind({
 			{kind: "Spacer"},
 			{kind: "ToolButton", icon: "source/images/icon-close.png", style: "position: relative; bottom: 7px;", onclick: "doClose"}
 		]},	
-		{name: "radioGroup", kind: "enyo.RadioGroup", components: [
+		{name: "radioGroup", kind: "enyo.RadioGroup", onChange: "switchSearchType", components: [
 			{name: "topics", kind: "enyo.RadioButton", label: enyo._$L("Topics")},
 			{name: "users", kind: "enyo.RadioButton", label: enyo._$L("Users")}
     	]},
     	{style: "height: 5px;"},
 		{kind: "HFlexBox", components: [
-			{name:"searchTextBox", kind: "RichText", alwaysLooksFocused: true, selectAllOnFocus: true, richContent: false, hint: "Enter query here...", multiline: false, flex: 1, onkeydown: "searchBoxKeydown"},
+			{name:"searchTextBox", kind: "RichText", alwaysLooksFocused: true, selectAllOnFocus: true, richContent: false, multiline: false, flex: 1, onkeydown: "searchBoxKeydown"},
 		]},
 		{kind: "HFlexBox", style: "padding-top: 5px", components: [
 			{kind: "Button", style: "padding: 0px 5px;", components: [
@@ -40,6 +40,7 @@ enyo.kind({
 		if(this.lazy) {
 			this.validateComponents();
 		}
+		this.switchSearchType();
 		this.$.searchTextBox.setValue("");
 		this.$.searchTextBox.forceFocus();
 		this.buildAccounts();
@@ -80,5 +81,16 @@ enyo.kind({
 				break;
 		}
 		this.doClose();
+	},
+	switchSearchType: function() {
+		switch(this.$.radioGroup.getValue()) {
+			case 0:
+			default:
+				this.$.searchTextBox.setHint(enyo._$L("Enter query..."));
+				break;
+			case 1:
+				this.$.searchTextBox.setHint(enyo._$L("Enter username..."));
+				break;
+		}
 	}
 });
