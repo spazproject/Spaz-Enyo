@@ -48,16 +48,17 @@ enyo.kind({
 		}
 		
 		this.$.typeButton.setShowing(false);
-	
-		this.createComponents(
-			[
-				{name: "accountsList", kind: "Spaz.AccountsList", onAccountClick: "viewAccountFromListTap"},
-				{name: "button", kind: "Button", caption: "Add an Account", onclick: "newAccount"}
-			]
-		);
+		
+		if(!this.$.accountsList) {
+			this.createComponent({name: "accountsList", kind: "Spaz.AccountsList", onAccountClick: "viewAccountFromListTap"});
+			this.$.accountsList.render();
+		}
+		if(!this.$.button){
+			this.createComponent({name: "button", kind: "Button", caption: "Add an Account", onclick: "newAccount"});
+			this.$.button.render();
+		}
+		
 		this.$.accountsList.buildAccounts(); // rebuild the accounts array
-		this.render();
-
 	},
 	"goDownLevel": function(inId){
 		var label;
@@ -102,7 +103,7 @@ enyo.kind({
 				{kind: "Group", /*caption: "Options",*/ components: [
 					{name: "accountInfo", kind: "Item", layoutKind: "HFlexLayout", flex: 1, owner: this, components: [
 						{name: "spinner", width: "50px", height: "55px", owner: this, components: [
-							{kind: "Spinner", style: "margin: auto;", showing: true},
+							{name: "innerSpinner", kind: "Spinner", style: "margin: auto;", showing: true},
 						]},
 						{name: "avatar", kind: "Image", height: "50px", width: "50px", className: "avatar", showing: false, owner: this},
 						{width: "10px"},
@@ -127,7 +128,7 @@ enyo.kind({
 				this.$.avatar.show();
 				this.$.avatar.setSrc(user.profile_image_url);
 				this.$.spinner.hide();
-				this.$.spinner.getControls()[0].hide();
+				this.$.innerSpinner.hide();
 			}), 
 			function(xhr, msg, exc){
 				console.error("Couldn't find user's avatar");
@@ -168,7 +169,7 @@ enyo.kind({
 						]},
 						{kind: "HFlexBox", components: [
 							{kind: "Button", flex: 1, caption: "Cancel", onclick: "goTopLevel"},
-							{name: "saveButton", kind: "ActivityButton", flex: 1, caption: "Save", onclick: "saveTwitterAccount"}
+							{name: "saveButton", kind: "ActivityButton", flex: 1, caption: enyo._$L("Save"), className: "enyo-button-affirmative", onclick: "saveTwitterAccount"}
 						]}
 					]}
 				]);
