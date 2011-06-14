@@ -279,7 +279,7 @@ enyo.kind({
 					}));
 				break;
 		}
-		this.$.scroller.start();
+		this.$.scroller.setScrollTop(0);
 		this.$.list.render();
 
 	},
