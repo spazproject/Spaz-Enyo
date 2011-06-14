@@ -4,7 +4,7 @@ enyo.kind({
 	scrim: true,
 	modal: true,
 	width: "400px",
-	height: "500px",
+	height: "600px",
 	layoutKind: "VFlexLayout",
 	events: {
 		onClose: ""
@@ -15,7 +15,7 @@ enyo.kind({
 			{kind: "Spacer"},
 			{kind: "ToolButton", icon: "source/images/icon-close.png", style: "position: relative; bottom: 7px;", onclick: "doClose"}
 		]},	
-		{kind: "FadeScroller", flex: 1, components: [ // @TODO: scroll fades.
+		{name: "scroller", kind: "FadeScroller", flex: 1, components: [ // @TODO: scroll fades.
 			/*{kind: "Group", caption: "Columns", components: [
 				{kind: "Item", layoutKind: "HFlexLayout", components: [
 					{content: "Default Width"},
@@ -160,7 +160,11 @@ enyo.kind({
 		this.inherited(arguments);
 	},
 	showAtCenter: function(){
+		if(this.lazy) {
+			this.validateComponents();
+		}
 		
+		this.$.scroller.setScrollTop(0);
 		this.openAtCenter();
 		
 		this.$.shurl.setItems(new SpazShortURL().getServiceLabels());
