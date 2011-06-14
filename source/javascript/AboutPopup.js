@@ -73,6 +73,7 @@ enyo.kind({
 	},
 	
 	showLicense: function(state) {
+		this.$.contentScroller.setScrollTop(0);
 		if (state === false) {
 			this.$.licenseContent.hide();
 			this.$.aboutContent.show();
