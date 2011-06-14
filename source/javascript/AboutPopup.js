@@ -16,7 +16,7 @@ enyo.kind({
 				// {kind: "enyo.Image", style: "position: absolute; left:-100px; top:-100px; opacity: 0.2; width: 90%; z-index: -100", src: "spaz-icon-flat-512.png"},
 			]},
 			
-			{name: "contentScroller", flex:1, kind: "enyo.BasicScroller", onclick: "entryClick", components: [
+			{name: "contentScroller", flex:1, kind: "enyo.BasicScroller", autoVertical: true, onclick: "entryClick", components: [
 				{kind: "HtmlContent", name:"aboutContent", style: "font-size: 14px", srcId: "aboutContent"},
 				{kind: "HtmlContent", name:"licenseContent", style: "font-size: 14px", srcId: "licenseContent"}
 			]},
