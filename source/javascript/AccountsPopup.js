@@ -22,10 +22,6 @@ enyo.kind({
 			{kind: "Spacer"},
 			{kind: "ToolButton", icon: "source/images/icon-close.png", style: "position: relative; bottom: 7px;", onclick: "doClose"}
 		]},	
-		//very thin divider
-		{name: "accountsList", kind: "Spaz.AccountsList", onAccountClick: "viewAccountFromListTap"},
-		{kind: "Button", caption: "Add an Account", onclick: "newAccount"},
-		
 		{name: "typeButton", kind: "Button", style: "padding: 0px 5px;", showing: false, components: [
 		   {name: "type", "kind":"ListSelector", onChange: "changeService", className: "accountSelection", value: SPAZCORE_SERVICE_TWITTER, items: [
 				    {caption: "Twitter", value: SPAZCORE_SERVICE_TWITTER},
@@ -36,6 +32,10 @@ enyo.kind({
 	],
 	oauth: null,
 	showAtCenter: function(){
+		if(this.lazy) {
+			this.validateComponents();
+		}
+		this.goTopLevel();
 		this.openAtHalfCenter();
 	},
 	"goTopLevel": function(inSender, InEvent){
@@ -43,7 +43,9 @@ enyo.kind({
 
 		this.$.header.destroyComponents();
 		
-		this.$.secondLevel.destroy();	
+		if(this.$.secondLevel) {
+			this.$.secondLevel.destroy();	
+		}
 		
 		this.$.typeButton.setShowing(false);
 	
