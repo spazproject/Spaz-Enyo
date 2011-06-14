@@ -163,6 +163,8 @@ enyo.kind({
 		
 		this.openAtCenter();
 		
+		this.$.shurl.setItems(new SpazShortURL().getServiceLabels());
+		
 		_.each(this.getComponents(), function(component){
 			if(component.preferenceProperty){
 				component.kind
@@ -173,9 +175,6 @@ enyo.kind({
 				}
 			}
 		});
-		var shurl = new SpazShortURL();
-		this.$.shurl.setItems(shurl.getServiceLabels());
-	
 	},
 	setPreference: function(inSender, inValue){
 		console.log(inSender, inValue);
