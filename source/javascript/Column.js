@@ -240,7 +240,7 @@ enyo.kind({
 									item.read = false;
 								}
 							}
-						};
+						}
 					});
 					
 					if (data.length > 0) {
@@ -256,7 +256,6 @@ enyo.kind({
 								data[i].read = true;
 							} else {
 								data[i].read = false;
-								AppUI.addEntryToNotifications(data[i]);
 							}
 						}
 
@@ -279,6 +278,18 @@ enyo.kind({
 		this.markOlderAsRead();
 		
 		this.setLastRead();
+		
+		this.notifyOfNewEntries();
+		
+	},
+	
+	
+	notifyOfNewEntries: function() {
+		var new_entries = _.reject(this.entries, function(item) { return !!item.read; } );
+		
+		for (var i=0; i < new_entries.length; i++) {
+			AppUI.addEntryToNotifications(new_entries[i]);
+		}
 	},
 	
 	markAllAsRead: function() {

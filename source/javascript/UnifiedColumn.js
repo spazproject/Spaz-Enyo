@@ -176,6 +176,8 @@ enyo.kind({
 		this.markOlderAsRead();
 		
 		this.setLastRead();
+		
+		this.notifyOfNewEntries();
 
 	},
 	
