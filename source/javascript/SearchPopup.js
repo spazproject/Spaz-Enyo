@@ -15,6 +15,11 @@ enyo.kind({
 			{kind: "Spacer"},
 			{kind: "ToolButton", icon: "source/images/icon-close.png", style: "position: relative; bottom: 7px;", onclick: "doClose"}
 		]},	
+		{name: "radioGroup", kind: "enyo.RadioGroup", components: [
+			{name: "topics", kind: "enyo.RadioButton", label: enyo._$L("Topics")},
+			{name: "users", kind: "enyo.RadioButton", label: enyo._$L("Users")}
+    	]},
+    	{style: "height: 5px;"},
 		{kind: "HFlexBox", components: [
 			{name:"searchTextBox", kind: "RichText", alwaysLooksFocused: true, selectAllOnFocus: true, richContent: false, hint: "Enter query here...", multiline: false, flex: 1, onkeydown: "searchBoxKeydown"},
 		]},
@@ -23,13 +28,10 @@ enyo.kind({
 			   {name: "accountSelection", "kind":"ListSelector", className: "accountSelection"}
 			]},
 			{kind: "Spacer", style: "min-width: 50px"},
-			{name: "searchButton", kind: "Button", style: "padding-top: 6px;", label: enyo._$L("Search"), onclick: "createColumn"}
+			{name: "searchButton", kind: "Button", style: "padding-top: 6px;", label: enyo._$L("Search"), onclick: "search"}
 		]}
 		
 	],
-	create: function(){
-		this.inherited(arguments);
-	},
 	close: function(){
 		this.inherited(arguments);
 		enyo.keyboard.setManualMode(false); // closes the keyboard
@@ -61,14 +63,22 @@ enyo.kind({
 	},
 	searchBoxKeydown: function(inSender, inEvent) {
 		if (inEvent.keyCode === 13) {
-			// Enter to send - this should be a pref evenutally.
-			this.createColumn();
+			this.search();
 			inEvent.preventDefault();	
 		}
 	},
-	createColumn: function(){
-		this.doCreateColumn(this.$.accountSelection.getValue(), SPAZ_COLUMN_SEARCH, this.$.searchTextBox.getValue());
+	search: function() {
+		switch(this.$.radioGroup.getValue()) {
+			case 0:
+			default:
+				this.doCreateColumn(this.$.accountSelection.getValue(), SPAZ_COLUMN_SEARCH, this.$.searchTextBox.getValue());
+				break;
+			case 1:
+				var account = App.Users.get(this.$.accountSelection.getValue());
+				var username = this.$.searchTextBox.getValue().replace("@", "");
+				AppUI.viewUser(username, account.type, account.id);
+				break;
+		}
 		this.doClose();
 	}
-	
 });
