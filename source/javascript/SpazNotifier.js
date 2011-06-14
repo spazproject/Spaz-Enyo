@@ -8,7 +8,7 @@ enyo.kind({
 		if (!inEntry.is_author) {
 			var account_id = inEntry.account_id;
 			var account_label = App.Users.getLabel(inEntry.account_id);
-			var service_id = service_id;
+			var service_id = inEntry.service_id;
 			var entry_type = 'notify-newmessages';
 			if (inEntry.is_mention) {
 				entry_type = 'notify-mentions';
