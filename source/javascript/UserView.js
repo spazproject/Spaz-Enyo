@@ -414,6 +414,7 @@ enyo.kind({
 				}
 				self.enableFollowButton(true);
 				self.setFollowButtonIcon(self.user.are_following);
+				self.$.message.setShowing(data.relationship.source.followed_by);
 			},
 			function(xhr, msg, exc) {
 				AppUtils.showBanner($L('Could not retrieve relationship info'));
