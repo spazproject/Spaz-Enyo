@@ -5,7 +5,6 @@ enyo.kind({
 	modal: true,
 	autoClose: false,
 	dismissWithClick: false,
-	//width: "400px",
 	events: {
 		onClose: ""
 	},
@@ -15,9 +14,7 @@ enyo.kind({
 	},
 	isDM: false,
 	inReplyToId:null, // set this when making a reply to a specific entry
-	width: "500px",
 	showKeyboardWhenOpening:false, // opens the keyboard and positions the popup correctly
-	//style: "min-width: 400px;",
 	components: [
 		{name:'filePicker', kind: "FilePicker", fileType:["image"], allowMultiSelect:false, onPickFile: "handleResult"},
 		{layoutKind: "HFlexLayout", components: [
@@ -96,7 +93,7 @@ enyo.kind({
 				width = account.caption.length;			
 			}
 		});
-		this.applyStyle("width", 490 + width + "px"); //set the width based on the longest username.
+		this.applyStyle("min-width", 490 + width + "px"); //set the width based on the longest username.
 
 		this.setAllDisabled(false);
 		this.$.postTextBoxContainer.setShowing(true);
@@ -105,8 +102,6 @@ enyo.kind({
 		this.$.postTextBox.forceFocus();
 		
 		enyo.keyboard.show();
-		//var width = this.getBounds().width + "px"
-		
 	},
 
 	dmUserChanged: function(){
