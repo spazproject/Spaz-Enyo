@@ -221,15 +221,15 @@ enyo.kind({
 		App.Prefs = new SpazPrefs(SPAZ_DEFAULT_PREFS, null, {
 			'network-refreshinterval' : {
 				'onGet': function(key, value) {
-					if (value < (5*60*1000)) { // 5 min
-						value = (5*60*1000);
+					if (value < 0) {
+						value = 0;
 					}
 					sch.debug(key + ':' + value);
 					return value;
 				},
 				'onSet': function(key, value) {
-					if (value < (5*60*1000)) { // 5 min
-						value = (5*60*1000);
+					if (value < 0) {
+						value = 0;
 					}
 					sch.debug(key + ':' + value);
 					return value;					
