@@ -56,7 +56,7 @@ enyo.kind({
 		this.$.searchBox.setShowing(false);
 		//this.$.avatarList.buildList();
 		this.buildAccounts();
-		this.openAtHalfCenter();
+		this.openAtTopCenter();
 	},
 	newSearchColumn: function(inSender, inEvent){
 		this.doCreateColumn(this.$.accountSelection.getValue(), "search", this.$.searchTextBox.getValue());

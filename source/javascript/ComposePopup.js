@@ -99,7 +99,7 @@ enyo.kind({
 		this.setAllDisabled(false);
 		this.$.postTextBoxContainer.setShowing(true);
 		
-		this.openAtHalfCenter();
+		this.openAtTopCenter();
 		this.$.postTextBox.forceFocus();
 		
 		enyo.keyboard.show();

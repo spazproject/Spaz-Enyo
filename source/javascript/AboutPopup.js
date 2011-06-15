@@ -35,7 +35,7 @@ enyo.kind({
 			this.validateComponents();
 		}
 		// this.$.scroller.setScrollTop(0);
-		this.openAtHalfCenter();
+		this.openAtTopCenter();
 		this.showLicense(false);
 	},
 	

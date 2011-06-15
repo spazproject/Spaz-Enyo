@@ -36,7 +36,7 @@ enyo.kind({
 			this.validateComponents();
 		}
 		this.goTopLevel();
-		this.openAtHalfCenter();
+		this.openAtTopCenter();
 	},
 	"goTopLevel": function(inSender, InEvent){
 		this.editing_acc_id = null; // reset this
