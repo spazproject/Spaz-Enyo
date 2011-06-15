@@ -58,7 +58,10 @@ enyo.kind({
 		
 		// if this column does not already have entries, gotta fetch from the network
 		if(this.entries.length === 0) {
-			setTimeout(enyo.bind(this, this.loadNewer), 1);
+			enyo.asyncMethod(this, this.loadNewer);
+		}
+		else {
+			enyo.asyncMethod(this, this.countUnread);
 		}
 	},
 	checkArrows: function(){
