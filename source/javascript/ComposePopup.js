@@ -93,7 +93,7 @@ enyo.kind({
 				width = account.caption.length;			
 			}
 		});
-		this.applyStyle("min-width", 490 + width + "px"); //set the width based on the longest username.
+		this.applyStyle("width", 490 + width + "px"); //set the width based on the longest username.
 
 		this.setAllDisabled(false);
 		this.$.postTextBoxContainer.setShowing(true);

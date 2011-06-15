@@ -78,11 +78,8 @@ enyo.kind({
 			]}
 		]}
 	],
-	entryChanged: function(){
-		
-		var self = this;
-		
-		if(this.$.entry.content !== this.entry.message){
+	entryChanged: function(inOldEntry){
+		if(this.entry.service_id !== inOldEntry.service_id){
 
 			var events = this.doAddViewEvent({type: (this.entry.is_private_message === true) ? "message" : "entry", entry: this.entry});
 		    if(events.length > 1){
@@ -124,18 +121,18 @@ enyo.kind({
 			
 			// expand URLs
 			var shurl = new SpazShortURL();
-			var entryhtml = self.$.entry.getContent();
+			var entryhtml = this.$.entry.getContent();
 			var urls = shurl.findExpandableURLs(entryhtml);
 			if (urls) {
 				for (var i = 0; i < urls.length; i++) {
 					shurl.expand(urls[i], {
-						'onSuccess':function(data) {
+						'onSuccess': enyo.bind(this, function(data) {
 							entryhtml = shurl.replaceExpandableURL(entryhtml, data.shorturl, data.longurl)
-							self.$.entry.setContent(entryhtml);
+							this.$.entry.setContent(entryhtml);
 							if ((i + 1) >= urls.length) {
-								self.buildMediaPreviews();
+								this.buildMediaPreviews();
 							}
-						}
+						})
 					});
 				}
 			} else {
