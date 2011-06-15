@@ -18,7 +18,8 @@ enyo.kind({
 			//		{"type": "twitter", "username": "@Tibfib" etc
 			//
 
-		}
+		},
+		entries: []
 	},
 	components: [
 		{kind: "Toolbar", height: "42px", defaultKind: "Control", onclick: "scrollToTop", style: "min-height: 42px; color: white; color: white; padding-left: 5px;", components: [
@@ -49,7 +50,6 @@ enyo.kind({
 
 		{name: "entryClickPopup", kind: "Spaz.EntryClickPopup"}
 	],
-	entries: [],
 	create: function(){
 		this.inherited(arguments);
      	this.infoChanged();
