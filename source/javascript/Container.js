@@ -111,13 +111,6 @@ enyo.kind({
 		this.$.columnsScroller.render();
 		this.columnEntries = [];
 		
-		// if this column does not already have entries, gotta fetch from the network
-		enyo.forEach(this.$.columnsScroller.getControls(), function(control) {
-			if(control.getEntries().length === 0) {
-				setTimeout(enyo.bind(control, control.loadNewer), 1);
-			}
-		});
-		
 		App.Prefs.set('columns', this.columnData);		
 	},
 	createColumn: function(inAccountId, inColumn, inQuery){
@@ -126,6 +119,7 @@ enyo.kind({
 		
 		this.columnData.push({type: inColumn, accounts: [inAccountId], query: inQuery});
 
+		this.saveColumnEntries();
 		this.createColumns();
 
 		this.$.columnsScroller.snapTo(this.columnData.length-1);
@@ -133,7 +127,7 @@ enyo.kind({
 	},
 
 	moveColumnLeft: function(inSender){
-		this.columnEntries = this.getColumnEntries();
+		this.saveColumnEntries();
 		
 		var del_idx = parseInt(inSender.name.replace('Column', ''), 10);
 		var column = this.columnData.splice(del_idx, 1)[0];
@@ -144,7 +138,7 @@ enyo.kind({
 		this.createColumns();
 	},
 	moveColumnRight: function(inSender){
-		this.columnEntries = this.getColumnEntries();
+		this.saveColumnEntries();
 		
 		var del_idx = parseInt(inSender.name.replace('Column', ''), 10);
 		var column = this.columnData.splice(del_idx, 1)[0];
@@ -176,9 +170,8 @@ enyo.kind({
 
 			this.columnToDelete.destroy();
 			this.columnToDelete = null;
-
-            this.columnsFunction("checkArrows");
-
+			
+			this.createColumns();
 		}
 	},
 	columnsFunction: function(functionName, opts){
@@ -243,12 +236,11 @@ enyo.kind({
 		});
 	},
 	
-	getColumnEntries: function() {
-		var columnEntries = [];
+	saveColumnEntries: function() {
+		this.columnEntries = [];
 		enyo.forEach(this.$.columnsScroller.getControls(), enyo.bind(this, function(control) {
 			var col_idx = parseInt(control.name.replace('Column', ''), 10);
-			columnEntries[col_idx] = control.getEntries();
+			this.columnEntries[col_idx] = control.getEntries();
 		}));
-		return columnEntries;
 	}
 });

@@ -54,6 +54,11 @@ enyo.kind({
 		this.inherited(arguments);
      	this.infoChanged();
 		this.checkArrows();     
+		
+		// if this column does not already have entries, gotta fetch from the network
+		if(this.entries.length === 0) {
+			setTimeout(enyo.bind(this, this.loadNewer), 1);
+		}
 	},
 	checkArrows: function(){
 		if(this.name === "Column0"){
