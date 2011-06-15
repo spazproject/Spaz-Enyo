@@ -50,7 +50,7 @@ enyo.kind({
 	
 	loadAndCreateColumns: function() {
 		this.columnData = App.Prefs.get('columns') || [];
-		this.createColumns(true);
+		this.createColumns();
 	},
 	
 	getDefaultColumns: function(inAccountId) {
@@ -76,7 +76,7 @@ enyo.kind({
 		return default_columns;
 	},
 	
-	createColumns: function(inRefresh) {
+	createColumns: function() {
 		this.columnsFunction("destroy"); //destroy them all. don't want to always do this.
 
 		if(this.columnData.length === 0){
@@ -109,10 +109,14 @@ enyo.kind({
 		};
 		this.$.columnsScroller.createComponents(cols);
 		this.$.columnsScroller.render();
+		this.columnEntries = [];
 		
-		if(inRefresh) {
-			setTimeout(AppUI.refresh, 1);
-		}
+		// if this column does not already have entries, gotta fetch from the network
+		enyo.forEach(this.$.columnsScroller.getControls(), function(control) {
+			if(control.getEntries().length === 0) {
+				setTimeout(enyo.bind(control, control.loadNewer), 1);
+			}
+		});
 		
 		App.Prefs.set('columns', this.columnData);		
 	},
@@ -122,20 +126,14 @@ enyo.kind({
 		
 		this.columnData.push({type: inColumn, accounts: [inAccountId], query: inQuery});
 
-		this.createColumns(true);
+		this.createColumns();
 
 		this.$.columnsScroller.snapTo(this.columnData.length-1);
 
 	},
 
 	moveColumnLeft: function(inSender){
-		this.columnEntries = [];
-		enyo.forEach (this.$.columnsScroller.getControls(), enyo.bind(this, function(control) {
-			var col_idx = parseInt(control.name.replace('Column', ''), 10);
-			if(control.getEntries) {
-				this.columnEntries[col_idx] = control.getEntries();
-			}
-		}));
+		this.columnEntries = this.getColumnEntries();
 		
 		var del_idx = parseInt(inSender.name.replace('Column', ''), 10);
 		var column = this.columnData.splice(del_idx, 1)[0];
@@ -143,16 +141,10 @@ enyo.kind({
 		this.columnData.splice(del_idx-1, 0, column);
 		this.columnEntries.splice(del_idx-1, 0, entries);
 		
-		this.createColumns(false);
+		this.createColumns();
 	},
 	moveColumnRight: function(inSender){
-		this.columnEntries = [];
-		enyo.forEach (this.$.columnsScroller.getControls(), enyo.bind(this, function(control) {
-			var col_idx = parseInt(control.name.replace('Column', ''), 10);
-			if(control.getEntries) {
-				this.columnEntries[col_idx] = control.getEntries();
-			}
-		}));
+		this.columnEntries = this.getColumnEntries();
 		
 		var del_idx = parseInt(inSender.name.replace('Column', ''), 10);
 		var column = this.columnData.splice(del_idx, 1)[0];
@@ -160,7 +152,7 @@ enyo.kind({
 		this.columnData.splice(del_idx+1, 0, column);
 		this.columnEntries.splice(del_idx+1, 0, entries);
 		
-		this.createColumns(false);
+		this.createColumns();
 	},
 	deleteColumn: function(inSender) {
 		this.columnToDelete = inSender;
@@ -229,7 +221,7 @@ enyo.kind({
 	
 	accountAdded: function(inAccountId) {
 		this.columnData = this.columnData.concat(this.getDefaultColumns(inAccountId));
-		this.createColumns(true);
+		this.createColumns();
 	},
 	
 	removeColummnsForAccount: function(inAccountId) {
@@ -241,7 +233,7 @@ enyo.kind({
 			}
 		}
 		if(this.columnData.length !== lengthBefore) {
-			this.createColumns(true);
+			this.createColumns();
 		}
 	},
 	
@@ -249,5 +241,14 @@ enyo.kind({
 		enyo.forEach(this.getComponents(), function (component) {
 			component.removeEntryById && component.removeEntryById(inEntryId);
 		});
+	},
+	
+	getColumnEntries: function() {
+		var columnEntries = [];
+		enyo.forEach(this.$.columnsScroller.getControls(), enyo.bind(this, function(control) {
+			var col_idx = parseInt(control.name.replace('Column', ''), 10);
+			columnEntries[col_idx] = control.getEntries();
+		}));
+		return columnEntries;
 	}
 });
