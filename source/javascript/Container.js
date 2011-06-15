@@ -9,6 +9,7 @@ enyo.kind({
 		onShowAccountsPopup: ""
 	},
 	columnData: [],
+	columnEntries: [],
 	components: [
 		{kind: "Spaz.Notifier", name:"notifier"},
 		{name:"columnsScroller", kind: "SnapScroller", className: "enyo-hflexbox", flex: 1, vertical: false, autoVertical: false, style: "background-color: black; padding: 2px;", components:[
@@ -49,7 +50,7 @@ enyo.kind({
 	
 	loadAndCreateColumns: function() {
 		this.columnData = App.Prefs.get('columns') || [];
-		this.createColumns();
+		this.createColumns(true);
 	},
 	
 	getDefaultColumns: function(inAccountId) {
@@ -75,7 +76,7 @@ enyo.kind({
 		return default_columns;
 	},
 	
-	createColumns: function() {
+	createColumns: function(inRefresh) {
 		this.columnsFunction("destroy"); //destroy them all. don't want to always do this.
 
 		if(this.columnData.length === 0){
@@ -101,11 +102,17 @@ enyo.kind({
 			if(col.info.type === SPAZ_COLUMN_HOME){
 				col.kind = "Spaz.UnifiedColumn";
 			}
+			if(this.columnEntries[i]) {
+				col.entries = this.columnEntries[i];
+			}
 			cols.push(col);
 		};
 		this.$.columnsScroller.createComponents(cols);
 		this.$.columnsScroller.render();
-		setTimeout(AppUI.refresh, 1);
+		
+		if(inRefresh) {
+			setTimeout(AppUI.refresh, 1);
+		}
 		
 		App.Prefs.set('columns', this.columnData);		
 	},
@@ -115,29 +122,45 @@ enyo.kind({
 		
 		this.columnData.push({type: inColumn, accounts: [inAccountId], query: inQuery});
 
-		this.createColumns();
+		this.createColumns(true);
 
 		this.$.columnsScroller.snapTo(this.columnData.length-1);
 
 	},
 
 	moveColumnLeft: function(inSender){
+		this.columnEntries = [];
+		enyo.forEach (this.$.columnsScroller.getControls(), enyo.bind(this, function(control) {
+			var col_idx = parseInt(control.name.replace('Column', ''), 10);
+			if(control.getEntries) {
+				this.columnEntries[col_idx] = control.getEntries();
+			}
+		}));
+		
 		var del_idx = parseInt(inSender.name.replace('Column', ''), 10);
 		var column = this.columnData.splice(del_idx, 1)[0];
+		var entries = this.columnEntries.splice(del_idx, 1)[0];
 		this.columnData.splice(del_idx-1, 0, column);
-
-		this.createColumns();
-
-
+		this.columnEntries.splice(del_idx-1, 0, entries);
+		
+		this.createColumns(false);
 	},
 	moveColumnRight: function(inSender){
+		this.columnEntries = [];
+		enyo.forEach (this.$.columnsScroller.getControls(), enyo.bind(this, function(control) {
+			var col_idx = parseInt(control.name.replace('Column', ''), 10);
+			if(control.getEntries) {
+				this.columnEntries[col_idx] = control.getEntries();
+			}
+		}));
+		
 		var del_idx = parseInt(inSender.name.replace('Column', ''), 10);
 		var column = this.columnData.splice(del_idx, 1)[0];
+		var entries = this.columnEntries.splice(del_idx, 1)[0];
 		this.columnData.splice(del_idx+1, 0, column);
-
-		this.createColumns();	
-
-
+		this.columnEntries.splice(del_idx+1, 0, entries);
+		
+		this.createColumns(false);
 	},
 	deleteColumn: function(inSender) {
 		this.columnToDelete = inSender;
@@ -206,7 +229,7 @@ enyo.kind({
 	
 	accountAdded: function(inAccountId) {
 		this.columnData = this.columnData.concat(this.getDefaultColumns(inAccountId));
-		this.createColumns();
+		this.createColumns(true);
 	},
 	
 	removeColummnsForAccount: function(inAccountId) {
@@ -218,7 +241,7 @@ enyo.kind({
 			}
 		}
 		if(this.columnData.length !== lengthBefore) {
-			this.createColumns();
+			this.createColumns(true);
 		}
 	},
 	
