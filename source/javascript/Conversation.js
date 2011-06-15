@@ -16,7 +16,7 @@ enyo.kind({
 			{name: "item", kind: "Spaz.Entry", onclick: "entryClick"}
 		]}*/
 		{name: "list", kind: "VirtualRepeater", onSetupRow: "setupRow", components: [
-			{name: "item", kind: "Spaz.Entry", ignoreUnread: true, onEntryClick: "entryClick"}
+			{name: "item", kind: "Spaz.Entry", ignoreUnread: true, onEntryClick: "entryClick", onEntryHold: "entryHold"}
 		]},
 		//{name: "list", className: "conversation list", components: []},
 		
@@ -90,6 +90,9 @@ enyo.kind({
 		}
 	},
 	entryClick: function(inSender, inEvent){
+		AppUI.viewEntry(inSender.entry);
+	},
+	entryHold: function(inSender, inEvent) {
 		this.$.entryClickPopup.showAtEvent(inSender.entry, inEvent);
 	},
 	

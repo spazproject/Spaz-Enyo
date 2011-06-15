@@ -35,7 +35,8 @@ enyo.kind({
 			{
 				name: "item", 
 				kind: "Spaz.Entry",
-				onEntryClick: "entryClick"
+				onEntryClick: "entryClick",
+				onEntryHold: "entryHold"
 			}
 		]},
 		{kind: "Toolbar", height: "42px", onclick: "scrollToBottom", style: "min-height: 42px; color: white;", components: [
@@ -364,6 +365,9 @@ enyo.kind({
 		}
 	},
 	entryClick: function(inSender, inEvent, inRowIndex) {
+		AppUI.viewEntry(this.entries[inRowIndex]);
+	},
+	entryHold: function(inSender, inEvent, inRowIndex) {
 		this.$.entryClickPopup.showAtEvent(this.entries[inRowIndex], inEvent);
 	},
 	scrollToTop: function(inSender, inEvent){

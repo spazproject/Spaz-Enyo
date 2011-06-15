@@ -3,14 +3,15 @@ enyo.kind({
 	kind: "HFlexBox",
 	flex: 1, 
 	events: {
-		onEntryClick: ""	
+		onEntryClick: "",
+		onEntryHold: ""
 	},
 	published: {
 		entry: "",
 		ignoreUnread: false
 	},
 	components: [
-		{className: "entry", kind: "Item", layoutKind: "HFlexLayout", onclick: "entryClick", flex: 1, tapHighlight: true, style: "padding-right: 5px;", components: [
+		{className: "entry", kind: "Item", layoutKind: "HFlexLayout", onclick: "entryClick", onmousehold: "entryHold", flex: 1, tapHighlight: true, style: "padding-right: 5px;", components: [
 			{kind: "Control", components: [
 					{name: "authorAvatar", kind: "Image", width: "50px", height: "50px", className: "avatar"},
 					{name: "reposterAvatar", kind: "Image", width: "25px", height: "25px", className: "small-avatar", showing: false}
@@ -80,4 +81,7 @@ enyo.kind({
 			this.doEntryClick(inEvent, inRowIndex);
 		}
 	},
+	entryHold: function(inSender, inEvent, inRowIndex) {
+		this.doEntryHold(inEvent, inEvent.rowIndex);
+	}
 })
