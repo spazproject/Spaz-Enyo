@@ -102,7 +102,9 @@ enyo.kind({
 		this.openAtTopCenter();
 		this.$.postTextBox.forceFocus();
 		
-		enyo.keyboard.show();
+		if(!this.isRepost) {
+			enyo.keyboard.show();
+		}
 	},
 
 	dmUserChanged: function(){
@@ -484,11 +486,9 @@ enyo.kind({
 
 		var self = this;
 
-		this.showAtCenter();
-
 		this.clear();
-		
-		this.isRepost = true; 
+		this.isRepost = true;
+		this.showAtCenter();
 
 		this.$.composeHeader.setContent('Repost');
 
