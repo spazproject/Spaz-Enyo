@@ -110,7 +110,7 @@ enyo.kind({
 			this.$.realname.setContent(this.entry.author_fullname||this.entry.author_username);
 			this.$.username.setContent("@" + this.entry.author_username);
 			var url = this.entry.author_url || '';
-			this.$.url.setContent(sch.autolink(enyo.string.runTextIndexer(url)), url.length);
+			this.$.url.setContent(sch.autolink(url), url.length);
 			this.$.bio.setContent(AppUtils.makeItemsClickable(this.entry.author_description) || '');
 			this.$.time.setContent(sch.getRelativeTime(this.entry.publish_date));
 			if (this.entry._orig.source) {
@@ -180,7 +180,7 @@ enyo.kind({
 		
 		var siu = new SpazImageURL();
 		var imageThumbUrls = siu.getThumbsForUrls(this.$.entry.getContent());
-		console.log(this.entry.text_raw, imageThumbUrls);
+		enyo.log(this.entry.text_raw, imageThumbUrls);
 		var imageFullUrls = siu.getImagesForUrls(this.$.entry.getContent());
 		this.imageFullUrls = [];
 		if (imageThumbUrls) {
@@ -221,7 +221,7 @@ enyo.kind({
 						});
 						embedlyComponent.render();
 					} else {
-						console.log("skipping oembed with <embed> tag in it", oembed.code);
+						enyo.log("skipping oembed with <embed> tag in it", oembed.code);
 					}
 				}
 			});
@@ -253,11 +253,11 @@ enyo.kind({
 	    this.$.conversation.loadConversation();
 	},
 	onConversationLoadStart: function () {
-	    console.log("Load Conversation Start");
+	    enyo.log("Load Conversation Start");
 	    this.$.conversation_button.setActive(true);
 	},
 	onConversationLoadDone: function() {
-	    console.log("Load Conversation Done");
+	    enyo.log("Load Conversation Done");
 	    this.$.conversation_button.setActive(false);
 	},
 	reply: function() {
@@ -287,7 +287,7 @@ enyo.kind({
 		that.twit.setCredentials(auth);
 			
 		if (that.entry.is_favorite) {
-			console.log('UNFAVORITING %j', that.entry);
+			enyo.log('UNFAVORITING %j', that.entry);
 			that.twit.unfavorite(
 				that.entry.service_id,
 				function(data) {
@@ -301,7 +301,7 @@ enyo.kind({
 				}
 			);
 		} else {
-			console.log('FAVORITING %j', that.entry);
+			enyo.log('FAVORITING %j', that.entry);
 			that.twit.favorite(
 				that.entry.service_id,
 				function(data) {

@@ -181,7 +181,7 @@ enyo.kind({
 		});
 	},
 	setPreference: function(inSender, inValue){
-		console.log(inSender, inValue);
+		enyo.log(inSender, inValue);
 		if(inSender.kind === "CheckBox"){
 			App.Prefs.set(inSender.preferenceProperty, inSender.getChecked());
 		} else {
