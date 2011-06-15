@@ -105,10 +105,11 @@ enyo.kind({
 		if (data) {
 			switch (this.info.type) {
 				default:
-					
+					console.time('unify_process');
 					/* check for duplicates based on the .id property */
 					/* we do this before conversion to save converting stuff
 					   that won't be needed */
+					console.time('unify_process_reject');
 					data = _.reject(data, function(item) {
 						for (var i = 0; i < self.entries.length; i++) {
 							if (item.id === self.entries[i].service_id) {
@@ -124,6 +125,7 @@ enyo.kind({
 						};
 						return false;
 					});
+					console.timeEnd('unify_process_reject');
 
 
 					/* convert to our internal format */
@@ -149,12 +151,14 @@ enyo.kind({
 					var last_home_entry = this.getLastHomeTimelineEntry();
 					enyo.log("last_home_entry.publish_date", last_home_entry.publish_date);
 				
+					console.time('unify_process_reject2');
 					this.entries = _.reject(this.entries, function(item) {
 						if ((item.publish_date < last_home_entry.publish_date)
 								&& (item._orig.SC_timeline_from !== SPAZCORE_SECTION_HOME)) {
 							return true;
 						}
 					});
+					console.timeEnd('unify_process_reject2');
 				
 					enyo.log("rejected non-home items with older pub date. length now "+this.entries.length);
 				
@@ -168,7 +172,7 @@ enyo.kind({
 				
 					this.$.list.refresh();
 					this.resizeHandler();
-
+					console.timeEnd('unify_process');
 					break;
 			}
 		}
