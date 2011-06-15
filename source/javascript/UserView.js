@@ -63,7 +63,8 @@ enyo.kind({
 							name: "entryItem", 
 							kind: "Spaz.Entry",
 							ignoreUnread: true,
-							onEntryClick: "entryClick"
+							onEntryClick: "entryClick",
+							onEntryHold: "entryHold"
 						},
 						{
 							name: "userItem", kind: "enyo.Item", tapHighlight: true, onclick: "userItemClick", components: [
@@ -316,6 +317,10 @@ enyo.kind({
 		}
 	},
 	entryClick: function(inSender, inEvent){
+		AppUI.viewEntry(inSender.entry);
+	},
+	
+	entryHold: function(inSender, inEvent) {
 		this.$.entryClickPopup.showAtEvent(inSender.entry, inEvent);
 	},
 	
