@@ -5,6 +5,7 @@ enyo.kind({
 	modal: true,
 	autoClose: false,
 	dismissWithClick: false,
+	width:"550px",
 	events: {
 		onClose: ""
 	},

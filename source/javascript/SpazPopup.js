@@ -13,8 +13,11 @@ enyo.kind({
 		var vp = this.calcViewport();
 		var o = {
 			left: Math.max(0, (vp.width - s.width) / 2),
-			top: Math.max(0, ((vp.height - s.height) / 2) / 2)
+			top: Math.max(0, ((vp.height - s.height) / 2) / 4)
 		};
 		return o;
+	},
+	resizeHandler: function() {
+		alert('resizeHandler');
 	}
 });

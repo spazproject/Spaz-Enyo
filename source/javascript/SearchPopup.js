@@ -1,6 +1,6 @@
 enyo.kind({
 	name: "Spaz.SearchPopup",
-	kind: "Popup",
+	kind: "Spaz.Popup",
 	scrim: true,
 	modal: true,
 	width: "400px",
@@ -44,7 +44,7 @@ enyo.kind({
 		this.$.searchTextBox.setValue("");
 		this.$.searchTextBox.forceFocus();
 		this.buildAccounts();
-		this.openAtCenter();
+		this.openAtHalfCenter();
 	},
 	buildAccounts: function() {
 

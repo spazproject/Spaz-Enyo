@@ -1,6 +1,6 @@
 enyo.kind({
 	name: "Spaz.AboutPopup",
-	kind: "Popup",
+	kind: "Spaz.Popup",
 	scrim: true,
 	modal: true,
 	events: {
@@ -35,7 +35,7 @@ enyo.kind({
 			this.validateComponents();
 		}
 		// this.$.scroller.setScrollTop(0);
-		this.openAtCenter();
+		this.openAtHalfCenter();
 		this.showLicense(false);
 	},
 	
