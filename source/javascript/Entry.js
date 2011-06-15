@@ -37,7 +37,7 @@ enyo.kind({
 		}
 
 		toMacroize += "<br/>";
-		toMacroize += AppUtils.makeItemsClickable(enyo.string.runTextIndexer(this.entry.text));
+		toMacroize += AppUtils.makeItemsClickable(this.entry.text);
 		toMacroize += "<br/>";
 
 		if (this.entry.read === false && this.ignoreUnread === false ) {	

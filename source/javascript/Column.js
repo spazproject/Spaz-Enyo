@@ -222,7 +222,7 @@ enyo.kind({
 		}, opts);
 		
 		if (data) {
-			console.log('adding new data');
+			enyo.log('adding new data');
 			switch (this.info.type) {
 				default:					
 					
@@ -272,7 +272,7 @@ enyo.kind({
 					break;
 			}
 		} else {
-			console.log('No new data');
+			enyo.log('No new data');
 		}
 		
 		this.markOlderAsRead();
@@ -293,11 +293,11 @@ enyo.kind({
 	},
 	
 	markAllAsRead: function() {
-		console.log('Marking all as read');
+		enyo.log('Marking all as read');
 		var changed = 0;
 		for (var i = this.entries.length - 1; i >= 0; i--){
 			if (this.entries[i].read !== true) {
-				// console.log('marking '+ this.entries[i].text_raw+ ' as read');
+				// enyo.log('marking '+ this.entries[i].text_raw+ ' as read');
 				this.entries[i].read = true;
 				changed++;
 			}

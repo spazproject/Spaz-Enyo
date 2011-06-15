@@ -69,7 +69,7 @@ enyo.kind({
 			}
 		}
 		
-		console.log(JSON.stringify(inParams));
+		enyo.log(JSON.stringify(inParams));
 		
 		switch(inParams.action) {
 
@@ -331,19 +331,19 @@ enyo.kind({
 		// Refresher methods
 		AppUI.addFunction("startAutoRefresher", function() {
 			if (App.Prefs.get('network-refreshinterval') > 0) {
-				console.log('Starting auto-refresher', App.Prefs.get('network-refreshinterval'));
+				enyo.log('Starting auto-refresher', App.Prefs.get('network-refreshinterval'));
 				App._refresher = setInterval(function() {
-					console.log("Auto-refreshing");
+					enyo.log("Auto-refreshing");
 					AppUI.refresh();
 				}, App.Prefs.get('network-refreshinterval'));
 			}
 		}, this);
 		AppUI.addFunction("stopAutoRefresher", function() {
-			console.log("Clearing auto-refresher");
+			enyo.log("Clearing auto-refresher");
 			clearInterval(App._refresher);
 		}, this);
 		AppUI.addFunction("restartAutoRefresher", function() {
-			console.log("Restarting auto-refresher");
+			enyo.log("Restarting auto-refresher");
 			AppUI.stopAutoRefresher();
 			AppUI.startAutoRefresher();
 		}, this);
@@ -355,7 +355,7 @@ enyo.kind({
 	},
 
 	showEntryView: function(inSender, inEntry){
-		console.log("showing entryView");
+		enyo.log("showing entryView");
 		if(!this.$.entryview){
 			
 			this.createComponent({
@@ -389,7 +389,7 @@ enyo.kind({
 	},
 	
 	showUserView: function(inSender, inUsername, inService, inAccountId) {
-		console.log("showing entryView");
+		enyo.log("showing entryView");
 		if(!this.$.userview){
 			this.createComponent(
 				{
@@ -422,8 +422,8 @@ enyo.kind({
 	viewEvents: [],
 	addViewEvent: function(inSender, inEvent){
 		this.viewEvents.push(inEvent);
-		console.log("pushed event");
-		console.log(inEvent);		
+		enyo.log("pushed event");
+		enyo.log(inEvent);		
 		return this.viewEvents;
 	},
 	goPreviousViewEvent: function(inSender){
@@ -558,16 +558,16 @@ enyo.kind({
 	
 	
 	messageTap: function(inSender, layer) {
-		console.log("Tapped on message: "+layer.text);
+		enyo.log("Tapped on message: "+layer.text);
 	},
 	iconTap: function(inSender, layer) {
-		console.log("Tapped on icon for message: "+layer.text);
+		enyo.log("Tapped on icon for message: "+layer.text);
 	},
 	dashboardClose: function(inSender) {
-		console.log("Closed dashboard.");
+		enyo.log("Closed dashboard.");
 	},
 	layerSwiped: function(inSender, layer) {
-		console.log("Swiped layer: "+layer.text);
+		enyo.log("Swiped layer: "+layer.text);
 	},
 
 

@@ -143,11 +143,11 @@ enyo.kind({
 					this.entries.sort(function(a,b){
 						return b.publish_date - a.publish_date; // newest first by date
 					});
-					console.log("Sorted by publish date. length now "+this.entries.length);
+					enyo.log("Sorted by publish date. length now "+this.entries.length);
 				
 				
 					var last_home_entry = this.getLastHomeTimelineEntry();
-					console.log("last_home_entry.publish_date", last_home_entry.publish_date);
+					enyo.log("last_home_entry.publish_date", last_home_entry.publish_date);
 				
 					this.entries = _.reject(this.entries, function(item) {
 						if ((item.publish_date < last_home_entry.publish_date)
@@ -156,12 +156,12 @@ enyo.kind({
 						}
 					});
 				
-					console.log("rejected non-home items with older pub date. length now "+this.entries.length);
+					enyo.log("rejected non-home items with older pub date. length now "+this.entries.length);
 				
-					console.log('current HOME entries:'+this.getHomeEntries().length);
-					console.log('current MENTION entries:'+this.getMentionEntries().length);
-					console.log('current DMS entries:'+this.getDMEntries().length);
-					console.log('current DMSENT entries:'+this.getDMSentEntries().length);
+					enyo.log('current HOME entries:'+this.getHomeEntries().length);
+					enyo.log('current MENTION entries:'+this.getMentionEntries().length);
+					enyo.log('current DMS entries:'+this.getDMEntries().length);
+					enyo.log('current DMSENT entries:'+this.getDMSentEntries().length);
 				
 					/* add more entry properties */
 					this.entries = AppUtils.setAdditionalEntryProperties(this.entries, this.info.accounts[0]);

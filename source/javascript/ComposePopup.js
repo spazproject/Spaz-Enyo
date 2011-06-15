@@ -93,7 +93,7 @@ enyo.kind({
 				width = account.caption.length;			
 			}
 		});
-		this.applyStyle("width", 490 + width + "px"); //set the width based on the longest username.
+		this.applyStyle("min-width", 490 + width + "px"); //set the width based on the longest username.
 
 		this.setAllDisabled(false);
 		this.$.postTextBoxContainer.setShowing(true);
@@ -252,7 +252,7 @@ enyo.kind({
 					break;
 					
 				default:
-					console.log("Unknown shortener: " + shortener + ", falling back to " + SPAZCORE_SHORTURL_SERVICE_JMP);
+					enyo.log("Unknown shortener: " + shortener + ", falling back to " + SPAZCORE_SHORTURL_SERVICE_JMP);
 					shortener = SPAZCORE_SHORTURL_SERVICE_JMP;
 				case SPAZCORE_SHORTURL_SERVICE_BITLY:
 				case SPAZCORE_SHORTURL_SERVICE_JMP:

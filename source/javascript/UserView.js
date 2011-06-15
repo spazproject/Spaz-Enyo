@@ -216,7 +216,7 @@ enyo.kind({
 					this.$.friends.setNumber(this.user._orig.friends_count);
 					this.$.entries.setNumber(this.user._orig.statuses_count);
 					var url = this.user.url || '';
-					this.$.url.setContent(sch.autolink(enyo.string.runTextIndexer(url)), url.length);
+					this.$.url.setContent(sch.autolink(url), url.length);
 					this.$.radioGroup.setValue(0);
 					this.switchDataType(this.$.radioGroup);
 					break;
@@ -335,7 +335,7 @@ enyo.kind({
 				twit.removeFriend(
 					this.user.service_id,
 					function(data){
-						console.log('response from remove friend:', data);
+						enyo.log('response from remove friend:', data);
 						self.user.are_following = 'no';
 						self.setFollowButtonIcon(self.user.are_following);
 						self.$.following.setActive(false);
@@ -351,7 +351,7 @@ enyo.kind({
 				twit.addFriend(
 					this.user.service_id,
 					function(data){
-						console.log('response from add friend:', data);
+						enyo.log('response from add friend:', data);
 						self.user.are_following = 'yes';
 						self.setFollowButtonIcon(self.user.are_following);
 						self.$.following.setActive(false);
@@ -404,12 +404,12 @@ enyo.kind({
 			this.user.service_id,
 			null,
 			function(data) {
-				console.log('show friendship result: %j', data);
+				enyo.log('show friendship result: %j', data);
 				if (data.relationship.target.followed_by) {
-					console.log('You are following this user!');
+					enyo.log('You are following this user!');
 					self.user.are_following = 'yes';
 				} else {
-					console.log('You are NOT following this user!');
+					enyo.log('You are NOT following this user!');
 					self.user.are_following = 'no';
 				}
 				self.enableFollowButton(true);

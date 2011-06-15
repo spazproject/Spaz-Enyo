@@ -238,7 +238,7 @@ AppUtils.getAccountAvatar = function(account_id, onSuccess, onFailure) {
 	var twit = AppUtils.makeTwitObj(account_id);
 	var username = App.Users.get(account_id).username;
 
-	console.log(username);
+	enyo.log(username);
 
 	twit.getUser(
 		'@'+username,
@@ -269,7 +269,7 @@ AppUtils.getAccount = function(account_id, onSuccess, onFailure) {
 	var twit = AppUtils.makeTwitObj(account_id);
 	var username = App.Users.get(account_id).username;
 
-	console.log(username);
+	enyo.log(username);
 
 	twit.getUser(
 		'@'+username,

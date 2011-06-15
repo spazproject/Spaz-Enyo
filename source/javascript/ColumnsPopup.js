@@ -70,7 +70,7 @@ enyo.kind({
 				this.$.searchBox.setShowing(false);				
 			}
 		} else {
-			console.log("new column");
+			enyo.log("new column");
 			this.doCreateColumn(this.$.accountSelection.getValue(), inCaption);
 			this.doClose();	
 		}
