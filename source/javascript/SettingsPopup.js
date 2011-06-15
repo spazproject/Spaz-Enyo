@@ -1,6 +1,6 @@
 enyo.kind({
 	name: "Spaz.SettingsPopup",
-	kind: "Popup",
+	kind: "Spaz.Popup",
 	scrim: true,
 	modal: true,
 	width: "400px",
