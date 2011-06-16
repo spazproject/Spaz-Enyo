@@ -90,6 +90,12 @@ enyo.kind({
 										
 					]}
 				]},
+				{kind: "Item", layoutKind: "HFlexLayout", components: [
+					{content: "Scroll to Unread"},
+					{kind: "Spacer"},
+					{kind: "CheckBox", preferenceProperty: "timeline-scrollonupdate", onChange: "setPreference"}
+				]},
+				
 				
 				//{kind: "Item", content: "Interval for Searches"},
 			]},
