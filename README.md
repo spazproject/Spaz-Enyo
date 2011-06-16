@@ -1,20 +1,36 @@
-  
-  
-  ## Spaz Enyo ##
 
+## Spaz Enyo ##
 
-Spaz. In Enyo.
+Spaz HD: The Next Generation.
 
 If you want on the commits email list, sign up for <https://groups.google.com/d/topic/spaz-enyo-commits/>
+
+
+## READ ME FIRST ##
+
+Right now this is a private repo, which means to let you read and fork it, I have to give you *full write access*.
+
+Unless I've already said "yes, please go ahead and commit to the main repo," **DON'T DO THAT**.
+
+Here's how to contribute:
+
+1. Fork the repo on Github
+2. Make your changes
+3. submit a pull request from *your* github repo to the main repo
+4. Extra credit for using a topic branch
+
+
 
 ### Spaz Enyo Team ###
 
 * Daniel Cousineau
 * Ed Finkler
 * Paddy Foran
+* Ryan Gahl
 * Nicholas Guarracino
 * Clay Hinson
 * Will Honey
+* Josh Roesslein
 * Daniel Weigh
 
 ### Targeted Platforms ###

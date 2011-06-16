@@ -83,8 +83,8 @@ enyo.kind({
 					self.twit.getCombinedTimeline({
 							'home_count':200,
 							'replies_count':80,
-							'dm_count':100,
-							'dmsent_count':100,
+							'dm_count':50,
+							'dmsent_count':50,
 							'home_since':home_since_id,
 							'replies_since':replies_since_id,
 							'dm_since':dm_since_id,

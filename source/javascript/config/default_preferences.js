@@ -66,6 +66,7 @@ var SPAZ_DEFAULT_PREFS = {
 	
 	'post-rt-cursor-position': 'beginning', // 'beginning' or 'end'
 	'post-send-on-enter': true,
+    'refresh-after-posting': true,
 
 	// track run data that was once in VersionCookie
 	'run-lastVersion':'0.0.1',
