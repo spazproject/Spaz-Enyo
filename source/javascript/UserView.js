@@ -133,8 +133,13 @@ enyo.kind({
 				this.buildAccountButton();
 				this.showLoading(false);
 			}),
-			enyo.bind(this, function() {
-				AppUtils.showBanner("Error loading user info for "+inUsername);
+			enyo.bind(this, function(data) {
+                if(data.status === 404) {
+                    AppUtils.showBanner(enyo.macroize(enyo._$L("No user named {$username}"), {"username": inUsername}));
+                }
+                else {
+                    AppUtils.showBanner(enyo.macroize(enyo._$L("Error loading info for {$username}"), {"username": inUsername}));
+                }
 				this.showLoading(false);
 				this.doDestroy();
 			})
