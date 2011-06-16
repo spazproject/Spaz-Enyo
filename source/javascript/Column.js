@@ -55,6 +55,7 @@ enyo.kind({
 		this.inherited(arguments);
      	this.infoChanged();
 		this.checkArrows();     
+		this.scrollOffset = 0;
 		
 		// if this column does not already have entries, gotta fetch from the network
 		if(this.entries.length === 0) {
@@ -63,6 +64,7 @@ enyo.kind({
 		else {
 			enyo.asyncMethod(this, this.countUnread);
 		}
+
 	},
 	checkArrows: function(){
 		if(this.name === "Column0"){
@@ -134,14 +136,28 @@ enyo.kind({
 			} else {
 				since_id = 1;
 			}
-
+			var dataLength;
 			function loadStarted() {
 				self.$.refresh.addClass("spinning");
 				self.doLoadStarted();
+				dataLength = self.entries.length;
+
 			}
-			function loadFinished() {
+			function loadFinished() {				
 				self.$.refresh.removeClass("spinning");
 				self.doLoadFinished();
+
+				if(dataLength !== self.entries.length){
+					//go to top.
+					if(App.Prefs.get("timeline-scrollonupdate")){
+						
+						self.$.list.punt();
+
+						//go to first unread
+						self.setScrollPosition();
+						self.$.list.refresh();	
+					}
+				}
 			}
 
 			switch (self.info.type) {
@@ -274,8 +290,11 @@ enyo.kind({
 
 						/* sort our good stuff */
 						this.sortEntries();
-
-						this.$.list.refresh();
+						
+						this.scrollOffset = 0;
+						if(data.length > 0){
+							this.$.list.refresh();
+						}
 						
 					}
 					break;
@@ -322,14 +341,13 @@ enyo.kind({
 		var changed = 0;
 		for (var i = 0; i < this.entries.length; i++){
 			if (this.entries[i].publish_date <= last_read_date) {
+				//if(!this.entries[i].read){
+					changed++;
+				//}
 				this.entries[i].read = true;
-				changed++;
-			} else {
-			}
-			
+			}			
 		}
 		if (changed > 0) {
-			this.$.list.refresh();
 			this.countUnread();
 		}		
 	},
@@ -353,6 +371,25 @@ enyo.kind({
 			
 
 	},
+	scrollToFirstUnread: function(){
+		this.setScrollPosition();
+		this.$.list.refresh();
+
+	},
+	setScrollPosition: function() {
+		if(App.Prefs.get("timeline-scrollonupdate") === true){
+			for(var i = 0; i < this.entries.length; i++){
+				if(this.entries[i].read === true){ //this is the first read entry
+					this.scrollOffset = (i > 0) ? (i-1): 0;
+					console.log("this.scrollOffset", this.scrollOffset);
+					break;
+				}
+			};	
+		} else {
+			this.scrollOffset = 0;//this.loadOffset; @TODO
+		}
+
+	},
 	
 	sortEntries: function() {
 		this.entries.sort(function(a,b){
@@ -361,28 +398,30 @@ enyo.kind({
 	},
 	
 	setupRow: function(inSender, inIndex) {
-		if (this.entries[inIndex]) {
-			var entry = this.entries[inIndex];
+		var entry;
+		if (entry = this.entries[inIndex + this.scrollOffset]) {
+			//this.loadOffset = inIndex + this.scrollOffset; @TODO: this will be the last item rendered, so it doesn't quite work for us to use it for the scroll offset.
 			this.$.item.setEntry(entry);
 			return true;
 		}
 	},
 	entryClick: function(inSender, inEvent, inRowIndex) {
 		if(App.Prefs.get("entry-tap") === "panel"){
-			AppUI.viewEntry(this.entries[inRowIndex]);
+			AppUI.viewEntry(inSender.entry);
 		} else {
-			this.$.entryClickPopup.showAtEvent(this.entries[inRowIndex], inEvent);	
+			this.$.entryClickPopup.showAtEvent(inSender.entry, inEvent);	
 		}
 
 	},
 	entryHold: function(inSender, inEvent, inRowIndex) {
 		if(App.Prefs.get("entry-tap") === "panel"){ //this is hold, so we do the opposite of pref
-			this.$.entryClickPopup.showAtEvent(this.entries[inRowIndex], inEvent);	
+			this.$.entryClickPopup.showAtEvent(inSender.entry, inEvent);	
 		} else {
-			AppUI.viewEntry(this.entries[inRowIndex]);
+			AppUI.viewEntry(inSender.entry);
 		}
 	},
 	scrollToTop: function(inSender, inEvent){
+		this.scrollOffset = 0;
 		this.$.list.punt();
 	},
 	scrollToBottom: function(){

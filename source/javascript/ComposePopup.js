@@ -191,9 +191,15 @@ enyo.kind({
 					
 					this.$.sendButton.setActive(false);
 					this.setAllDisabled(false);
+<<<<<<< HEAD
 					if(App.Prefs.get("refresh-after-posting")) {
 						AppUI.refresh();
 					}
+=======
+                    if(App.Prefs.get("refresh-after-posting")) {
+                        AppUI.refresh();
+                    }
+>>>>>>> 4eef21468f76872be8245d5155bfd16c76e6d5f0
 					this.close();
 				}), 
 				enyo.bind(this, function(xhr, msg, exc){
@@ -206,9 +212,15 @@ enyo.kind({
 					this.$.postTextBox.setValue('');
 					this.$.sendButton.setActive(false);
 					this.setAllDisabled(false);
+<<<<<<< HEAD
 					if(App.Prefs.get("refresh-after-posting")) {
 						AppUI.refresh();
 					}
+=======
+                    if(App.Prefs.get("refresh-after-posting")) {
+                        AppUI.refresh();
+                    }
+>>>>>>> 4eef21468f76872be8245d5155bfd16c76e6d5f0
 					this.close();
 				}),
 				enyo.bind(this, function() {

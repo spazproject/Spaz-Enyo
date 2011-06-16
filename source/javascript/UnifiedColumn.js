@@ -53,13 +53,28 @@ enyo.kind({
 				}
 			}
 
+			var dataLength;
 			function loadStarted() {
 				self.$.refresh.addClass("spinning");
 				self.doLoadStarted();
+
+				dataLength = self.entries.length;
+
 			}
 			function loadFinished() {
 				self.$.refresh.removeClass("spinning");
 				self.doLoadFinished();
+
+				if(dataLength !== self.entries.length){
+					if(App.Prefs.get("timeline-scrollonupdate")){
+						
+						self.$.list.punt();
+
+						//go to first unread
+						self.setScrollPosition();
+						self.$.list.refresh();	
+					}
+				}
 			}
 			switch (self.info.type) {
 				case 'unified':
