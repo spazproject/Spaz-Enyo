@@ -368,10 +368,19 @@ enyo.kind({
 		}
 	},
 	entryClick: function(inSender, inEvent, inRowIndex) {
-		AppUI.viewEntry(this.entries[inRowIndex]);
+		if(App.Prefs.get("entry-tap") === "panel"){
+			AppUI.viewEntry(this.entries[inRowIndex]);
+		} else {
+			this.$.entryClickPopup.showAtEvent(this.entries[inRowIndex], inEvent);	
+		}
+
 	},
 	entryHold: function(inSender, inEvent, inRowIndex) {
-		this.$.entryClickPopup.showAtEvent(this.entries[inRowIndex], inEvent);
+		if(App.Prefs.get("entry-tap") === "panel"){ //this is hold, so we do the opposite of pref
+			this.$.entryClickPopup.showAtEvent(this.entries[inRowIndex], inEvent);	
+		} else {
+			AppUI.viewEntry(this.entries[inRowIndex]);
+		}
 	},
 	scrollToTop: function(inSender, inEvent){
 		this.$.list.punt();

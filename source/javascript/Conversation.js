@@ -90,10 +90,18 @@ enyo.kind({
 		}
 	},
 	entryClick: function(inSender, inEvent){
-		AppUI.viewEntry(inSender.entry);
+		if(App.Prefs.get("entry-tap") === "panel"){
+			AppUI.viewEntry(inSender.entry);
+		} else {
+			this.$.entryClickPopup.showAtEvent(inSender.entry, inEvent);
+		}
 	},
 	entryHold: function(inSender, inEvent) {
-		this.$.entryClickPopup.showAtEvent(inSender.entry, inEvent);
+		if(App.Prefs.get("entry-tap") === "panel"){ //this is hold so we do the opposite of the pref
+			this.$.entryClickPopup.showAtEvent(inSender.entry, inEvent);
+		} else {
+			AppUI.viewEntry(inSender.entry);
+		}	
 	},
 	
 	clearConversationMessages: function() {

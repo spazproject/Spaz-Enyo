@@ -51,6 +51,14 @@ enyo.kind({
 						"20px"					
 					]}
 				]},
+				{kind: "Item", layoutKind: "HFlexLayout", components: [
+					{content: "Tap"},
+					{kind: "Spacer"},
+					{kind: "ListSelector", value: "", preferenceProperty: "entry-tap", rerender: true, onChange: "setPreference", items: [
+						{caption: "Opens Panel (hold opens popup)", value: "panel"},				
+						{caption: "Opens Popup (hold opens panel)", value: "popup"}
+					]}
+				]},
 				/*{kind: "Item", layoutKind: "HFlexLayout", components: [
 					{content: "Embedded Image Preview"},
 					{kind: "Spacer"},
@@ -107,7 +115,6 @@ enyo.kind({
 					{kind: "CheckBox", preferenceProperty: "notify-searchresults", onChange: "setPreference"}
 				]},
 				
-				//{kind: "Item", content: "Interval for Searches"},
 			]},
 			{kind: "Group", caption: "URL Shortening", components: [
 				{kind: "Item", layoutKind: "HFlexLayout", components: [

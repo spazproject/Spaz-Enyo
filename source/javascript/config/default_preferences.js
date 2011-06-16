@@ -61,7 +61,8 @@ var SPAZ_DEFAULT_PREFS = {
 
     'twitter-source': 'spaz',
 
-	'entry-text-size': '13px', // also grande, venti
+	'entry-text-size': '13px',
+	'entry-tap': 'panel',
 	
 	'post-rt-cursor-position': 'beginning', // 'beginning' or 'end'
 	'post-send-on-enter': true,
