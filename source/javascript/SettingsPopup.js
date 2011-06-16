@@ -72,6 +72,11 @@ enyo.kind({
 					{kind: "Spacer"},
 					{kind: "CheckBox", preferenceProperty: "post-send-on-enter", onChange: "setPreference"}
 				]},
+                {kind: "Item", layoutKind: "HFlexLayout", components: [
+					{content: enyo._$L("Refresh After Posting")},
+					{kind: "Spacer"},
+					{kind: "CheckBox", preferenceProperty: "refresh-after-posting", onChange: "setPreference"}
+				]}
 			]},
 			{kind: "Group", caption: "Refresh", components: [
 				{kind: "Item", layoutKind: "HFlexLayout", components: [
