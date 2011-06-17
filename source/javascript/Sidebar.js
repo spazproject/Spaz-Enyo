@@ -29,7 +29,14 @@ enyo.kind({
 		{name: "searchPopup", kind: "Spaz.SearchPopup", onCreateColumn: "doCreateColumn", onClose: "closePopup" },
 		{name: "columnsPopup", kind: "Spaz.ColumnsPopup", onCreateColumn: "doCreateColumn", onClose: "closePopup" },
 		{name: "settingsPopup", kind: "Spaz.SettingsPopup", onClose: "closePopup" },
-		{name: "accountsPopup", kind: "Spaz.AccountsPopup", onClose: "closePopup", onAccountAdded: "doAccountAdded", onAccountRemoved: "doAccountRemoved" }
+		{name: "accountsPopup", kind: "Spaz.AccountsPopup", onClose: "closePopup", onAccountAdded: "doAccountAdded", onAccountRemoved: "doAccountRemoved" },
+	
+		{kind: enyo.AppMenu, components: [
+			{content: "About Spaz HD", onclick: "openPopup", popup: "aboutPopup"},
+			{content: "Settings", onclick: "openPopup", popup: "settingsPopup"},
+			{content: "Manage Accounts", onclick: "openPopup", popup: "accountsPopup"}
+
+		]}
 	],
 	compose: function(inSender) {
 		this.$.composePopup.compose();

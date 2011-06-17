@@ -31,7 +31,7 @@ enyo.kind({
 				{kind: "enyo.Button", caption: enyo._$L("Cancel"), flex: 1, onclick: "cancelEntryDeletion"},
 				{kind: "enyo.Button", className: "enyo-button-negative", caption: enyo._$L("Delete"), flex: 1, onclick: "confirmEntryDeletion"}
 			]}
-		]}
+		]},
 	],
 	
 	twit: new SpazTwit(),
