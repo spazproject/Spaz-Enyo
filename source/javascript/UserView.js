@@ -321,19 +321,20 @@ enyo.kind({
 			AppUI.search(inEvent.target.innerText, this.user.account_id);
 		}
 	},
-	entryClick: function(inSender, inEvent){
+	entryClick: function(inSender, inEvent, inRowIndex) {
 		if(App.Prefs.get("entry-tap") === "panel"){
 			AppUI.viewEntry(inSender.entry);
 		} else {
-			this.$.entryClickPopup.showAtEvent(inSender.entry, inEvent);
+			this.$.entryClickPopup.showAtEvent(inSender.entry, inEvent);	
 		}
+
 	},
-	entryHold: function(inSender, inEvent) {
-		if(App.Prefs.get("entry-tap") === "panel"){ //this is hold so we do the opposite of the pref
-			this.$.entryClickPopup.showAtEvent(inSender.entry, inEvent);
-		} else {
+	entryHold: function(inSender, inEvent, inRowIndex) {
+		if(App.Prefs.get("entry-hold") === "popup"){
+			this.$.entryClickPopup.showAtEvent(inSender.entry, inEvent);	
+		} else if(App.Prefs.get("entry-hold") === "panel"){
 			AppUI.viewEntry(inSender.entry);
-		}	
+		}
 	},
 	
 	userItemClick: function(inSender, inEvent) {

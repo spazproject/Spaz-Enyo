@@ -414,9 +414,9 @@ enyo.kind({
 
 	},
 	entryHold: function(inSender, inEvent, inRowIndex) {
-		if(App.Prefs.get("entry-tap") === "panel"){ //this is hold, so we do the opposite of pref
+		if(App.Prefs.get("entry-hold") === "popup"){
 			this.$.entryClickPopup.showAtEvent(inSender.entry, inEvent);	
-		} else {
+		} else if(App.Prefs.get("entry-hold") === "panel"){
 			AppUI.viewEntry(inSender.entry);
 		}
 	},

@@ -34,7 +34,8 @@ enyo.kind({
 		{kind: enyo.AppMenu, components: [
 			{content: "About Spaz HD", onclick: "openPopup", popup: "aboutPopup"},
 			{content: "Settings", onclick: "openPopup", popup: "settingsPopup"},
-			{content: "Manage Accounts", onclick: "openPopup", popup: "accountsPopup"}
+			{content: "Manage Accounts", onclick: "openPopup", popup: "accountsPopup"},
+			{content: "Add a Column", onclick: "openPopup", popup: "columnsPopup"}
 
 		]}
 	],

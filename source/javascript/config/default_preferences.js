@@ -63,6 +63,7 @@ var SPAZ_DEFAULT_PREFS = {
 
 	'entry-text-size': '13px',
 	'entry-tap': 'panel',
+	'entry-hold': 'popup',
 	
 	'post-rt-cursor-position': 'beginning', // 'beginning' or 'end'
 	'post-send-on-enter': true,

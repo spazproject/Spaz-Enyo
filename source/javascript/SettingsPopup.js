@@ -54,9 +54,19 @@ enyo.kind({
 				{kind: "Item", layoutKind: "HFlexLayout", components: [
 					{content: "Tap"},
 					{kind: "Spacer"},
-					{kind: "ListSelector", value: "", preferenceProperty: "entry-tap", rerender: true, onChange: "setPreference", items: [
-						{caption: "Opens Panel (hold opens popup)", value: "panel"},				
-						{caption: "Opens Popup (hold opens panel)", value: "popup"}
+					{kind: "ListSelector", value: "", preferenceProperty: "entry-tap", onChange: "setPreference", items: [
+						{caption: "Opens Panel", value: "panel"},				
+						{caption: "Opens Popup", value: "popup"}
+					]}
+				]},
+				{kind: "Item", layoutKind: "HFlexLayout", components: [
+					{content: "Hold"},
+					{kind: "Spacer"},
+					{kind: "ListSelector", value: "", preferenceProperty: "entry-hold", onChange: "setPreference", items: [
+						{caption: "Opens Panel", value: "panel"},				
+						{caption: "Opens Popup", value: "popup"},
+						{caption: "Does Nothing", value: "nothing"}
+
 					]}
 				]},
 				/*{kind: "Item", layoutKind: "HFlexLayout", components: [

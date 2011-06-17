@@ -42,7 +42,7 @@ enyo.kind({
 		toMacroize += "<br/>";
 
 		if (this.entry.read === false && this.ignoreUnread === false ) {	
-			toMacroize += "<img src='source/images/unread.png' height= '13px' style='padding: 0px 3px 0px 0px;' class='entryHeaderIcon'></img> ";
+			toMacroize += "<img src='source/images/unread.png' height= '13px' class='entryHeaderIcon'></img> ";
 		}
 		toMacroize += "<span class='small' height = '13px'>" 
 		toMacroize += sch.getRelativeTime(this.entry.publish_date);
