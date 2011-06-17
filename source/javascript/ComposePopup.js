@@ -311,6 +311,11 @@ enyo.kind({
 	
 	
 	clear: function() {
+		
+		if(this.lazy) { // build the components in case they don't exist yet
+			this.validateComponents();
+		}
+		
 		this.$.postTextBox.setValue('');
 		this.dmUser = "";
 		this.inReplyEntryText = "";
