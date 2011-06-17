@@ -65,7 +65,7 @@ enyo.kind({
 				self.$.refresh.removeClass("spinning");
 				self.doLoadFinished();
 
-				if(dataLength !== self.entries.length){
+				if(dataLength !== self.entries.length && opts.mode !== 'older'){
 					if(App.Prefs.get("timeline-scrollonupdate")){
 						
 						self.$.list.punt();
