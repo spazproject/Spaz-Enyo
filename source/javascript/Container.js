@@ -77,7 +77,7 @@ enyo.kind({
 	},
 	
 	createColumns: function() {
-		this.columnsFunction("destroy"); //destroy them all. don't want to always do this.
+		this.columnsFunction("destroy", null, true); //destroy them all. don't want to always do this.
 
 		if(this.columnData.length === 0){
 			this.columnData = this.getDefaultColumns();
@@ -174,13 +174,18 @@ enyo.kind({
 			this.createColumns();
 		}
 	},
-	columnsFunction: function(functionName, opts){
+	columnsFunction: function(functionName, opts, sync){
 		var columnCount = 0;
-		_.each(this.getComponents(), function(column){
+		_.each(this.$.columnsScroller.getControls(), function(column){
 			try {
 				if(column.kind === "Spaz.Column" || column.kind === "Spaz.SearchColumn" || column.kind === "Spaz.UnifiedColumn"){
 					columnCount++;
-					this.$[column.name][functionName]();
+					if(sync) {
+						enyo.call(column, functionName, opts);
+					}
+					else {
+						enyo.asyncMethod(column, functionName, opts);
+					}
 				}
 			} catch (e) {
 				console.error(e);
@@ -231,9 +236,7 @@ enyo.kind({
 	},
 	
 	removeEntryById: function (inEntryId) {
-		enyo.forEach(this.getComponents(), function (component) {
-			component.removeEntryById && component.removeEntryById(inEntryId);
-		});
+		this.columnsFunction("removeEntryById", inEntryId);
 	},
 	
 	saveColumnEntries: function() {
