@@ -2,7 +2,6 @@ enyo.kind({
 	name: "Spaz.Container",
 	flex: 1,
 	kind: enyo.VFlexBox,
-	height: "100%",
 	style: "background-color: black",
 	events: {
 		onRefreshAllFinished: "",
@@ -12,8 +11,10 @@ enyo.kind({
 	columnEntries: [],
 	components: [
 		{kind: "Spaz.Notifier", name:"notifier"},
+		
 		{name:"columnsScroller", kind: "SnapScroller", className: "enyo-hflexbox", flex: 1, vertical: false, autoVertical: false, style: "background-color: black; padding: 2px;", components:[
 		]},
+		
 		{name: "confirmPopup", kind: "enyo.Popup", scrim : true, components: [
 			{content: enyo._$L("Delete Column?")},
 			{style: "height: 10px;"},
