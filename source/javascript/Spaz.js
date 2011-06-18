@@ -2,8 +2,8 @@ enyo.kind({
 	name: "Spaz",
 	kind: enyo.HFlexBox,
 	components: [
-	    {kind: enyo.ApplicationEvents, onApplicationRelaunch: "relaunchHandler"},
-
+		{kind: enyo.ApplicationEvents, onApplicationRelaunch: "relaunchHandler",
+			onWindowActivated:"windowActivated", onWindowDeactivated:"windowDeactivated"},
 	    {name: "slider", kind: ekl.Layout.SlidingPane, flex: 1, dismissDistance: 100, style:"background:#000", components: [
 	        {name: "main", layoutKind: enyo.HFlexLayout, flex: 1, components: [
 	            {
@@ -32,7 +32,7 @@ enyo.kind({
 			kind: "Spaz.ImageViewPopup",
 			onClose: "closeImageView"
 		},
-		{name: "dashboard", kind:"Dashboard", onIconTap: "", onMessageTap: "messageTap", onIconTap: "iconTap", 
+		{name: "dashboard", kind:"Dashboard", onTap: "dashboardTap", onIconTap: "iconTap", onMessageTap: "messageTap",
 					onUserClose: "dashboardClose", onLayerSwipe: "layerSwiped"},
 		{name: "deleteEntryPopup", kind: "enyo.Popup", scrim : true, components: [
 			{content: enyo._$L("Delete Entry?")},
@@ -57,7 +57,17 @@ enyo.kind({
 	// called when app is opened or reopened
     relaunchHandler: function() {
     	this.processLaunchParams(enyo.windowParams);
+		this.$.dashboard.setLayers([]); // empty the notifications
     },
+
+	windowActivated: function() {
+		this.windowActive = true;
+		this.$.dashboard.setLayers([]); // empty the notifications
+	},
+	
+	windowDeactivated: function() {
+		this.windowActive = false;
+	},
 
 	processLaunchParams: function(inParams) {
 		/*
@@ -148,6 +158,10 @@ enyo.kind({
 			// 	break;
 			case 'bgcheck':
 				AppUI.refresh();
+				break;
+				
+			case 'relaunch':
+				// should have "from" param, we will parse in future
 				break;
 		}
 	},
@@ -586,7 +600,9 @@ enyo.kind({
 		this.$.sidebar.showAccountsPopup();
 	},
 	
-	
+	dashboardTap: function(inSender, layer) {
+		AppUtils.relaunch('dashboard');
+	},
 	messageTap: function(inSender, layer) {
 		enyo.log("Tapped on message: "+layer.text);
 	},
