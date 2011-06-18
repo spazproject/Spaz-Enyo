@@ -10,6 +10,7 @@ enyo.depends(
 	"vendors/spazcore-enyo-webos-network.js",
 	
 	"vendors/ekl/List/",
+	"vendors/ekl/Layout/",
 
 	// config
 	"source/javascript/config/auth_config.js",
