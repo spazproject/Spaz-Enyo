@@ -169,6 +169,22 @@ AppUtils.copyTweet = function(tweetobj) {
 };
 
 
+
+AppUtils.relaunch = function(from) {
+	if (!from) { from = 'default'; }
+	
+	var app_srvc = new enyo.PalmService({
+		service: 'palm://com.palm.applicationManager',
+		method: 'launch'
+	});
+	app_srvc.call({
+		id: enyo.fetchAppInfo().id,
+		params: {'action':'relaunch', 'from':'notification'} 
+	});
+};
+
+
+
 /**
  * Given a theme label, deactivates all themes CSS and activates the chosen theme CSS
  */
