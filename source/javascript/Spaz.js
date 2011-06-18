@@ -375,29 +375,40 @@ enyo.kind({
 	hideDetailPane: function() {
     	this.$.slider.selectViewByName("main");
 	    this.$.detail.setShowing(false);
+	    this.viewEvents = [];
+
 	},
 
-	showEntryView: function(inSender, inEntry){
-		console.log("showing entryView");
-		
+	showEntryView: function(inSender, inEntry){		
 		var entryName = 'entry-' + inEntry.spaz_id;
 		
 		if (!this.$.detailContent.validateView(entryName)) {
 			this.$.detailContent.createComponent({
 				name: entryName, 
 				kind: "Spaz.EntryView", 
-				onDestroy: "destroyEntryView" ,
-				onAddViewEvent: "addViewEvent",
+				onDestroy: "hideDetailPane" ,
 				onGoPreviousViewEvent: "goPreviousViewEvent",
+				onGetViewEvents: "getViewEvents",
 				onShowImageView: "showImageView"
 			}, {owner: this});
 			this.$[entryName].render();
 			
 			//this.$.container.refreshList();
 		}
-		
+
+		var topEvent, 
+			newEvent = {type: (inEntry.is_private_message === true) ? "message" : "entry", entry: inEntry},
+			dontPush = false;
+
+		if(topEvent = this.viewEvents[this.viewEvents.length-1]){
+			if(topEvent.type === "entry" && topEvent.entry.id === newEvent.entry.id){
+				dontPush = true;
+			}
+		}
+		if(!dontPush){
+			this.viewEvents.push(newEvent);		
+		}
 		this.$[entryName].setEntry(inEntry);
-		
 		
     	this.$.detailContent.selectViewByName(entryName);
     	
@@ -406,63 +417,45 @@ enyo.kind({
 		
 	},
 
-	"destroyEntryView": function(inSender, inEvent){
-	    
-	    this.hideDetailPane();
-	            // 
-	           // this.$.entryview.destroy();
-	           // if(inSender !== true){
-	           //  this.viewEvents = [];
-	           // }
-
-		//this.render();
-		//this.$.container.refreshList();
-	},
-	
-	showUserView: function(inSender, inUsername, inService, inAccountId) {
-		console.log("showing entryView");
-		
+	showUserView: function(inSender, inUsername, inService, inAccountId) {		
 		var userId = 'user-' + inUsername + '-' + inService + '-' + inAccountId;
 		
 		if (!this.$.detailContent.validateView(userId)) {
 			this.$.detailContent.createComponent({
 				name: userId, 
 				kind: "Spaz.UserView", 
-				onDestroy: "destroyUserView",
-				onAddViewEvent: "addViewEvent",
-				onGoPreviousViewEvent: "goPreviousViewEvent"
+				onDestroy: "hideDetailPane",
+				onGoPreviousViewEvent: "goPreviousViewEvent",
+				onGetViewEvents: "getViewEvents"
+
 			}, {owner: this});
 			this.$[userId].render();
 			
-    		this.$[userId].showUser(inUsername, inService, inAccountId);
 			//this.$.container.refreshList();
 		}
-		
+		var topEvent, 
+			newEvent = {type: "user", user: {username: inUsername, type: inService, account_id: inAccountId}},
+			dontPush = false;
+
+		if(topEvent = this.viewEvents[this.viewEvents.length-1]){
+			if(topEvent.type === "user" && topEvent.user.username === newEvent.user.username){
+				dontPush = true;
+			}
+		}
+		if(!dontPush){
+			this.viewEvents.push(newEvent);	
+		}
+    	this.$[userId].showUser(inUsername, inService, inAccountId);
 		
     	this.$.detailContent.selectViewByName(userId);
     	
     	this.showDetailPane();
 			
 	},
-	"destroyUserView": function(inSender, inEvent){
-	    this.hideDetailPane();
-		// this.$.userview.destroy();
-		//        if(inSender !== true){
-		//            this.viewEvents = [];
-		//        }
-		//this.render();
-		//this.$.container.refreshList();
-	},
 	viewEvents: [],
-	addViewEvent: function(inSender, inEvent){
-		this.viewEvents.push(inEvent);
-		enyo.log("pushed event");
-		enyo.log(inEvent);		
-		return this.viewEvents;
-	},
 	goPreviousViewEvent: function(inSender){
-		this.viewEvents.pop(); //get rid of current level
-		var event = this.viewEvents.pop(); // get rid of the level you are going to. it will be re-added automatically 
+		this.viewEvents.pop(); //get rid of top level we are leaving
+		var event = this.viewEvents[this.viewEvents.length-1];
 		switch(event.type){
 			case "user":
 				AppUI.viewUser(event.user.username, event.user.type, event.user.account_id);
@@ -472,6 +465,9 @@ enyo.kind({
 				AppUI.viewEntry(event.entry);
 				break;
 		}
+	},
+	getViewEvents: function(){
+		return this.viewEvents;	
 	},
 	createColumn: function(inSender, inAccountId, inColumn, inQuery){
 		this.$.container.createColumn(inAccountId, inColumn, inQuery);	

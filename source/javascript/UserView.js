@@ -7,8 +7,8 @@ enyo.kind({
 		user: ''
 	},
 	events: {
-		onAddViewEvent: "",
 		onGoPreviousViewEvent: "",
+		onGetViewEvents: "",
 		onDestroy: ""
 	},
 	components: [
@@ -190,7 +190,7 @@ enyo.kind({
 		
 		if(this.$.username.getContent() !== "@" + this.user.username){
 							
-			var events = this.doAddViewEvent({type: "user", user: enyo.mixin(this.user, {account_id: this.account_id})});
+			var events = this.doGetViewEvents();
 		   	if(events.length > 1){
 		    	this.$.viewManagement.setShowing(true);
 		    	var lastEvent = events[events.length-2];

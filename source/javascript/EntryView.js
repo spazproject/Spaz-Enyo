@@ -7,8 +7,8 @@ enyo.kind({
 		entry: {}
 	},
 	events: {
-		onAddViewEvent: "",
 		onGoPreviousViewEvent: "",
+		onGetViewEvents: "",
 		onDestroy: "",
 		onShowImageView: ""
 	},
@@ -81,7 +81,7 @@ enyo.kind({
 	entryChanged: function(inOldEntry){
 		if(this.entry.service_id !== inOldEntry.service_id){
 
-			var events = this.doAddViewEvent({type: (this.entry.is_private_message === true) ? "message" : "entry", entry: this.entry});
+			var events = this.doGetViewEvents();
 		    if(events.length > 1){
 		    	this.$.viewManagement.setShowing(true);
 		    	var lastEvent = events[events.length-2];
@@ -166,7 +166,7 @@ enyo.kind({
 			
 			this.$.deleteButton.setShowing((this.entry.is_author) || (this.entry.is_private_message));
 		} else {
-			this.doDestroy();
+			//this.doDestroy();
 		}
 	},
 	
