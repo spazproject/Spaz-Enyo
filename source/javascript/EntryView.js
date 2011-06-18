@@ -65,6 +65,7 @@ enyo.kind({
 				{kind: "ToolButton", icon: "source/images/icon-reply.png", onclick: "reply"},
 				{kind: "ToolButton", icon: "source/images/icon-share.png", onclick: "share"},
 				{name: "favoriteButton", onclick: "toggleFavorite", kind: "ToolButton", disabled: true, icon: "source/images/icon-favorite.png"},
+				{name: "deleteButton", kind: "ToolButton", icon: "source/images/icon-delete.png", onclick: "deleteEntry"},
 				{kind: "Spacer"}
 			]},
 			{name: "browser", kind: "enyo.PalmService", service: "palm://com.palm.applicationManager/", method: "open"},
@@ -77,11 +78,8 @@ enyo.kind({
 			]}
 		]}
 	],
-	entryChanged: function(){
-		
-		var self = this;
-		
-		if(this.$.entry.content !== this.entry.message){
+	entryChanged: function(inOldEntry){
+		if(this.entry.service_id !== inOldEntry.service_id){
 
 			var events = this.doAddViewEvent({type: (this.entry.is_private_message === true) ? "message" : "entry", entry: this.entry});
 		    if(events.length > 1){
@@ -109,7 +107,7 @@ enyo.kind({
 			this.$.realname.setContent(this.entry.author_fullname||this.entry.author_username);
 			this.$.username.setContent("@" + this.entry.author_username);
 			var url = this.entry.author_url || '';
-			this.$.url.setContent(sch.autolink(enyo.string.runTextIndexer(url)), url.length);
+			this.$.url.setContent(sch.autolink(url), url.length);
 			this.$.bio.setContent(AppUtils.makeItemsClickable(this.entry.author_description) || '');
 			this.$.time.setContent(sch.getRelativeTime(this.entry.publish_date));
 			if (this.entry._orig.source) {
@@ -123,18 +121,18 @@ enyo.kind({
 			
 			// expand URLs
 			var shurl = new SpazShortURL();
-			var entryhtml = self.$.entry.getContent();
+			var entryhtml = this.$.entry.getContent();
 			var urls = shurl.findExpandableURLs(entryhtml);
 			if (urls) {
 				for (var i = 0; i < urls.length; i++) {
 					shurl.expand(urls[i], {
-						'onSuccess':function(data) {
+						'onSuccess': enyo.bind(this, function(data) {
 							entryhtml = shurl.replaceExpandableURL(entryhtml, data.shorturl, data.longurl)
-							self.$.entry.setContent(entryhtml);
+							this.$.entry.setContent(entryhtml);
 							if ((i + 1) >= urls.length) {
-								self.buildMediaPreviews();
+								this.buildMediaPreviews();
 							}
-						}
+						})
 					});
 				}
 			} else {
@@ -165,6 +163,8 @@ enyo.kind({
 			}
 			
 			this.setFavButtonState();
+			
+			this.$.deleteButton.setShowing((this.entry.is_author) || (this.entry.is_private_message));
 		} else {
 			this.doDestroy();
 		}
@@ -177,7 +177,7 @@ enyo.kind({
 		
 		var siu = new SpazImageURL();
 		var imageThumbUrls = siu.getThumbsForUrls(this.$.entry.getContent());
-		console.log(this.entry.text_raw, imageThumbUrls);
+		enyo.log(this.entry.text_raw, imageThumbUrls);
 		var imageFullUrls = siu.getImagesForUrls(this.$.entry.getContent());
 		this.imageFullUrls = [];
 		if (imageThumbUrls) {
@@ -218,7 +218,7 @@ enyo.kind({
 						});
 						embedlyComponent.render();
 					} else {
-						console.log("skipping oembed with <embed> tag in it", oembed.code);
+						enyo.log("skipping oembed with <embed> tag in it", oembed.code);
 					}
 				}
 			});
@@ -250,11 +250,11 @@ enyo.kind({
 	    this.$.conversation.loadConversation();
 	},
 	onConversationLoadStart: function () {
-	    console.log("Load Conversation Start");
+	    enyo.log("Load Conversation Start");
 	    this.$.conversation_button.setActive(true);
 	},
 	onConversationLoadDone: function() {
-	    console.log("Load Conversation Done");
+	    enyo.log("Load Conversation Done");
 	    this.$.conversation_button.setActive(false);
 	},
 	reply: function() {
@@ -284,7 +284,7 @@ enyo.kind({
 		that.twit.setCredentials(auth);
 			
 		if (that.entry.is_favorite) {
-			console.log('UNFAVORITING %j', that.entry);
+			enyo.log('UNFAVORITING %j', that.entry);
 			that.twit.unfavorite(
 				that.entry.service_id,
 				function(data) {
@@ -298,7 +298,7 @@ enyo.kind({
 				}
 			);
 		} else {
-			console.log('FAVORITING %j', that.entry);
+			enyo.log('FAVORITING %j', that.entry);
 			that.twit.favorite(
 				that.entry.service_id,
 				function(data) {
@@ -345,5 +345,8 @@ enyo.kind({
 				console.error(inSelected.getValue() + " has no handler");
 				break;
 		}
+	},
+	deleteEntry: function() {
+		AppUI.confirmDeleteEntry(this.entry);
 	}
 });

@@ -33,7 +33,15 @@ enyo.kind({
 			onClose: "closeImageView"
 		},
 		{name: "dashboard", kind:"Dashboard", onIconTap: "", onMessageTap: "messageTap", onIconTap: "iconTap", 
-					onUserClose: "dashboardClose", onLayerSwipe: "layerSwiped"}
+					onUserClose: "dashboardClose", onLayerSwipe: "layerSwiped"},
+		{name: "deleteEntryPopup", kind: "enyo.Popup", scrim : true, components: [
+			{content: enyo._$L("Delete Entry?")},
+			{style: "height: 10px;"},
+			{kind: "enyo.HFlexBox", components: [
+				{kind: "enyo.Button", caption: enyo._$L("Cancel"), flex: 1, onclick: "cancelEntryDeletion"},
+				{kind: "enyo.Button", className: "enyo-button-negative", caption: enyo._$L("Delete"), flex: 1, onclick: "confirmEntryDeletion"}
+			]}
+		]},
 	],
 	
 	twit: new SpazTwit(),
@@ -71,7 +79,7 @@ enyo.kind({
 			}
 		}
 		
-		console.log(JSON.stringify(inParams));
+		enyo.log(JSON.stringify(inParams));
 		
 		switch(inParams.action) {
 
@@ -223,15 +231,15 @@ enyo.kind({
 		App.Prefs = new SpazPrefs(SPAZ_DEFAULT_PREFS, null, {
 			'network-refreshinterval' : {
 				'onGet': function(key, value) {
-					if (value < (5*60*1000)) { // 5 min
-						value = (5*60*1000);
+					if (value < 0) {
+						value = 0;
 					}
 					sch.debug(key + ':' + value);
 					return value;
 				},
 				'onSet': function(key, value) {
-					if (value < (5*60*1000)) { // 5 min
-						value = (5*60*1000);
+					if (value < 0) {
+						value = 0;
 					}
 					sch.debug(key + ':' + value);
 					return value;					
@@ -322,6 +330,9 @@ enyo.kind({
 		AppUI.addFunction("directMessage", function(inUsername, inAccountId){
 			this.directMessage(this, inUsername, inAccountId);
 		}, this);
+		AppUI.addFunction("confirmDeleteEntry", function(inEntry) {
+			this.confirmDeleteEntry(this, inEntry);
+		}, this);
 		AppUI.addFunction("deleteEntry", function(inEntry) {
 			this.deleteEntry(this, inEntry);
 		}, this);
@@ -330,19 +341,19 @@ enyo.kind({
 		// Refresher methods
 		AppUI.addFunction("startAutoRefresher", function() {
 			if (App.Prefs.get('network-refreshinterval') > 0) {
-				console.log('Starting auto-refresher', App.Prefs.get('network-refreshinterval'));
+				enyo.log('Starting auto-refresher', App.Prefs.get('network-refreshinterval'));
 				App._refresher = setInterval(function() {
-					console.log("Auto-refreshing");
+					enyo.log("Auto-refreshing");
 					AppUI.refresh();
 				}, App.Prefs.get('network-refreshinterval'));
 			}
 		}, this);
 		AppUI.addFunction("stopAutoRefresher", function() {
-			console.log("Clearing auto-refresher");
+			enyo.log("Clearing auto-refresher");
 			clearInterval(App._refresher);
 		}, this);
 		AppUI.addFunction("restartAutoRefresher", function() {
-			console.log("Restarting auto-refresher");
+			enyo.log("Restarting auto-refresher");
 			AppUI.stopAutoRefresher();
 			AppUI.startAutoRefresher();
 		}, this);
@@ -445,8 +456,8 @@ enyo.kind({
 	viewEvents: [],
 	addViewEvent: function(inSender, inEvent){
 		this.viewEvents.push(inEvent);
-		console.log("pushed event");
-		console.log(inEvent);		
+		enyo.log("pushed event");
+		enyo.log(inEvent);		
 		return this.viewEvents;
 	},
 	goPreviousViewEvent: function(inSender){
@@ -464,11 +475,6 @@ enyo.kind({
 	},
 	createColumn: function(inSender, inAccountId, inColumn, inQuery){
 		this.$.container.createColumn(inAccountId, inColumn, inQuery);	
-	},
-	resizeHandler: function() {
-		enyo.forEach (this.getComponents(), function(component) {
-			component.resizeHandler && component.resizeHandler();
-		});
 	},
 	
 	refreshAll: function() {
@@ -544,18 +550,7 @@ enyo.kind({
 		twit.setSource(App.Prefs.get('twitter-source'));
 		twit.setCredentials(auth);
 		
-		if(inEntry.is_author) {
-			twit.destroy(inEntry.service_id,
-				enyo.bind(this, function(data) {
-					AppUI.removeEntryById(inEntry.service_id);
-					AppUtils.showBanner(enyo._$L("Deleted entry"));
-				}),
-				enyo.bind(this, function() {
-					AppUtils.showBanner(enyo._$L("Error deleting entry"));
-				})
-			);
-		}
-		else if(inEntry.is_private_message) {
+		if(inEntry.is_private_message) {
 			twit.destroyDirectMessage(inEntry.service_id,
 				enyo.bind(this, function(data) {
 					AppUI.removeEntryById(inEntry.service_id);
@@ -563,6 +558,17 @@ enyo.kind({
 				}),
 				enyo.bind(this, function() {
 					AppUtils.showBanner(enyo._$L("Error deleting message"));
+				})
+			);
+		}
+		else if(inEntry.is_author) {
+			twit.destroy(inEntry.service_id,
+				enyo.bind(this, function(data) {
+					AppUI.removeEntryById(inEntry.service_id);
+					AppUtils.showBanner(enyo._$L("Deleted entry"));
+				}),
+				enyo.bind(this, function() {
+					AppUtils.showBanner(enyo._$L("Error deleting entry"));
 				})
 			);
 		}
@@ -586,16 +592,16 @@ enyo.kind({
 	
 	
 	messageTap: function(inSender, layer) {
-		console.log("Tapped on message: "+layer.text);
+		enyo.log("Tapped on message: "+layer.text);
 	},
 	iconTap: function(inSender, layer) {
-		console.log("Tapped on icon for message: "+layer.text);
+		enyo.log("Tapped on icon for message: "+layer.text);
 	},
 	dashboardClose: function(inSender) {
-		console.log("Closed dashboard.");
+		enyo.log("Closed dashboard.");
 	},
 	layerSwiped: function(inSender, layer) {
-		console.log("Swiped layer: "+layer.text);
+		enyo.log("Swiped layer: "+layer.text);
 	},
 
 
@@ -604,6 +610,20 @@ enyo.kind({
 	},
 	popDashboard: function() {
 		this.$.dashboard.pop();
+	},
+	confirmDeleteEntry: function(inSender, inEntry) {
+		this.entryToDelete = inEntry;
+		this.$.deleteEntryPopup.openAtCenter();
+	},
+	cancelEntryDeletion: function(inSender) {
+		this.$.deleteEntryPopup.close();
+		this.entryToDelete = null;
+	},
+	confirmEntryDeletion: function(inSender) {
+		this.$.deleteEntryPopup.close();
+		if (this.entryToDelete) {
+			AppUI.deleteEntry(this.entryToDelete);
+			this.entryToDelete = null;
+		}
 	}
-	
 });

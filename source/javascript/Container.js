@@ -1,7 +1,7 @@
 enyo.kind({
 	name: "Spaz.Container",
 	flex: 1,
-	kind: "Control",
+	kind: enyo.VFlexBox,
 	height: "100%",
 	style: "background-color: black",
 	events: {
@@ -9,9 +9,10 @@ enyo.kind({
 		onShowAccountsPopup: ""
 	},
 	columnData: [],
+	columnEntries: [],
 	components: [
-		{name:"columnsScroller", kind: "SnapScroller", flex: 1, vertical: false, autoVertical: false, style: "background-color: black; padding: 2px;" , components:[
-			{kind: "ScrollFades"}
+		{kind: "Spaz.Notifier", name:"notifier"},
+		{name:"columnsScroller", kind: "SnapScroller", className: "enyo-hflexbox", flex: 1, vertical: false, autoVertical: false, style: "background-color: black; padding: 2px;", components:[
 		]},
 		{name: "confirmPopup", kind: "enyo.Popup", scrim : true, components: [
 			{content: enyo._$L("Delete Column?")},
@@ -26,7 +27,7 @@ enyo.kind({
 
 	create: function(){
 		this.inherited(arguments);
-
+		
 		this.loadingColumns = 0;
 		this.loadAndCreateColumns();
 		
@@ -38,6 +39,12 @@ enyo.kind({
 		}, this);
 		AppUI.addFunction("removeEntryById", function(inEntryId) {
 			this.removeEntryById(inEntryId);
+		}, this);
+		AppUI.addFunction("addEntryToNotifications", function(inEntry) {
+			this.$.notifier.addEntry(inEntry);
+		}, this);
+		AppUI.addFunction("raiseNotifications", function() {
+			this.$.notifier.raiseNotifications();
 		}, this);
 	},
 	
@@ -70,7 +77,7 @@ enyo.kind({
 	},
 	
 	createColumns: function() {
-		this.columnsFunction("destroy"); //destroy them all. don't want to always do this.
+		this.columnsFunction("destroy", null, true); //destroy them all. don't want to always do this.
 
 		if(this.columnData.length === 0){
 			this.columnData = this.getDefaultColumns();
@@ -95,11 +102,14 @@ enyo.kind({
 			if(col.info.type === SPAZ_COLUMN_HOME){
 				col.kind = "Spaz.UnifiedColumn";
 			}
+			if(this.columnEntries[i]) {
+				col.entries = this.columnEntries[i];
+			}
 			cols.push(col);
 		};
 		this.$.columnsScroller.createComponents(cols);
 		this.$.columnsScroller.render();
-		setTimeout(AppUI.refresh, 1);
+		this.columnEntries = [];
 		
 		App.Prefs.set('columns', this.columnData);		
 	},
@@ -109,6 +119,7 @@ enyo.kind({
 		
 		this.columnData.push({type: inColumn, accounts: [inAccountId], query: inQuery});
 
+		this.saveColumnEntries();
 		this.createColumns();
 
 		this.$.columnsScroller.snapTo(this.columnData.length-1);
@@ -116,22 +127,26 @@ enyo.kind({
 	},
 
 	moveColumnLeft: function(inSender){
+		this.saveColumnEntries();
+		
 		var del_idx = parseInt(inSender.name.replace('Column', ''), 10);
 		var column = this.columnData.splice(del_idx, 1)[0];
+		var entries = this.columnEntries.splice(del_idx, 1)[0];
 		this.columnData.splice(del_idx-1, 0, column);
-
+		this.columnEntries.splice(del_idx-1, 0, entries);
+		
 		this.createColumns();
-
-
 	},
 	moveColumnRight: function(inSender){
+		this.saveColumnEntries();
+		
 		var del_idx = parseInt(inSender.name.replace('Column', ''), 10);
 		var column = this.columnData.splice(del_idx, 1)[0];
+		var entries = this.columnEntries.splice(del_idx, 1)[0];
 		this.columnData.splice(del_idx+1, 0, column);
-
-		this.createColumns();	
-
-
+		this.columnEntries.splice(del_idx+1, 0, entries);
+		
+		this.createColumns();
 	},
 	deleteColumn: function(inSender) {
 		this.columnToDelete = inSender;
@@ -155,31 +170,28 @@ enyo.kind({
 
 			this.columnToDelete.destroy();
 			this.columnToDelete = null;
-            this.$.columnsScroller.resizeHandler();
-
-            this.columnsFunction("checkArrows");
-
+			
+			this.createColumns();
 		}
 	},
-	columnsFunction: function(functionName, opts){
+	columnsFunction: function(functionName, opts, sync){
 		var columnCount = 0;
-		_.each(this.getComponents(), function(column){
+		_.each(this.$.columnsScroller.getControls(), function(column){
 			try {
 				if(column.kind === "Spaz.Column" || column.kind === "Spaz.SearchColumn" || column.kind === "Spaz.UnifiedColumn"){
 					columnCount++;
-					this.$[column.name][functionName]();
+					if(sync) {
+						enyo.call(column, functionName, opts);
+					}
+					else {
+						enyo.asyncMethod(column, functionName, opts);
+					}
 				}
 			} catch (e) {
 				console.error(e);
 			}
 		}, this);
 		return columnCount;
-	},
-
-	resizeHandler: function() {
-		enyo.forEach (this.getComponents(), function(component) {
-			component.resizeHandler && component.resizeHandler();
-		});
 	},
 	
 	refreshAll: function() {
@@ -197,6 +209,7 @@ enyo.kind({
 		this.loadingColumns--;
 		if (this.loadingColumns <= 0) {
 			this.doRefreshAllFinished();
+			AppUI.raiseNotifications();
 		}
 	},
 
@@ -223,8 +236,14 @@ enyo.kind({
 	},
 	
 	removeEntryById: function (inEntryId) {
-		enyo.forEach(this.getComponents(), function (component) {
-			component.removeEntryById && component.removeEntryById(inEntryId);
-		});
+		this.columnsFunction("removeEntryById", inEntryId);
+	},
+	
+	saveColumnEntries: function() {
+		this.columnEntries = [];
+		enyo.forEach(this.$.columnsScroller.getControls(), enyo.bind(this, function(control) {
+			var col_idx = parseInt(control.name.replace('Column', ''), 10);
+			this.columnEntries[col_idx] = control.getEntries();
+		}));
 	}
 });

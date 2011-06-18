@@ -53,13 +53,28 @@ enyo.kind({
 				}
 			}
 
+			var dataLength;
 			function loadStarted() {
 				self.$.refresh.addClass("spinning");
 				self.doLoadStarted();
+
+				dataLength = self.entries.length;
+
 			}
 			function loadFinished() {
 				self.$.refresh.removeClass("spinning");
 				self.doLoadFinished();
+
+				if(dataLength !== self.entries.length && opts.mode !== 'older'){
+					if(App.Prefs.get("timeline-scrollonupdate")){
+						
+						self.$.list.punt();
+
+						//go to first unread
+						self.setScrollPosition();
+						self.$.list.refresh();	
+					}
+				}
 			}
 			switch (self.info.type) {
 				case 'unified':
@@ -68,8 +83,8 @@ enyo.kind({
 					self.twit.getCombinedTimeline({
 							'home_count':200,
 							'replies_count':80,
-							'dm_count':100,
-							'dmsent_count':100,
+							'dm_count':50,
+							'dmsent_count':50,
 							'home_since':home_since_id,
 							'replies_since':replies_since_id,
 							'dm_since':dm_since_id,
@@ -105,10 +120,11 @@ enyo.kind({
 		if (data) {
 			switch (this.info.type) {
 				default:
-					
+					console.time('unify_process');
 					/* check for duplicates based on the .id property */
 					/* we do this before conversion to save converting stuff
 					   that won't be needed */
+					console.time('unify_process_reject');
 					data = _.reject(data, function(item) {
 						for (var i = 0; i < self.entries.length; i++) {
 							if (item.id === self.entries[i].service_id) {
@@ -124,6 +140,7 @@ enyo.kind({
 						};
 						return false;
 					});
+					console.timeEnd('unify_process_reject');
 
 
 					/* convert to our internal format */
@@ -143,32 +160,34 @@ enyo.kind({
 					this.entries.sort(function(a,b){
 						return b.publish_date - a.publish_date; // newest first by date
 					});
-					console.log("Sorted by publish date. length now "+this.entries.length);
+					enyo.log("Sorted by publish date. length now "+this.entries.length);
 				
 				
 					var last_home_entry = this.getLastHomeTimelineEntry();
-					console.log("last_home_entry.publish_date", last_home_entry.publish_date);
+					enyo.log("last_home_entry.publish_date", last_home_entry.publish_date);
 				
+					console.time('unify_process_reject2');
 					this.entries = _.reject(this.entries, function(item) {
 						if ((item.publish_date < last_home_entry.publish_date)
 								&& (item._orig.SC_timeline_from !== SPAZCORE_SECTION_HOME)) {
 							return true;
 						}
 					});
+					console.timeEnd('unify_process_reject2');
 				
-					console.log("rejected non-home items with older pub date. length now "+this.entries.length);
+					enyo.log("rejected non-home items with older pub date. length now "+this.entries.length);
 				
-					console.log('current HOME entries:'+this.getHomeEntries().length);
-					console.log('current MENTION entries:'+this.getMentionEntries().length);
-					console.log('current DMS entries:'+this.getDMEntries().length);
-					console.log('current DMSENT entries:'+this.getDMSentEntries().length);
+					enyo.log('current HOME entries:'+this.getHomeEntries().length);
+					enyo.log('current MENTION entries:'+this.getMentionEntries().length);
+					enyo.log('current DMS entries:'+this.getDMEntries().length);
+					enyo.log('current DMSENT entries:'+this.getDMSentEntries().length);
 				
 					/* add more entry properties */
-					this.entries = this.setAdditionalEntryProperties(this.entries);
+					this.entries = AppUtils.setAdditionalEntryProperties(this.entries, this.info.accounts[0]);
 				
 					this.$.list.refresh();
 					this.resizeHandler();
-
+					console.timeEnd('unify_process');
 					break;
 			}
 		}
@@ -176,6 +195,8 @@ enyo.kind({
 		this.markOlderAsRead();
 		
 		this.setLastRead();
+		
+		this.notifyOfNewEntries();
 
 	},
 	

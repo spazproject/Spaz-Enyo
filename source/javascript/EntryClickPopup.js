@@ -26,7 +26,7 @@ enyo.kind({
 		twit.setCredentials(auth);
 			
 		if (this.entry.is_favorite) {
-			console.log('UNFAVORITING %j', this.entry);
+			enyo.log('UNFAVORITING %j', this.entry);
 			twit.unfavorite(
 				this.entry.service_id,
 				enyo.bind(this, function(data) {
@@ -39,7 +39,7 @@ enyo.kind({
 				}
 			);
 		} else {
-			console.log('FAVORITING %j', this.entry);
+			enyo.log('FAVORITING %j', this.entry);
 			twit.favorite(
 				this.entry.service_id,
 				enyo.bind(this, function(data) {
@@ -55,7 +55,7 @@ enyo.kind({
 		}
 	},
 	deleteClicked: function(inSender) {
-		AppUI.deleteEntry(this.entry);
+		AppUI.confirmDeleteEntry(this.entry);
 	},
 	repostClicked: function(inSender) {
 		AppUI.repost(this.entry);

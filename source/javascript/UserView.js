@@ -63,7 +63,8 @@ enyo.kind({
 							name: "entryItem", 
 							kind: "Spaz.Entry",
 							ignoreUnread: true,
-							onEntryClick: "entryClick"
+							onEntryClick: "entryClick",
+							onEntryHold: "entryHold"
 						},
 						{
 							name: "userItem", kind: "enyo.Item", tapHighlight: true, onclick: "userItemClick", components: [
@@ -132,8 +133,13 @@ enyo.kind({
 				this.buildAccountButton();
 				this.showLoading(false);
 			}),
-			enyo.bind(this, function() {
-				AppUtils.showBanner("Error loading user info for "+inUsername);
+			enyo.bind(this, function(data) {
+                if(data.status === 404) {
+                    AppUtils.showBanner(enyo.macroize(enyo._$L("No user named {$username}"), {"username": inUsername}));
+                }
+                else {
+                    AppUtils.showBanner(enyo.macroize(enyo._$L("Error loading info for {$username}"), {"username": inUsername}));
+                }
 				this.showLoading(false);
 				this.doDestroy();
 			})
@@ -183,7 +189,7 @@ enyo.kind({
 		
 		if(this.$.username.getContent() !== "@" + this.user.username){
 							
-			var events = this.doAddViewEvent({type: "user", user: this.user});
+			var events = this.doAddViewEvent({type: "user", user: enyo.mixin(this.user, {account_id: this.account_id})});
 		   	if(events.length > 1){
 		    	this.$.viewManagement.setShowing(true);
 		    	var lastEvent = events[events.length-2];
@@ -216,7 +222,7 @@ enyo.kind({
 					this.$.friends.setNumber(this.user._orig.friends_count);
 					this.$.entries.setNumber(this.user._orig.statuses_count);
 					var url = this.user.url || '';
-					this.$.url.setContent(sch.autolink(enyo.string.runTextIndexer(url)), url.length);
+					this.$.url.setContent(sch.autolink(url), url.length);
 					this.$.radioGroup.setValue(0);
 					this.switchDataType(this.$.radioGroup);
 					break;
@@ -243,6 +249,7 @@ enyo.kind({
 					enyo.bind(this, function(data) {
 						this.showSpinner(false);
 						this.items = AppUtils.convertToEntries(data.reverse());
+						this.items = AppUtils.setAdditionalEntryProperties(this.items, this.account_id);
 						this.$.list.render();
 						this.$.scroller.setScrollTop(0);
 					}),
@@ -278,7 +285,7 @@ enyo.kind({
 					}));
 				break;
 		}
-		this.$.scroller.start();
+		this.$.scroller.setScrollTop(0);
 		this.$.list.render();
 
 	},
@@ -304,6 +311,7 @@ enyo.kind({
 			return true;
 		}
 	},
+		
 	bioClick: function(inSender, inEvent){
 		var className = inEvent.target.className;
 		if(_.includes(className, "username")){
@@ -313,8 +321,20 @@ enyo.kind({
 			AppUI.search(inEvent.target.innerText, this.user.account_id);
 		}
 	},
-	entryClick: function(inSender, inEvent){
-		this.$.entryClickPopup.showAtEvent(inSender.entry, inEvent);
+	entryClick: function(inSender, inEvent, inRowIndex) {
+		if(App.Prefs.get("entry-tap") === "panel"){
+			AppUI.viewEntry(inSender.entry);
+		} else {
+			this.$.entryClickPopup.showAtEvent(inSender.entry, inEvent);	
+		}
+
+	},
+	entryHold: function(inSender, inEvent, inRowIndex) {
+		if(App.Prefs.get("entry-hold") === "popup"){
+			this.$.entryClickPopup.showAtEvent(inSender.entry, inEvent);	
+		} else if(App.Prefs.get("entry-hold") === "panel"){
+			AppUI.viewEntry(inSender.entry);
+		}
 	},
 	
 	userItemClick: function(inSender, inEvent) {
@@ -333,7 +353,7 @@ enyo.kind({
 				twit.removeFriend(
 					this.user.service_id,
 					function(data){
-						console.log('response from remove friend:', data);
+						enyo.log('response from remove friend:', data);
 						self.user.are_following = 'no';
 						self.setFollowButtonIcon(self.user.are_following);
 						self.$.following.setActive(false);
@@ -349,7 +369,7 @@ enyo.kind({
 				twit.addFriend(
 					this.user.service_id,
 					function(data){
-						console.log('response from add friend:', data);
+						enyo.log('response from add friend:', data);
 						self.user.are_following = 'yes';
 						self.setFollowButtonIcon(self.user.are_following);
 						self.$.following.setActive(false);
@@ -402,16 +422,17 @@ enyo.kind({
 			this.user.service_id,
 			null,
 			function(data) {
-				console.log('show friendship result: %j', data);
+				enyo.log('show friendship result: %j', data);
 				if (data.relationship.target.followed_by) {
-					console.log('You are following this user!');
+					enyo.log('You are following this user!');
 					self.user.are_following = 'yes';
 				} else {
-					console.log('You are NOT following this user!');
+					enyo.log('You are NOT following this user!');
 					self.user.are_following = 'no';
 				}
 				self.enableFollowButton(true);
 				self.setFollowButtonIcon(self.user.are_following);
+				self.$.message.setShowing(data.relationship.source.can_dm);
 			},
 			function(xhr, msg, exc) {
 				AppUtils.showBanner($L('Could not retrieve relationship info'));
@@ -431,7 +452,7 @@ enyo.kind({
 			this.$.following.addClass("enyo-button-negative");
 			//this.$.follow.setIcon('source/images/icon-stop-following.png');
 		} else {
-			if(App.Users.get(this.$.accountSelection.getValue()).username === this.user.username){ //if it IS this user
+			if(App.Users.get(this.$.accountSelection.getValue()).username.toLowerCase() === this.user.username.toLowerCase()){ //if it IS this user
 				this.$.following.setCaption("That's you!");
 				this.$.following.removeClass("enyo-button-affirmative");
 				this.$.following.removeClass("enyo-button-negative");

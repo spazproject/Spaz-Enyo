@@ -145,10 +145,8 @@ AppUtils.emailTweet = function(tweetobj) {
 
 
 AppUtils.SMSTweet = function(tweetobj) {	
-	var message = ""
-				+ "From @" + tweetobj.author_username + ":\n"
-				+ tweetobj.text_raw + "\n\n"
-				+ "Shared from Spaz HD http://getspaz.com\n\n";
+	var message = "From @" + tweetobj.author_username + ": " + tweetobj.text_raw + " "
+				+ "Shared from Spaz HD http://getspaz.com";
 	
 	var sms_srvc = new enyo.PalmService({
 		service: 'palm://com.palm.applicationManager/',
@@ -240,7 +238,7 @@ AppUtils.getAccountAvatar = function(account_id, onSuccess, onFailure) {
 	var twit = AppUtils.makeTwitObj(account_id);
 	var username = App.Users.get(account_id).username;
 
-	console.log(username);
+	enyo.log(username);
 
 	twit.getUser(
 		'@'+username,
@@ -271,7 +269,7 @@ AppUtils.getAccount = function(account_id, onSuccess, onFailure) {
 	var twit = AppUtils.makeTwitObj(account_id);
 	var username = App.Users.get(account_id).username;
 
-	console.log(username);
+	enyo.log(username);
 
 	twit.getUser(
 		'@'+username,
@@ -328,6 +326,12 @@ AppUtils.makeTwitObj = function(account_id) {
 
 
 
+AppUtils.getAuthObj = function(account_id) {
+	var auth = App.Users.getAuthObject(account_id);
+	return auth;
+};
+
+
 AppUtils.convertToUser = function(srvc_user) {
 	
 	var user = {};
@@ -374,12 +378,6 @@ AppUtils.convertToEntry = function(item) {
 			entry.text          = item.text;
 			entry.text_raw      = item.SC_text_raw;
 			entry.publish_date  = item.SC_created_at_unixtime;
-
-			if (item.favorited) {
-				entry.is_favorite = true;
-			} else {
-				entry.is_favorite = false;
-			}
 			
 			if (item.SC_is_dm) {
 				entry.author_username = item.sender.screen_name;
@@ -451,10 +449,20 @@ AppUtils.convertToEntry = function(item) {
 
 					if (item.in_reply_to_status_id) {
 						entry.in_reply_to_id = item.in_reply_to_status_id;
+					}
+					
+					if (item.favorited) {
+						entry.is_favorite = true;
+					} else {
+						entry.is_favorite = false;
 					}					
 
 				}
 
+			}
+			
+			if (entry.SC_is_search) {
+				entry.is_search_result = true;
 			}
 			
 			entry.author_avatar_bigger = AppUtils.getBiggerAvatar(entry);
@@ -470,6 +478,24 @@ AppUtils.convertToEntry = function(item) {
 
 	return entry;
 
+};
+
+
+AppUtils.setAdditionalEntryProperties = function(entries, account_id) {
+	// add in the account used to get this entry. this seems sloppy here.
+	for (var j = entries.length - 1; j >= 0; j--){
+		entries[j].account_id = account_id;
+		
+		var acc_username = App.Users.get(account_id).username;
+		var acc_service  = App.Users.get(account_id).type;
+		
+		if (acc_username.toLowerCase() === entries[j].author_username.toLowerCase()
+			&& acc_service === entries[j].service) {
+			entries[j].is_author = true;
+		}
+
+	}
+	return entries;
 };
 
 

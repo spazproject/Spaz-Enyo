@@ -1,10 +1,10 @@
 enyo.kind({
 	name: "Spaz.SettingsPopup",
-	kind: "Popup",
+	kind: "Spaz.Popup",
 	scrim: true,
 	modal: true,
 	width: "400px",
-	height: "500px",
+	height: "600px",
 	layoutKind: "VFlexLayout",
 	events: {
 		onClose: ""
@@ -15,7 +15,7 @@ enyo.kind({
 			{kind: "Spacer"},
 			{kind: "ToolButton", icon: "source/images/icon-close.png", style: "position: relative; bottom: 7px;", onclick: "doClose"}
 		]},	
-		{kind: "FadeScroller", flex: 1, components: [ // @TODO: scroll fades.
+		{name: "scroller", kind: "FadeScroller", flex: 1, components: [ // @TODO: scroll fades.
 			/*{kind: "Group", caption: "Columns", components: [
 				{kind: "Item", layoutKind: "HFlexLayout", components: [
 					{content: "Default Width"},
@@ -51,6 +51,24 @@ enyo.kind({
 						"20px"					
 					]}
 				]},
+				{kind: "Item", layoutKind: "HFlexLayout", components: [
+					{content: "Tap"},
+					{kind: "Spacer"},
+					{kind: "ListSelector", value: "", preferenceProperty: "entry-tap", onChange: "setPreference", items: [
+						{caption: "Opens Panel", value: "panel"},				
+						{caption: "Opens Popup", value: "popup"}
+					]}
+				]},
+				{kind: "Item", layoutKind: "HFlexLayout", components: [
+					{content: "Hold"},
+					{kind: "Spacer"},
+					{kind: "ListSelector", value: "", preferenceProperty: "entry-hold", onChange: "setPreference", items: [
+						{caption: "Opens Panel", value: "panel"},				
+						{caption: "Opens Popup", value: "popup"},
+						{caption: "Does Nothing", value: "nothing"}
+
+					]}
+				]},
 				/*{kind: "Item", layoutKind: "HFlexLayout", components: [
 					{content: "Embedded Image Preview"},
 					{kind: "Spacer"},
@@ -64,6 +82,11 @@ enyo.kind({
 					{kind: "Spacer"},
 					{kind: "CheckBox", preferenceProperty: "post-send-on-enter", onChange: "setPreference"}
 				]},
+				{kind: "Item", layoutKind: "HFlexLayout", components: [
+					{content: enyo._$L("Refresh After Posting")},
+					{kind: "Spacer"},
+					{kind: "CheckBox", preferenceProperty: "refresh-after-posting", onChange: "setPreference"}
+				]}
 			]},
 			{kind: "Group", caption: "Refresh", components: [
 				{kind: "Item", layoutKind: "HFlexLayout", components: [
@@ -82,6 +105,12 @@ enyo.kind({
 										
 					]}
 				]},
+				{kind: "Item", layoutKind: "HFlexLayout", components: [
+					{content: "Scroll to Unread"},
+					{kind: "Spacer"},
+					{kind: "CheckBox", preferenceProperty: "timeline-scrollonupdate", onChange: "setPreference"}
+				]},
+				
 				
 				//{kind: "Item", content: "Interval for Searches"},
 			]},
@@ -107,7 +136,6 @@ enyo.kind({
 					{kind: "CheckBox", preferenceProperty: "notify-searchresults", onChange: "setPreference"}
 				]},
 				
-				//{kind: "Item", content: "Interval for Searches"},
 			]},
 			{kind: "Group", caption: "URL Shortening", components: [
 				{kind: "Item", layoutKind: "HFlexLayout", components: [
@@ -160,8 +188,14 @@ enyo.kind({
 		this.inherited(arguments);
 	},
 	showAtCenter: function(){
+		if(this.lazy) {
+			this.validateComponents();
+		}
 		
+		this.$.scroller.setScrollTop(0);
 		this.openAtCenter();
+		
+		this.$.shurl.setItems(new SpazShortURL().getServiceLabels());
 		
 		_.each(this.getComponents(), function(component){
 			if(component.preferenceProperty){
@@ -173,12 +207,9 @@ enyo.kind({
 				}
 			}
 		});
-		var shurl = new SpazShortURL();
-		this.$.shurl.setItems(shurl.getServiceLabels());
-	
 	},
 	setPreference: function(inSender, inValue){
-		console.log(inSender, inValue);
+		enyo.log(inSender, inValue);
 		if(inSender.kind === "CheckBox"){
 			App.Prefs.set(inSender.preferenceProperty, inSender.getChecked());
 		} else {

@@ -17,7 +17,7 @@ enyo.kind({
 	components: [
 		{kind: "ToolButton", icon: "source/images/icon-spaz.png", onclick: "openPopup", popup:"aboutPopup"},		
 		{kind: "ToolButton", icon: "source/images/icon-settings.png", onclick: "openPopup", popup:"settingsPopup"},
-		{kind: "ToolButton", icon: "source/images/icon-new-account.png", onclick: "openPopup", popup:"accountsPopup"},
+		{kind: "ToolButton", icon: "source/images/icon-accounts.png", onclick: "openPopup", popup:"accountsPopup"},
 		{kind: "ToolButton", icon: "source/images/icon-new-column.png", onclick: "openPopup", popup: "columnsPopup"},
 		{kind: "Spacer"},
 		{kind: "ToolButton", icon: "source/images/icon-compose.png", onclick: "compose", popup:"composePopup"},
@@ -29,7 +29,15 @@ enyo.kind({
 		{name: "searchPopup", kind: "Spaz.SearchPopup", onCreateColumn: "doCreateColumn", onClose: "closePopup" },
 		{name: "columnsPopup", kind: "Spaz.ColumnsPopup", onCreateColumn: "doCreateColumn", onClose: "closePopup" },
 		{name: "settingsPopup", kind: "Spaz.SettingsPopup", onClose: "closePopup" },
-		{name: "accountsPopup", kind: "Spaz.AccountsPopup", onClose: "closePopup", onAccountAdded: "doAccountAdded", onAccountRemoved: "doAccountRemoved" }
+		{name: "accountsPopup", kind: "Spaz.AccountsPopup", onClose: "closePopup", onAccountAdded: "doAccountAdded", onAccountRemoved: "doAccountRemoved" },
+	
+		{kind: enyo.AppMenu, components: [
+			{content: "About Spaz HD", onclick: "openPopup", popup: "aboutPopup"},
+			{content: "Settings", onclick: "openPopup", popup: "settingsPopup"},
+			{content: "Manage Accounts", onclick: "openPopup", popup: "accountsPopup"},
+			{content: "Add a Column", onclick: "openPopup", popup: "columnsPopup"}
+
+		]}
 	],
 	compose: function(inSender) {
 		this.$.composePopup.compose();

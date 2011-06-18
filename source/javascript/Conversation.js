@@ -16,7 +16,7 @@ enyo.kind({
 			{name: "item", kind: "Spaz.Entry", onclick: "entryClick"}
 		]}*/
 		{name: "list", kind: "VirtualRepeater", onSetupRow: "setupRow", components: [
-			{name: "item", kind: "Spaz.Entry", ignoreUnread: true, onEntryClick: "entryClick"}
+			{name: "item", kind: "Spaz.Entry", ignoreUnread: true, onEntryClick: "entryClick", onEntryHold: "entryHold"}
 		]},
 		//{name: "list", className: "conversation list", components: []},
 		
@@ -89,10 +89,21 @@ enyo.kind({
 			return true;
 		}
 	},
-	entryClick: function(inSender, inEvent){
-		this.$.entryClickPopup.showAtEvent(inSender.entry, inEvent);
+	entryClick: function(inSender, inEvent, inRowIndex) {
+		if(App.Prefs.get("entry-tap") === "panel"){
+			AppUI.viewEntry(inSender.entry);
+		} else {
+			this.$.entryClickPopup.showAtEvent(inSender.entry, inEvent);	
+		}
+
 	},
-	
+	entryHold: function(inSender, inEvent, inRowIndex) {
+		if(App.Prefs.get("entry-hold") === "popup"){
+			this.$.entryClickPopup.showAtEvent(inSender.entry, inEvent);	
+		} else if(App.Prefs.get("entry-hold") === "panel"){
+			AppUI.viewEntry(inSender.entry);
+		}
+	},
 	clearConversationMessages: function() {
 		this.entries = [];
 		this.$.list.render();
