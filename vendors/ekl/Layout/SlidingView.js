@@ -10,8 +10,7 @@ enyo.kind({
         if (this.nodragleft) {
             return 0;
         } else {
-            var x = -this.getLeftOffset();
-            return this.peekWidth + x;
+            return this.inherited(arguments);
         }
 	}
 });
