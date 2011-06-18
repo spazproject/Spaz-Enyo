@@ -124,7 +124,7 @@ AppUtils.sendEmail = function(opts) {
 	
 	var email_srvc = new enyo.PalmService({
 		service: 'palm://com.palm.applicationManager/',
-		method: 'open',
+		method: 'open'
 	});
 	email_srvc.call({
 		id: 'com.palm.app.email',
@@ -150,7 +150,7 @@ AppUtils.SMSTweet = function(tweetobj) {
 	
 	var sms_srvc = new enyo.PalmService({
 		service: 'palm://com.palm.applicationManager/',
-		method: 'open',
+		method: 'open'
 	});
 	sms_srvc.call({
 		id: "com.palm.app.messaging",
