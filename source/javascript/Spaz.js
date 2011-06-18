@@ -4,7 +4,7 @@ enyo.kind({
 	components: [
 	    {kind: enyo.ApplicationEvents, onApplicationRelaunch: "relaunchHandler"},
 
-	    {name: "slider", kind: enyo.SlidingPane, flex: 1, dismissDistance: 100, components: [
+	    {name: "slider", kind: ekl.Layout.SlidingPane, flex: 1, dismissDistance: 100, style:"background:#000", components: [
 	        {name: "main", layoutKind: enyo.HFlexLayout, flex: 1, components: [
 	            {
         			name: "sidebar", 
@@ -22,7 +22,7 @@ enyo.kind({
         		}
 	        ]},
 	        
-	        {name: "detail", layoutKind: enyo.VFlexLayout, fixedWidth: true, width: "322px", dismissible: true, showing: false, components: [
+	        {name: "detail", layoutKind: enyo.VFlexLayout, nodragleft: true, fixedWidth: true, width: "322px", dismissible: true, showing: false, components: [
                 {name: "detailContent", kind: enyo.Pane, transitionKind: "enyo.transitions.Fade", flex: 1}
             ]}
 	    ]},
