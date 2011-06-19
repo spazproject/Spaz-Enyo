@@ -243,8 +243,6 @@ enyo.kind({
 		}
 	},
 	getTwitterPinAuthorization: function(inSender, inEvent){
-		//launch browser.
-		this.$.getTwitterAuthButton.setActive(true);
 		
 		if (!SPAZCORE_CONSUMERKEY_TWITTER) {
 			console.error('SPAZCORE_CONSUMERKEY_TWITTER not set, will not be able to authenticate against Twitter');
@@ -260,12 +258,22 @@ enyo.kind({
 			'accessTokenUrl':'https://twitter.com/oauth/access_token',
 		});
 		
-		this.oauth.fetchRequestToken(function(url) {
+		AppUtils.showBanner($L('Getting Request Token from Twitter'));
+
+		//launch browser.
+		this.$.getTwitterAuthButton.setActive(true);
+		this.$.getTwitterAuthButton.setDisabled(true);
+
+		this.oauth.fetchRequestToken(_.bind(function(url) {
+				this.$.getTwitterAuthButton.setActive(false);
+				this.$.getTwitterAuthButton.setDisabled(false);
 				this.authwindow = sch.openInBrowser(url, 'authorize');
-			},
-			function(data) {
+			}, this),
+			_.bind(function(data) {
+				this.$.getTwitterAuthButton.setActive(false);
+				this.$.getTwitterAuthButton.setDisabled(false);
 				AppUtils.showBanner($L('Problem getting Request Token from Twitter'));
-			}
+			}, this)
 		);
 		inSender.setActive(false);
 	},
