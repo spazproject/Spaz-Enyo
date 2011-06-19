@@ -33,6 +33,7 @@ enyo.kind({
 				{kind: "enyo.Button", className: "enyo-button-negative", caption: enyo._$L("Delete"), flex: 1, onclick: "confirmEntryDeletion"}
 			]}
 		]},
+		{name : "versionService", kind : "enyo.WebService", url: "http://getspaz.com/feeds/spazhd"}
 	],
 	
 	twit: new SpazTwit(),
@@ -367,6 +368,8 @@ enyo.kind({
 		AppUI.startAutoRefresher();
 		
 		this.processLaunchParams(enyo.windowParams);
+		
+		enyo.asyncMethod(this, this.sendVersionInfo);
 	},
 
 	showEntryView: function(inSender, inEntry){
@@ -608,5 +611,11 @@ enyo.kind({
 			AppUI.deleteEntry(this.entryToDelete);
 			this.entryToDelete = null;
 		}
+	},
+	sendVersionInfo: function() {
+		this.$.versionService.call({
+			platform: sch.getPlatform(),
+			appVersion: enyo.fetchAppInfo().version
+		});
 	}
 });
