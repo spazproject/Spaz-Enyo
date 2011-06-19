@@ -416,7 +416,7 @@ enyo.kind({
 	},
 	
   userMentions: function(inEvent) {
-    this.parent.$.container.createColumn(this.account_id, SPAZ_COLUMN_SEARCH, '@'+this.user.username);
+    this.owner.$.container.createColumn(this.account_id, SPAZ_COLUMN_SEARCH, '@'+this.user.username);
   },
     
 	getTwitterRelationship: function() {
