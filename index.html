@@ -3,37 +3,12 @@
 <head>
 	<title>Spaz HD</title>
 	<script src="enyo/0.10/framework/enyo.js" type="text/javascript"></script>
-	<style type="text/css" media="screen">
-		#splashscreen {
-			position: fixed;
-			top: 0px;
-			right: 0px;
-			left: 0px;
-			bottom: 0px;
-			background-image: url(spazhd-splash.png);
-			background-repeat:no-repeat;
-			opacity:1;
-		}
-
-		@-webkit-keyframes FadeIn { 0% { opacity:0; } 100% { opacity:1; } }
-		@-webkit-keyframes FadeOut { 0% { opacity:1; } 100% { opacity:1; } }
-		
-		#splashscreen.fadeout {
-			-webkit-animation-name: FadeOut;
-			-webkit-animation-timing-function: ease-in;
-			-webkit-animation-duration: 1.0s;
-		}
-	</style>
 </head>
-<body onload="enyo.job(false, enyo.bind(this, init), 100);">
+<body>
 	<script type="text/javascript">
-		function init() {
-			sc.setDumpLevel(0);
-			document.getElementById('splashscreen').className = 'fadeout';
-			var spazapp = new Spaz().renderInto(document.body);
-		}
+		sc.setDumpLevel(0);
+		var spazapp = new Spaz().renderInto(document.body);
 	</script>
-	<div id="splashscreen"></div>
 	<div id="aboutContent" style="display: none">
 		<div id="teamMembersContent">
 			<h2>Spaz HD team</h2>

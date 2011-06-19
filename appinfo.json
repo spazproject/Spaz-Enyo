@@ -10,6 +10,7 @@
 	"main": "index.html",
 	"icon": "icon.png",
 	"miniicon": "miniicon.png",
+	"splashBackground":"spazhd-splash.png",	
 	"uiRevision":2,
 	
 	"universalSearch": {
