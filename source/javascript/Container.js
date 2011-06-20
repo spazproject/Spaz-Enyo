@@ -171,7 +171,8 @@ enyo.kind({
 
 			this.columnToDelete.destroy();
 			this.columnToDelete = null;
-			
+
+			this.saveColumnEntries();
 			this.createColumns();
 		}
 	},
