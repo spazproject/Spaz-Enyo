@@ -194,6 +194,10 @@ enyo.kind({
 
 		this.markOlderAsRead();
 		
+		if(opts.forceCountUnread) {
+			this.countUnread();
+		}
+		
 		this.setLastRead();
 		
 		this.notifyOfNewEntries();
