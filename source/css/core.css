@@ -254,3 +254,7 @@ a:active,
 	position: relative;
 	/*bottom: 1px;*/
 }
+
+.columnSpacer {
+	-webkit-transition: width 0.2s ease-in-out;
+}

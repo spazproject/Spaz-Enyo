@@ -79,6 +79,11 @@ enyo.kind({
 	
 	createColumns: function() {
 		this.columnsFunction("destroy", null, true); //destroy them all. don't want to always do this.
+		enyo.forEach(this.$.columnsScroller.getControls(), enyo.bind(this, function(control) {
+			if(_.includes(control.name, "ColumnSpacer")){
+				control.destroy();
+			}
+		}));
 
 		if(this.columnData.length === 0){
 			this.columnData = this.getDefaultColumns();
@@ -111,11 +116,11 @@ enyo.kind({
 			}
 	
 			cols.push(
-				{kind: "Control", name: "ColumnSpacer"+ i, width: "0px", ondragover: "spacerDragOver", ondrop: "spacerDrop", ondragout: "spacerDragOut"},
+				{kind: "Control", name: "ColumnSpacer"+ i, className: "columnSpacer", width: "0px", ondragover: "spacerDragOver", ondrop: "spacerDrop", ondragout: "spacerDragOut"},
 				col
 			);
 		};
-		cols.push({kind: "Control", name: "ColumnSpacer" + cols.length-1, width: "0px", ondragover: "spacerDragOver", ondrop: "spacerDrop", ondragout: "spacerDragOut"
+		cols.push({kind: "Control", name: "ColumnSpacer" + cols.length-1, className: "columnSpacer", width: "0px", ondragover: "spacerDragOver", ondrop: "spacerDrop", ondragout: "spacerDragOut"
 		});
 		this.$.columnsScroller.createComponents(cols, {owner: this});
 		this.$.columnsScroller.render();
@@ -262,23 +267,40 @@ enyo.kind({
 
 
 	spacerDragOver: function(inSender, inEvent){
-		enyo.forEach(this.$.columnsScroller.getControls(), enyo.bind(this, function(control) {
-			if(_.includes(control.name, "ColumnSpacer")){
-				if(control.name !== inSender.name){
-					control.applyStyle("width", "20px");
+		if (inEvent.dragInfo !== undefined) {
+			enyo.forEach(this.$.columnsScroller.getControls(), enyo.bind(this, function(control) {
+				if(_.includes(control.name, "ColumnSpacer")){
+					if(control.name !== inSender.name){
+						control.applyStyle("width", "5px");
+					}
 				}
-			}
-		}));
-		inSender.applyStyle("width", "200px");
-		this.activeSpacer = inSender.name;
-		console.error("XXXXXX drug over", inSender.name);	
+			}));
+			inSender.applyStyle("width", "200px");
+			//console.error("drug over", inSender.name);
+		}	
 	},
 	spacerDragOut: function(inSender, inEvent){
-		//inSender.applyStyle("width", "20px");
+		//inSender.applyStyle("width", "5px");
 		//console.error("drug out", inSender.name);
 	},
 	spacerDrop: function(inSender, inEvent){
-		console.error("Dropped on spacer", inSender.name);
+		if (inEvent.dragInfo !== undefined) {
+			//console.error("Dropped on spacer", inSender.name);
+
+			this.saveColumnEntries();
+		
+			var del_idx = parseInt(this.activeColumn.name.replace('Column', ''), 10);
+			var new_idx = parseInt(inSender.name.replace('ColumnSpacer', ''), 10);
+			if(new_idx > del_idx){
+				new_idx--;
+			}
+			var column = this.columnData.splice(del_idx, 1)[0];
+			var entries = this.columnEntries.splice(del_idx, 1)[0];
+			this.columnData.splice(new_idx, 0, column);
+			this.columnEntries.splice(new_idx, 0, entries);
+			
+			this.createColumns();
+		}
 	},
 
 	columnMousehold: function(inSender, inEvent){
@@ -289,10 +311,10 @@ enyo.kind({
 		this.activeColumn.applyStyle("z-index", 50000);
 		this.activeColumn.applyStyle("-webkit-user-drag", "none");
 		this.activeColumn.applyStyle("pointer-events", "none");
+		this.activeColumn.applyStyle("height", window.innerHeight - 93 + "px");
+
 
 		this.trackColumn(inEvent);
-
-		console.error("column mouseheld", inSender.name);
 	},
 	columnMouserelease: function(inSender, inEvent){
 		this.isHolding = false;
@@ -301,10 +323,10 @@ enyo.kind({
 			this.activeColumn.applyStyle("z-index", null);
 			this.activeColumn.applyStyle("-webkit-user-drag", null);
 			this.activeColumn.applyStyle("pointer-events", null);
+			this.activeColumn.applyStyle("height", null);
 
 			this.activeColumn = undefined;	
 		}
-		console.error("column mousereleased", inSender.name);		
 	},
 
 	columnDragStart: function(inSender, inEvent){
@@ -312,13 +334,9 @@ enyo.kind({
 
 			if(this.isHolding){
 
-				this.activeSpacer = "ColumnSpacer" + inSender.name.replace('Column', '');
-
-				console.error("column drag start", inSender.name);
-
 				enyo.forEach(this.$.columnsScroller.getControls(), enyo.bind(this, function(control) {
 					if(_.includes(control.name, "ColumnSpacer")){
-						control.applyStyle("width", "20px");
+						control.applyStyle("width", "5px");
 					}
 				}));
 
@@ -331,46 +349,33 @@ enyo.kind({
 		}
 	},
 	columnDrag: function(inSender, inEvent){
-		console.error("dragging column", inSender.name);	
 
 		if (this.dragColumn) {
 			this.trackColumn(inEvent);
 		}
 	},
 	columnDragFinish: function(inSender, inEvent){
-		console.error("done dragging column", inSender.name);
+		//console.error("done dragging column", inSender.name);
 
 		if (this.dragColumn) {
 			this.activeColumn.applyStyle("position", null);
 			this.activeColumn.applyStyle("z-index", null);
 			this.activeColumn.applyStyle("-webkit-user-drag", null);
 			this.activeColumn.applyStyle("pointer-events", null);
+			this.activeColumn.applyStyle("height", null);
 
 			enyo.forEach(this.$.columnsScroller.getControls(), enyo.bind(this, function(control) {
 				if(_.includes(control.name, "ColumnSpacer")){
 					control.applyStyle("width", "0px");
 				}
 			}));
-		
 
-			this.saveColumnEntries();
-		
-			var del_idx = parseInt(this.activeColumn.name.replace('Column', ''), 10);
-			var new_idx = parseInt(this.activeSpacer.replace('ColumnSpacer', ''), 10);
-			var column = this.columnData.splice(del_idx, 1)[0];
-			var entries = this.columnEntries.splice(del_idx, 1)[0];
-			this.columnData.splice(new_idx, 0, column);
-			this.columnEntries.splice(new_idx, 0, entries);
-			
-			this.createColumns();
-
-			this.activeSpacer = undefined;
 			this.activeColumn = undefined;
-
+			this.dragColumn = false;
 
 		}
 	},
 	trackColumn: function(inEvent){
-		this.activeColumn.boxToNode({l: inEvent.pageX - 180, t: inEvent.pageY - 20});
+		this.activeColumn.boxToNode({l: this.$.columnsScroller.scrollLeft + inEvent.pageX - 180, t: inEvent.pageY - 20});
 	}
 });
