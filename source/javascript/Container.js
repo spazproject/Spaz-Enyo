@@ -95,7 +95,10 @@ enyo.kind({
 				onLoadFinished: "loadFinished",
 				onMoveColumnLeft: "moveColumnLeft",
 				onMoveColumnRight: "moveColumnRight",
-				owner: this //@TODO there is an issue here with scope. when we create kinds like this dynamically, the event handlers passed is the scope `this.$.columnsScroller` rather than `this` which is what we want in this case since `doShowEntryView` belongs to `this`. It won't be a big deal here, because if we need the column kinds, we can call this.getComponents() and filter out the scroller itself.
+				owner: this,
+
+				onToolbarmousehold: "columnMousehold", onToolbarmouserelease: "columnMouserelease",
+				onToolbardragstart: "columnDragStart", onToolbardrag: "columnDrag", onToolbardragfinish: "columnDragFinish"
 			}; 
 			if(col.info.type === SPAZ_COLUMN_SEARCH){
 				col.kind = "Spaz.SearchColumn";
@@ -106,9 +109,15 @@ enyo.kind({
 			if(this.columnEntries[i]) {
 				col.entries = this.columnEntries[i];
 			}
-			cols.push(col);
+	
+			cols.push(
+				{kind: "Control", name: "ColumnSpacer"+ i, width: "0px", ondragover: "spacerDragOver", ondrop: "spacerDrop", ondragout: "spacerDragOut"},
+				col
+			);
 		};
-		this.$.columnsScroller.createComponents(cols);
+		cols.push({kind: "Control", name: "ColumnSpacer" + cols.length-1, width: "0px", ondragover: "spacerDragOver", ondrop: "spacerDrop", ondragout: "spacerDragOut"
+		});
+		this.$.columnsScroller.createComponents(cols, {owner: this});
 		this.$.columnsScroller.render();
 		this.columnEntries = [];
 		
@@ -244,8 +253,124 @@ enyo.kind({
 	saveColumnEntries: function() {
 		this.columnEntries = [];
 		enyo.forEach(this.$.columnsScroller.getControls(), enyo.bind(this, function(control) {
-			var col_idx = parseInt(control.name.replace('Column', ''), 10);
-			this.columnEntries[col_idx] = control.getEntries();
+			if(_.includes(control.kind, "Column") && !_.includes(control.kind, "Spacer")){
+				var col_idx = parseInt(control.name.replace('Column', ''), 10);
+				this.columnEntries[col_idx] = control.getEntries();
+			}
 		}));
+	},
+
+
+	spacerDragOver: function(inSender, inEvent){
+		enyo.forEach(this.$.columnsScroller.getControls(), enyo.bind(this, function(control) {
+			if(_.includes(control.name, "ColumnSpacer")){
+				if(control.name !== inSender.name){
+					control.applyStyle("width", "20px");
+				}
+			}
+		}));
+		inSender.applyStyle("width", "200px");
+		this.activeSpacer = inSender.name;
+		console.error("XXXXXX drug over", inSender.name);	
+	},
+	spacerDragOut: function(inSender, inEvent){
+		//inSender.applyStyle("width", "20px");
+		//console.error("drug out", inSender.name);
+	},
+	spacerDrop: function(inSender, inEvent){
+		console.error("Dropped on spacer", inSender.name);
+	},
+
+	columnMousehold: function(inSender, inEvent){
+
+		this.isHolding = true;
+		this.activeColumn = inSender;
+		this.activeColumn.applyStyle("position", "absolute");
+		this.activeColumn.applyStyle("z-index", 50000);
+		this.activeColumn.applyStyle("-webkit-user-drag", "none");
+		this.activeColumn.applyStyle("pointer-events", "none");
+
+		this.trackColumn(inEvent);
+
+		console.error("column mouseheld", inSender.name);
+	},
+	columnMouserelease: function(inSender, inEvent){
+		this.isHolding = false;
+		if(!this.dragColumn){
+			this.activeColumn.applyStyle("position", null);
+			this.activeColumn.applyStyle("z-index", null);
+			this.activeColumn.applyStyle("-webkit-user-drag", null);
+			this.activeColumn.applyStyle("pointer-events", null);
+
+			this.activeColumn = undefined;	
+		}
+		console.error("column mousereleased", inSender.name);		
+	},
+
+	columnDragStart: function(inSender, inEvent){
+		if (Math.abs(inEvent.dx) < 200) { //make sure the user isn't trying to scroll
+
+			if(this.isHolding){
+
+				this.activeSpacer = "ColumnSpacer" + inSender.name.replace('Column', '');
+
+				console.error("column drag start", inSender.name);
+
+				enyo.forEach(this.$.columnsScroller.getControls(), enyo.bind(this, function(control) {
+					if(_.includes(control.name, "ColumnSpacer")){
+						control.applyStyle("width", "20px");
+					}
+				}));
+
+				this.dragColumn = true;
+				inEvent.dragInfo = inSender.name;
+					
+				this.trackColumn(inEvent);
+				return true;
+			}
+		}
+	},
+	columnDrag: function(inSender, inEvent){
+		console.error("dragging column", inSender.name);	
+
+		if (this.dragColumn) {
+			this.trackColumn(inEvent);
+		}
+	},
+	columnDragFinish: function(inSender, inEvent){
+		console.error("done dragging column", inSender.name);
+
+		if (this.dragColumn) {
+			this.activeColumn.applyStyle("position", null);
+			this.activeColumn.applyStyle("z-index", null);
+			this.activeColumn.applyStyle("-webkit-user-drag", null);
+			this.activeColumn.applyStyle("pointer-events", null);
+
+			enyo.forEach(this.$.columnsScroller.getControls(), enyo.bind(this, function(control) {
+				if(_.includes(control.name, "ColumnSpacer")){
+					control.applyStyle("width", "0px");
+				}
+			}));
+		
+
+			this.saveColumnEntries();
+		
+			var del_idx = parseInt(this.activeColumn.name.replace('Column', ''), 10);
+			var new_idx = parseInt(this.activeSpacer.replace('ColumnSpacer', ''), 10);
+			var column = this.columnData.splice(del_idx, 1)[0];
+			var entries = this.columnEntries.splice(del_idx, 1)[0];
+			this.columnData.splice(new_idx, 0, column);
+			this.columnEntries.splice(new_idx, 0, entries);
+			
+			this.createColumns();
+
+			this.activeSpacer = undefined;
+			this.activeColumn = undefined;
+
+
+		}
+	},
+	trackColumn: function(inEvent){
+		this.activeColumn.boxToNode({l: inEvent.pageX - 180, t: inEvent.pageY - 20});
 	}
 });

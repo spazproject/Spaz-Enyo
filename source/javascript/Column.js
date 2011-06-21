@@ -8,7 +8,14 @@ enyo.kind({
 		onLoadStarted: "",
 		onLoadFinished: "",
 		onMoveColumnRight: "",
-		onMoveColumnLeft: ""
+		onMoveColumnLeft: "",
+
+
+		onToolbarmousehold: "",
+		onToolbarmouserelease: "",
+		onToolbardragstart: "", 
+		onToolbardrag: "", 
+		onToolbardragfinish: ""
 	},
 	published: {
 		info: {
@@ -22,7 +29,13 @@ enyo.kind({
 		entries: []
 	},
 	components: [
-		{kind: "Toolbar", height: "42px", defaultKind: "Control", onclick: "scrollToTop", style: "min-height: 42px; color: white; color: white; padding-left: 5px;", components: [
+		{kind: "Toolbar", height: "42px", defaultKind: "Control", onclick: "scrollToTop", style: "min-height: 42px; color: white; color: white; padding-left: 5px;", 
+			onmousehold: "doToolbarmousehold",
+			onmouserelease: "doToolbarmouserelease",
+			ondragstart: "doToolbardragstart", 
+			ondrag: "doToolbardrag", 
+			ondragfinish: "doToolbardragfinish",
+			components: [
 			//gotta do this to get the header title to center and not be a button. "defaultKind" in Toolbar is key.
 			{name: "topLeftButton", kind: "ToolButton", style: "display: none"},
 			{name: "header", style: "padding: 0px 0px 5px 5px;", className: "truncating-text", content: ""},
@@ -381,7 +394,7 @@ enyo.kind({
 			for(var i = 0; i < this.entries.length; i++){
 				if(this.entries[i].read === true){ //this is the first read entry
 					this.scrollOffset = (i > 0) ? (i-1): 0;
-					console.log("this.scrollOffset", this.scrollOffset);
+					//console.log("this.scrollOffset", this.scrollOffset);
 					break;
 				}
 			};	
