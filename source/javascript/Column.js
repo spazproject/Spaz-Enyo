@@ -73,7 +73,7 @@ enyo.kind({
 		
 		// if this column does not already have entries, gotta fetch from the network
 		if(this.entries.length === 0) {
-			enyo.asyncMethod(this, this.loadNewer);
+			enyo.asyncMethod(this, this.loadNewer, {forceCountUnread: true});
 		}
 		else {
 			enyo.asyncMethod(this, this.countUnread);
@@ -94,8 +94,8 @@ enyo.kind({
 		this.$.accountName.setContent(App.Users.getLabel(this.info.accounts[0]));
 	},
 
-	loadNewer:function() {
-		this.loadData({'mode':'newer'});
+	loadNewer:function(opts) {
+		this.loadData(enyo.mixin(opts, {'mode':'newer'}));
 		sch.debug('Loading newer entries');
 	},
 
@@ -179,7 +179,7 @@ enyo.kind({
 					loadStarted();
 					self.twit.getHomeTimeline(since_id, 50, null, null,
 						function(data) {
-							self.processData(data);
+							self.processData(data, opts);
 							loadFinished();
 						},
 						loadFinished
@@ -318,6 +318,10 @@ enyo.kind({
 		}
 		
 		this.markOlderAsRead();
+		
+		if(opts.forceCountUnread) {
+			this.countUnread();
+		}
 		
 		this.setLastRead();
 		
