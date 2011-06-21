@@ -299,7 +299,7 @@ enyo.kind({
 		this.$.remaining.setContent(remaining);
 		if(remaining > 0){
 			this.$.remaining.applyStyle("color", "grey");
-			this.$.sendButton.setDisabled(false);
+			this.$.sendButton.setDisabled(remaining === 140);
 		} else if(remaining === 0){
 			this.$.remaining.applyStyle("color", "black");
 			this.$.sendButton.setDisabled(false);
