@@ -13,7 +13,7 @@ enyo.kind({
     mousewheelHandler: function(inSender, inEvent) {
         if (this.mousewheel) {
                 //if at top, don't let you scroll up.
-            if(this.$.scroller.pageTop < 0 || inEvent.delta.y < 0){
+            //if(this.$.scroller.pageTop < 0 || inEvent.delta.y < 0){
 
                 //Clone event
                 var dragTo = enyo.mixin({}, inEvent);
@@ -29,7 +29,7 @@ enyo.kind({
                 this.$.scroller.$.scroll.dragDrop(dragTo);
                 //Simulate ending a drag
                 this.$.scroller.$.scroll.dragFinish();     
-            }
+           //}
            
         }
     }
