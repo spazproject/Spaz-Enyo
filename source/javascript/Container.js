@@ -275,7 +275,7 @@ enyo.kind({
 					}
 				}
 			}));
-			inSender.applyStyle("width", "200px");
+			inSender.applyStyle("width", "322px");
 			//console.error("drug over", inSender.name);
 		}	
 	},
@@ -307,13 +307,16 @@ enyo.kind({
 
 		this.isHolding = true;
 		this.activeColumn = inSender;
+
+		this.$["ColumnSpacer" + this.activeColumn.name.replace('Column', '')].applyStyle("width", "322px");
+
 		this.activeColumn.applyStyle("position", "absolute");
 		this.activeColumn.applyStyle("z-index", 50000);
 		this.activeColumn.applyStyle("-webkit-user-drag", "none");
 		this.activeColumn.applyStyle("pointer-events", "none");
 		this.activeColumn.applyStyle("height", window.innerHeight - 12 + "px");
 
-
+		
 		this.trackColumn(inEvent);
 	},
 	columnMouserelease: function(inSender, inEvent){
@@ -338,8 +341,12 @@ enyo.kind({
 					if(_.includes(control.name, "ColumnSpacer")){
 						control.applyStyle("width", "10px");
 					}
+					if(control.name.replace("ColumnSpacer", "") === this.activeColumn.name.replace('Column', '')){
+						control.applyStyle("width", "322px");
+					}
 				}));
 
+				
 				this.dragColumn = true;
 				inEvent.dragInfo = inSender.name;
 					
