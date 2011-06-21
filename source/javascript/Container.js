@@ -311,7 +311,7 @@ enyo.kind({
 		this.activeColumn.applyStyle("z-index", 50000);
 		this.activeColumn.applyStyle("-webkit-user-drag", "none");
 		this.activeColumn.applyStyle("pointer-events", "none");
-		this.activeColumn.applyStyle("height", window.innerHeight - 93 + "px");
+		this.activeColumn.applyStyle("height", window.innerHeight - 12 + "px");
 
 
 		this.trackColumn(inEvent);
@@ -336,7 +336,7 @@ enyo.kind({
 
 				enyo.forEach(this.$.columnsScroller.getControls(), enyo.bind(this, function(control) {
 					if(_.includes(control.name, "ColumnSpacer")){
-						control.applyStyle("width", "5px");
+						control.applyStyle("width", "10px");
 					}
 				}));
 

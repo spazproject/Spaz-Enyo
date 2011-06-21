@@ -55,14 +55,14 @@ enyo.kind({
 
 			var dataLength;
 			function loadStarted() {
-				self.$.refresh.addClass("spinning");
+				//self.$.refresh.addClass("spinning");
 				self.doLoadStarted();
 
 				dataLength = self.entries.length;
 
 			}
 			function loadFinished() {
-				self.$.refresh.removeClass("spinning");
+				//self.$.refresh.removeClass("spinning");
 				self.doLoadFinished();
 
 				if(dataLength !== self.entries.length && opts.mode !== 'older'){

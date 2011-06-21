@@ -3,6 +3,7 @@ enyo.kind({
 	kind: enyo.VFlexBox,
 	width: "322px",
 	style: "margin: 3px;", 
+	className: "Column",
 	events: {
 		onDeleteClicked: "",
 		onLoadStarted: "",
@@ -52,7 +53,7 @@ enyo.kind({
 				onEntryHold: "entryHold"
 			}
 		]},
-		{kind: "Toolbar", height: "42px", onclick: "scrollToBottom", style: "min-height: 42px; color: white;", components: [
+		/*{kind: "Toolbar", height: "42px", onclick: "scrollToBottom", style: "min-height: 42px; color: white;", components: [
 			{name: "moveColumnLeftButton", onclick: "doMoveColumnLeft", kind: "ToolButton", icon: "source/images/icon-back.png"},
 			{kind: "Spacer"},
 			{name: "refresh", kind: "ToolButton", icon: "source/images/icon-refresh.png", onclick:"loadNewer"},
@@ -60,7 +61,7 @@ enyo.kind({
 			{name: "moveColumnRightButton", onclick: "doMoveColumnRight", kind: "ToolButton", icon: "source/images/icon-forward.png"}
 
 			//{kind: "ToolButton", icon: "source/images/icon-clear.png"}, @TODO. make this clear the current tweets, or remove it completely
-		]},
+		]},*/
 
 		{name: "entryClickPopup", kind: "Spaz.EntryClickPopup"}
 	],
@@ -81,10 +82,10 @@ enyo.kind({
 	},
 	checkArrows: function(){
 		if(this.name === "Column0"){
-     		this.$.moveColumnLeftButton.setDisabled(true);
+     		//this.$.moveColumnLeftButton.setDisabled(true);
      	}
 		if(this.name === "Column" + (this.owner.columnData.length-1)){
-     		this.$.moveColumnRightButton.setDisabled(true);			
+     		//this.$.moveColumnRightButton.setDisabled(true);			
 		}
 	},
 	infoChanged: function(){
@@ -151,13 +152,13 @@ enyo.kind({
 			}
 			var dataLength;
 			function loadStarted() {
-				self.$.refresh.addClass("spinning");
+				//self.$.refresh.addClass("spinning");
 				self.doLoadStarted();
 				dataLength = self.entries.length;
 
 			}
 			function loadFinished() {				
-				self.$.refresh.removeClass("spinning");
+				//self.$.refresh.removeClass("spinning");
 				self.doLoadFinished();
 
 				if(dataLength !== self.entries.length && opts.mode !== 'older'){
