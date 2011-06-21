@@ -453,6 +453,7 @@ AppUtils.convertToEntry = function(item) {
 					entry.author_fullname = item.user.name;
 					entry.author_id  = item.user.id;
 					entry.author_avatar = item.user.profile_image_url;
+					entry.author_url = item.user.url;
 
 					if (item.SC_is_reply) {
 						entry.is_mention = true; // mentions the authenticated user
