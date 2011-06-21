@@ -20,7 +20,7 @@ enyo.kind({
 		this.$.topLeftButton.setStyle("");
 		this.$.topLeftButton.setIcon("source/images/icon-search.png");
 	},
-	optionsPopup: function(inSender, inEvent){
+	/*optionsPopup: function(inSender, inEvent){
 		this.$.popupList.openAtEvent(inEvent);
 	},
 	popupSelect: function(inSender, inIndex){
@@ -31,7 +31,7 @@ enyo.kind({
 
 		}
 		this.close();
-	},
+	},*/
 	rendered: function() {
 		this.inherited(arguments);
 		if (this.hasNode()) {
