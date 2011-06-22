@@ -57,6 +57,7 @@ enyo.kind({
 		
 		function onRetrieved(status_obj) {
 			var child = AppUtils.convertToEntry(status_obj);
+			child = AppUtils.setAdditionalEntryProperties([child], self.entry.account_id)[0];
 			
 			self._addEntry(child);
 			
