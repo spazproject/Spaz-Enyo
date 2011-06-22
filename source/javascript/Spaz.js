@@ -390,10 +390,10 @@ enyo.kind({
 	},
 	
 	hideDetailPane: function() {
-    	this.$.slider.selectViewByName("main");
-	    this.$.detail.setShowing(false);
-	    this.viewEvents = [];
-
+		this.$.slider.selectViewByName("main");
+		this.$.detail.setShowing(false);
+		this.viewEvents = [];
+		enyo.asyncMethod(this.$.container, "resized");
 	},
 
 	showEntryView: function(inSender, inEntry){		
