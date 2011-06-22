@@ -361,6 +361,7 @@ AppUtils.convertToUser = function(srvc_user) {
 	user.avatar      = srvc_user.profile_image_url;
 	user.avatar_bigger = AppUtils.getBiggerAvatar(user);
 	user.url         = srvc_user.url;
+	user.is_private  = !!srvc_user.protected;
 	user._orig       = _.extend({},srvc_user);
 	
 	
@@ -483,6 +484,7 @@ AppUtils.convertToEntry = function(item) {
 			}
 			
 			entry.author_avatar_bigger = AppUtils.getBiggerAvatar(entry);
+			entry.author_is_private = item.user.protected;
 			
 			// copy to _orig
 			entry._orig = _.extend({},item);
