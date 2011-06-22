@@ -28,8 +28,11 @@ enyo.kind({
         					{kind: "VFlexBox", height: "75px", flex: 1, components: [
         						{kind: "Spacer"},
         						{name: "realname", className: "author-realname truncating-text"},
-        						{name: "username", className: "author-username"},
-        						{name: "url", allowHtml: true, className: "small"},
+								{kind: "HFlexBox", components: [
+	    							{name: "username", className: " author-username"},
+	    							{name: "private", kind: "Image", width: "13px", height: "13px", src: "source/images/tiny-lock-icon.png", showing: false}
+    							]},        						
+    							{name: "url", allowHtml: true, className: "small"},
         						{kind: "Spacer"}
         					]},	
         					{kind: "ToolButton", icon: "source/images/icon-close.png", style: "position: relative; bottom: 10px; right: 10px; float: right;", onclick: "doDestroy"}	
@@ -213,6 +216,7 @@ enyo.kind({
 			this.$.image.applyStyle("display", null);			
 			this.$.realname.setContent(this.user.fullname||this.user.username);
 			this.$.username.setContent("@" + this.user.username);
+			this.$.private.setShowing(this.user.is_private);
 			this.$.bio.setContent(AppUtils.makeItemsClickable(this.user.description) || '');
 			
 			switch(this.user.service){
