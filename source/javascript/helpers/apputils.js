@@ -484,7 +484,7 @@ AppUtils.convertToEntry = function(item) {
 			}
 			
 			entry.author_avatar_bigger = AppUtils.getBiggerAvatar(entry);
-			entry.author_is_private = item.user.protected;
+			entry.author_is_private = item && item.user ? item.user.protected : false;
 			
 			// copy to _orig
 			entry._orig = _.extend({},item);
