@@ -101,8 +101,8 @@ enyo.kind({
 				{kind: "ToolButton", name: "mention", disabled: false, icon: "source/images/icon-mention.png", onclick: "mention"},
 				{kind: "ToolButton", name: "message", disabled: false, icon: "source/images/icon-messages.png", onclick: "message"},
 				{kind: "ToolButton", name: "block", disabled: false, icon: "source/images/icon-block.png", onclick: "block"},
-        {kind: "ToolButton", name: "userMentions", disabled: false, icon: "source/images/icon-search.png", onclick: "userMentions"},
-        {kind: "Spacer"}
+        		{kind: "ToolButton", name: "userSearch", disabled: false, icon: "source/images/icon-search.png", onclick: "userSearch"},
+        		{kind: "Spacer"}
 			]},
 			
 			{name: "entryClickPopup", kind: "Spaz.EntryClickPopup"},
@@ -418,10 +418,9 @@ enyo.kind({
 	cancelBlock: function(inEvent) {
 		this.$.confirmPopup.close();
 	},
-	
-  userMentions: function(inEvent) {
-    this.owner.$.container.createColumn(this.account_id, SPAZ_COLUMN_SEARCH, '@'+this.user.username);
-  },
+	userSearch: function(inEvent) {
+    	this.owner.$.container.createColumn(this.account_id, SPAZ_COLUMN_SEARCH, '@'+this.user.username + " OR from:"+ this.user.username);
+  	},
     
 	getTwitterRelationship: function() {
 		var self = this;
