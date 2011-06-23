@@ -28,7 +28,10 @@ enyo.kind({
 						{kind: "VFlexBox", height: "75px", flex: 1, components: [
 							{kind: "Spacer"},
     						{name: "realname", className: "author-realname truncating-text"},
-    						{name: "username", className: "link author-username", onclick: "entryClick"},
+    						{kind: "HFlexBox", components: [
+	    						{name: "username", className: "link author-username", onclick: "entryClick"},
+	    						{name: "private", kind: "Image", width: "13px", height: "13px", src: "source/images/tiny-lock-icon.png", showing: false}
+    						]},
     						{name: "url", allowHtml: true, className: "small"},
     						{kind: "Spacer"}
 						]},	
@@ -106,6 +109,8 @@ enyo.kind({
 			this.$.image.applyStyle("display", "");			
 			this.$.realname.setContent(this.entry.author_fullname||this.entry.author_username);
 			this.$.username.setContent("@" + this.entry.author_username);
+			this.$.private.setShowing(this.entry.author_is_private);
+
 			var url = this.entry.author_url || '';
 			this.$.url.setContent(sch.autolink(url), url.length);
 			this.$.bio.setContent(AppUtils.makeItemsClickable(this.entry.author_description) || '');

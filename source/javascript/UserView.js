@@ -28,8 +28,11 @@ enyo.kind({
         					{kind: "VFlexBox", height: "75px", flex: 1, components: [
         						{kind: "Spacer"},
         						{name: "realname", className: "author-realname truncating-text"},
-        						{name: "username", className: "author-username"},
-        						{name: "url", allowHtml: true, className: "small"},
+								{kind: "HFlexBox", components: [
+	    							{name: "username", className: " author-username"},
+	    							{name: "private", kind: "Image", width: "13px", height: "13px", src: "source/images/tiny-lock-icon.png", showing: false}
+    							]},        						
+    							{name: "url", allowHtml: true, className: "small"},
         						{kind: "Spacer"}
         					]},	
         					{kind: "ToolButton", icon: "source/images/icon-close.png", style: "position: relative; bottom: 10px; right: 10px; float: right;", onclick: "doDestroy"}	
@@ -98,8 +101,8 @@ enyo.kind({
 				{kind: "ToolButton", name: "mention", disabled: false, icon: "source/images/icon-mention.png", onclick: "mention"},
 				{kind: "ToolButton", name: "message", disabled: false, icon: "source/images/icon-messages.png", onclick: "message"},
 				{kind: "ToolButton", name: "block", disabled: false, icon: "source/images/icon-block.png", onclick: "block"},
-        {kind: "ToolButton", name: "userMentions", disabled: false, icon: "source/images/icon-search.png", onclick: "userMentions"},
-        {kind: "Spacer"}
+        		{kind: "ToolButton", name: "userSearch", disabled: false, icon: "source/images/icon-search.png", onclick: "userSearch"},
+        		{kind: "Spacer"}
 			]},
 			
 			{name: "entryClickPopup", kind: "Spaz.EntryClickPopup"},
@@ -213,6 +216,7 @@ enyo.kind({
 			this.$.image.applyStyle("display", null);			
 			this.$.realname.setContent(this.user.fullname||this.user.username);
 			this.$.username.setContent("@" + this.user.username);
+			this.$.private.setShowing(this.user.is_private);
 			this.$.bio.setContent(AppUtils.makeItemsClickable(this.user.description) || '');
 			
 			switch(this.user.service){
@@ -414,10 +418,9 @@ enyo.kind({
 	cancelBlock: function(inEvent) {
 		this.$.confirmPopup.close();
 	},
-	
-  userMentions: function(inEvent) {
-    this.owner.$.container.createColumn(this.account_id, SPAZ_COLUMN_SEARCH, '@'+this.user.username);
-  },
+	userSearch: function(inEvent) {
+    	this.owner.$.container.createColumn(this.account_id, SPAZ_COLUMN_SEARCH, '@'+this.user.username + " OR from:"+ this.user.username);
+  	},
     
 	getTwitterRelationship: function() {
 		var self = this;

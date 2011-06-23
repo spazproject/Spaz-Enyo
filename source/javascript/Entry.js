@@ -22,7 +22,7 @@ enyo.kind({
 	entryChanged: function(){
 		this.$.authorAvatar.setSrc(this.entry.author_avatar);
 
-		var toMacroize = "<span class='text username author'>{$author_username}</span>";
+		var toMacroize = "<span height='13px' class='text username author'>{$author_username}</span>";
 
 		this.$.reposterAvatar.setShowing(this.entry.is_repost);
 		if (this.entry.recipient_username && this.entry.is_private_message) {
@@ -33,24 +33,30 @@ enyo.kind({
 			toMacroize += "<span class='text username author'>{$reposter_username}</span>";
 			this.$.reposterAvatar.setSrc(this.entry.reposter_avatar);
 		}
-		if(this.entry.is_favorite){
-			toMacroize += "<img height = '13px' class='entryHeaderIcon' src = 'source/images/favorited.png'></img>";
+		if(this.entry.author_is_private){
+			toMacroize += "<img height = '13px' class='entryHeaderIcon' style='position: relative; top: 1px;' src = 'source/images/tiny-lock-icon.png'></img>";
 		}
+
+		if(this.entry.is_favorite){
+			toMacroize += "<img height = '13px' class='entryHeaderIcon' style='position: relative; top: 1px;' src = 'source/images/favorited.png'></img>";
+		}
+		
 
 		toMacroize += "<br/>";
 		toMacroize += AppUtils.makeItemsClickable(this.entry.text);
 		toMacroize += "<br/>";
 
 		if (this.entry.read === false && this.ignoreUnread === false ) {	
-			toMacroize += "<img src='source/images/unread.png' height= '13px' class='entryHeaderIcon'></img> ";
+			toMacroize += "<img align='left' src='source/images/unread.png' height= '13px' class='entryHeaderIcon'></img> ";
 		}
+		
 		toMacroize += "<span class='small' height = '13px'>" 
 		toMacroize += sch.getRelativeTime(this.entry.publish_date);
 		if (this.entry._orig.source) {
 			toMacroize += " from <span class = 'link'>{$_orig.source}</span>";
 		}
 		toMacroize += "</span>"			
-
+		
 		if(this.entry.is_private_message === true){
 			this.applyStyle("background-color", "rgba(255, 0, 0, .1)");			
 		} else if(this.entry.is_mention === true){
