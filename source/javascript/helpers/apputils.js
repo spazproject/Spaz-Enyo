@@ -9,6 +9,8 @@ if (!window.$L) {
 	};
 }
 
+var SPAZ_DEFAULT_APPID = 'com.funkatron.app.spaz-hd';
+
 AppUtils.getAppObj = function() {
 	return window.App;
 };
@@ -170,15 +172,24 @@ AppUtils.copyTweet = function(tweetobj) {
 
 
 
-AppUtils.relaunch = function(from) {
+AppUtils.relaunch = function(from, appid) {
 	if (!from) { from = 'default'; }
+
+	if (!appid) {
+		var appinfo = enyo.fetchAppInfo();
+		if (appinfo) {
+			appid = appinfo.id;
+		} else {
+			appid = SPAZ_DEFAULT_APPID;
+		}
+	}
 	
 	var app_srvc = new enyo.PalmService({
 		service: 'palm://com.palm.applicationManager',
 		method: 'launch'
 	});
 	app_srvc.call({
-		id: enyo.fetchAppInfo().id,
+		id: appid,
 		params: {'action':'relaunch', 'from':'notification'} 
 	});
 };
@@ -361,7 +372,7 @@ AppUtils.convertToUser = function(srvc_user) {
 	user.avatar      = srvc_user.profile_image_url;
 	user.avatar_bigger = AppUtils.getBiggerAvatar(user);
 	user.url         = srvc_user.url;
-	user.is_private  = !!srvc_user.protected;
+	user.is_private  = !!srvc_user['protected'];
 	user._orig       = _.extend({},srvc_user);
 	
 	
@@ -484,7 +495,7 @@ AppUtils.convertToEntry = function(item) {
 			}
 			
 			entry.author_avatar_bigger = AppUtils.getBiggerAvatar(entry);
-			entry.author_is_private = item && item.user ? item.user.protected : false;
+			entry.author_is_private = item && item.user ? item.user['protected'] : false;
 			
 			// copy to _orig
 			entry._orig = _.extend({},item);
