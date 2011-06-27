@@ -321,12 +321,21 @@ enyo.kind({
 	},
 	columnMouserelease: function(inSender, inEvent){
 		this.isHolding = false;
+		//console.error("mouse release called");		
 		if(!this.dragColumn){
+			//console.error("mouse released");		
+
 			this.activeColumn.applyStyle("position", null);
 			this.activeColumn.applyStyle("z-index", null);
 			this.activeColumn.applyStyle("-webkit-user-drag", null);
 			this.activeColumn.applyStyle("pointer-events", null);
 			this.activeColumn.applyStyle("height", null);
+
+			enyo.forEach(this.$.columnsScroller.getControls(), enyo.bind(this, function(control) {
+				if(_.includes(control.name, "ColumnSpacer")){
+					control.applyStyle("width", "0px");
+				}
+			}));
 
 			this.activeColumn = undefined;	
 		}
@@ -336,7 +345,7 @@ enyo.kind({
 		if (Math.abs(inEvent.dx) < 200) { //make sure the user isn't trying to scroll
 
 			if(this.isHolding){
-
+				//console.error("drag start");		
 				enyo.forEach(this.$.columnsScroller.getControls(), enyo.bind(this, function(control) {
 					if(_.includes(control.name, "ColumnSpacer")){
 						control.applyStyle("width", "10px");
@@ -356,15 +365,14 @@ enyo.kind({
 		}
 	},
 	columnDrag: function(inSender, inEvent){
-
 		if (this.dragColumn) {
 			this.trackColumn(inEvent);
 		}
 	},
 	columnDragFinish: function(inSender, inEvent){
-		//console.error("done dragging column", inSender.name);
-
 		if (this.dragColumn) {
+			//console.error("done dragging column");		
+
 			this.activeColumn.applyStyle("position", null);
 			this.activeColumn.applyStyle("z-index", null);
 			this.activeColumn.applyStyle("-webkit-user-drag", null);
