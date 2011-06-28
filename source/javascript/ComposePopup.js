@@ -50,7 +50,6 @@ enyo.kind({
 	close: function(){
 		this.inherited(arguments);
 		
-		enyo.keyboard.setManualMode(false);
 		enyo.keyboard.forceHide();
 	},
 	buildAccounts: function() {
@@ -103,7 +102,7 @@ enyo.kind({
 		this.$.postTextBox.forceFocus();
 		
 		if(!this.isRepost) {
-			enyo.keyboard.show();
+			enyo.keyboard.show(4);
 		}
 	},
 
@@ -626,7 +625,7 @@ enyo.kind({
 	handleResult: function(inSender, msg) {
 		this.$.filePicker.close();
 		
-		enyo.keyboard.forceShow();
+		enyo.keyboard.forceShow(4);
 		
 		if (msg && msg[0] && msg[0].fullPath) {
 			AppUtils.showBanner($L("Uploading image"));
