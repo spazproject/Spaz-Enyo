@@ -425,9 +425,8 @@ enyo.kind({
 				usernames_str = '@'+usernames_str;
 			}
 			
-			text = ['@'+opts.entry.author_username, usernames_str, opts.text].join(' ') + ' ';
-			
-
+			text = _.clean(['@'+opts.entry.author_username, usernames_str, opts.text].join(' ')); 
+					//use clean for when usernames_str and/ops.text are blank. We don't want the extra spaces.
 			
 		} else if (opts.to) {
 			text = '@'+opts.to;
@@ -435,7 +434,7 @@ enyo.kind({
 			text = '@';
 		}
 		
-		this.$.postTextBox.setValue(text);
+		this.$.postTextBox.setValue(text + "&nbsp;"); //add a space at the end.
 		this.$.postTextBox.forceFocus();
 		this.cursorToEnd();
 
@@ -474,7 +473,7 @@ enyo.kind({
 			this.inReplyEntryText = opts.entry.text_raw;
 		}
 		
-		this.$.postTextBox.setValue(text);
+		this.$.postTextBox.setValue(text + "&nbsp;");
 		this.$.postTextBox.forceFocus();
 		this.cursorToEnd();
 
