@@ -299,7 +299,7 @@ enyo.kind({
 			this.columnData.splice(new_idx, 0, column);
 			this.columnEntries.splice(new_idx, 0, entries);
 			
-			this.createColumns();
+			//this.createColumns();
 		}
 	},
 
