@@ -490,7 +490,7 @@ AppUtils.convertToEntry = function(item) {
 
 			}
 			
-			if (entry.SC_is_search) {
+			if (item.SC_is_search) {
 				entry.is_search_result = true;
 			}
 			
