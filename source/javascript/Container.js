@@ -137,7 +137,7 @@ enyo.kind({
 		this.saveColumnEntries();
 		this.createColumns();
 
-		this.$.columnsScroller.snapTo(this.columnData.length-1);
+		this.$.columnsScroller.snapTo(this.$.columnsScroller.getControls().length-2);
 
 	},
 

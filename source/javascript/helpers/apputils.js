@@ -520,7 +520,7 @@ AppUtils.setAdditionalEntryProperties = function(entries, account_id) {
 		var acc_username = App.Users.get(account_id).username;
 		var acc_service  = App.Users.get(account_id).type;
 		
-		if (acc_username.toLowerCase() === entries[j].author_username.toLowerCase()
+		if (entries[j].author_username && acc_username.toLowerCase() === entries[j].author_username.toLowerCase()
 			&& acc_service === entries[j].service) {
 			entries[j].is_author = true;
 		}
