@@ -490,11 +490,8 @@ AppUtils.convertToEntry = function(item) {
 
 			}
 			
-<<<<<<< HEAD
-			if (entry.SC_is_search) {
-=======
+
 			if (item.SC_is_search) {
->>>>>>> 3bcceeae100d86c3f4eb5629bc09a424506711e9
 				entry.is_search_result = true;
 			}
 			

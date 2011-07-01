@@ -144,20 +144,6 @@ enyo.kind({
 				this.buildMediaPreviews();
 			}
 			
-<<<<<<< HEAD
-
-			
-			
-			// build conversation
-			if(!this.entry.in_reply_to_id) {
-			    this.$.conversation_button.hide();
-			    this.$.conversation.clearConversationMessages();
-			} else {
-			    this.$.conversation_button.show();
-			    this.$.conversation_button.setDepressed(false);
-			    this.$.conversation_drawer.close();
-    			this.$.conversation.setEntry(this.entry);
-=======
 			// Twitter's search API doesn't tell us if this is part of a conversation.
 			// Make another call to figure that out.
 			if((this.entry.is_search_result) && (this.entry.service === SPAZCORE_SERVICE_TWITTER)) {
@@ -173,7 +159,6 @@ enyo.kind({
 				);
 			} else {
 				this.showOrHideConversation();
->>>>>>> 3bcceeae100d86c3f4eb5629bc09a424506711e9
 			}
 
 			if(this.entry.is_repost === true){
@@ -192,9 +177,7 @@ enyo.kind({
 			//this.doDestroy();
 		}
 	},
-	
-<<<<<<< HEAD
-=======
+
 	showOrHideConversation: function() {
 		if(this.entry.in_reply_to_id) {
 			this.$.conversation_button.show();
@@ -206,7 +189,6 @@ enyo.kind({
 			this.$.conversation.clearConversationMessages();    
 		}
 	},
->>>>>>> 3bcceeae100d86c3f4eb5629bc09a424506711e9
 	
 	buildMediaPreviews: function() {
 		
