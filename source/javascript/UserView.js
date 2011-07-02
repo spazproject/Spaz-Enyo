@@ -419,7 +419,7 @@ enyo.kind({
 		this.$.confirmPopup.close();
 	},
 	userSearch: function(inEvent) {
-    	this.owner.$.container.createColumn(this.account_id, SPAZ_COLUMN_SEARCH, '@'+this.user.username + " OR from:"+ this.user.username);
+		AppUI.search('@'+this.user.username + " OR from:"+ this.user.username, this.account_id);
   	},
     
 	getTwitterRelationship: function() {
