@@ -428,6 +428,7 @@ enyo.kind({
 		}
 	},
 	entryClick: function(inSender, inEvent, inRowIndex) {
+		inSender.entry.columnIndex = parseInt(this.name.replace('Column', ''), 10);
 		if(App.Prefs.get("entry-tap") === "panel"){
 			AppUI.viewEntry(inSender.entry);
 		} else {
@@ -436,6 +437,7 @@ enyo.kind({
 
 	},
 	entryHold: function(inSender, inEvent, inRowIndex) {
+		inSender.entry.columnIndex = parseInt(this.name.replace('Column', ''), 10);
 		if(App.Prefs.get("entry-hold") === "popup"){
 			this.$.entryClickPopup.showAtEvent(inSender.entry, inEvent);	
 		} else if(App.Prefs.get("entry-hold") === "panel"){
