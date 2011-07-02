@@ -78,11 +78,11 @@ enyo.kind({
 	},
 	
 	createColumns: function() {
-		this.columnsFunction("destroy", null, true); //destroy them all. don't want to always do this.
+		//this.columnsFunction("destroy", null, true); //destroy them all. don't want to always do this.
 		enyo.forEach(this.$.columnsScroller.getControls(), enyo.bind(this, function(control) {
-			if(_.includes(control.name, "ColumnSpacer")){
+			//if(_.includes(control.name, "ColumnSpacer")){
 				control.destroy();
-			}
+			//}
 		}));
 
 		if(this.columnData.length === 0){
@@ -116,11 +116,11 @@ enyo.kind({
 			}
 	
 			cols.push(
-				{kind: "Control", name: "ColumnSpacer"+ i, className: "columnSpacer", width: "0px", ondragover: "spacerDragOver", ondrop: "spacerDrop", ondragout: "spacerDragOut"},
+				{kind: "Control", name: "ColumnSpacer"+ i, width: "0px", ondragover: "spacerDragOver", ondrop: "spacerDrop", ondragout: "spacerDragOut"},
 				col
 			);
 		};
-		cols.push({kind: "Control", name: "ColumnSpacer" + cols.length-1, className: "columnSpacer", width: "0px", ondragover: "spacerDragOver", ondrop: "spacerDrop", ondragout: "spacerDragOut"
+		cols.push({kind: "Control", name: "ColumnSpacer" + this.columnData.length, width: "0px", ondragover: "spacerDragOver", ondrop: "spacerDrop", ondragout: "spacerDragOut"
 		});
 		this.$.columnsScroller.createComponents(cols, {owner: this});
 		this.$.columnsScroller.render();
@@ -271,7 +271,7 @@ enyo.kind({
 			enyo.forEach(this.$.columnsScroller.getControls(), enyo.bind(this, function(control) {
 				if(_.includes(control.name, "ColumnSpacer")){
 					if(control.name !== inSender.name){
-						control.applyStyle("width", "5px");
+						control.applyStyle("width", "10px");
 					}
 				}
 			}));
@@ -299,7 +299,9 @@ enyo.kind({
 			this.columnData.splice(new_idx, 0, column);
 			this.columnEntries.splice(new_idx, 0, entries);
 			
-			//this.createColumns();
+			this.createColumns();
+			//@TODO: this creates issues with starting a column drag. To replicate: Hold onto a column toolbar, move it slightly, release. It will float in an awkward postion.
+			//this doesn't happen if this.createColumns() is commented out. 
 		}
 	},
 
@@ -310,10 +312,7 @@ enyo.kind({
 
 		this.$["ColumnSpacer" + this.activeColumn.name.replace('Column', '')].applyStyle("width", "322px");
 
-		this.activeColumn.applyStyle("position", "absolute");
-		this.activeColumn.applyStyle("z-index", 50000);
-		this.activeColumn.applyStyle("-webkit-user-drag", "none");
-		this.activeColumn.applyStyle("pointer-events", "none");
+		this.activeColumn.addClass("moving");
 		this.activeColumn.applyStyle("height", window.innerHeight - 12 + "px");
 
 		
@@ -325,14 +324,12 @@ enyo.kind({
 		if(!this.dragColumn){
 			//console.error("mouse released");		
 
-			this.activeColumn.applyStyle("position", null);
-			this.activeColumn.applyStyle("z-index", null);
-			this.activeColumn.applyStyle("-webkit-user-drag", null);
-			this.activeColumn.applyStyle("pointer-events", null);
+			this.activeColumn.removeClass("moving");
 			this.activeColumn.applyStyle("height", null);
 
 			enyo.forEach(this.$.columnsScroller.getControls(), enyo.bind(this, function(control) {
 				if(_.includes(control.name, "ColumnSpacer")){
+					control.removeClass("columnSpacer");
 					control.applyStyle("width", "0px");
 				}
 			}));
@@ -348,10 +345,14 @@ enyo.kind({
 				//console.error("drag start");		
 				enyo.forEach(this.$.columnsScroller.getControls(), enyo.bind(this, function(control) {
 					if(_.includes(control.name, "ColumnSpacer")){
+						control.addClass("columnSpacer");
 						control.applyStyle("width", "10px");
 					}
 					if(control.name.replace("ColumnSpacer", "") === this.activeColumn.name.replace('Column', '')){
 						control.applyStyle("width", "322px");
+						setTimeout(function(){
+							control.addClass("columnSpacer");
+						}, 300);
 					}
 				}));
 
@@ -373,15 +374,13 @@ enyo.kind({
 		if (this.dragColumn) {
 			//console.error("done dragging column");		
 
-			this.activeColumn.applyStyle("position", null);
-			this.activeColumn.applyStyle("z-index", null);
-			this.activeColumn.applyStyle("-webkit-user-drag", null);
-			this.activeColumn.applyStyle("pointer-events", null);
+			this.activeColumn.removeClass("moving");
 			this.activeColumn.applyStyle("height", null);
 
 			enyo.forEach(this.$.columnsScroller.getControls(), enyo.bind(this, function(control) {
 				if(_.includes(control.name, "ColumnSpacer")){
 					control.applyStyle("width", "0px");
+					control.removeClass("columnSpacer");
 				}
 			}));
 

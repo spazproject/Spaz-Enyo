@@ -264,3 +264,10 @@ a:active,
     -webkit-box-shadow: 10px #000000;
     box-shadow: 10px #000000;
 }
+
+.Column.moving {
+	position: absolute;
+	z-index: 50000;
+	-webkit-user-drag: none;
+	pointer-events: none;
+}
