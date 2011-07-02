@@ -145,7 +145,7 @@ enyo.kind({
 			 */
 			case 'search':				
 				var searchfunc = _.bind(function() {
-					AppUI.search(inParams.query, inParams.account);
+					AppUI.search(decodeURI(inParams.query), inParams.account);
 				}, this);
 				
 				if (this.isRendered === false) {
