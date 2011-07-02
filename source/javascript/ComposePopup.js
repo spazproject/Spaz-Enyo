@@ -473,7 +473,7 @@ enyo.kind({
 			this.inReplyEntryText = opts.entry.text_raw;
 		}
 		
-		this.$.postTextBox.setValue(text + "&nbsp;");
+		this.$.postTextBox.setValue(text);
 		this.$.postTextBox.forceFocus();
 		this.cursorToEnd();
 

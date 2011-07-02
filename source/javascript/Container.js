@@ -368,7 +368,7 @@ enyo.kind({
 	columnDrag: function(inSender, inEvent){
 		if (this.dragColumn) {
 			this.trackColumn(inEvent);
-			if(window.innerWidth - inEvent.pageX < 100 && inEvent.dx > 0){// && this.$.columnsScroller.node.scrollWidth - this.$.columnsScroller.scrollLeft > 100){
+			if(window.innerWidth - inEvent.pageX < 100){// && this.$.columnsScroller.node.scrollWidth - this.$.columnsScroller.scrollLeft > 100){
 				//console.log(this.$.columnsScroller.getControls().length-2, this.$.columnsScroller.getIndex());
 				this.$.columnsScroller.next();
 			} else if(inEvent.pageX  < 100){
