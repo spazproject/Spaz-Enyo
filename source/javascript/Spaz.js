@@ -5,7 +5,7 @@ enyo.kind({
 		{kind: enyo.ApplicationEvents, onApplicationRelaunch: "relaunchHandler",
 			onWindowActivated:"windowActivated", onWindowDeactivated:"windowDeactivated",
 			onUnload:"unloaded"},
-	    {name: "slider", kind: ekl.Layout.SlidingPane, flex: 1, dismissDistance: 100, style:"background:#000", components: [
+	    {name: "slider", kind: ekl.Layout.SlidingPane, flex: 1, dismissDistance: 100, onDismiss: "hideDetailPane", style:"background:#000", components: [
 	        {name: "main", layoutKind: enyo.HFlexLayout, flex: 1, components: [
 	            {
         			name: "sidebar", 
@@ -427,6 +427,7 @@ enyo.kind({
 	},
 	
 	hideDetailPane: function() {
+		console.log("hiding detail pane");
 		this.$.slider.selectViewByName("main");
 		this.$.detail.setShowing(false);
 		this.viewEvents = [];
