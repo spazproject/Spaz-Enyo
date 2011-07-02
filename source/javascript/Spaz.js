@@ -531,11 +531,14 @@ enyo.kind({
     	this.showDetailPane();
 
     	if(inColumnIndex){
-			var controls = this.$.container.$.columnsScroller.getControls();
+			var controls = this.$.container.$.columnsScroller.getControls(),
+				offset = 0;
 			for(var i = 0; i < controls.length; i++){
-				if(controls[i].name === "Column" + inColumnIndex){
-					this.$.container.$.columnsScroller.snapTo(i);
+				if(controls[i].name === "Column" + inColumnIndex && controls[i].hasNode()){
+					this.$.container.$.columnsScroller.snapTo(i + offset);
 					break;
+				} else if (!controls[i].hasNode()){
+					offset--;
 				}
 			}
 		}
