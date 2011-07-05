@@ -42,7 +42,7 @@ enyo.kind({
 				]},
 			]},
 			//{layoutKind: "HFlexLayout", pack: "center", components: [
-		    {kind: "Scroller", name: "detail_scroller", flex: 1, className: "entry-view", components: [
+		    {kind: "Scroller", name: "detail_scroller", autoVertical: true, flex: 1, className: "entry-view", components: [
 				{kind: "VFlexBox", className: "header", style: "", components: [
 						//{kind: "Divider", className: "divider", style: "display: none", caption: ""},
 						{name: "entry", allowHtml: true, onclick: "entryClick", className: "message"},
