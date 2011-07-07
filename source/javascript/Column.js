@@ -29,6 +29,10 @@ enyo.kind({
 		},
 		entries: []
 	},
+	
+	// make a filterchain
+	filterChain : new SpazFilterChain({filters:SpazDefaultFilters}),
+	
 	components: [
 		{kind: "Toolbar", height: "42px", defaultKind: "Control", onclick: "scrollToTop", style: "min-height: 42px; color: white; color: white; padding-left: 5px;", 
 			onmousehold: "doToolbarmousehold",
@@ -298,6 +302,8 @@ enyo.kind({
 							}
 						}
 
+						// apply filterChain
+						data = this.applyFilters(data);
 
 						/* concat to existing entries */
 						this.entries = [].concat(data.reverse(), this.entries);
@@ -421,7 +427,7 @@ enyo.kind({
 	
 	setupRow: function(inSender, inIndex) {
 		var entry;
-		if (entry = this.entries[inIndex + this.scrollOffset]) {
+		if ( (entry = this.entries[inIndex + this.scrollOffset]) ) {
 			//this.loadOffset = inIndex + this.scrollOffset; @TODO: this will be the last item rendered, so it doesn't quite work for us to use it for the scroll offset.
 			this.$.item.setEntry(entry);
 			return true;
@@ -518,5 +524,9 @@ enyo.kind({
 		
 		// we've handled this event, stop it from propagating up
 		return true;
+	},
+	
+	applyFilters: function(data) {
+		return this.filterChain.processArray(data);
 	}
 });

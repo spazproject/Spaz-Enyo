@@ -6,6 +6,7 @@ enyo.depends(
 	"vendors/jsOAuth-1.1.js",
 	"vendors/jquery.min.js",
 	"vendors/jquery.embedly.js",
+	"vendors/showdown.js",
 	"vendors/spazcore.js", // includes underscore, underscore.string
 	"vendors/spazcore-enyo-webos-network.js",
 	
@@ -22,6 +23,14 @@ enyo.depends(
 	// helpers
 	"source/javascript/helpers/apputils.js",
 	"source/javascript/helpers/appui.js",
+
+	// libs
+	"source/javascript/libs/emoticons.js",
+	"source/javascript/libs/emoticons/simplesmileys.js",
+	"source/javascript/libs/emoticons/sae-tweek.js",
+	
+	// filters
+	"source/javascript/filters/default_filters.js",
 
 	// models
 	"source/javascript/models/cache.js",

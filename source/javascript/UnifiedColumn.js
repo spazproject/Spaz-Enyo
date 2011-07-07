@@ -154,7 +154,9 @@ enyo.kind({
 							data[i].read = false;
 						}
 					}
-				
+					
+					// apply filterChain
+					data = this.applyFilters(data);
 
 					this.entries = [].concat(data.reverse(), this.entries);
 					this.entries.sort(function(a,b){
