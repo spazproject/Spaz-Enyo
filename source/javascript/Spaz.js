@@ -431,7 +431,7 @@ enyo.kind({
 		this.$.slider.selectViewByName("main");
 		this.$.detail.setShowing(false);
 		this.viewEvents = [];
-		enyo.asyncMethod(this.$.container, "resized");
+		enyo.asyncMethod(this.$.container, "reclaimSpace");
 	},
 
 	// do some stuff after the components are rendered

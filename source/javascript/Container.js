@@ -397,5 +397,8 @@ enyo.kind({
 	},
 	trackColumn: function(inEvent){
 		this.activeColumn.boxToNode({l: this.$.columnsScroller.scrollLeft + inEvent.pageX - 180, t: inEvent.pageY - 20});
+	},
+	reclaimSpace: function() {
+		this.$.columnsScroller.snapTo(this.$.columnsScroller.getIndex());
 	}
 });
