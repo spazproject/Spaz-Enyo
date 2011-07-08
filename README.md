@@ -8,13 +8,6 @@ If you want on the commits email list, sign up for <https://groups.google.com/d/
 
 ## READ ME FIRST ##
 
-<<<<<<< HEAD
-Right now this is a private repo, which means to let you read and fork it, I have to give you *full write access*.
-
-Unless I've already said "yes, please go ahead and commit to the main repo," **DON'T DO THAT**.
-
-=======
->>>>>>> 3bcceeae100d86c3f4eb5629bc09a424506711e9
 Here's how to contribute:
 
 1. Fork the repo on Github
@@ -53,11 +46,8 @@ This means that as much as possible, **we should avoid webOS-specific functional
 
 ### Getting it running ###
 
-<<<<<<< HEAD
-=======
 **HP's Enyo framework is not included, as it is not (yet) open source.** You will need to obtain Enyo via the [HP/Palm developer program](http://developer.palm.com) and include it yourself. You should be able to drop Enyo 0.10's `framework/` directory into `enyo/0.10/` without issue.
 
->>>>>>> 3bcceeae100d86c3f4eb5629bc09a424506711e9
 You should be able to run Spaz Enyo within Chrome or Safari – Enyo is designed to work in any WebKit browser. We want to do as much development as possible within a desktop browser, and hopefully avoid webOS-specific functionality whenever possible.
 
 **Safari** on OS X should run perfectly out of the box. Just open the `index.html` file in Safari, and it should load.
