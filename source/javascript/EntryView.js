@@ -37,9 +37,9 @@ enyo.kind({
 						]},	
 						{kind: "ToolButton", icon: "source/images/icon-close.png", style: "position: relative; bottom: 10px; right: 10px; float: right;", onclick: "doDestroy"}	
 					]},
-					{name: "bio", width: "305px", allowHtml: true, style: "padding-right: 10px", onclick: "entryClick", className: "small"},
+					{name: "bio", width: "305px", allowHtml: true, style: "padding-right: 10px", onclick: "entryClick", className: "small"}
 
-				]},
+				]}
 			]},
 			//{layoutKind: "HFlexLayout", pack: "center", components: [
 		    {kind: "Scroller", name: "detail_scroller", autoVertical: true, flex: 1, className: "entry-view", components: [
@@ -59,7 +59,7 @@ enyo.kind({
 						{kind: "Drawer", name: "conversation_drawer", /*caption: "Conversation",*/ open: false, onOpenChanged: "onConversationOpenChanged", components: [
 						    {kind: "Spaz.Conversation", name: "conversation", onStart: "onConversationLoadStart", onDone: "onConversationLoadDone"}
 						]}
-				]},
+				]}
 				//]},
 				
 	        ]},
@@ -82,6 +82,9 @@ enyo.kind({
 		]}
 	],
 	entryChanged: function(inOldEntry){
+		
+		this.entry = AppUtils.applyEntryFilters(this.entry);
+		
 		if(this.entry.service_id !== inOldEntry.service_id){
 
 			var events = this.doGetViewEvents();
@@ -109,7 +112,7 @@ enyo.kind({
 			this.$.image.applyStyle("display", "");			
 			this.$.realname.setContent(this.entry.author_fullname||this.entry.author_username);
 			this.$.username.setContent("@" + this.entry.author_username);
-			this.$.private.setShowing(this.entry.author_is_private);
+			this.$['private'].setShowing(this.entry.author_is_private);
 
 			var url = this.entry.author_url || '';
 			this.$.url.setContent(sch.autolink(url), url.length);
@@ -121,7 +124,7 @@ enyo.kind({
 			enyo.forEach (this.$.images.getControls(), function (control) {
 				control.destroy();
 			});
-			this.$.entry.setContent(AppUtils.makeItemsClickable(this.entry.text));
+			this.$.entry.setContent(this.entry.text);
 			
 			
 			// expand URLs
@@ -132,7 +135,7 @@ enyo.kind({
 				for (var i = 0; i < urls.length; i++) {
 					shurl.expand(urls[i], {
 						'onSuccess': enyo.bind(this, function(data) {
-							entryhtml = shurl.replaceExpandableURL(entryhtml, data.shorturl, data.longurl)
+							entryhtml = shurl.replaceExpandableURL(entryhtml, data.shorturl, data.longurl);
 							this.$.entry.setContent(entryhtml);
 							if ((i + 1) >= urls.length) {
 								this.buildMediaPreviews();
@@ -262,7 +265,7 @@ enyo.kind({
 	    if(this.$.conversation_drawer.open){
 	        this.loadConversation();	
 	    } else {
-			setTimeout(enyo.bind(this, function(){ this.$.detail_scroller.scrollTo(0, 0)}), 100);
+			setTimeout(enyo.bind(this, function(){ this.$.detail_scroller.scrollTo(0, 0); }), 100);
 		}
 	},
 	loadConversation: function() {

@@ -32,6 +32,17 @@ AppUtils.makeItemsClickable = function(str) {
 };
 
 
+
+AppUtils.applyEntryFilters = function(str) {
+	if (!str) { return str; }
+
+	if (!App.entryOutputFilters) {
+		App.entryOutputFilters = new SpazFilterChain({filters:SpazDefaultFilters});
+	}
+	
+	return App.entryOutputFilters.process(str);
+};
+
 /**
  * @TODO can we make this generic, working on all systems?
  * 

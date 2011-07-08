@@ -30,9 +30,6 @@ enyo.kind({
 		entries: []
 	},
 	
-	// make a filterchain
-	filterChain : new SpazFilterChain({filters:SpazDefaultFilters}),
-	
 	components: [
 		{kind: "Toolbar", height: "42px", defaultKind: "Control", onclick: "scrollToTop", style: "min-height: 42px; color: white; color: white; padding-left: 5px;", 
 			onmousehold: "doToolbarmousehold",
@@ -302,9 +299,6 @@ enyo.kind({
 							}
 						}
 
-						// apply filterChain
-						data = this.applyFilters(data);
-
 						/* concat to existing entries */
 						this.entries = [].concat(data.reverse(), this.entries);
 
@@ -524,9 +518,6 @@ enyo.kind({
 		
 		// we've handled this event, stop it from propagating up
 		return true;
-	},
-	
-	applyFilters: function(data) {
-		return this.filterChain.processArray(data);
 	}
+	
 });

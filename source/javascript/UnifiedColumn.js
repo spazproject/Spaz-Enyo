@@ -155,9 +155,6 @@ enyo.kind({
 						}
 					}
 					
-					// apply filterChain
-					data = this.applyFilters(data);
-
 					this.entries = [].concat(data.reverse(), this.entries);
 					this.entries.sort(function(a,b){
 						return b.publish_date - a.publish_date; // newest first by date

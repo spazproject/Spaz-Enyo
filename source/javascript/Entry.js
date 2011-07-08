@@ -16,10 +16,14 @@ enyo.kind({
 					{name: "authorAvatar", kind: "Image", width: "50px", height: "50px", className: "avatar"},
 					{name: "reposterAvatar", kind: "Image", width: "25px", height: "25px", className: "small-avatar", showing: false}
 			]},
-			{name: "text", allowHtml: true, flex: 1, className: "entrytext text"},
+			{name: "text", allowHtml: true, flex: 1, className: "entrytext text"}
 		]}
 	],
+	
 	entryChanged: function(){
+		
+		this.entry = AppUtils.applyEntryFilters(this.entry);
+		
 		this.$.authorAvatar.setSrc(this.entry.author_avatar);
 
 		var toMacroize = "<span height='13px' class='text username author'>{$author_username}</span>";
@@ -43,19 +47,20 @@ enyo.kind({
 		
 
 		toMacroize += "<br/>";
-		toMacroize += AppUtils.makeItemsClickable(this.entry.text);
+		
+		toMacroize += this.entry.text;
 		toMacroize += "<br/>";
 
 		if (this.entry.read === false && this.ignoreUnread === false ) {	
 			toMacroize += "<img align='left' src='source/images/unread.png' height= '13px' class='entryHeaderIcon'></img> ";
 		}
 		
-		toMacroize += "<span class='small' height = '13px'>" 
+		toMacroize += "<span class='small' height = '13px'>";
 		toMacroize += sch.getRelativeTime(this.entry.publish_date);
 		if (this.entry._orig.source) {
 			toMacroize += " from <span class = 'link'>{$_orig.source}</span>";
 		}
-		toMacroize += "</span>"			
+		toMacroize += "</span>";
 		
 		if(this.entry.is_private_message === true){
 			this.applyStyle("background-color", "rgba(255, 0, 0, .1)");			
@@ -90,4 +95,4 @@ enyo.kind({
 	entryHold: function(inSender, inEvent, inRowIndex) {
 		this.doEntryHold(inEvent, inEvent.rowIndex);
 	}
-})
+});

@@ -44,8 +44,6 @@ Emoticons.prototype.apply = function(str) {
 	var className = this.set.className;
 	var imgPath   = this.set.imgPath;
 	
-	console.log(regexp);
-	
 	return str.replace(regexp, function(matched, p1, p2, p3) {
 		
 		if (p1 === undefined) { p1 = ''; }
