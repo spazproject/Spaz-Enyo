@@ -33,11 +33,11 @@ AppUtils.makeItemsClickable = function(str) {
 
 
 
-AppUtils.applyEntryFilters = function(str) {
+AppUtils.applyEntryTextFilters = function(str) {
 	if (!str) { return str; }
 
 	if (!App.entryOutputFilters) {
-		App.entryOutputFilters = new SpazFilterChain({filters:SpazDefaultFilters});
+		App.entryOutputFilters = new SpazFilterChain({filters:SpazDefaultTextFilters});
 	}
 	
 	return App.entryOutputFilters.process(str);
