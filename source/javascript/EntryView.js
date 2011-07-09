@@ -83,8 +83,6 @@ enyo.kind({
 	],
 	entryChanged: function(inOldEntry){
 		
-		this.entry = AppUtils.applyEntryFilters(this.entry);
-		
 		if(this.entry.service_id !== inOldEntry.service_id){
 
 			var events = this.doGetViewEvents();
@@ -134,7 +132,7 @@ enyo.kind({
 			enyo.forEach (this.$.images.getControls(), function (control) {
 				control.destroy();
 			});
-			this.$.entry.setContent(this.entry.text);
+			this.$.entry.setContent(AppUtils.applyEntryTextFilters(this.entry.text));
 			
 			
 			// expand URLs

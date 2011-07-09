@@ -1,40 +1,41 @@
-var SpazDefaultFilters = [
+var SpazDefaultTextFilters = [
 	{
-		'label':'autolink',
-		'func':function(d) {
-			d.text = AppUtils.makeItemsClickable(d.text);
-			return d;
+		'label':'nl2br',
+		'func':function(str) {
+			str = sch.nl2br(str);
+			return str;
 		}
 	},
 	{
-		'label':'markdown',
-		'func':function(d) {
-			var md = new Showdown.converter();
-			d.text = md.makeHtml(d.text);
-			d.text = d.text.replace(/href="([^"]+)"/gi, 'href="$1" title="Open link in a browser window" class="inline-link"');		
-			return d;	
+		'label':'simplemarkup',
+		'func':function(str) {
+			str = str.replace(/(\s|^)\*([^]+)\*($|[\s:.!,;])/g, '$1<strong>$2</strong>$3');
+			str = str.replace(/(\s|^)`([^]+)`($||[\s:.!,;])/g, '$1<code>$2</code>$3');
+			str = str.replace(/(\s|^)_([^]+)_($||[\s:.!,;])/g, '$1<em>$2</em>$3');
+			return str;
+		}
+	},
+	{
+		'label':'autolink',
+		'func':function(str) {
+			str = AppUtils.makeItemsClickable(str);
+			return str;
 		}
 	},
 	{
 		'label':'SAE',
-		'func':function(d) {
+		'func':function(str) {
 			if (!window.SAE) { window.SAE = new Emoticons('SAE'); }
-			d.text = window.SAE.apply(d.text);
-			if (d.SC_is_retweet) {
-				d.retweeted_status.text = window.SAE.apply(d.retweeted_status.text);
-			}
-			return d;
+			str = window.SAE.apply(str);
+			return str;
 		}
 	},
 	{
 		'label':'SimpleSmileys',
-		'func':function(d) {
+		'func':function(str) {
 			if (!window.SpazSimpleSmileys) { window.SpazSimpleSmileys = new Emoticons('SimpleSmileys'); }
-			d.text = window.SpazSimpleSmileys.apply(d.text);
-			if (d.SC_is_retweet) {
-				d.retweeted_status.text = window.SpazSimpleSmileys.apply(d.retweeted_status.text);
-			}
-			return d;
+			str = window.SpazSimpleSmileys.apply(str);
+			return str;
 		}
 	}
 ];

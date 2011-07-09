@@ -22,8 +22,6 @@ enyo.kind({
 	
 	entryChanged: function(){
 		
-		this.entry = AppUtils.applyEntryFilters(this.entry);
-		
 		this.$.authorAvatar.setSrc(this.entry.author_avatar);
 
 		var toMacroize = "<span height='13px' class='text username author'>{$author_username}</span>";
@@ -48,7 +46,7 @@ enyo.kind({
 
 		toMacroize += "<br/>";
 		
-		toMacroize += this.entry.text;
+		toMacroize += AppUtils.applyEntryTextFilters(this.entry.text);
 		toMacroize += "<br/>";
 
 		if (this.entry.read === false && this.ignoreUnread === false ) {	
