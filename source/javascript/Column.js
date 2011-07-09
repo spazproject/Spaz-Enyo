@@ -41,6 +41,7 @@ enyo.kind({
 				//gotta do this to get the header title to center and not be a button. "defaultKind" in Toolbar is key.
 				{name: "topLeftButton", kind: "ToolButton", style: "display: none"},
 				{name: "header", style: "padding: 0px 0px 5px 5px;", className: "truncating-text", content: ""},
+				{name: "refresh", kind: "ToolButton", icon: "source/images/icon-refresh.png", onclick:"loadNewer", showing: false},
 				{name: "unreadCount", /*style: "font-size: 12px; margin: 2px 0px 0px 4px; padding: 3px 4px 3px 6px;background-color: rgba(75, 153, 215, .7); -webkit-border-radius: 5px;",*/ align: "left", className: "unreadCountBadge", showing: false, onclick: "unreadClicked", content: "" },
 				{kind: "Spacer", flex: 1},
 				{name: "accountName", style: "color: grey; font-size: 12px; padding-left: 2px;"},
@@ -153,24 +154,46 @@ enyo.kind({
 			}
 			var dataLength;
 			function loadStarted() {
-				//self.$.refresh.addClass("spinning");
+				self.$.refresh.addClass("spinning");
+				self.$.refresh.setShowing(true);
+				self.$.header.applyStyle("max-width", 
+					self.$.toolbar.getBounds().width
+					 - self.$.unreadCount.getBounds().width 
+				 	 - self.$.accountName.getBounds().width 
+					 - self.$.topRightButton.getBounds().width 
+					 - self.$.topLeftButton.getBounds().width
+					 - self.$.refresh.getBounds().width
+					 - 30
+					 + "px");
+
 				self.doLoadStarted();
 				dataLength = self.entries.length;
 
 			}
 			function loadFinished() {				
-				//self.$.refresh.removeClass("spinning");
+				self.$.refresh.removeClass("spinning");
+				self.$.refresh.setShowing(false);
+				self.$.header.applyStyle("max-width", 
+					self.$.toolbar.getBounds().width
+					 - self.$.unreadCount.getBounds().width 
+				 	 - self.$.accountName.getBounds().width 
+					 - self.$.topRightButton.getBounds().width 
+					 - self.$.topLeftButton.getBounds().width
+					 - self.$.refresh.getBounds().width
+					 - 30
+					 + "px");
+
 				self.doLoadFinished();
 
 				if(dataLength !== self.entries.length && opts.mode !== 'older'){
 					//go to top.
 					if(App.Prefs.get("timeline-scrollonupdate")){
 						
-						self.$.list.punt();
-
 						//go to first unread
 						self.setScrollPosition();
-						self.$.list.refresh();	
+						self.$.list.punt();
+
+						//self.$.list.refresh();	
 					}
 				}
 			}
@@ -388,6 +411,7 @@ enyo.kind({
 				 - this.$.accountName.getBounds().width 
 				 - this.$.topRightButton.getBounds().width 
 				 - this.$.topLeftButton.getBounds().width
+				 - this.$.refresh.getBounds().width
 				 - 30
 				 + "px");
 			
@@ -455,9 +479,7 @@ enyo.kind({
 		this.inherited(arguments);
 		if (this.hasNode()) {
 			this.$.header.setContent("");
-			var headerBounds = this.$.header.getBounds();
-			var accountNameBounds = this.$.accountName.getBounds();
-			this.$.header.applyStyle("max-width", accountNameBounds.left - headerBounds.left + "px");
+			this.$.header.applyStyle("max-width", this.$.accountName.getBounds().left - this.$.header.getBounds().left + "px");
 			this.$.header.setContent(_.capitalize(this.info.type));
 		}
 	},
