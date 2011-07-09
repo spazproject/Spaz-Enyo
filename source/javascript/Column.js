@@ -154,21 +154,24 @@ enyo.kind({
 			});
 
 			function loadStarted() {
-				accountsLoaded++;
-				self.$.refresh.addClass("spinning");
-				self.$.refresh.setShowing(true);
-				self.$.header.applyStyle("max-width", 
-					self.$.toolbar.getBounds().width
-					 - self.$.unreadCount.getBounds().width 
-				 	 - self.$.accountName.getBounds().width 
-					 - self.$.topRightButton.getBounds().width 
-					 - self.$.topLeftButton.getBounds().width
-					 - self.$.refresh.getBounds().width
-					 - 30
-					 + "px");
+				if(accountsLoaded === 0){
+					self.doLoadStarted();
+					self.$.refresh.addClass("spinning");
+					self.$.refresh.setShowing(true);
+					self.$.header.applyStyle("max-width", 
+						self.$.toolbar.getBounds().width
+						 - self.$.unreadCount.getBounds().width 
+					 	 - self.$.accountName.getBounds().width 
+						 - self.$.topRightButton.getBounds().width 
+						 - self.$.topLeftButton.getBounds().width
+						 - self.$.refresh.getBounds().width
+						 - 30
+						 + "px");
 
-				self.doLoadStarted();
-				dataLength = self.entries.length;
+					dataLength = self.entries.length;
+				}
+				accountsLoaded++;
+				
 
 			}
 			function loadFinished(data, opts, account_id) {	
@@ -180,6 +183,8 @@ enyo.kind({
 					totalData = [].concat(totalData, data);
 				}
 				if(accountsLoaded === 0){
+					self.doLoadFinished();
+
 					self.processData(totalData, opts);
 
 					self.$.refresh.setShowing(false);
@@ -194,7 +199,6 @@ enyo.kind({
 						 - 30
 						 + "px");
 
-					self.doLoadFinished();
 
 					if(dataLength !== self.entries.length && opts.mode !== 'older'){
 						//go to top.
@@ -210,19 +214,24 @@ enyo.kind({
 				}
 			}
 			function loadFailed(){
-				self.$.refresh.setShowing(false);
-				self.$.refresh.removeClass("spinning");
-				self.$.header.applyStyle("max-width", 
-					self.$.toolbar.getBounds().width
-					 - self.$.unreadCount.getBounds().width 
-				 	 - self.$.accountName.getBounds().width 
-					 - self.$.topRightButton.getBounds().width 
-					 - self.$.topLeftButton.getBounds().width
-					 - self.$.refresh.getBounds().width
-					 - 30
-					 + "px");
+				accountsLoaded--;
+				console.error("Load failed for an account");
+				if(accountsLoaded === 0){
+					self.doLoadFinished();
 
-				self.doLoadFinished();
+					self.$.refresh.setShowing(false);
+					self.$.refresh.removeClass("spinning");
+					self.$.header.applyStyle("max-width", 
+						self.$.toolbar.getBounds().width
+						 - self.$.unreadCount.getBounds().width 
+					 	 - self.$.accountName.getBounds().width 
+						 - self.$.topRightButton.getBounds().width 
+						 - self.$.topLeftButton.getBounds().width
+						 - self.$.refresh.getBounds().width
+						 - 30
+						 + "px");
+				}
+
 			}
 
 			function loadData(account_id){	
@@ -349,7 +358,7 @@ enyo.kind({
 						data = AppUtils.convertToEntries(data);
 
 						/* add more entry properties */
-						data = AppUtils.setAdditionalEntryProperties(data);//, this.info.accounts[0]);
+						data = AppUtils.setAdditionalEntryProperties(data);
 						
 						// mark new as read or not read, depending on mode
 						for (var i = data.length - 1; i >= 0; i--){
