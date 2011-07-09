@@ -48,7 +48,7 @@ enyo.kind({
 						{name: "entry", allowHtml: true, onclick: "entryClick", className: "message"},
 						{name: "small", kind: "HFlexBox", className: "small", style: "padding: 5px 0px",
 							components: [
-								{name: "time"},
+								{name: "time", allowHtml: true},
 								{content: "from", style: "padding: 0px 3px;"},
 								{name: "from",  allowHtml: true}
 							]
@@ -117,7 +117,17 @@ enyo.kind({
 			var url = this.entry.author_url || '';
 			this.$.url.setContent(sch.autolink(url), url.length);
 			this.$.bio.setContent(AppUtils.makeItemsClickable(this.entry.author_description) || '');
-			this.$.time.setContent(sch.getRelativeTime(this.entry.publish_date));
+
+			if (this.entry.service === SPAZCORE_SERVICE_TWITTER){
+				var entryURL = "http://twitter.com/" + this.entry.author_username + "/status/" + this.entry.service_id;
+			} else if(this.entry.service === SPAZCORE_SERVICE_IDENTICA){
+				var entryURL = "http://identi.ca/notice/" + this.entry.service_id;
+			}
+			if(entryURL){
+				this.$.time.setContent("<a href='" + entryURL + "'>" + sch.getRelativeTime(this.entry.publish_date) + "</a>");
+			} else {
+				this.$.time.setContent(sch.getRelativeTime(this.entry.publish_date));
+			}
 			if (this.entry._orig.source) {
 				this.$.from.setContent(this.entry._orig.source);
 			}
