@@ -76,7 +76,7 @@ enyo.kind({
 		switch(this.$.radioGroup.getValue()) {
 			case 0:
 			default:
-				this.doCreateColumn(this.$.accountSelection.getValue(), SPAZ_COLUMN_SEARCH, this.$.searchTextBox.getValue());
+				AppUI.search(this.$.searchTextBox.getValue(), this.$.accountSelection.getValue());
 				break;
 			case 1:
 				var account = App.Users.get(this.$.accountSelection.getValue());

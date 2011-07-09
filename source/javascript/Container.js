@@ -33,7 +33,7 @@ enyo.kind({
 		this.loadAndCreateColumns();
 		
 		AppUI.addFunction("search", function(inQuery, inAccountId){
-			this.createColumn(inAccountId, "search", inQuery);
+			this.createColumn([inAccountId], "search", inQuery);
 		}, this);
 		AppUI.addFunction("rerenderTimelines", function(){
 			this.columnsFunction("refreshList");
@@ -128,11 +128,11 @@ enyo.kind({
 		
 		App.Prefs.set('columns', this.columnData);		
 	},
-	createColumn: function(inAccountId, inColumn, inQuery){
+	createColumn: function(inAccountIds, inColumn, inQuery){
 		
-		var colattr = {type: inColumn, accounts: [inAccountId], query: inQuery };
+		var colattr = {type: inColumn, accounts: inAccountIds, query: inQuery };
 		
-		this.columnData.push({type: inColumn, accounts: [inAccountId], query: inQuery});
+		this.columnData.push({type: inColumn, accounts: inAccountIds, query: inQuery});
 
 		this.saveColumnEntries();
 		this.createColumns();
@@ -230,7 +230,7 @@ enyo.kind({
 	},
 
 	search: function(inSender, inQuery){
-		this.createColumn(inSender.info.accounts[0], "search", inQuery);
+		this.createColumn([inSender.info.accounts[0]], "search", inQuery);
 	},
 	
 	accountAdded: function(inAccountId) {

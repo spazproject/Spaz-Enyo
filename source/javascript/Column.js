@@ -93,7 +93,10 @@ enyo.kind({
 	infoChanged: function(){
 		// don't set header contents here - wait until the column is
 		// rendered and then manually resize header to fit.
-		this.$.accountName.setContent(App.Users.getLabel(this.info.accounts[0]));
+
+		//@TODO: If we ever allow custom combining of accounts, we need to change this.
+		var label = (this.info.accounts.length > 1) ? App.Users.get(this.info.accounts[0]).type : App.Users.getLabel(this.info.accounts[0]);
+		this.$.accountName.setContent(label);
 	},
 
 	loadNewer:function(opts) {
@@ -130,15 +133,7 @@ enyo.kind({
 
 		try {
 			var since_id;
-			var account = App.Users.get(self.info.accounts[0]);
-			var auth = new SpazAuth(account.type);
-			auth.load(account.auth);
-
-			self.twit = new SpazTwit();
-			self.twit.setBaseURLByService(account.type);
-			self.twit.setSource(App.Prefs.get('twitter-source'));
-			self.twit.setCredentials(auth);
-
+			
 			if (this.entries.length > 0) {
 				if (opts.mode === 'newer') {					
 					since_id = _.first(this.entries).service_id;
@@ -152,8 +147,14 @@ enyo.kind({
 			} else {
 				since_id = 1;
 			}
-			var dataLength;
+			var dataLength, accountsLoaded = 0, totalData = [];
+
+			_.each(self.info.accounts, function(account_id){
+				loadData(account_id);
+			});
+
 			function loadStarted() {
+				accountsLoaded++;
 				self.$.refresh.addClass("spinning");
 				self.$.refresh.setShowing(true);
 				self.$.header.applyStyle("max-width", 
@@ -170,9 +171,47 @@ enyo.kind({
 				dataLength = self.entries.length;
 
 			}
-			function loadFinished() {				
-				self.$.refresh.removeClass("spinning");
+			function loadFinished(data, opts, account_id) {	
+				accountsLoaded--;
+				if(data !== undefined){
+					_.each(data, function(d){
+						d.account_id = account_id;
+					});
+					totalData = [].concat(totalData, data);
+				}
+				if(accountsLoaded === 0){
+					self.processData(totalData, opts);
+
+					self.$.refresh.setShowing(false);
+					self.$.refresh.removeClass("spinning");
+					self.$.header.applyStyle("max-width", 
+						self.$.toolbar.getBounds().width
+						 - self.$.unreadCount.getBounds().width 
+					 	 - self.$.accountName.getBounds().width 
+						 - self.$.topRightButton.getBounds().width 
+						 - self.$.topLeftButton.getBounds().width
+						 - self.$.refresh.getBounds().width
+						 - 30
+						 + "px");
+
+					self.doLoadFinished();
+
+					if(dataLength !== self.entries.length && opts.mode !== 'older'){
+						//go to top.
+						if(App.Prefs.get("timeline-scrollonupdate")){
+							
+							//go to first unread
+							self.setScrollPosition();
+							self.$.list.punt();
+
+							//self.$.list.refresh();	
+						}
+					}
+				}
+			}
+			function loadFailed(){
 				self.$.refresh.setShowing(false);
+				self.$.refresh.removeClass("spinning");
 				self.$.header.applyStyle("max-width", 
 					self.$.toolbar.getBounds().width
 					 - self.$.unreadCount.getBounds().width 
@@ -184,88 +223,87 @@ enyo.kind({
 					 + "px");
 
 				self.doLoadFinished();
-
-				if(dataLength !== self.entries.length && opts.mode !== 'older'){
-					//go to top.
-					if(App.Prefs.get("timeline-scrollonupdate")){
-						
-						//go to first unread
-						self.setScrollPosition();
-						self.$.list.punt();
-
-						//self.$.list.refresh();	
-					}
-				}
 			}
 
-			switch (self.info.type) {
-				case SPAZ_COLUMN_HOME:
-					loadStarted();
-					self.twit.getHomeTimeline(since_id, 50, null, null,
-						function(data) {
-							self.processData(data, opts);
-							loadFinished();
-						},
-						loadFinished
-					);
-					break;
-				case SPAZ_COLUMN_MENTIONS:
-					// this method would consistently 502 if we tried to get 200. limit to 100
-					loadStarted();
-					self.twit.getReplies(since_id, 50, null, null,
-						function(data) {
-							self.processData(data, opts);
-							loadFinished();
-						},
-						loadFinished
-					);
-					break;
-				case SPAZ_COLUMN_MESSAGES:
-					loadStarted();
-					self.twit.getDirectMessages(since_id, 50, null, null,
-						function(data) {
-							self.processData(data, opts);
-							loadFinished();
-						},
-						loadFinished
-					);
-					break;
-				case SPAZ_COLUMN_SEARCH:
-					loadStarted();
-					self.twit.search(self.info.query, since_id, 50, null, null, null,
-						function(data) {
-							self.processData(data, opts);
-							loadFinished();
-						},
-						loadFinished
-					);
-					break;
-					
-				case SPAZ_COLUMN_FAVORITES:
-					loadStarted();
-					self.twit.getFavorites(since_id, null, null,
-						function(data) {
-							self.processData(data, opts);
-							loadFinished();
-						},
-						loadFinished
-					);					
-					break;
-				 case SPAZ_COLUMN_SENT:
-				 	loadStarted();
-				 	window.AppCache.getUser(account.username, account.type, account.id,
-				 		function(user){
-				 			self.twit.getUserTimeline(user.service_id, 50, null,
-						 		function(data) {
-						 			self.processData(data, opts);
-						 			loadFinished();
-						 		},
-					 			loadFinished
-				 			);
-				 		},
-				 		loadFinished
-				 	);
-				 	break;
+			function loadData(account_id){	
+				var account = App.Users.get(account_id);
+				var auth = new SpazAuth(account.type);
+				auth.load(account.auth);
+
+				self.twit = new SpazTwit();
+				self.twit.setBaseURLByService(account.type);
+				self.twit.setSource(App.Prefs.get('twitter-source'));
+				self.twit.setCredentials(auth);
+
+				switch (self.info.type) {
+					case SPAZ_COLUMN_HOME:
+						loadStarted();
+						self.twit.getHomeTimeline(since_id, 50, null, null,
+							function(data) {
+								//self.processData(data, opts);
+								loadFinished(data, opts, account_id);
+							},
+							loadFailed
+						);
+						break;
+					case SPAZ_COLUMN_MENTIONS:
+						// this method would consistently 502 if we tried to get 200. limit to 100
+						loadStarted();
+						self.twit.getReplies(since_id, 50, null, null,
+							function(data) {
+								//self.processData(data, opts);
+								loadFinished(data, opts, account_id);
+							},
+							loadFailed
+						);
+						break;
+					case SPAZ_COLUMN_MESSAGES:
+						loadStarted();
+						self.twit.getDirectMessages(since_id, 50, null, null,
+							function(data) {
+								//self.processData(data, opts);
+								loadFinished(data, opts, account_id);
+							},
+							loadFailed
+						);
+						break;
+					case SPAZ_COLUMN_SEARCH:
+						loadStarted();
+						self.twit.search(self.info.query, since_id, 50, null, null, null,
+							function(data) {
+								//self.processData(data, opts);
+								loadFinished(data, opts, account_id);
+							},
+							loadFailed
+						);
+						break;
+						
+					case SPAZ_COLUMN_FAVORITES:
+						loadStarted();
+						self.twit.getFavorites(since_id, null, null,
+							function(data) {
+								//self.processData(data, opts);
+								loadFinished(data, opts, account_id);
+							},
+							loadFailed
+						);					
+						break;
+					 case SPAZ_COLUMN_SENT:
+					 	loadStarted();
+					 	window.AppCache.getUser(account.username, account.type, account.id,
+					 		function(user){
+					 			self.twit.getUserTimeline(user.service_id, 50, null,
+							 		function(data) {
+							 			//self.processData(data, opts);
+							 			loadFinished(data, opts, account_id);
+							 		},
+						 			loadFailed
+					 			);
+					 		},
+					 		loadFailed
+					 	);
+					 	break;
+				}
 			}
 
 
@@ -275,7 +313,7 @@ enyo.kind({
 		}
 		
 	},
-	processData: function(data, opts) {
+	processData: function(data, opts, account_id) {
 		var self = this;
 		
 		opts = sch.defaults({
@@ -311,7 +349,7 @@ enyo.kind({
 						data = AppUtils.convertToEntries(data);
 
 						/* add more entry properties */
-						data = AppUtils.setAdditionalEntryProperties(data, this.info.accounts[0]);
+						data = AppUtils.setAdditionalEntryProperties(data);//, this.info.accounts[0]);
 						
 						// mark new as read or not read, depending on mode
 						for (var i = data.length - 1; i >= 0; i--){
@@ -419,7 +457,7 @@ enyo.kind({
 	},
 	scrollToFirstUnread: function(){
 		this.setScrollPosition();
-		this.$.list.refresh();
+		this.$.list.punt();
 
 	},
 	setScrollPosition: function() {
@@ -427,7 +465,7 @@ enyo.kind({
 			for(var i = 0; i < this.entries.length; i++){
 				if(this.entries[i].read === true){ //this is the first read entry
 					this.scrollOffset = (i > 0) ? (i-1): 0;
-					//console.log("this.scrollOffset", this.scrollOffset);
+					//set scrollOffset to be first unread item
 					break;
 				}
 			};	

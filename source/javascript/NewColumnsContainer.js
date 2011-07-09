@@ -14,8 +14,12 @@ enyo.kind({
 		this.buildColumnSelection();	
 	},
 	buildColumnSelection: function(inSender){
-		var account = App.Users.get(this.selectedAccount),
-			columns = SPAZ_COLUMN_TYPES[account.type]; //array of available columns
+		var columns;
+		if(AppUtils.isService(this.selectedAccount)){
+			columns = SPAZ_COLUMN_TYPES_ALL[this.selectedAccount]
+		} else {
+			columns = SPAZ_COLUMN_TYPES[App.Users.get(this.selectedAccount).type]; //array of available columns
+		}
 
 		this.destroyComponents();
 

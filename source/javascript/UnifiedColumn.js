@@ -55,24 +55,47 @@ enyo.kind({
 
 			var dataLength;
 			function loadStarted() {
-				//self.$.refresh.addClass("spinning");
+				self.$.refresh.addClass("spinning");
+				self.$.refresh.setShowing(true);
+				self.$.header.applyStyle("max-width", 
+					self.$.toolbar.getBounds().width
+					 - self.$.unreadCount.getBounds().width 
+				 	 - self.$.accountName.getBounds().width 
+					 - self.$.topRightButton.getBounds().width 
+					 - self.$.topLeftButton.getBounds().width
+					 - self.$.refresh.getBounds().width
+					 - 30
+					 + "px");
 				self.doLoadStarted();
 
 				dataLength = self.entries.length;
 
 			}
 			function loadFinished() {
-				//self.$.refresh.removeClass("spinning");
+
+				self.$.refresh.removeClass("spinning");
+				self.$.refresh.setShowing(false);
+				self.$.header.applyStyle("max-width", 
+					self.$.toolbar.getBounds().width
+					 - self.$.unreadCount.getBounds().width 
+				 	 - self.$.accountName.getBounds().width 
+					 - self.$.topRightButton.getBounds().width 
+					 - self.$.topLeftButton.getBounds().width
+					 - self.$.refresh.getBounds().width
+					 - 30
+					 + "px");
+
+				
 				self.doLoadFinished();
 
 				if(dataLength !== self.entries.length && opts.mode !== 'older'){
 					if(App.Prefs.get("timeline-scrollonupdate")){
 						
-						self.$.list.punt();
-
 						//go to first unread
 						self.setScrollPosition();
-						self.$.list.refresh();	
+						self.$.list.punt();
+
+						//self.$.list.refresh();	
 					}
 				}
 			}

@@ -40,6 +40,19 @@ enyo.kind({
 				type:allusers[key].type
 			});
 		};
+		var i = 0;
+		this.accounts = _.sortBy(this.accounts, function(account){
+			return account.type;
+		});
+
+		while(i < this.accounts.length){
+			if((i > 0 && this.accounts[i].type !== this.accounts[i-1].type) || i === 0){
+				this.accounts.splice(i, 0, {caption: this.accounts[i].type, value: this.accounts[i].type});
+				//@TODO: style this differently
+				i++;
+			} 
+			i++;
+		}
 		this.$.accountSelection.setItems(this.accounts);
 		this.$.accountSelection.setValue(this.accounts[0].value);
 
@@ -59,7 +72,7 @@ enyo.kind({
 		this.openAtTopCenter();
 	},
 	newSearchColumn: function(inSender, inEvent){
-		this.doCreateColumn(this.$.accountSelection.getValue(), "search", this.$.searchTextBox.getValue());
+		this.doCreateColumn([this.$.accountSelection.getValue()], "search", this.$.searchTextBox.getValue());
 		this.doClose();
 	},
 	newColumn: function(inSender, inCaption){
@@ -71,7 +84,16 @@ enyo.kind({
 			}
 		} else {
 			enyo.log("new column");
-			this.doCreateColumn(this.$.accountSelection.getValue(), inCaption);
+			if(AppUtils.isService(this.$.accountSelection.getValue())){
+				var users = App.Users.getByType(this.$.accountSelection.getValue()),
+					account_ids = [];
+				for(var i = 0; i < users.length; i++){
+					account_ids.push(users[i].id);
+				}
+			} else {
+				var account_ids = [this.$.accountSelection.getValue()];
+			}
+			this.doCreateColumn(account_ids, inCaption);
 			this.doClose();	
 		}
 		
