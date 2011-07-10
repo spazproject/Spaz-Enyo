@@ -530,10 +530,10 @@ enyo.kind({
 			this.$.header.setContent(_.capitalize(this.info.type));
 		}
 	},
-	refreshList: function(){
+	refreshList: function(forceReload){
 		this.$.list.refresh();
 		
-		if(this.info.type === SPAZ_COLUMN_FAVORITES){
+		if(this.info.type === SPAZ_COLUMN_FAVORITES || forceReload === true){
 			this.entries = [];
 			this.loadData();
 		}

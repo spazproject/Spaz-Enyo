@@ -72,7 +72,7 @@ enyo.kind({
 		this.openAtTopCenter();
 	},
 	newSearchColumn: function(inSender, inEvent){
-		this.doCreateColumn([this.$.accountSelection.getValue()], "search", this.$.searchTextBox.getValue());
+		AppUI.search(this.$.searchTextBox.getValue(), this.$.accountSelection.getValue());
 		this.doClose();
 	},
 	newColumn: function(inSender, inCaption){
@@ -93,7 +93,12 @@ enyo.kind({
 			} else {
 				var account_ids = [this.$.accountSelection.getValue()];
 			}
-			this.doCreateColumn(account_ids, inCaption);
+			var obj = {
+				type: inCaption,
+				accounts: account_ids,
+				service: (AppUtils.isService(this.$.accountSelection.getValue()) ? this.$.accountSelection.getValue() : null)
+			}
+			this.doCreateColumn(obj);
 			this.doClose();	
 		}
 		

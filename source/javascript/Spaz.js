@@ -561,8 +561,8 @@ enyo.kind({
 	getViewEvents: function(){
 		return this.viewEvents;	
 	},
-	createColumn: function(inSender, inAccountIds, inColumn, inQuery){
-		this.$.container.createColumn(inAccountIds, inColumn, inQuery);	
+	createColumn: function(inSender, inObj){
+		this.$.container.createColumn(inObj);	
 	},
 	
 	refreshAll: function() {
@@ -672,7 +672,7 @@ enyo.kind({
 		this.$.container.accountAdded(inAccountId);
 	},
 	accountRemoved: function(inSender, inAccountId) {
-		this.$.container.removeColummnsForAccount(inAccountId);
+		this.$.container.checkAccountChanges(inAccountId);
 	},
 	showAccountsPopup: function(inSender) {
 		this.$.sidebar.showAccountsPopup();

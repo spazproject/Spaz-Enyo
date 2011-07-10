@@ -33,7 +33,12 @@ enyo.kind({
 		this.loadAndCreateColumns();
 		
 		AppUI.addFunction("search", function(inQuery, inAccountId){
-			this.createColumn([inAccountId], "search", inQuery);
+			this.createColumn({
+				type: "search",
+				accounts: [inAccountId], 
+				query: inQuery
+			});
+
 		}, this);
 		AppUI.addFunction("rerenderTimelines", function(){
 			this.columnsFunction("refreshList");
@@ -90,6 +95,8 @@ enyo.kind({
 		}
 		var cols = [];
 
+		this.checkAccountChanges();
+
 		for (var i = 0; i < this.columnData.length; i++) {
 			var col = {
 				name:'Column'+i,
@@ -128,17 +135,38 @@ enyo.kind({
 		
 		App.Prefs.set('columns', this.columnData);		
 	},
-	createColumn: function(inAccountIds, inColumn, inQuery){
+	createColumn: function(inObj){
 		
-		var colattr = {type: inColumn, accounts: inAccountIds, query: inQuery };
-		
-		this.columnData.push({type: inColumn, accounts: inAccountIds, query: inQuery});
+		this.columnData.push({type: inObj.type, accounts: inObj.accounts, service: inObj.service, query: inObj.query});
 
 		this.saveColumnEntries();
 		this.createColumns();
 
 		this.$.columnsScroller.snapTo(this.$.columnsScroller.getControls().length-2);
 
+	},
+	checkAccountChanges: function(accountIdToRemove, forceRecreate){
+		var recreateFlag = false;
+		for(var i = 0; i < this.columnData.length; i++){
+			var column = this.columnData[i];
+			if(column.service){
+				if(column.accounts.length !== App.Users.getByType(column.service).length){
+					recreateFlag = true;
+					column.accounts = [];
+					var accounts = App.Users.getByType(column.service);
+					for(var j = 0; j < accounts.length; j++){
+						column.accounts.push(accounts[j].id);
+					}
+				}
+			} else if(accountIdToRemove && this.columnData[i].accounts.length === 1 && this.columnData[i].accounts[0] === accountIdToRemove){
+				this.columnData.splice(i, 1);	
+				recreateFlag = true;			
+			}
+		};
+		if(recreateFlag || forceRecreate) {
+			this.createColumns();
+			this.columnsFunction("refreshList", true);
+		}
 	},
 
 	moveColumnLeft: function(inSender){
@@ -230,26 +258,14 @@ enyo.kind({
 	},
 
 	search: function(inSender, inQuery){
-		this.createColumn([inSender.info.accounts[0]], "search", inQuery);
+		console.error("deprecated called", inSender);
 	},
 	
 	accountAdded: function(inAccountId) {
 		this.columnData = this.columnData.concat(this.getDefaultColumns(inAccountId));
-		this.createColumns();
+		this.checkAccountChanges(null, true);
 	},
-	
-	removeColummnsForAccount: function(inAccountId) {
-		var lengthBefore = this.columnData.length;
-		for(var i = lengthBefore - 1; i >= 0; i--) {
-			//TODO: this needs to be more intelligent when there are multiple accounts in one column.
-			if(this.columnData[i].accounts[0] === inAccountId) {
-				this.columnData.splice(i, 1);
-			}
-		}
-		if(this.columnData.length !== lengthBefore) {
-			this.createColumns();
-		}
-	},
+
 	
 	removeEntryById: function (inEntryId) {
 		this.columnsFunction("removeEntryById", inEntryId);
