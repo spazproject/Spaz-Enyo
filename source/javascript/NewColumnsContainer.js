@@ -22,14 +22,22 @@ enyo.kind({
 		}
 
 		this.destroyComponents();
-
+		var components = [];
 		_.each(columns, function(column){
-			this.createComponent({name: column, flex: 1, kind: "IconButton", style: "font-size:12px; padding-top: 10px;", toggling: true, label: _.capitalize(column), icon: "source/images/icon-"+column+".png", onclick: "newColumn"});
+			components.push({name: column, flex: 1, kind: "IconButton", style: "font-size:12px; padding-top: 10px;", toggling: true, label: _.capitalize(column), icon: "source/images/icon-"+column+".png", onclick: "newColumn"});
 		}, this);
+		this.createComponents(components);
 
 		this.render();
 	},
 	newColumn: function(inSender, inEvent){
+		_.each(this.getComponents(), function(component){
+			if(component.id !== inSender.id){
+				if(component.depressed === true){
+					component.setDepressed(false);
+				}
+			}
+		}, this);
 		this.doNewColumn(inSender.caption.toLowerCase());
 	}
 })

@@ -20,19 +20,17 @@ enyo.kind({
 		
 		]},
 		{name: "newColumnsContainer", onNewColumn: "newColumn", selectedAccount: "", kind: "Spaz.NewColumnsContainer"},
-		{name: "searchBox", kind: "HFlexBox", components: [
+		{name: "searchBox", kind: "HFlexBox", showing: false, components: [
 			{name:"searchTextBox", kind: "RichText", alwaysLooksFocused: true, selectAllOnFocus: true, richContent: false, hint: "Enter query here...", multiline: false, flex: 1, onkeydown: "searchBoxKeydown", components: [
-				{kind: "Button", content: "Add", onclick: "newSearchColumn"}
+				{kind: "Button", className:"enyo-button-affirmative", content: "Add", onclick: "newSearchColumn"}
 			]},
 		]},
-		{kind: "Popup", name: "listSelection", components: [
-			{kind: "ToolButton", icon: "source/images/icon-close.png", style: "float: right; margin-top: -7px;", onclick: "doClose"},
-			{content: "Choose a List"},
-			{kind: "Button", name: "ListListButton", components: [
+		{name: "listSelection", kind: "HFlexBox", style: "padding-top: 10px", showing: false, components: [
+			{name: "noListsMessage", content: "No user lists found for this account.", style: "font-size: 14px;"},
+			{kind: "Button", flex: 1, name: "ListListButton", showing: false, "style":"padding: 0px 5px; position: relative; bottom: 7px;", components: [
 				{kind: "ListSelector", name: "ListList"}
 			]},
-			{name: "noListsMessage", content: "No user lists found for this account.", style: "font-size: 60%;"},
-			{kind: enyo.Button, name: "submitListSelection", caption: "Add List", onclick: "newColumn", className: "enyo-button-affirmative"}
+			{kind: enyo.Button, name: "submitListSelection", showing: false, style: "position: relative; bottom: 7px;", caption: "Add List", onclick: "newColumn", className: "enyo-button-affirmative"}
 		]},
 	],
 	create: function(){
@@ -69,6 +67,8 @@ enyo.kind({
 	},
 	onAccountSelected: function(inSender, inValue){
 		this.$.searchBox.setShowing(false);
+		this.$.listSelection.setShowing(false);
+
 		this.$.newColumnsContainer.setSelectedAccount(inValue);	//build columnSelection
 	},
 	showAtCenter: function(){
@@ -76,6 +76,7 @@ enyo.kind({
 			this.validateComponents();
 		}
 		this.$.searchBox.setShowing(false);
+		this.$.listSelection.setShowing(false);
 		//this.$.avatarList.buildList();
 		this.buildAccounts();
 		this.openAtTopCenter();
@@ -86,25 +87,32 @@ enyo.kind({
 	},
 	newColumn: function(inSender, inCaption){
 		if(inCaption === "search"){
+			this.$.listSelection.setShowing(false);				
+			
 			if(this.$.searchBox.getShowing() === false){
 				this.$.searchBox.setShowing(true);
 			} else {
 				this.$.searchBox.setShowing(false);				
 			}
+
 		} else if(inCaption === "list") {
+			this.$.searchBox.setShowing(false);				
+			
+			if(this.$.listSelection.getShowing() === false){
+				this.$.listSelection.setShowing(true);
+				this.$.ListListButton.hide();
+				this.$.submitListSelection.hide();
+				this.$.noListsMessage.show();
+			} else {
+				this.$.listSelection.setShowing(false);				
+			}
+
 			var currentUser = App.Users.get(this.$.accountSelection.value);
-			// validate components now to avoid pop-in and pop-out of elements/warnings
-			this.$.listSelection.validateComponents();
-			// might be a better way
 			window.AppCache.getUser(currentUser.username, currentUser.type, currentUser.id,
 						function(user) {
 							this.owner.owner.twit.getLists(user.service_id,
 								function(data) {
-									if(data.lists.length === 0) {
-										this.$.ListListButton.hide();
-										this.$.submitListSelection.hide();
-										this.$.noListsMessage.show();
-									} else {
+									if(data.lists.length > 0){
 										this.$.ListListButton.show();
 										this.$.submitListSelection.show();
 										this.$.noListsMessage.hide();
@@ -115,7 +123,6 @@ enyo.kind({
 									}
 									this.$.ListList.setItems(items);
 									this.$.ListList.render();
-									this.$.listSelection.openAtCenter();
 								}.bind(this)
 							)
 						}.bind(this)
