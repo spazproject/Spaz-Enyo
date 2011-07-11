@@ -16134,6 +16134,8 @@ SpazTwit.prototype._processListTimeline = function(data, opts, processing_opts) 
 	*/
 	// jQuery().trigger(finished_event, [ret_items]);
 	
+	this._processTimeline(SPAZCORE_SECTION_HOME, data, opts, processing_opts);
+	
 	if (opts.success_callback) {
 		opts.success_callback(rdata);
 	}

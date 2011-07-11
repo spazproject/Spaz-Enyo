@@ -24,7 +24,16 @@ enyo.kind({
 			{name:"searchTextBox", kind: "RichText", alwaysLooksFocused: true, selectAllOnFocus: true, richContent: false, hint: "Enter query here...", multiline: false, flex: 1, onkeydown: "searchBoxKeydown", components: [
 				{kind: "Button", content: "Add", onclick: "newSearchColumn"}
 			]},
-		]}
+		]},
+		{kind: "Popup", name: "listSelection", components: [
+			{kind: "ToolButton", icon: "source/images/icon-close.png", style: "float: right; margin-top: -7px;", onclick: "doClose"},
+			{content: "Choose a List"},
+			{kind: "Button", name: "ListListButton", components: [
+				{kind: "ListSelector", name: "ListList"}
+			]},
+			{name: "noListsMessage", content: "No user lists found for this account.", style: "font-size: 60%;"},
+			{kind: enyo.Button, name: "submitListSelection", caption: "Add List", onclick: "newColumn", className: "enyo-button-affirmative"}
+		]},
 	],
 	create: function(){
 		this.inherited(arguments);
@@ -82,6 +91,44 @@ enyo.kind({
 			} else {
 				this.$.searchBox.setShowing(false);				
 			}
+		} else if(inCaption === "list") {
+			var currentUser = App.Users.get(this.$.accountSelection.value);
+			// validate components now to avoid pop-in and pop-out of elements/warnings
+			this.$.listSelection.validateComponents();
+			// might be a better way
+			window.AppCache.getUser(currentUser.username, currentUser.type, currentUser.id,
+						function(user) {
+							this.owner.owner.twit.getLists(user.service_id,
+								function(data) {
+									if(data.lists.length === 0) {
+										this.$.ListListButton.hide();
+										this.$.submitListSelection.hide();
+										this.$.noListsMessage.show();
+									} else {
+										this.$.ListListButton.show();
+										this.$.submitListSelection.show();
+										this.$.noListsMessage.hide();
+									}
+									var items = [];
+									for(var i = 0; i < data.lists.length; i++) {
+										items.push({caption: data.lists[i].name, value: data.lists[i].name});
+									}
+									this.$.ListList.setItems(items);
+									this.$.ListList.render();
+									this.$.listSelection.openAtCenter();
+								}.bind(this)
+							)
+						}.bind(this)
+			);
+		} else if(inSender.caption === "Add List") {
+			var obj = {
+				type: SPAZ_COLUMN_LIST,
+				list: inSender.owner.$.ListList.value,
+				accounts: [this.$.accountSelection.getValue()]
+			}
+			this.doCreateColumn(obj);
+			this.doClose();
+		
 		} else {
 			enyo.log("new column");
 			if(AppUtils.isService(this.$.accountSelection.getValue())){

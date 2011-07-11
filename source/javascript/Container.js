@@ -136,8 +136,9 @@ enyo.kind({
 		App.Prefs.set('columns', this.columnData);		
 	},
 	createColumn: function(inObj){
-		
-		this.columnData.push({type: inObj.type, accounts: inObj.accounts, service: inObj.service, query: inObj.query});
+		//object required:		{type: string, accounts: array of ids}
+		//optional properties:  {service: string, query: string, list: string}
+		this.columnData.push(inObj);
 
 		this.saveColumnEntries();
 		this.createColumns();
