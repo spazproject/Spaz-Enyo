@@ -1,4 +1,4 @@
-/*********** Built 2011-06-04 13:19:26 EDT ***********/
+/*********** Built 2011-07-10 23:43:14 EDT ***********/
 /*jslint 
 browser: true,
 nomen: false,
@@ -14921,10 +14921,7 @@ SpazTwit.prototype._processListTimeline = function(data, opts, processing_opts) 
 		'slug':slug
 	};
 	
-	/*
-		grab the array of items
-	*/
-	// jQuery().trigger(finished_event, [ret_items]);
+	this._processTimeline(SPAZCORE_SECTION_USERLISTS, data, opts, processing_opts);
 	
 	if (opts.success_callback) {
 		opts.success_callback(rdata);
