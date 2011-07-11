@@ -118,8 +118,8 @@ enyo.kind({
 			if(col.info.type === SPAZ_COLUMN_HOME){
 				col.kind = "Spaz.UnifiedColumn";
 			}
-			if(this.columnEntries[i]) {
-				col.entries = this.columnEntries[i];
+			if(this.columnData[i].entries){
+				col.entries = this.columnData[i].entries;
 			}
 	
 			cols.push(
@@ -131,9 +131,9 @@ enyo.kind({
 		});
 		this.$.columnsScroller.createComponents(cols, {owner: this});
 		this.$.columnsScroller.render();
-		this.columnEntries = [];
+		//this.columnEntries = [];
 		
-		App.Prefs.set('columns', this.columnData);		
+		this.saveColumnData()	
 	},
 	createColumn: function(inObj){
 		//object required:		{type: string, accounts: array of ids}
@@ -169,15 +169,23 @@ enyo.kind({
 			this.columnsFunction("refreshList", true);
 		}
 	},
+	
+	saveColumnData: function(){
+		_.each(this.columnData, function(columnData){
+			columnData.entries = null;
+		});
+		App.Prefs.set('columns', this.columnData);
+
+		this.saveColumnEntries();
+
+	},
 
 	moveColumnLeft: function(inSender){
 		this.saveColumnEntries();
 		
 		var del_idx = parseInt(inSender.name.replace('Column', ''), 10);
 		var column = this.columnData.splice(del_idx, 1)[0];
-		var entries = this.columnEntries.splice(del_idx, 1)[0];
 		this.columnData.splice(del_idx-1, 0, column);
-		this.columnEntries.splice(del_idx-1, 0, entries);
 		
 		this.createColumns();
 	},
@@ -186,9 +194,7 @@ enyo.kind({
 		
 		var del_idx = parseInt(inSender.name.replace('Column', ''), 10);
 		var column = this.columnData.splice(del_idx, 1)[0];
-		var entries = this.columnEntries.splice(del_idx, 1)[0];
 		this.columnData.splice(del_idx+1, 0, column);
-		this.columnEntries.splice(del_idx+1, 0, entries);
 		
 		this.createColumns();
 	},
@@ -209,13 +215,11 @@ enyo.kind({
 			var del_idx = parseInt(this.columnToDelete.name.replace('Column', ''), 10);
 			this.columnData.splice(del_idx, 1);
 
-			// save the column set
-			App.Prefs.set('columns', this.columnData);
-
 			this.columnToDelete.destroy();
 			this.columnToDelete = null;
 
-			this.saveColumnEntries();
+			this.saveColumnData();
+
 			this.createColumns();
 		}
 	},
@@ -273,11 +277,10 @@ enyo.kind({
 	},
 	
 	saveColumnEntries: function() {
-		this.columnEntries = [];
 		enyo.forEach(this.$.columnsScroller.getControls(), enyo.bind(this, function(control) {
 			if(_.includes(control.kind, "Column") && !_.includes(control.kind, "Spacer")){
 				var col_idx = parseInt(control.name.replace('Column', ''), 10);
-				this.columnEntries[col_idx] = control.getEntries();
+				this.columnData[col_idx].entries = control.getEntries();
 			}
 		}));
 	},
@@ -312,9 +315,7 @@ enyo.kind({
 				new_idx--;
 			}
 			var column = this.columnData.splice(del_idx, 1)[0];
-			var entries = this.columnEntries.splice(del_idx, 1)[0];
 			this.columnData.splice(new_idx, 0, column);
-			this.columnEntries.splice(new_idx, 0, entries);
 			
 			this.createColumns();
 			//@TODO: this creates issues with starting a column drag. To replicate: Hold onto a column toolbar, move it slightly, release. It will float in an awkward postion.
