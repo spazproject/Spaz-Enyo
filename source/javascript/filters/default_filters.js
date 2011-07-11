@@ -9,9 +9,9 @@ var SpazDefaultTextFilters = [
 	{
 		'label':'simplemarkup',
 		'func':function(str) {
-			str = str.replace(/(\s|^)\*([^]+)\*($|[\s:.!,;])/g, '$1<strong>$2</strong>$3');
-			str = str.replace(/(\s|^)`([^]+)`($||[\s:.!,;])/g, '$1<code>$2</code>$3');
-			str = str.replace(/(\s|^)_([^]+)_($||[\s:.!,;])/g, '$1<em>$2</em>$3');
+			str = str.replace(/(\s|^)\*([^\*]+)\*($|[\s:.!,;])/g, '$1<strong>$2</strong>$3');
+			str = str.replace(/(\s|^)`([^\`]+)`($||[\s:.!,;])/g, '$1<code>$2</code>$3');
+			str = str.replace(/(\s|^)_([^\_]+)_($||[\s:.!,;])/g, '$1<em>$2</em>$3');
 			return str;
 		}
 	},
