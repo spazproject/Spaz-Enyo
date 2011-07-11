@@ -95,8 +95,7 @@ enyo.kind({
 		// rendered and then manually resize header to fit.
 
 		//@TODO: If we ever allow custom combining of accounts, we need to change this.
-		var label = (this.info.accounts.length > 1) ? App.Users.get(this.info.accounts[0]).type : App.Users.getLabel(this.info.accounts[0]);
-		this.$.accountName.setContent(label);
+		this.$.accountName.setContent(this.info.service || App.Users.getLabel(this.info.accounts[0]));
 	},
 
 	loadNewer:function(opts) {

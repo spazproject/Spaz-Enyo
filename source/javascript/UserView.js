@@ -419,7 +419,7 @@ enyo.kind({
 		this.$.confirmPopup.close();
 	},
 	userSearch: function(inEvent) {
-		AppUI.search('@'+this.user.username + " OR from:"+ this.user.username, this.account_id);
+		AppUI.search('@'+this.user.username + " OR from:"+ this.user.username, this.$.accountSelection.getValue());
   	},
     
 	getTwitterRelationship: function() {
