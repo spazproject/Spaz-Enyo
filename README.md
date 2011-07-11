@@ -26,6 +26,7 @@ Here's how to contribute:
 * Nicholas Guarracino
 * Clay Hinson
 * Will Honey
+* Lee Roberson
 * Josh Roesslein
 * Daniel Weigh
 
@@ -162,4 +163,3 @@ cp "/Users/coj/Applications/Projects/Spaz HD/Resources/vendors/spazcore-standard
 
 ls -al "/Users/coj/Applications/Projects/Spaz HD/Resources/vendors/spazcore*.js"
 ````
-
