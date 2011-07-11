@@ -266,8 +266,21 @@ enyo.kind({
 				 		loadFinished
 				 	);
 				 	break;
+				case SPAZ_COLUMN_LIST:
+					loadStarted();
+					window.AppCache.getUser(account.username, account.type, account.id,
+						function(user) {
+							self.twit.getListTimeline(self.info.query,user.service_id,
+								function(data) {
+									self.processData(data.statuses, opts);
+									loadFinished();
+								},
+								loadFinished
+						);},
+						loadFinished
+					);
+					break;
 			}
-
 
 		} catch(e) {
 			console.error(e);
@@ -479,8 +492,18 @@ enyo.kind({
 		this.inherited(arguments);
 		if (this.hasNode()) {
 			this.$.header.setContent("");
-			this.$.header.applyStyle("max-width", this.$.accountName.getBounds().left - this.$.header.getBounds().left + "px");
-			this.$.header.setContent(_.capitalize(this.info.type));
+			
+			// this.$.header.applyStyle("max-width", this.$.accountName.getBounds().left - this.$.header.getBounds().left + "px");
+			// this.$.header.setContent(_.capitalize(this.info.type));
+			
+			var headerBounds = this.$.header.getBounds();
+			var accountNameBounds = this.$.accountName.getBounds();
+			this.$.header.applyStyle("max-width", accountNameBounds.left - headerBounds.left + "px");
+			if(this.info.type === "list") {
+				this.$.header.setContent(this.info.query);
+			} else {
+				this.$.header.setContent(_.capitalize(this.info.type));
+			}
 		}
 	},
 	refreshList: function(){
