@@ -74,9 +74,9 @@ enyo.kind({
 		}
 
 		var default_columns = [
-			{type: SPAZ_COLUMN_HOME, accounts: [inAccountId]},
-			{type: SPAZ_COLUMN_MENTIONS, accounts: [inAccountId]},
-			{type: SPAZ_COLUMN_MESSAGES, accounts: [inAccountId]}
+			{type: SPAZ_COLUMN_HOME, accounts: [inAccountId], id: _.uniqueId(new Date().getTime())},
+			{type: SPAZ_COLUMN_MENTIONS, accounts: [inAccountId], id: _.uniqueId(new Date().getTime())},
+			{type: SPAZ_COLUMN_MESSAGES, accounts: [inAccountId], id: _.uniqueId(new Date().getTime())}
 		];
 
 		return default_columns;
@@ -93,6 +93,9 @@ enyo.kind({
 		this.checkAccountChanges();
 
 		for (var i = 0; i < this.columnData.length; i++) {
+			if(!this.columnData[i].id){
+				this.columnData[i].id = _.uniqueId(new Date().getTime());
+			}
 			var col = {
 				name:'Column'+i,
 				info: this.columnData[i],
@@ -122,8 +125,7 @@ enyo.kind({
 				col
 			);
 		};
-		cols.push({kind: "Control", name: "ColumnSpacer" + this.columnData.length, width: "0px", ondragover: "spacerDragOver", ondrop: "spacerDrop", ondragout: "spacerDragOut"
-		});
+		cols.push({kind: "Control", name: "ColumnSpacer" + this.columnData.length, width: "0px", ondragover: "spacerDragOver", ondrop: "spacerDrop", ondragout: "spacerDragOut"});
 		this.$.columnsScroller.createComponents(cols, {owner: this});
 		this.$.columnsScroller.render();
 		//this.columnEntries = [];
@@ -133,8 +135,9 @@ enyo.kind({
 	createColumn: function(inObj){
 		//object required:		{type: string, accounts: array of ids}
 		//optional properties:  {service: string, query: string, list: string}
+		inObj.id = _.uniqueId(new Date().getTime());
 		this.columnData.push(inObj);
-
+		
 		this.saveColumnEntries();
 		this.createColumns();
 
