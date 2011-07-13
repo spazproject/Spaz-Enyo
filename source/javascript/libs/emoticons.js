@@ -8,9 +8,12 @@ var Emoticons = function(set_name) {
 //var CHARS_TO_ESCAPE = /[\\?|()]/g;
 Emoticons.prototype.CHARS_TO_ESCAPE = /[\\=!^$*+?.:|(){}[\]]/g;
 
+Emoticons.prototype.REGEX_OPEN = "(^|\\s)";
+Emoticons.prototype.REGEX_CLOSE = "(\\s|$)";
+
 Emoticons.prototype.set = function(set_name) {
 	this.set = EmoticonSets[set_name];
-	this.regexp = this.buildRegexp(this.set.mappings);
+	this.regexp = this.buildRegexp(this.set.mappings, this.set.regexOpen, this.set.regexClose);
 };
 
 /**
@@ -22,8 +25,12 @@ Emoticons.prototype.set = function(set_name) {
  * adds the escape where necessary. Chars to be replaced are defined by
  * CHARS_TO_ESCAPE.
  */
-Emoticons.prototype.buildRegexp = function(mappings) {
+Emoticons.prototype.buildRegexp = function(mappings, open, close) {
     var result = "";
+	
+	if (!open) open = this.REGEX_OPEN;
+	if (!close) close = this.REGEX_CLOSE;
+	
     for (smiley in mappings) {
         if (result > "") {
             result += "|";
@@ -31,7 +38,7 @@ Emoticons.prototype.buildRegexp = function(mappings) {
         result += smiley.replace(this.CHARS_TO_ESCAPE, "\\$&");
     }
 
-	result = "(^|\\s)("+result+")(\\s|$)";
+	result = open+"("+result+")"+close;
 
     return new RegExp(result, "g");
 };
