@@ -78,13 +78,8 @@ enyo.kind({
 	},
 	
 	createColumns: function() {
-		//this.columnsFunction("destroy", null, true); //destroy them all. don't want to always do this.
-		enyo.forEach(this.$.columnsScroller.getControls(), enyo.bind(this, function(control) {
-			//if(_.includes(control.name, "ColumnSpacer")){
-				control.destroy();
-			//}
-		}));
-
+		this.$.columnsScroller.destroyControls();
+		
 		if(this.columnData.length === 0){
 			this.columnData = this.getDefaultColumns();
 		}
