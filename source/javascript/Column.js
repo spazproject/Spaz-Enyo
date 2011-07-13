@@ -515,12 +515,8 @@ enyo.kind({
 		}
 	},
 	
-	getColAttr: function() {
-		return {type: this.info.type, accounts: this.info.accounts, query: this.info.query };
-	},
-	
 	getHash: function() {
-		return sch.MD5(JSON.stringify(this.getColAttr()));
+		return sch.MD5(this.info.type + "_" + this.info.id);
 	},
 	
 	getLastRead: function() {

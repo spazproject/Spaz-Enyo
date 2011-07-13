@@ -69,9 +69,9 @@ enyo.kind({
 		}
 
 		var default_columns = [
-			{type: SPAZ_COLUMN_HOME, accounts: [inAccountId]},
-			{type: SPAZ_COLUMN_MENTIONS, accounts: [inAccountId]},
-			{type: SPAZ_COLUMN_MESSAGES, accounts: [inAccountId]}
+			{type: SPAZ_COLUMN_HOME, accounts: [inAccountId], id: _.uniqueId(new Date().getTime())},
+			{type: SPAZ_COLUMN_MENTIONS, accounts: [inAccountId], id: _.uniqueId(new Date().getTime())},
+			{type: SPAZ_COLUMN_MESSAGES, accounts: [inAccountId], id: _.uniqueId(new Date().getTime())}
 		];
 
 		return default_columns;
@@ -86,6 +86,9 @@ enyo.kind({
 		var cols = [];
 
 		for (var i = 0; i < this.columnData.length; i++) {
+			if(!this.columnData[i].id){
+				this.columnData[i].id = _.uniqueId(new Date().getTime());
+			}
 			var col = {
 				name:'Column'+i,
 				info: this.columnData[i],
@@ -124,10 +127,8 @@ enyo.kind({
 		this.saveColumnData()	
 	},
 	createColumn: function(inAccountId, inColumn, inQuery){
-		
-		var colattr = {type: inColumn, accounts: [inAccountId], query: inQuery };
-		
-		this.columnData.push({type: inColumn, accounts: [inAccountId], query: inQuery});
+				
+		this.columnData.push({type: inColumn, accounts: [inAccountId], query: inQuery, id: _.uniqueId(new Date().getTime())});
 
 		this.saveColumnEntries();
 		this.createColumns();
