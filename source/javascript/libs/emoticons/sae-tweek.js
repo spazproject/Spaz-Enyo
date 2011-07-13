@@ -6,6 +6,8 @@ EmoticonSets.SAE = {
 	home      : "http://sae.tweek.us/",
 	className : "sae-tweek",
 	imgPath   : "source/emoticons/sae-tweek/",
+	regexOpen : "(:?)",
+	regexClose : "([\s]?)",
 	mappings : {
 		":11tea:" : "emot-11tea.gif",
 		":3:" : "emot-3.gif",
