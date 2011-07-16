@@ -163,7 +163,7 @@ enyo.kind({
 		this.setAllDisabled(true);
 		
 		if (this.isDM) {
-			this.twit.sendDirectMessage('@'+this.dmUser, this.$.postTextBox.getText(),
+			this.twit.sendDirectMessage('@'+this.dmUser, this.$.postTextBox.getValue(),
 				enyo.bind(this, function() {
 					this.$.postTextBox.setValue('');
 					this.$.sendButton.setActive(false);
@@ -200,7 +200,7 @@ enyo.kind({
 				})
 			);
 		} else {
-			this.twit.update(this.$.postTextBox.getText(), null, this.inReplyToId,
+			this.twit.update(this.$.postTextBox.getValue(), null, this.inReplyToId,
 				enyo.bind(this, function() {
 					this.$.postTextBox.setValue('');
 					this.$.sendButton.setActive(false);
@@ -239,13 +239,13 @@ enyo.kind({
 	},
 	
 	onShortenTextClick: function(inSender) {
-		this.$.postTextBox.setValue(new SpazShortText().shorten(this.$.postTextBox.getText()));
+		this.$.postTextBox.setValue(new SpazShortText().shorten(this.$.postTextBox.getValue()));
 		this.$.postTextBox.forceFocus();
 		this.postTextBoxInput();
 	},
 	
 	onShortenURLsClick: function(inSender) {
-		var urls = sc.helpers.extractURLs(this.$.postTextBox.getText());
+		var urls = sc.helpers.extractURLs(this.$.postTextBox.getValue());
 		if (urls.length > 0) {
 			this.$.shortenButton.setActive(true);
 			this.$.shortenButton.setDisabled(true);
@@ -276,7 +276,7 @@ enyo.kind({
 			new SpazShortURL(shortener).shorten(urls, {
 				apiopts: apiopts,
 				onSuccess: enyo.bind(this, function(inData) {
-					this.$.postTextBox.setValue(this.$.postTextBox.getText().replace(inData.longurl, inData.shorturl));
+					this.$.postTextBox.setValue(this.$.postTextBox.getValue().replace(inData.longurl, inData.shorturl));
 					this.$.postTextBox.forceFocus();
 					this.postTextBoxInput();
 					this.$.shortenButton.setActive(false);
@@ -292,10 +292,9 @@ enyo.kind({
 	
 	postTextBoxInput: function(inSender, inEvent, inValue) {
 		if (!inValue) {
-			inValue = this.$.postTextBox.getText();
+			inValue = this.$.postTextBox.getValue();
 		}
-		inValue = inValue.replace(/&nbsp;/g, ' ');
-		var remaining = 140 - inValue.length;
+		var remaining = 140 - this.$.postTextBox.getCharCount();
 		this.$.remaining.setContent(remaining);
 		if(remaining > 0){
 			this.$.remaining.applyStyle("color", "grey");
@@ -479,7 +478,7 @@ enyo.kind({
 		this.cursorToEnd();
 
 		// try to select the text in order to position the cursor at the end
-		var textlen = this.$.postTextBox.getText().length;
+		var textlen = this.$.postTextBox.getCharCount();
 		var selection = {start:textlen-1, end:textlen};
 		this.$.postTextBox.setSelection(selection);
 
@@ -635,7 +634,7 @@ enyo.kind({
 	
 	upload:function(inFileUrl) {
 		
-		var image_upl_status = this.$.postTextBox.getText();
+		var image_upl_status = this.$.postTextBox.getValue();
 		
 		if (this.isDM) {
 		    image_upl_status = 'from '+enyo.fetchAppInfo().title;
@@ -685,7 +684,7 @@ enyo.kind({
 	
 	onUploadSuccess: function(inResponse) { // onSuccess
 		if (inResponse.url) {
-			var msg = this.$.postTextBox.getText();
+			var msg = this.$.postTextBox.getValue();
 			if (msg.length > 0) {
 				this.$.postTextBox.setValue([msg, inResponse.url].join(' '));
 			} else {
