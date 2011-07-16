@@ -8,7 +8,6 @@ enyo.kind({
 		onShowAccountsPopup: ""
 	},
 	columnData: [],
-	columnEntries: [],
 	components: [
 		{kind: "Spaz.Notifier", name:"notifier"},
 		
@@ -122,9 +121,8 @@ enyo.kind({
 		});
 		this.$.columnsScroller.createComponents(cols, {owner: this});
 		this.$.columnsScroller.render();
-		//this.columnEntries = [];
 		
-		this.saveColumnData()	
+		this.saveColumnData();
 	},
 	createColumn: function(inAccountId, inColumn, inQuery){
 				
@@ -137,10 +135,21 @@ enyo.kind({
 
 	},
 	saveColumnData: function(){
+		
+		var save_cols = [];
+		var this_col  = {};
+		
+		// copy just the data we want (id, type, accounts, query)
 		_.each(this.columnData, function(columnData){
-			columnData.entries = null;
+			this_col = {};
+			this_col.id = columnData.id;
+			this_col.type = columnData.type;
+			this_col.accounts = columnData.accounts.slice(0,columnData.accounts.length);
+			this_col.query = columnData.query;
+			save_cols.push(this_col);
 		});
-		App.Prefs.set('columns', this.columnData);
+		
+		App.Prefs.set('columns', save_cols);
 
 		this.saveColumnEntries();
 
