@@ -25,7 +25,7 @@ enyo.kind({
 		]},
 		{kind: "HFlexBox", name: "inReplyEntryText", content: "", allowHtml: true, style: "overflow: hidden; color:#666666; font-size:14px; padding-bottom:1em;" },
 		{name: "postTextBoxContainer", kind: "Control", style: "min-height: 50px", components: [
-			{name:"postTextBox", kind: "RichText", alwaysLooksFocused: true, richContent: false, multiline: true, flex: 1, oninput: "postTextBoxInput", hint: "Type message here...", onkeydown: "postTextBoxKeydown", onfocus: "postTextBoxFocus", components: [
+			{name:"postTextBox", kind: "Spaz.RichText", alwaysLooksFocused: true, flex: 1, oninput: "postTextBoxInput", hint: "Type message here...", onkeyup: "postTextBoxKeydown", onfocus: "postTextBoxFocus", components: [
 				{name: "remaining", style: "color: grey; padding-left: 5px;", content: "140"}
 			]}
 		]},
@@ -163,7 +163,7 @@ enyo.kind({
 		this.setAllDisabled(true);
 		
 		if (this.isDM) {
-			this.twit.sendDirectMessage('@'+this.dmUser, this.$.postTextBox.getValue(),
+			this.twit.sendDirectMessage('@'+this.dmUser, this.$.postTextBox.getText(),
 				enyo.bind(this, function() {
 					this.$.postTextBox.setValue('');
 					this.$.sendButton.setActive(false);
@@ -200,7 +200,7 @@ enyo.kind({
 				})
 			);
 		} else {
-			this.twit.update(this.$.postTextBox.getValue(), null, this.inReplyToId,
+			this.twit.update(this.$.postTextBox.getText(), null, this.inReplyToId,
 				enyo.bind(this, function() {
 					this.$.postTextBox.setValue('');
 					this.$.sendButton.setActive(false);
@@ -239,13 +239,13 @@ enyo.kind({
 	},
 	
 	onShortenTextClick: function(inSender) {
-		this.$.postTextBox.setValue(new SpazShortText().shorten(this.$.postTextBox.getValue()));
+		this.$.postTextBox.setValue(new SpazShortText().shorten(this.$.postTextBox.getText()));
 		this.$.postTextBox.forceFocus();
 		this.postTextBoxInput();
 	},
 	
 	onShortenURLsClick: function(inSender) {
-		var urls = sc.helpers.extractURLs(this.$.postTextBox.getValue());
+		var urls = sc.helpers.extractURLs(this.$.postTextBox.getText());
 		if (urls.length > 0) {
 			this.$.shortenButton.setActive(true);
 			this.$.shortenButton.setDisabled(true);
@@ -276,7 +276,7 @@ enyo.kind({
 			new SpazShortURL(shortener).shorten(urls, {
 				apiopts: apiopts,
 				onSuccess: enyo.bind(this, function(inData) {
-					this.$.postTextBox.setValue(this.$.postTextBox.getValue().replace(inData.longurl, inData.shorturl));
+					this.$.postTextBox.setValue(this.$.postTextBox.getText().replace(inData.longurl, inData.shorturl));
 					this.$.postTextBox.forceFocus();
 					this.postTextBoxInput();
 					this.$.shortenButton.setActive(false);
@@ -292,8 +292,9 @@ enyo.kind({
 	
 	postTextBoxInput: function(inSender, inEvent, inValue) {
 		if (!inValue) {
-			inValue = this.$.postTextBox.getValue();
+			inValue = this.$.postTextBox.getText();
 		}
+		inValue = inValue.replace(/&nbsp;/g, ' ');
 		var remaining = 140 - inValue.length;
 		this.$.remaining.setContent(remaining);
 		if(remaining > 0){
@@ -478,7 +479,7 @@ enyo.kind({
 		this.cursorToEnd();
 
 		// try to select the text in order to position the cursor at the end
-		var textlen = this.$.postTextBox.getValue().length;
+		var textlen = this.$.postTextBox.getText().length;
 		var selection = {start:textlen-1, end:textlen};
 		this.$.postTextBox.setSelection(selection);
 
@@ -634,7 +635,7 @@ enyo.kind({
 	
 	upload:function(inFileUrl) {
 		
-		var image_upl_status = this.$.postTextBox.getValue();
+		var image_upl_status = this.$.postTextBox.getText();
 		
 		if (this.isDM) {
 		    image_upl_status = 'from '+enyo.fetchAppInfo().title;
@@ -684,7 +685,7 @@ enyo.kind({
 	
 	onUploadSuccess: function(inResponse) { // onSuccess
 		if (inResponse.url) {
-			var msg = this.$.postTextBox.getValue();
+			var msg = this.$.postTextBox.getText();
 			if (msg.length > 0) {
 				this.$.postTextBox.setValue([msg, inResponse.url].join(' '));
 			} else {

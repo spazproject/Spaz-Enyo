@@ -40,6 +40,7 @@ enyo.depends(
 	"source/javascript/Spaz.js",
 	"source/javascript/SpazPopup.js",
 	"source/javascript/SpazNotifier.js",
+	"source/javascript/SpazRichText.js",
 	
 	//views
 	"source/javascript/Sidebar.js",
