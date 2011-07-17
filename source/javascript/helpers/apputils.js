@@ -52,11 +52,11 @@ AppUtils.showTestBuildWarning = function() {
 	}
 
 	AppUtils.showBanner(
-		$L('This is a BETA version of Spaz. It has bugs. It may not operate properly. It may insult you or your family. BE AWARE.'),
+		$L('This is a TEST BUILD of Spaz. It has bugs. It may not operate properly. It may insult you or your family. BE AWARE.'),
 		4000
 	);
 
-}
+};
 
 
 

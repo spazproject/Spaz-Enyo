@@ -1,4 +1,4 @@
-/*********** Built 2011-07-10 23:43:13 EDT ***********/
+/*********** Built 2011-07-16 18:56:10 EDT ***********/
 /*jslint 
 browser: true,
 nomen: false,
@@ -16649,31 +16649,31 @@ if (sc) {
 	var scTwit = SpazTwit;
 }
 
-/*jslint 
+/*jslint
 browser: true,
 nomen: false,
 debug: true,
 forin: true,
 undef: true,
 white: false,
-onevar: false 
+onevar: false
  */
 var sc;
 
 /**
  * standard
- * platform-specific definitions for prefs lib 
+ * platform-specific definitions for prefs lib
  */
 
 
 if (!window.localStorage) { // if localStorage is not available, we fall back to cookies. Ick
 	/**
-	 * this requires the cookies library <http://code.google.com/p/cookies/> 
+	 * this requires the cookies library <http://code.google.com/p/cookies/>
 	 */
 	SpazPrefs.prototype.load = function(callback) {
 		var cookie_key = this.id || SPAZCORE_PREFS_STANDARD_COOKIENAME;
 		var prefsval = jaaulde.utils.cookies.get(cookie_key);
-		
+
 		if (prefsval) {
 			sch.debug('prefsval exists');
 			for (var key in prefsval) {
@@ -16689,7 +16689,7 @@ if (!window.localStorage) { // if localStorage is not available, we fall back to
 	};
 
 	/**
-	 * this requires the cookies library <http://code.google.com/p/cookies/> 
+	 * this requires the cookies library <http://code.google.com/p/cookies/>
 	 */
 	SpazPrefs.prototype.save = function(callback) {
 		var cookie_key = this.id || SPAZCORE_PREFS_STANDARD_COOKIENAME;
@@ -16697,15 +16697,15 @@ if (!window.localStorage) { // if localStorage is not available, we fall back to
 		sch.debug('stored prefs in cookie');
 		if( typeof callback == 'function' )
 			callback(this);
-		
+
 	};
-	
-} else {
+
+} else { // use LocalStorage
 
 	SpazPrefs.prototype.load = function(callback) {
 		var cookie_key = this.id || SPAZCORE_PREFS_STANDARD_COOKIENAME;
 		var prefsjson = window.localStorage.getItem(cookie_key);
-		
+
 		if (prefsjson) {
 			var prefsval = sch.deJSON(prefsjson);
 			sch.debug('prefsval exists');
@@ -16719,27 +16719,22 @@ if (!window.localStorage) { // if localStorage is not available, we fall back to
 		}
 		if( typeof callback == 'function' )
 			callback(this);
-		
+
 	};
 
-	/**
-	 * this requires the cookies library <http://code.google.com/p/cookies/> 
-	 */
 	SpazPrefs.prototype.save = function(callback) {
 		var cookie_key = this.id || SPAZCORE_PREFS_STANDARD_COOKIENAME;
 		try {
 			window.localStorage.setItem(cookie_key, sch.enJSON(this._prefs));
 			sch.debug('stored prefs in localStorage');
 		} catch (e) {
-			if (e == QUOTA_EXCEEDED_ERR) {
+			if (e.name == 'QUOTA_EXCEEDED_ERR') {
 				sch.error('LocalStorage quota exceeded!');
 			}
 		}
 		if( typeof callback == 'function' )
 			callback(this);
-		
-
 	};
-	
+
 
 }
