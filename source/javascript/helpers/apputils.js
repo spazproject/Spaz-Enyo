@@ -430,7 +430,7 @@ AppUtils.convertToEntry = function(item) {
 
 			entry.service       = item.SC_service;
 			entry.service_id    = item.id;
-			entry.spaz_id       = sch.UUID();
+			entry.spaz_id       = item.SC_service+item.id+item.SC_created_at_unixtime;
 			entry.text          = item.text;
 			entry.text_raw      = item.SC_text_raw;
 			entry.publish_date  = item.SC_created_at_unixtime;
