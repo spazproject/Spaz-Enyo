@@ -324,6 +324,8 @@ enyo.kind({
 		// App.versionCookie = new VersionCookie(this.App.Prefs);
 		// App.versionCookie.init();
 
+		this.initAppCache();
+
 	},
 
 	/**
@@ -723,5 +725,10 @@ enyo.kind({
 			platform: sch.getPlatform(),
 			appVersion: enyo.fetchAppInfo().version
 		});
+	},
+	initAppCache: function() {
+		App.Cache = {
+			'EntriesHTML' : new Cache(750)
+		}
 	}
 });
