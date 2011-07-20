@@ -1,7 +1,7 @@
 enyo.kind({
 	name: "Spaz.Entry",
 	kind: "HFlexBox",
-	flex: 1, 
+	flex: 1,
 	events: {
 		onEntryClick: "",
 		onEntryHold: ""
@@ -19,9 +19,9 @@ enyo.kind({
 			{name: "text", allowHtml: true, flex: 1, className: "entrytext text"}
 		]}
 	],
-	
+
 	entryChanged: function(){
-		
+
 		this.$.authorAvatar.setSrc(this.entry.author_avatar);
 
 		var toMacroize = "<span height='13px' class='text username author'>{$author_username}</span>";
@@ -29,7 +29,7 @@ enyo.kind({
 		this.$.reposterAvatar.setShowing(this.entry.is_repost);
 		if (this.entry.recipient_username && this.entry.is_private_message) {
 			toMacroize += "<span style='padding: 0px 3px; position: relative; bottom: 1px'>&rarr;</span>";
-			toMacroize += "<span class = 'text username recipient author'>{$recipient_username}</span>";			
+			toMacroize += "<span class = 'text username recipient author'>{$recipient_username}</span>";
 		} else if(this.entry.is_repost === true){
 			toMacroize += "<img height = '13px' class='entryHeaderIcon' src = 'source/images/reposted.png'></img>";
 			toMacroize += "<span class='text username author'>{$reposter_username}</span>";
@@ -42,38 +42,42 @@ enyo.kind({
 		if(this.entry.is_favorite){
 			toMacroize += "<img height = '13px' class='entryHeaderIcon' style='position: relative; top: 1px;' src = 'source/images/favorited.png'></img>";
 		}
-		
+
 
 		toMacroize += "<br/>";
-		
-		toMacroize += AppUtils.applyEntryTextFilters(this.entry.text);
+
+		var entryBody = App.Cache.EntriesHTML.getItem(this.entry.spaz_id);
+		if (!entryBody) {
+			entryBody = AppUtils.applyEntryTextFilters(this.entry.text);
+			App.Cache.EntriesHTML.setItem(this.entry.spaz_id, entryBody);
+		}
+		toMacroize += entryBody;
 		toMacroize += "<br/>";
 
-		if (this.entry.read === false && this.ignoreUnread === false ) {	
+		if (this.entry.read === false && this.ignoreUnread === false ) {
 			toMacroize += "<img align='left' src='source/images/unread.png' height= '13px' class='entryHeaderIcon'></img> ";
 		}
-		
+
 		toMacroize += "<span class='small' height = '13px'>";
 		toMacroize += sch.getRelativeTime(this.entry.publish_date);
 		if (this.entry._orig.source) {
 			toMacroize += " from <span class = 'link'>{$_orig.source}</span>";
 		}
 		toMacroize += "</span>";
-		
+
 		if(this.entry.is_private_message === true){
-			this.applyStyle("background-color", "rgba(255, 0, 0, .1)");			
+			this.applyStyle("background-color", "rgba(255, 0, 0, .1)");
 		} else if(this.entry.is_mention === true){
 			this.applyStyle("background-color", "rgba(0, 95, 200, .1)");
 		} else if(this.entry.is_author === true){
 			this.applyStyle("background-color", "rgba(0, 255, 0, .1)");
 		} else {
-			this.applyStyle("background-color", null);		
+			this.applyStyle("background-color", null);
 		}
 
 		this.$.text.applyStyle("font-size", App.Prefs.get("entry-text-size"));
 
 		this.$.text.setContent(enyo.macroize(toMacroize, this.entry));
-
 	},
 	entryClick: function(inSender, inEvent, inRowIndex) {
 		var className = inEvent.target.className;
