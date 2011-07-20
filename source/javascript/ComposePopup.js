@@ -25,7 +25,7 @@ enyo.kind({
 		]},
 		{kind: "HFlexBox", name: "inReplyEntryText", content: "", allowHtml: true, style: "overflow: hidden; color:#666666; font-size:14px; padding-bottom:1em;" },
 		{name: "postTextBoxContainer", kind: "Control", style: "min-height: 50px", components: [
-			{name:"postTextBox", kind: "RichText", alwaysLooksFocused: true, richContent: false, multiline: true, flex: 1, oninput: "postTextBoxInput", hint: "Type message here...", onkeydown: "postTextBoxKeydown", onfocus: "postTextBoxFocus", components: [
+			{name:"postTextBox", kind: "Spaz.RichText", alwaysLooksFocused: true, flex: 1, oninput: "postTextBoxInput", hint: "Type message here...", onkeyup: "postTextBoxKeydown", onfocus: "postTextBoxFocus", components: [
 				{name: "remaining", style: "color: grey; padding-left: 5px;", content: "140"}
 			]}
 		]},
@@ -294,7 +294,7 @@ enyo.kind({
 		if (!inValue) {
 			inValue = this.$.postTextBox.getValue();
 		}
-		var remaining = 140 - inValue.length;
+		var remaining = 140 - this.$.postTextBox.getCharCount();
 		this.$.remaining.setContent(remaining);
 		if(remaining > 0){
 			this.$.remaining.applyStyle("color", "grey");
@@ -478,7 +478,7 @@ enyo.kind({
 		this.cursorToEnd();
 
 		// try to select the text in order to position the cursor at the end
-		var textlen = this.$.postTextBox.getValue().length;
+		var textlen = this.$.postTextBox.getCharCount();
 		var selection = {start:textlen-1, end:textlen};
 		this.$.postTextBox.setSelection(selection);
 

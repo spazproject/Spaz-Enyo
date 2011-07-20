@@ -8,26 +8,26 @@ enyo.kind({
 	    {name: "slider", kind: ekl.Layout.SlidingPane, flex: 1, dismissDistance: 100, onDismiss: "hideDetailPane", style:"background:#000", components: [
 	        {name: "main", layoutKind: enyo.HFlexLayout, flex: 1, components: [
 	            {
-        			name: "sidebar", 
-        			kind: "Spaz.Sidebar", 
-        			onRefreshAll: "refreshAll", 
+        			name: "sidebar",
+        			kind: "Spaz.Sidebar",
+        			onRefreshAll: "refreshAll",
         			onCreateColumn: "createColumn",
         			onAccountAdded: "accountAdded",
         			onAccountRemoved: "accountRemoved"
         		},
         		{
-        			name: "container", 
-        			kind: "Spaz.Container", 
+        			name: "container",
+        			kind: "Spaz.Container",
         			onRefreshAllFinished: "refreshAllFinished",
         			onShowAccountsPopup: "showAccountsPopup"
         		}
 	        ]},
-	        
+
 	        {name: "detail", layoutKind: enyo.VFlexLayout, nodragleft: true, fixedWidth: true, width: "322px", dismissible: true, showing: false, components: [
                 {name: "detailContent", kind: enyo.Pane, transitionKind: "enyo.transitions.Fade", flex: 1}
             ]}
 	    ]},
-	
+
 		{
 			name: "imageViewPopup",
 			kind: "Spaz.ImageViewPopup",
@@ -45,13 +45,13 @@ enyo.kind({
 		]},
 		{name : "versionService", kind : "enyo.WebService", url: "http://getspaz.com/feeds/spazhd"}
 	],
-	
+
 	isRendered: false,
 	onRendered: [], // functions we will execute once everything is rendered
 	dashWin: null,
-	
+
 	twit: new SpazTwit(),
-	
+
 	windowParamsChangeHandler: function(inParams) {
 		AppUtils.showBanner('windowParamsChangeHandler: '+JSON.stringify(enyo.windowParams));
 		AppUtils.showBanner('windowParamsChangeHandler inParams: '+JSON.stringify(inParams));
@@ -59,7 +59,7 @@ enyo.kind({
     	// capture any parameters associated with this app instance
     	var params = enyo.windowParams;
 	},
-	
+
 	// called when app is opened or reopened
     relaunchHandler: function() {
     	this.processLaunchParams(enyo.windowParams);
@@ -70,11 +70,11 @@ enyo.kind({
 		this.windowActive = true;
 		this.$.dashboard.setLayers([]); // empty the notifications
 	},
-	
+
 	windowDeactivated: function() {
 		this.windowActive = false;
 	},
-	
+
 	// the window is closed
 	unloaded: function() {
 		this.$.dashboard.setLayers([]);
@@ -92,16 +92,16 @@ enyo.kind({
 			inParams.action = 'user';
 			inParams.userid = inParams.user;
 		}
-		
+
 		if (!inParams.account) {
 			var acc_id = this.getLaunchParamsAccount(inParams);
 			if (acc_id) {
 				inParams.account = acc_id;
 			}
 		}
-		
+
 		enyo.log(JSON.stringify(inParams));
-		
+
 		switch(inParams.action) {
 
 			/**
@@ -113,11 +113,11 @@ enyo.kind({
 			 */
 			case 'prepPost':
 			case 'post':
-				
+
 				var postfunc = _.bind(function() {
 					AppUI.compose(inParams.msg, inParams.account);
 				}, this);
-				
+
 				if (this.isRendered === false) {
 					this.onRendered.push(postfunc);
 				} else {
@@ -143,11 +143,11 @@ enyo.kind({
 			 *   query:"spaz source:spaz"
 			 * }
 			 */
-			case 'search':				
+			case 'search':
 				var searchfunc = _.bind(function() {
 					AppUI.search(decodeURI(inParams.query), inParams.account);
 				}, this);
-				
+
 				if (this.isRendered === false) {
 					this.onRendered.push(searchfunc);
 				} else {
@@ -165,7 +165,7 @@ enyo.kind({
 			// 	// stageController.pushScene('message-detail', inParams.statusid);
 			// 	break;
 
-			// 
+			//
 			// case "tweetNowPlaying":
 			// 	// if(inParams.returnValue === true){
 			// 	// 	var tweet = "#NowPlaying " + inParams.nowPlaying.title
@@ -175,7 +175,7 @@ enyo.kind({
 			// 	// 	if (tweet.length > 112){
 			// 	// 		tweet = tweet.truncate(112, ' [...]');//truncate is a prototype function
 			// 	// 	}
-			// 	// 	
+			// 	//
 			// 	// 	var suffix = " on @Koto_Player, via @Spaz";
 			// 	// 	stageController.sendEventToCommanders({'type':Mojo.Event.command, 'command':'addTextToPost', text: tweet + suffix});
 			// 	// } else {
@@ -185,11 +185,11 @@ enyo.kind({
 			// 	// }
 			// 	break;
 			case 'bgcheck':
-				
+
 				var refreshfunc = _.bind(function() {
 					AppUI.refresh();
 				}, this);
-				
+
 				if (this.isRendered === false) {
 					this.onRendered.push(refreshfunc);
 				} else {
@@ -201,7 +201,7 @@ enyo.kind({
 				break;
 		}
 	},
-	
+
 	getLaunchParamsAccount: function(inParams) {
 		// what user do we use to process action?
 		if (!inParams.account) {
@@ -215,20 +215,20 @@ enyo.kind({
 			} else {
 				rs = App.Users.getAll()[0];
 			}
-			
+
 			if (rs) {
 				return rs.id;
 			} else {
 				return null;
 			}
-			
+
 		} else {
 			return inParams.account;
 		}
-		
+
 	},
-	
-	
+
+
 	initAppObject: function(prefsLoadedCallback) {
 		/**
 		 * initialize the App object
@@ -236,7 +236,7 @@ enyo.kind({
 		window.App = {};
 
 		var self = this;
-		
+
 		/*
 			Remap JSON parser because JSON2.js one was causing probs with unicode
 		*/
@@ -273,7 +273,7 @@ enyo.kind({
 		}
 
 		App.Prefs = null;
-		
+
 		/*
 			load our prefs
 			default_preferences is from default_preferences.js, loaded in index.html
@@ -292,7 +292,7 @@ enyo.kind({
 						value = 0;
 					}
 					sch.debug(key + ':' + value);
-					return value;					
+					return value;
 				}
 			}
 		});
@@ -300,8 +300,8 @@ enyo.kind({
 			App.Users = new SpazAccounts(App.Prefs);
 			prefsLoadedCallback();
 		});
-		
-		
+
+
 		// /*
 		// 	model for saving Tweets to Depot. We replace on every start to make sure we don't go over-budget
 		// */
@@ -309,40 +309,42 @@ enyo.kind({
 		// 	'replace':false,
 		// 	'prefs_obj':this.App.Prefs
 		// });
-		
+
 		// App.master_timeline_model = {
 		//     items : []
 		// };
-		
+
 		// if (!App.cache) {
 		// 	App.cache = new TempCache({
 		// 		'appObj':this.App
 		// 	});
 		// }
-		
-		
+
+
 		// App.versionCookie = new VersionCookie(this.App.Prefs);
 		// App.versionCookie.init();
 
+		this.initAppCache();
+
 	},
-	
+
 	/**
 	 * this binds DOM event listeners
-	 * used throughout the app 
+	 * used throughout the app
 	 */
 	bindGlobalListeners: function() {
-		
-		
+
+
 		$('a[href]').live('click', function(e) {
 			sc.helpers.openInBrowser(this.getAttribute('href'));
 			event.preventDefault();
 			return false;
 		});
-		
+
 		// $('span.username.clickable').live('click', function(e) {
-		// 	
+		//
 		// });
-		
+
 	},
 
 	create: function(){
@@ -386,8 +388,8 @@ enyo.kind({
 		AppUI.addFunction("deleteEntry", function(inEntry) {
 			this.deleteEntry(this, inEntry);
 		}, this);
-		
-		
+
+
 		// Refresher methods
 		AppUI.addFunction("startAutoRefresher", function() {
 			if (App.Prefs.get('network-refreshinterval') > 0) {
@@ -407,25 +409,27 @@ enyo.kind({
 			AppUI.stopAutoRefresher();
 			AppUI.startAutoRefresher();
 		}, this);
-		
+
 		// start the auto-refresher
 		AppUI.startAutoRefresher();
-		
+
 		this.processLaunchParams(enyo.windowParams);
-		
+
 		this.$.dashboard.appId = enyo.fetchAppInfo().id;
-		
+
 		enyo.asyncMethod(this, this.sendVersionInfo);
+
+		AppUtils.showTestBuildWarning();
 	},
-	
+
 	showDetailPane: function() {
-        
+
         if (!this.$.detail.showing) {
     	    this.$.slider.selectViewByName("main");
     	    this.$.detail.setShowing(true);
         }
 	},
-	
+
 	hideDetailPane: function() {
 		console.log("hiding detail pane");
 		this.$.slider.selectViewByName("main");
@@ -447,24 +451,24 @@ enyo.kind({
 	},
 
 
-	showEntryView: function(inSender, inEntry){		
+	showEntryView: function(inSender, inEntry){
 		var entryName = 'entry-' + inEntry.spaz_id;
-		
+
 		if (!this.$.detailContent.validateView(entryName)) {
 			this.$.detailContent.createComponent({
-				name: entryName, 
-				kind: "Spaz.EntryView", 
+				name: entryName,
+				kind: "Spaz.EntryView",
 				onDestroy: "hideDetailPane" ,
 				onGoPreviousViewEvent: "goPreviousViewEvent",
 				onGetViewEvents: "getViewEvents",
 				onShowImageView: "showImageView"
 			}, {owner: this});
 			this.$[entryName].render();
-			
+
 			//this.$.container.refreshList();
 		}
 
-		var topEvent, 
+		var topEvent,
 			newEvent = {type: (inEntry.is_private_message === true) ? "message" : "entry", entry: inEntry},
 			dontPush = false;
 
@@ -474,12 +478,12 @@ enyo.kind({
 			}
 		}
 		if(!dontPush){
-			this.viewEvents.push(newEvent);		
+			this.viewEvents.push(newEvent);
 		}
 		this.$[entryName].setEntry(inEntry);
-		
+
     	this.$.detailContent.selectViewByName(entryName);
-    	
+
     	this.showDetailPane();
 	    //this.$.detail.setShowing(true);
 
@@ -493,26 +497,26 @@ enyo.kind({
 				}
 			}
 		}
-		
+
 	},
 
-	showUserView: function(inSender, inUsername, inService, inAccountId, inColumnIndex) {		
+	showUserView: function(inSender, inUsername, inService, inAccountId, inColumnIndex) {
 		var userId = 'user-' + inUsername + '-' + inService + '-' + inAccountId;
-		
+
 		if (!this.$.detailContent.validateView(userId)) {
 			this.$.detailContent.createComponent({
-				name: userId, 
-				kind: "Spaz.UserView", 
+				name: userId,
+				kind: "Spaz.UserView",
 				onDestroy: "hideDetailPane",
 				onGoPreviousViewEvent: "goPreviousViewEvent",
 				onGetViewEvents: "getViewEvents"
 
 			}, {owner: this});
 			this.$[userId].render();
-			
+
 			//this.$.container.refreshList();
 		}
-		var topEvent, 
+		var topEvent,
 			newEvent = {type: "user", user: {username: inUsername, type: inService, account_id: inAccountId}},
 			dontPush = false;
 
@@ -522,12 +526,12 @@ enyo.kind({
 			}
 		}
 		if(!dontPush){
-			this.viewEvents.push(newEvent);	
+			this.viewEvents.push(newEvent);
 		}
     	this.$[userId].showUser(inUsername, inService, inAccountId);
-		
+
     	this.$.detailContent.selectViewByName(userId);
-    	
+
     	this.showDetailPane();
 
     	if(inColumnIndex){
@@ -542,7 +546,7 @@ enyo.kind({
 				}
 			}
 		}
-			
+
 	},
 	viewEvents: [],
 	goPreviousViewEvent: function(inSender){
@@ -559,20 +563,20 @@ enyo.kind({
 		}
 	},
 	getViewEvents: function(){
-		return this.viewEvents;	
+		return this.viewEvents;
 	},
 	createColumn: function(inSender, inObj){
 		this.$.container.createColumn(inObj);	
 	},
-	
+
 	refreshAll: function() {
 		this.$.container.refreshAll();
 	},
-	
+
 	refreshAllFinished: function() {
 		this.$.sidebar.refreshAllFinished();
 	},
-	
+
 	// To keep the reply/dm logic in one place, components only pass up
 	// onReply events, and we'll figure out here whether that should be
 	// handled as a reply or as a dm.
@@ -604,7 +608,7 @@ enyo.kind({
 			this.$.sidebar.repost({
 				'entry':inEntry,
 				'account_id':inEntry.account_id
-			});			
+			});
 		}
 	},
 	repostManual: function(inSender, inEntry) {
@@ -614,11 +618,11 @@ enyo.kind({
 			this.$.sidebar.repostManual({
 				'entry':inEntry,
 				'account_id':inEntry.account_id
-			});			
+			});
 		}
 	},
 	mention: function(inSender, inEntry) {
-		
+
 	},
 	directMessage: function(inSender, inUsername, inAccountId) {
 		this.$.sidebar.directMessage({
@@ -632,12 +636,12 @@ enyo.kind({
 		var account = App.Users.get(inEntry.account_id);
 		var auth = new SpazAuth(account.type);
 		auth.load(account.auth);
-			
+
 		var twit = new SpazTwit();
 		twit.setBaseURLByService(account.type);
 		twit.setSource(App.Prefs.get('twitter-source'));
 		twit.setCredentials(auth);
-		
+
 		if(inEntry.is_private_message) {
 			twit.destroyDirectMessage(inEntry.service_id,
 				enyo.bind(this, function(data) {
@@ -677,7 +681,7 @@ enyo.kind({
 	showAccountsPopup: function(inSender) {
 		this.$.sidebar.showAccountsPopup();
 	},
-	
+
 	dashboardTap: function(inSender, layer) {
 		AppUtils.relaunch('dashboard', this.$.dashboard.appInfo);
 	},
@@ -721,5 +725,10 @@ enyo.kind({
 			platform: sch.getPlatform(),
 			appVersion: enyo.fetchAppInfo().version
 		});
+	},
+	initAppCache: function() {
+		App.Cache = {
+			'EntriesHTML' : new Cache(750)
+		}
 	}
 });
