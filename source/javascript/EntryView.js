@@ -116,10 +116,11 @@ enyo.kind({
 			this.$.url.setContent(sch.autolink(url), url.length);
 			this.$.bio.setContent(AppUtils.makeItemsClickable(this.entry.author_description) || '');
 
+			var entryURL = null;
 			if (this.entry.service === SPAZCORE_SERVICE_TWITTER){
-				var entryURL = "http://twitter.com/" + this.entry.author_username + "/status/" + this.entry.service_id;
+				entryURL = "http://twitter.com/" + this.entry.author_username + "/status/" + this.entry.service_id;
 			} else if(this.entry.service === SPAZCORE_SERVICE_IDENTICA){
-				var entryURL = "http://identi.ca/notice/" + this.entry.service_id;
+				entryURL = "http://identi.ca/notice/" + this.entry.service_id;
 			}
 			if(entryURL){
 				this.$.time.setContent("<a href='" + entryURL + "'>" + sch.getRelativeTime(this.entry.publish_date) + "</a>");
@@ -226,7 +227,7 @@ enyo.kind({
 				i++;
 			}
 		} else {
-			jQuery('#spaz_entryview_entry').embedly({
+			jQuery('#'+this.$.entry.id).embedly({
 				maxWidth: 300,
 				maxHeight:300,
 				'method':'afterParent',
