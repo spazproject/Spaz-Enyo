@@ -169,7 +169,7 @@ enyo.kind({
 					this.$.sendButton.setActive(false);
 					this.setAllDisabled(false);
 					if(App.Prefs.get("refresh-after-posting")) {
-						AppUI.refresh();
+						AppUI.refresh(this.$.accountSelection.getValue());
 					}
 					this.close();
 				}),
@@ -191,7 +191,7 @@ enyo.kind({
 					this.$.sendButton.setActive(false);
 					this.setAllDisabled(false);
 					if(App.Prefs.get("refresh-after-posting")) {
-						AppUI.refresh();
+						AppUI.refresh(this.$.accountSelection.getValue());
 					}
 					this.close();
 				}), 
@@ -206,7 +206,7 @@ enyo.kind({
 					this.$.sendButton.setActive(false);
 					this.setAllDisabled(false);
 					if(App.Prefs.get("refresh-after-posting")) {
-						AppUI.refresh();
+						AppUI.refresh(this.$.accountSelection.getValue());
 					}
 					this.close();
 				}),
