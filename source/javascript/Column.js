@@ -47,7 +47,9 @@ enyo.kind({
 				{name: "accountName", style: "color: grey; font-size: 12px; padding-left: 2px;"},
 				{name: "topRightButton", kind: "ToolButton", icon: "source/images/icon-close.png", onclick: "deleteClicked"}
 		]},
-		{name: "list", kind: "Spaz.VirtualList", flex: 1, style: "background-color: #D8D8D8; margin: 0px 3px; min-height: 200px;", horizontal: false, className: "timeline list", onAcquirePage:'acquirePage', onSetupRow: "setupRow", components: [
+		//{name: "pullToRefreshTeaser", kind: "Image", src:"source/images/pull-to-refresh.png", showing: false},
+		{name: "pulltoRefreshTextTeaser", className: "ptrTeaser", content: "", showing: false},
+		{name: "list", kind: "Spaz.VirtualList", flex: 1, style: "background-color: #D8D8D8; margin: 0px 3px; min-height: 200px;", horizontal: false, className: "timeline list", onAcquirePage:'acquirePage', onSetupRow: "setupRow", onPullToRefresh: "pullToRefresh", components: [
 			{
 				name: "item", 
 				kind: "Spaz.Entry",
@@ -67,6 +69,9 @@ enyo.kind({
 
 		{name: "entryClickPopup", kind: "Spaz.EntryClickPopup"}
 	],
+	pullToRefresh: function() {
+		this.loadNewer();
+	},
 	create: function(){
 		this.inherited(arguments);
      	this.infoChanged();

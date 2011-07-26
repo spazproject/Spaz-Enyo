@@ -255,6 +255,14 @@ a:active,
 	/*bottom: 1px;*/
 }
 
+.ptrTeaser {
+	background-color: #D8D8D8;
+	font-size: 13px;
+	padding-top: 10px;
+	margin: 0 3px;
+	text-align: center;
+}
+
 .columnSpacer {
 	-webkit-transition: width 0.2s ease-in-out;
 }
