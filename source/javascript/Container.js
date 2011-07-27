@@ -235,6 +235,14 @@ enyo.kind({
 		_.each(this.$.columnsScroller.getControls(), function(column){
 			try {
 				if(column.kind === "Spaz.Column" || column.kind === "Spaz.SearchColumn" || column.kind === "Spaz.UnifiedColumn"){
+					// opts may restrict us to columns with a certain account_id
+					if(opts && opts.account_id && opts.account_id !== column.getInfo().accounts[0]) {
+						return;
+					}
+					// or opts may restrict us to columns of a certain type
+					if(opts && opts.column_types && opts.column_types.indexOf(column.getInfo().type) === -1) {
+						return;
+					}
 					columnCount++;
 					if(sync) {
 						enyo.call(column, functionName, opts);
@@ -250,9 +258,16 @@ enyo.kind({
 		return columnCount;
 	},
 
-	refreshAll: function() {
+	refreshAll: function(account_id) {
 		this.loadingColumns = 0;
-		if(this.columnsFunction("loadNewer") === 0) {
+		
+		var opts = { };
+		if(account_id) {
+			opts.account_id = account_id;
+			opts.column_types = [SPAZ_COLUMN_HOME, SPAZ_COLUMN_SENT];
+		}
+		
+		if(this.columnsFunction("loadNewer", opts) === 0) {
 			this.loadFinished();
 		}
 	},

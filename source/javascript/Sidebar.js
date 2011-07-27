@@ -22,7 +22,7 @@ enyo.kind({
 		{kind: "Spacer"},
 		{kind: "ToolButton", icon: "source/images/icon-compose.png", onclick: "compose", popup:"composePopup"},
 		{kind: "ToolButton", icon: "source/images/icon-search.png", onclick: "openPopup", popup: "searchPopup"},
-		{name: "refreshAll", kind: "ToolButton", icon: "source/images/icon-refresh.png", onclick: "refreshAll"},
+		{name: "refreshAll", kind: "ToolButton", icon: "source/images/icon-refresh.png", onclick: "refreshAllClicked"},
 		
 		{name: "aboutPopup", kind: "Spaz.AboutPopup", onClose: "closePopup" },
 		{name: "composePopup", kind: "Spaz.ComposePopup", onClose: "closePopup" },
@@ -52,9 +52,12 @@ enyo.kind({
 	closePopup: function(inSender) {
 		inSender.close();
 	},
-	refreshAll: function(inSender, inEvent){
-		this.$.refreshAll.addClass("spinning");
-		this.doRefreshAll();
+	refreshAll: function(account_id){
+        this.$.refreshAll.addClass("spinning");
+		this.doRefreshAll(account_id);
+	},
+	refreshAllClicked: function(inSender, inEvent) {
+		this.refreshAll();
 	},
 	refreshAllFinished: function() {
 		this.$.refreshAll.removeClass("spinning");
