@@ -25,7 +25,7 @@ enyo.kind({
 		]},
 		{kind: "HFlexBox", name: "inReplyEntryText", content: "", allowHtml: true, style: "overflow: hidden; color:#666666; font-size:14px; padding-bottom:1em;" },
 		{name: "postTextBoxContainer", kind: "Control", style: "min-height: 50px", components: [
-			{name:"postTextBox", kind: "Spaz.RichText", alwaysLooksFocused: true, flex: 1, oninput: "postTextBoxInput", hint: "Type message here...", onkeyup: "postTextBoxKeydown", onfocus: "postTextBoxFocus", components: [
+			{name:"postTextBox", kind: "Spaz.RichText", alwaysLooksFocused: true, flex: 1, oninput: "postTextBoxInput", hint: "Type message here...", onkeydown: "postTextBoxKeydown", onfocus: "postTextBoxFocus", components: [
 				{name: "remaining", style: "color: grey; padding-left: 5px;", content: "140"}
 			]}
 		]},
