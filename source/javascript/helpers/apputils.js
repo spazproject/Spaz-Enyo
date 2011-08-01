@@ -434,6 +434,7 @@ AppUtils.convertToEntry = function(item) {
 			entry.text          = item.text;
 			entry.text_raw      = item.SC_text_raw;
 			entry.publish_date  = item.SC_created_at_unixtime;
+			entry.account_id	= item.account_id || undefined;
 
 			if (item.SC_is_dm) {
 				entry.author_username = item.sender.screen_name;

@@ -149,6 +149,8 @@ enyo.kind({
 					   that won't be needed */
 					//console.time('unify_process_reject');
 					data = _.reject(data, function(item) {
+						item.account_id = self.info.accounts[0];
+
 						for (var i = 0; i < self.entries.length; i++) {
 							if (item.id === self.entries[i].service_id) {
 								return true;
@@ -163,6 +165,7 @@ enyo.kind({
 						};
 						return false;
 					});
+
 					//console.timeEnd('unify_process_reject');
 
 
