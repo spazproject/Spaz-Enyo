@@ -31,6 +31,26 @@ a:active,
 .avatar, .small-avatar {
 	-webkit-border-radius: 5px;
 }
+.Column {
+}
+
+.Column .timeline {
+	background-color: #D8D8D8; 
+	margin: 0px 3px; 
+	min-height: 200px;
+}
+.Column .spazLogo {
+	-webkit-transition: opacity 0.5s ease-in-out;
+	position: absolute; 
+	left: 0px; 
+	right: 0px; 
+	top: 0px; 
+	bottom: 0px; 
+	margin: auto; 
+	background-color: #D8D8D8;	
+	pointer-events: none;
+
+}
 
 
 /* Entries */
@@ -264,7 +284,9 @@ a:active,
     -webkit-box-shadow: 10px #000000;
     box-shadow: 10px #000000;
 }
-
+.Column {
+	position: relative;
+}
 .Column.moving {
 	position: absolute;
 	z-index: 50000;

@@ -76,7 +76,7 @@ enyo.kind({
 		return default_columns;
 	},
 
-	createColumns: function() {
+	createColumns: function(fadeInEntries) {
 		this.$.columnsScroller.destroyControls();
 
 		if(this.columnData.length === 0){
@@ -92,6 +92,7 @@ enyo.kind({
 				name:'Column'+i,
 				info: this.columnData[i],
 				kind: "Spaz.Column",
+				fadeInEntries: fadeInEntries,
 				onDeleteClicked: "deleteColumn",
 				onLoadStarted: "loadStarted",
 				onLoadFinished: "loadFinished",
@@ -320,7 +321,7 @@ enyo.kind({
 			this.columnData.splice(new_idx, 0, column);
 
 			var self = this;
-			setTimeout(function() { self.createColumns(); }, 1);
+			setTimeout(function() { self.createColumns(true); }, 1);
 
 			//@TODO: this creates issues with starting a column drag. To replicate: Hold onto a column toolbar, move it slightly, release. It will float in an awkward postion.
 			//this doesn't happen if this.createColumns() is commented out.
@@ -367,14 +368,13 @@ enyo.kind({
 
 			if(this.isHolding){
 
-				// let's try this to make column movement smoother
-				$('.spaz-entry-item').hide();
-
 				//console.error("drag start");
 				enyo.forEach(this.$.columnsScroller.getControls(), enyo.bind(this, function(control) {
 					if(_.includes(control.name, "ColumnSpacer")){
 						control.addClass("columnSpacer");
 						control.applyStyle("width", "10px");
+					} else {
+						control.showHideEntries(false);
 					}
 					if(control.name.replace("ColumnSpacer", "") === this.activeColumn.name.replace('Column', '')){
 						control.applyStyle("width", "322px");
@@ -406,9 +406,6 @@ enyo.kind({
 	},
 	columnDragFinish: function(inSender, inEvent){
 
-		// let's try this to make column movement smoother
-		$('.spaz-entry-item').show();
-
 		if (this.dragColumn) {
 			//console.error("done dragging column");
 
@@ -419,6 +416,8 @@ enyo.kind({
 				if(_.includes(control.name, "ColumnSpacer")){
 					control.applyStyle("width", "0px");
 					control.removeClass("columnSpacer");
+				} else {
+					control.showHideEntries(true);
 				}
 			}));
 
