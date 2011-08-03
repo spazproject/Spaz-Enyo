@@ -362,12 +362,14 @@ enyo.kind({
 
 	columnDragStart: function(inSender, inEvent){
 
-		// let's try this to make column movement smoother
-		$('.spaz-entry-item').hide();
-
+		
 		if (Math.abs(inEvent.dx) < 200) { //make sure the user isn't trying to scroll
 
 			if(this.isHolding){
+
+				// let's try this to make column movement smoother
+				$('.spaz-entry-item').hide();
+
 				//console.error("drag start");
 				enyo.forEach(this.$.columnsScroller.getControls(), enyo.bind(this, function(control) {
 					if(_.includes(control.name, "ColumnSpacer")){
