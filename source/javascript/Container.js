@@ -177,7 +177,12 @@ enyo.kind({
 			this_col.id = columnData.id;
 			this_col.type = columnData.type;
 			this_col.accounts = columnData.accounts.slice(0,columnData.accounts.length);
-			this_col.query = columnData.query;
+			
+			//special arguments
+			this_col.query = columnData.query;  //search
+			this_col.service = columnData.service; //multiAccountColumns
+			this_col.list = columnData.list; //list id
+
 			save_cols.push(this_col);
 		});
 
