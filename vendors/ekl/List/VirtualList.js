@@ -9,7 +9,7 @@ enyo.kind({
         //Dampens mousewheel delta strength
         mousewheelDamp: 40.0,
         // sensitivity for pull-to-refresh events
-		dragHoldInterval: 50,
+		dragHoldInterval: 100,
 	    dragHoldTrigger: 300,
     },
     events: {
@@ -39,25 +39,60 @@ enyo.kind({
            
         }
     },
-    mousedownHandler: function(e) {
-    	dragPoller = window.setTimeout(function() {
-			if(this.$.scroller.$.scroll.isInOverScroll()) {
-				if(this.dragHoldTime > this.dragHoldInterval*4) {
-					this.owner.$.pulltoRefreshTextTeaser.setShowing(true);
-				}
-				this.owner.$.pulltoRefreshTextTeaser.content = 'Release to Refresh ';//+(this.dragHoldTrigger-this.dragHoldTime).toString();
-				this.owner.$.pulltoRefreshTextTeaser.render();
-				this.dragHoldTime+=this.dragHoldInterval;
-				dragPoller = window.setTimeout(this.mousedownHandler.bind(this),this.dragHoldInterval);
+	holdMousePoller: function() {
+			console.log(this.dragHoldTime);
+			if(this.dragHoldTime > this.dragHoldInterval*4) {
+				this.owner.$.pulltoRefreshTextTeaser.setShowing(true);
 			}
-    	}.bind(this),this.dragHoldInterval);
+			this.owner.$.pulltoRefreshTextTeaser.content = 'Release to Refresh ';//+(this.dragHoldTrigger-this.dragHoldTime).toString();
+			this.owner.$.pulltoRefreshTextTeaser.render();
+			if(this.$.scroller.$.scroll.isInOverScroll()) {
+				this.dragHoldTime+=this.dragHoldInterval;
+			} else {
+				this.dragHoldInterval = 0;
+			}
+				
+			dragPoller = window.setTimeout(this.holdMousePoller.bind(this), this.dragHoldInterval);
+	},
+    mousedownHandler: function() {
+		dragPoller = window.setTimeout(this.holdMousePoller.bind(this), this.dragHoldInterval);
+	/*
+	console.log('mousedown');
+		if(this.dragHoldTime == 0) {
+			dragPoller = window.setTimeout(function() {
+				console.log('dragpoller running');
+				if(this.$.scroller.$.scroll.isInOverScroll()) {
+					console.log(this.dragHoldInterval);
+					if(this.dragHoldTime > this.dragHoldInterval*4) {
+						this.owner.$.pulltoRefreshTextTeaser.setShowing(true);
+					}
+					this.owner.$.pulltoRefreshTextTeaser.content = 'Release to Refresh ';//+(this.dragHoldTrigger-this.dragHoldTime).toString();
+					this.owner.$.pulltoRefreshTextTeaser.render();
+					this.dragHoldTime+=this.dragHoldInterval;
+					dragPoller = window.setTimeout(this,this.dragHoldInterval);
+				} else {
+					console.log('not in overscroll');
+				}
+			}.bind(this),100);
+		} else {
+			console.log('dragholdtime not zero');
+		}
+	*/
     },
     mouseupHandler: function(e) {
+		console.log('mouseup');
+		window.clearTimeout(dragPoller);
+		if(this.dragHoldTime >= this.dragHoldTrigger && this.$.scroller.$.scroll.isInOverScroll()) {
+		
+		}
+		this.dragHoldTime = 0;
+	/*
 		this.owner.$.pulltoRefreshTextTeaser.setShowing(false);
     	window.clearTimeout(dragPoller);
     	if(this.$.scroller.$.scroll.isInOverScroll() && this.dragHoldTime > this.dragHoldTrigger) {
-			this.doPullToRefresh();	
+			//this.doPullToRefresh();	
     	}
     	this.dragHoldTime = 0;
+	*/
     }
 });
