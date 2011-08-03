@@ -47,25 +47,19 @@ enyo.kind({
 				{name: "accountName", style: "color: grey; font-size: 12px; padding-left: 2px;"},
 				{name: "topRightButton", kind: "ToolButton", icon: "source/images/icon-close.png", onclick: "deleteClicked"}
 		]},
-		{name: "list", kind: "Spaz.VirtualList", flex: 1, style: "background-color: #D8D8D8; margin: 0px 3px; min-height: 200px;", horizontal: false, className: "timeline list", onAcquirePage:'acquirePage', onSetupRow: "setupRow", components: [
-			{
-				name: "item", 
-				kind: "Spaz.Entry",
-				onEntryClick: "entryClick",
-				onEntryHold: "entryHold",
-				className: "spaz-entry-item"
-			}
-		]},
-		/*{kind: "Toolbar", height: "42px", onclick: "scrollToBottom", style: "min-height: 42px; color: white;", components: [
-			{name: "moveColumnLeftButton", onclick: "doMoveColumnLeft", kind: "ToolButton", icon: "source/images/icon-back.png"},
-			{kind: "Spacer"},
-			{name: "refresh", kind: "ToolButton", icon: "source/images/icon-refresh.png", onclick:"loadNewer"},
-			{kind: "Spacer"},
-			{name: "moveColumnRightButton", onclick: "doMoveColumnRight", kind: "ToolButton", icon: "source/images/icon-forward.png"}
-
-			//{kind: "ToolButton", icon: "source/images/icon-clear.png"}, @TODO. make this clear the current tweets, or remove it completely
-		]},*/
-
+		{kind: enyo.VFlexBox, flex: 1, className: "timeline", components: [
+				{name: "list", kind: "Spaz.VirtualList", flex: 1, horizontal: false, className: "list", onAcquirePage:'acquirePage', onSetupRow: "setupRow", components: [
+					{
+						name: "item", 
+						kind: "Spaz.Entry",
+						onEntryClick: "entryClick",
+						onEntryHold: "entryHold",
+						className: "spaz-entry-item"
+					}
+				]},
+				{kind: enyo.Image, name: "spazLogo", src: "spaz-icon-flat-512.png", width: "300px", style: "opacity: 0", className: "spazLogo"},
+			]
+		},
 		{name: "entryClickPopup", kind: "Spaz.EntryClickPopup"}
 	],
 	create: function(){
@@ -622,6 +616,15 @@ enyo.kind({
 		
 		// we've handled this event, stop it from propagating up
 		return true;
+	},
+
+	showHideEntries: function(inShowHide){
+		this.$.list.setShowing(inShowHide);
+		if(inShowHide){
+			this.$.spazLogo.applyStyle("opacity", 0);
+		} else {
+			this.$.spazLogo.applyStyle("opacity", 1);			
+		}
 	}
 	
 });
