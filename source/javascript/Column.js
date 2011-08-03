@@ -179,7 +179,7 @@ enyo.kind({
 					_.each(data, function(d){
 						d.account_id = account_id;
 					});
-					totalData = [].concat(totalData, data);
+					totalData.push(data);// = [].concat(totalData, data);
 				}
 				if(accountsLoaded === 0){
 					self.doLoadFinished();
@@ -333,7 +333,7 @@ enyo.kind({
 		}
 		
 	},
-	processData: function(data, opts, account_id) {
+	processData: function(arrayOfData, opts, account_id) {
 		var self = this;
 		
 		opts = sch.defaults({
@@ -342,17 +342,28 @@ enyo.kind({
 			'max_id':null
 		}, opts);
 		
-		if (data) {
+		if (arrayOfData) {
 			enyo.log('adding new data');
 			switch (this.info.type) {
-				default:					
+				default:
+					var data = [], earliestPublishDate = 0;
+					_.each(arrayOfData, function(array){
+						/* convert to our internal format */
+						array = AppUtils.convertToEntries(array);
+
+						//if the EARLIEST item is more recent, set it to our earliestPublishDate
+						if(_.first(array).publish_date > earliestPublishDate){
+							earliestPublishDate = _.first(array).publish_date;
+						}
+						data = data.concat(array);
+					});	
 					
 					/* check for duplicates based on the .id property */
 					/* we do this before conversion to save converting stuff
 					   that won't be needed */
 					data = _.reject(data, function(item) {
 						for (var i = 0; i < self.entries.length; i++) {
-							if (item.id === self.entries[i].service_id) {
+							if (item.service_id === self.entries[i].service_id) {
 								return true;
 							} else {
 								if (opts.mode === 'older') {
@@ -366,7 +377,7 @@ enyo.kind({
 					
 					if (data.length > 0) {
 						/* convert to our internal format */
-						data = AppUtils.convertToEntries(data);
+						//data = AppUtils.convertToEntries(data);
 
 						/* add more entry properties */
 						data = AppUtils.setAdditionalEntryProperties(data);
@@ -383,9 +394,15 @@ enyo.kind({
 						/* concat to existing entries */
 						this.entries = [].concat(data.reverse(), this.entries);
 
+						this.entries = _.reject(this.entries, function(item) {
+							if ((item.publish_date < earliestPublishDate)) {
+								return true;
+							}
+						});
+
 						/* sort our good stuff */
 						this.sortEntries();
-						
+
 						this.scrollOffset = 0;
 						if(data.length > 0){
 							this.$.list.refresh();
