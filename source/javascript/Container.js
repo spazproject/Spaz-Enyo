@@ -265,13 +265,13 @@ enyo.kind({
 
 	refreshAll: function(account_id) {
 		this.loadingColumns = 0;
-		
+
 		var opts = { };
 		if(account_id) {
 			opts.account_id = account_id;
 			opts.column_types = [SPAZ_COLUMN_HOME, SPAZ_COLUMN_SENT];
 		}
-		
+
 		if(this.columnsFunction("loadNewer", opts) === 0) {
 			this.loadFinished();
 		}
@@ -346,7 +346,9 @@ enyo.kind({
 			var column = this.columnData.splice(del_idx, 1)[0];
 			this.columnData.splice(new_idx, 0, column);
 
-			this.createColumns();
+			var self = this;
+			setTimeout(function() { self.createColumns(); }, 1);
+
 			//@TODO: this creates issues with starting a column drag. To replicate: Hold onto a column toolbar, move it slightly, release. It will float in an awkward postion.
 			//this doesn't happen if this.createColumns() is commented out.
 		}
@@ -386,6 +388,10 @@ enyo.kind({
 	},
 
 	columnDragStart: function(inSender, inEvent){
+
+		// let's try this to make column movement smoother
+		$('.spaz-entry-item').hide();
+
 		if (Math.abs(inEvent.dx) < 200) { //make sure the user isn't trying to scroll
 
 			if(this.isHolding){
@@ -424,6 +430,10 @@ enyo.kind({
 		}
 	},
 	columnDragFinish: function(inSender, inEvent){
+
+		// let's try this to make column movement smoother
+		$('.spaz-entry-item').show();
+
 		if (this.dragColumn) {
 			//console.error("done dragging column");
 

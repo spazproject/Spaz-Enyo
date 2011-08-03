@@ -52,7 +52,8 @@ enyo.kind({
 				name: "item", 
 				kind: "Spaz.Entry",
 				onEntryClick: "entryClick",
-				onEntryHold: "entryHold"
+				onEntryHold: "entryHold",
+				className: "spaz-entry-item"
 			}
 		]},
 		/*{kind: "Toolbar", height: "42px", onclick: "scrollToBottom", style: "min-height: 42px; color: white;", components: [
