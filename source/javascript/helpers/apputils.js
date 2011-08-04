@@ -591,6 +591,9 @@ AppUtils.getBiggerAvatar = function(entry_or_user) {
 
 AppUtils.convertToEntries = function(item_array) {
 
+	if (!item_array) {
+		return [];
+	}
 	for (var i = 0; i < item_array.length; i++) {
 		item_array[i] = AppUtils.convertToEntry(item_array[i]);
 	};

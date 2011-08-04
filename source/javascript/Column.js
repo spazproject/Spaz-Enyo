@@ -48,7 +48,8 @@ enyo.kind({
 				{name: "topRightButton", kind: "ToolButton", icon: "source/images/icon-close.png", onclick: "deleteClicked"}
 		]},
 		{kind: enyo.VFlexBox, flex: 1, className: "timeline", components: [
-				{name: "list", kind: "Spaz.VirtualList", flex: 1, horizontal: false, className: "list", onAcquirePage:'acquirePage', onSetupRow: "setupRow", components: [
+				{name: "pulltoRefreshTextTeaser", className: "ptrTeaser", content: "Release to refresh &uarr;", showing: false},
+				{name: "list", kind: "Spaz.VirtualList", flex: 1, horizontal: false, className: "list", onAcquirePage:'acquirePage', onSetupRow: "setupRow", onPullToRefresh: "pullToRefresh", components: [
 					{
 						name: "item",
 						kind: "Spaz.Entry",
@@ -61,6 +62,9 @@ enyo.kind({
 		},
 		{name: "entryClickPopup", kind: "Spaz.EntryClickPopup"}
 	],
+	pullToRefresh: function() {
+		this.loadNewer();
+	},
 	create: function(){
 		this.inherited(arguments);
      	this.infoChanged();
@@ -342,6 +346,11 @@ enyo.kind({
 				default:
 					var data = [], earliestPublishDate = 0;
 					_.each(arrayOfData, function(array){
+
+						if (!array) {
+							return;
+						}
+
 						/* convert to our internal format */
 						array = AppUtils.convertToEntries(array);
 
@@ -562,6 +571,8 @@ enyo.kind({
 				this.$.header.setContent(_.capitalize(this.info.type));
 			}
 		}
+
+		this.$.pulltoRefreshTextTeaser.width = this.width;
 	},
 	refreshList: function(forceReload){
 		this.$.list.refresh();
