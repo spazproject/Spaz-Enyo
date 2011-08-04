@@ -384,15 +384,16 @@ enyo.kind({
 								data[i].read = false;
 							}
 						}
-
-						/* concat to existing entries */
-						this.entries = [].concat(data.reverse(), this.entries);
-
-						this.entries = _.reject(this.entries, function(item) {
+						
+						data = _.reject(data, function(item) {
 							if ((item.publish_date < earliestPublishDate)) {
 								return true;
 							}
 						});
+
+
+						/* concat to existing entries */
+						this.entries = [].concat(data.reverse(), this.entries);
 
 						/* sort our good stuff */
 						this.sortEntries();
