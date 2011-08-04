@@ -57,7 +57,7 @@ enyo.kind({
 
 			// always clear before starting timeout
 			window.clearTimeout(this.dragPoller);
-			this.dragHoldInterval = 0;
+			//this.dragHoldInterval = 0;
 			return;
 		}
 
@@ -78,7 +78,7 @@ enyo.kind({
 
 	},
 	mouseupHandler: function(e) {
-		// console.log('mouseup', this.$.scroller.$.scroll.y);
+		console.log('mouseup', this.$.scroller.$.scroll.y);
 
 		window.clearTimeout(this.dragPoller);
 		if(this.dragHoldTime >= this.dragHoldTrigger && this.pulledPastThreshold()) {
