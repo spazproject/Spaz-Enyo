@@ -396,12 +396,20 @@ enyo.kind({
 							}
 						}
 						
-						data = _.reject(data, function(item) {
+						var filteredData = _.reject(data, function(item) {
 							if ((item.publish_date < earliestPublishDate)) {
 								return true;
 							}
 						});
-
+						if(filteredData.length < 10 && data.length > 5){
+							//console.log("filteredData length is less than 10, so just getting the 10 most recent entries");
+							
+							data = _.sortBy(data, function(item){
+								return earliestPublishDate - item.publish_date;
+							}).slice(0, 10);
+						} else {
+							data = filteredData;
+						}
 
 						/* concat to existing entries */
 						this.entries = [].concat(data.reverse(), this.entries);
@@ -511,7 +519,7 @@ enyo.kind({
 					//set scrollOffset to be first unread item
 					break;
 				} else {
-					this.scrollOffset = this.entries.length-1;
+					this.scrollOffset = ((this.entries.length - 5) > 0) ?  this.entries.length - 5 : 0;
 				}
 			};
 		} else {
