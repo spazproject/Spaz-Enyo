@@ -59,23 +59,30 @@ enyo.kind({
 	},
 
 	getDefaultColumns: function(inAccountId) {
+		var accountIds = [], service = undefined;
 		if(!inAccountId) {
-			var firstAccount = App.Users.getAll()[0];
-			if ((firstAccount) && (firstAccount.id)) {
-				inAccountId = firstAccount.id;
+			var allUsers = App.Users.getAll();
+			if(allUsers.length === 0){
+				AppUtils.showBanner(enyo._$L('No accounts! You should add one.'));
+				setTimeout(enyo.bind(this, this.doShowAccountsPopup, 1));
+				return [];
 			}
+
+			service = allUsers[0].type;
+			inAccountId = allUsers[0].id;
+
+			_(App.Users.getByType(service)).each(function(user){
+				accountIds.push(user.id);
+			})
+		} else {
+			accountIds = [inAccountId];
 		}
 
-		if (!inAccountId) {
-			AppUtils.showBanner(enyo._$L('No accounts! You should add one.'));
-			setTimeout(enyo.bind(this, this.doShowAccountsPopup, 1));
-			return [];
-		}
-
+		
 		var default_columns = [
-			{type: SPAZ_COLUMN_HOME, accounts: [inAccountId], id: _.uniqueId(new Date().getTime())},
-			{type: SPAZ_COLUMN_MENTIONS, accounts: [inAccountId], id: _.uniqueId(new Date().getTime())},
-			{type: SPAZ_COLUMN_MESSAGES, accounts: [inAccountId], id: _.uniqueId(new Date().getTime())}
+			{type: SPAZ_COLUMN_HOME,	 accounts: [inAccountId], id: _.uniqueId(new Date().getTime())},
+			{type: SPAZ_COLUMN_MENTIONS, service: service, accounts: accountIds, id: _.uniqueId(new Date().getTime())},
+			{type: SPAZ_COLUMN_MESSAGES, service: service, accounts: accountIds, id: _.uniqueId(new Date().getTime())}
 		];
 
 		return default_columns;
@@ -84,6 +91,7 @@ enyo.kind({
 	createColumns: function(fadeInEntries) {
 		this.$.columnsScroller.destroyControls();
 
+		this.columnData = [];
 		if(this.columnData.length === 0){
 			this.columnData = this.getDefaultColumns();
 		}
@@ -295,7 +303,7 @@ enyo.kind({
 	},
 
 	accountAdded: function(inAccountId) {
-		this.columnData = this.columnData.concat(this.getDefaultColumns(inAccountId));
+		//this.columnData = this.columnData.concat(this.getDefaultColumns(inAccountId));
 
 		this.checkAccountChanges(null, true); //creates the columns
 

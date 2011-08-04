@@ -519,7 +519,8 @@ enyo.kind({
 					//set scrollOffset to be first unread item
 					break;
 				} else {
-					this.scrollOffset = ((this.entries.length - 5) > 0) ?  this.entries.length - 5 : 0;
+					//@TODO: for all unread items we should do something here.
+					this.scrollOffset = 0;//((this.entries.length - 10) > 0) ?  this.entries.length - 10 : 0;
 				}
 			};
 		} else {
