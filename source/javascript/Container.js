@@ -365,7 +365,6 @@ enyo.kind({
 		this.activeColumn.addClass("moving");
 		this.activeColumn.applyStyle("height", window.innerHeight - 12 + "px");
 
-
 		this.trackColumn(inEvent);
 	},
 	columnMouserelease: function(inSender, inEvent){
@@ -381,6 +380,8 @@ enyo.kind({
 				if(_.includes(control.name, "ColumnSpacer")){
 					control.removeClass("columnSpacer");
 					control.applyStyle("width", "0px");
+				} else {
+					control.showHideEntries(true);
 				}
 			}));
 

@@ -57,7 +57,7 @@ enyo.kind({
 						className: "spaz-entry-item"
 					}
 				]},
-				{kind: enyo.Image, name: "spazLogo", src: "spaz-icon-flat-512.png", width: "300px", style: "opacity: 0", className: "spazLogo"},
+				{kind: enyo.Image, name: "spazLogo", src: "spaz-icon-flat-512.png", width: "300px", showing: false, className: "spazLogo"},
 			]
 		},
 		{name: "entryClickPopup", kind: "Spaz.EntryClickPopup"}
@@ -620,11 +620,7 @@ enyo.kind({
 
 	showHideEntries: function(inShowHide){
 		this.$.list.setShowing(inShowHide);
-		if(inShowHide){
-			this.$.spazLogo.applyStyle("opacity", 0);
-		} else {
-			this.$.spazLogo.applyStyle("opacity", 1);			
-		}
+		this.$.spazLogo.setShowing(!inShowHide);
 	}
 	
 });
