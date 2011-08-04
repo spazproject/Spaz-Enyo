@@ -91,7 +91,6 @@ enyo.kind({
 	createColumns: function(fadeInEntries) {
 		this.$.columnsScroller.destroyControls();
 
-		this.columnData = [];
 		if(this.columnData.length === 0){
 			this.columnData = this.getDefaultColumns();
 		}
