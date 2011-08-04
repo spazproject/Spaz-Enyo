@@ -2,7 +2,7 @@ enyo.kind({
 	name: "Spaz.Column",
 	kind: enyo.VFlexBox,
 	width: "322px",
-	style: "margin: 3px;", 
+	style: "margin: 3px;",
 	className: "Column",
 	events: {
 		onDeleteClicked: "",
@@ -14,28 +14,28 @@ enyo.kind({
 
 		onToolbarmousehold: "",
 		onToolbarmouserelease: "",
-		onToolbardragstart: "", 
-		onToolbardrag: "", 
+		onToolbardragstart: "",
+		onToolbardrag: "",
 		onToolbardragfinish: ""
 	},
 	published: {
 		info: {
 			//type: home/direct/search/replies
 			//display: what is in the header
-			//accounts: object array of accounts 
+			//accounts: object array of accounts
 			//		{"type": "twitter", "username": "@Tibfib" etc
 			//
 
 		},
 		entries: []
 	},
-	
+
 	components: [
-		{kind: "Toolbar", height: "42px", defaultKind: "Control", onclick: "scrollToTop", style: "min-height: 42px; color: white; color: white; padding-left: 5px;", 
+		{kind: "Toolbar", height: "42px", defaultKind: "Control", onclick: "scrollToTop", style: "min-height: 42px; color: white; color: white; padding-left: 5px;",
 			onmousehold: "doToolbarmousehold",
 			onmouserelease: "doToolbarmouserelease",
-			ondragstart: "doToolbardragstart", 
-			ondrag: "doToolbardrag", 
+			ondragstart: "doToolbardragstart",
+			ondrag: "doToolbardrag",
 			ondragfinish: "doToolbardragfinish",
 			components: [
 				//gotta do this to get the header title to center and not be a button. "defaultKind" in Toolbar is key.
@@ -47,26 +47,19 @@ enyo.kind({
 				{name: "accountName", style: "color: grey; font-size: 12px; padding-left: 2px;"},
 				{name: "topRightButton", kind: "ToolButton", icon: "source/images/icon-close.png", onclick: "deleteClicked"}
 		]},
-		//{name: "pullToRefreshTeaser", kind: "Image", src:"source/images/pull-to-refresh.png", showing: false},
-		{name: "pulltoRefreshTextTeaser", className: "ptrTeaser", content: "", showing: false},
-		{name: "list", kind: "Spaz.VirtualList", flex: 1, style: "background-color: #D8D8D8; margin: 0px 3px; min-height: 200px;", horizontal: false, className: "timeline list", onAcquirePage:'acquirePage', onSetupRow: "setupRow", onPullToRefresh: "pullToRefresh", components: [
-			{
-				name: "item", 
-				kind: "Spaz.Entry",
-				onEntryClick: "entryClick",
-				onEntryHold: "entryHold"
-			}
-		]},
-		/*{kind: "Toolbar", height: "42px", onclick: "scrollToBottom", style: "min-height: 42px; color: white;", components: [
-			{name: "moveColumnLeftButton", onclick: "doMoveColumnLeft", kind: "ToolButton", icon: "source/images/icon-back.png"},
-			{kind: "Spacer"},
-			{name: "refresh", kind: "ToolButton", icon: "source/images/icon-refresh.png", onclick:"loadNewer"},
-			{kind: "Spacer"},
-			{name: "moveColumnRightButton", onclick: "doMoveColumnRight", kind: "ToolButton", icon: "source/images/icon-forward.png"}
-
-			//{kind: "ToolButton", icon: "source/images/icon-clear.png"}, @TODO. make this clear the current tweets, or remove it completely
-		]},*/
-
+		{kind: enyo.VFlexBox, flex: 1, className: "timeline", components: [
+				{name: "pulltoRefreshTextTeaser", className: "ptrTeaser", content: "", showing: false},
+				{name: "list", kind: "Spaz.VirtualList", flex: 1, horizontal: false, className: "list", onAcquirePage:'acquirePage', onSetupRow: "setupRow", components: [
+					{
+						name: "item",
+						kind: "Spaz.Entry",
+						onEntryClick: "entryClick",
+						onEntryHold: "entryHold"
+					}
+				]},
+				// {kind: enyo.Image, name: "spazLogo", src: "spaz-icon-flat-512.png", width: "300px", showing: false, className: "spazLogo"},
+			]
+		},
 		{name: "entryClickPopup", kind: "Spaz.EntryClickPopup"}
 	],
 	pullToRefresh: function() {
@@ -75,9 +68,9 @@ enyo.kind({
 	create: function(){
 		this.inherited(arguments);
      	this.infoChanged();
-		this.checkArrows();     
+		this.checkArrows();
 		this.scrollOffset = 0;
-		
+
 		// if this column does not already have entries, gotta fetch from the network
 		if(this.entries.length === 0) {
 			enyo.asyncMethod(this, this.loadNewer, {forceCountUnread: true});
@@ -92,13 +85,15 @@ enyo.kind({
      		//this.$.moveColumnLeftButton.setDisabled(true);
      	}
 		if(this.name === "Column" + (this.owner.columnData.length-1)){
-     		//this.$.moveColumnRightButton.setDisabled(true);			
+     		//this.$.moveColumnRightButton.setDisabled(true);
 		}
 	},
 	infoChanged: function(){
 		// don't set header contents here - wait until the column is
 		// rendered and then manually resize header to fit.
-		this.$.accountName.setContent(App.Users.getLabel(this.info.accounts[0]));
+
+		//@TODO: If we ever allow custom combining of accounts, we need to change this.
+		this.$.accountName.setContent(this.info.service || App.Users.getLabel(this.info.accounts[0]));
 	},
 
 	loadNewer:function(opts) {
@@ -131,21 +126,13 @@ enyo.kind({
 
 		var self = this;
 
-		
+
 
 		try {
 			var since_id;
-			var account = App.Users.get(self.info.accounts[0]);
-			var auth = new SpazAuth(account.type);
-			auth.load(account.auth);
-
-			self.twit = new SpazTwit();
-			self.twit.setBaseURLByService(account.type);
-			self.twit.setSource(App.Prefs.get('twitter-source'));
-			self.twit.setCredentials(auth);
 
 			if (this.entries.length > 0) {
-				if (opts.mode === 'newer') {					
+				if (opts.mode === 'newer') {
 					since_id = _.first(this.entries).service_id;
 					// mark all existing as read
 					this.markAllAsRead();
@@ -157,162 +144,229 @@ enyo.kind({
 			} else {
 				since_id = 1;
 			}
-			var dataLength;
-			function loadStarted() {
-				self.$.refresh.addClass("spinning");
-				self.$.refresh.setShowing(true);
-				self.$.header.applyStyle("max-width", 
-					self.$.toolbar.getBounds().width
-					 - self.$.unreadCount.getBounds().width 
-				 	 - self.$.accountName.getBounds().width 
-					 - self.$.topRightButton.getBounds().width 
-					 - self.$.topLeftButton.getBounds().width
-					 - self.$.refresh.getBounds().width
-					 - 30
-					 + "px");
+			var dataLength, accountsLoaded = 0, totalData = [];
 
-				self.doLoadStarted();
-				dataLength = self.entries.length;
+			_.each(self.info.accounts, function(account_id){
+				loadData(account_id);
+			});
+
+			function loadStarted() {
+				if(accountsLoaded === 0){
+					self.doLoadStarted();
+					self.$.refresh.addClass("spinning");
+					self.$.refresh.setShowing(true);
+					self.$.header.applyStyle("max-width",
+						self.$.toolbar.getBounds().width
+						 - self.$.unreadCount.getBounds().width
+					 	 - self.$.accountName.getBounds().width
+						 - self.$.topRightButton.getBounds().width
+						 - self.$.topLeftButton.getBounds().width
+						 - self.$.refresh.getBounds().width
+						 - 30
+						 + "px");
+
+					dataLength = self.entries.length;
+				}
+				accountsLoaded++;
+
 
 			}
-			function loadFinished() {				
-				self.$.refresh.removeClass("spinning");
-				self.$.refresh.setShowing(false);
-				self.$.header.applyStyle("max-width", 
-					self.$.toolbar.getBounds().width
-					 - self.$.unreadCount.getBounds().width 
-				 	 - self.$.accountName.getBounds().width 
-					 - self.$.topRightButton.getBounds().width 
-					 - self.$.topLeftButton.getBounds().width
-					 - self.$.refresh.getBounds().width
-					 - 30
-					 + "px");
+			function loadFinished(data, opts, account_id) {
+				accountsLoaded--;
+				if(data !== undefined){
+					_.each(data, function(d){
+						d.account_id = account_id;
+					});
+					totalData.push(data);// = [].concat(totalData, data);
+				}
+				if(accountsLoaded === 0){
+					self.doLoadFinished();
 
-				self.doLoadFinished();
+					self.processData(totalData, opts);
 
-				if(dataLength !== self.entries.length && opts.mode !== 'older'){
-					//go to top.
-					if(App.Prefs.get("timeline-scrollonupdate")){
-						
-						//go to first unread
-						self.setScrollPosition();
-						self.$.list.punt();
+					self.$.refresh.setShowing(false);
+					self.$.refresh.removeClass("spinning");
+					self.$.header.applyStyle("max-width",
+						self.$.toolbar.getBounds().width
+						 - self.$.unreadCount.getBounds().width
+					 	 - self.$.accountName.getBounds().width
+						 - self.$.topRightButton.getBounds().width
+						 - self.$.topLeftButton.getBounds().width
+						 - self.$.refresh.getBounds().width
+						 - 30
+						 + "px");
 
-						//self.$.list.refresh();	
+
+					if(dataLength !== self.entries.length && opts.mode !== 'older'){
+						//go to top.
+						if(App.Prefs.get("timeline-scrollonupdate")){
+
+							//go to first unread
+							self.setScrollPosition();
+							self.$.list.punt();
+
+							//self.$.list.refresh();
+						}
 					}
 				}
 			}
+			function loadFailed(){
+				accountsLoaded--;
+				console.error("Load failed for an account");
+				if(accountsLoaded === 0){
+					self.doLoadFinished();
 
-			switch (self.info.type) {
-				case SPAZ_COLUMN_HOME:
-					loadStarted();
-					self.twit.getHomeTimeline(since_id, 50, null, null,
-						function(data) {
-							self.processData(data, opts);
-							loadFinished();
-						},
-						loadFinished
-					);
-					break;
-				case SPAZ_COLUMN_MENTIONS:
-					// this method would consistently 502 if we tried to get 200. limit to 100
-					loadStarted();
-					self.twit.getReplies(since_id, 50, null, null,
-						function(data) {
-							self.processData(data, opts);
-							loadFinished();
-						},
-						loadFinished
-					);
-					break;
-				case SPAZ_COLUMN_MESSAGES:
-					loadStarted();
-					self.twit.getDirectMessages(since_id, 50, null, null,
-						function(data) {
-							self.processData(data, opts);
-							loadFinished();
-						},
-						loadFinished
-					);
-					break;
-				case SPAZ_COLUMN_SEARCH:
-					loadStarted();
-					self.twit.search(self.info.query, since_id, 50, null, null, null,
-						function(data) {
-							self.processData(data, opts);
-							loadFinished();
-						},
-						loadFinished
-					);
-					break;
-					
-				case SPAZ_COLUMN_FAVORITES:
-					loadStarted();
-					self.twit.getFavorites(since_id, null, null,
-						function(data) {
-							self.processData(data, opts);
-							loadFinished();
-						},
-						loadFinished
-					);					
-					break;
-				 case SPAZ_COLUMN_SENT:
-				 	loadStarted();
-				 	window.AppCache.getUser(account.username, account.type, account.id,
-				 		function(user){
-				 			self.twit.getUserTimeline(user.service_id, 50, null,
-						 		function(data) {
-						 			self.processData(data, opts);
-						 			loadFinished();
-						 		},
-					 			loadFinished
-				 			);
-				 		},
-				 		loadFinished
-				 	);
-				 	break;
-				case SPAZ_COLUMN_LIST:
-					loadStarted();
-					window.AppCache.getUser(account.username, account.type, account.id,
-						function(user) {
-							self.twit.getListTimeline(self.info.query,user.service_id,
-								function(data) {
-									self.processData(data.statuses, opts);
-									loadFinished();
-								},
-								loadFinished
-						);},
-						loadFinished
-					);
-					break;
+					self.$.refresh.setShowing(false);
+					self.$.refresh.removeClass("spinning");
+					self.$.header.applyStyle("max-width",
+						self.$.toolbar.getBounds().width
+						 - self.$.unreadCount.getBounds().width
+					 	 - self.$.accountName.getBounds().width
+						 - self.$.topRightButton.getBounds().width
+						 - self.$.topLeftButton.getBounds().width
+						 - self.$.refresh.getBounds().width
+						 - 30
+						 + "px");
+				}
+			}
+
+			function loadData(account_id){
+				var account = App.Users.get(account_id);
+				var auth = new SpazAuth(account.type);
+				auth.load(account.auth);
+
+				self.twit = new SpazTwit();
+				self.twit.setBaseURLByService(account.type);
+				self.twit.setSource(App.Prefs.get('twitter-source'));
+				self.twit.setCredentials(auth);
+
+				switch (self.info.type) {
+					case SPAZ_COLUMN_HOME:
+						loadStarted();
+						self.twit.getHomeTimeline(since_id, 50, null, null,
+							function(data) {
+								//self.processData(data, opts);
+								loadFinished(data, opts, account_id);
+							},
+							loadFailed
+						);
+						break;
+					case SPAZ_COLUMN_MENTIONS:
+						// this method would consistently 502 if we tried to get 200. limit to 100
+						loadStarted();
+						self.twit.getReplies(since_id, 50, null, null,
+							function(data) {
+								//self.processData(data, opts);
+								loadFinished(data, opts, account_id);
+							},
+							loadFailed
+						);
+						break;
+					case SPAZ_COLUMN_MESSAGES:
+						loadStarted();
+						self.twit.getDirectMessages(since_id, 50, null, null,
+							function(data) {
+								//self.processData(data, opts);
+								loadFinished(data, opts, account_id);
+							},
+							loadFailed
+						);
+						break;
+					case SPAZ_COLUMN_SEARCH:
+						loadStarted();
+						self.twit.search(self.info.query, since_id, 50, null, null, null,
+							function(data) {
+								//self.processData(data, opts);
+								loadFinished(data, opts, account_id);
+							},
+							loadFailed
+						);
+						break;
+
+					case SPAZ_COLUMN_FAVORITES:
+						loadStarted();
+						self.twit.getFavorites(since_id, null, null,
+							function(data) {
+								//self.processData(data, opts);
+								loadFinished(data, opts, account_id);
+							},
+							loadFailed
+						);
+						break;
+					 case SPAZ_COLUMN_SENT:
+					 	loadStarted();
+					 	window.AppCache.getUser(account.username, account.type, account.id,
+					 		function(user){
+					 			self.twit.getUserTimeline(user.service_id, 50, null,
+							 		function(data) {
+							 			//self.processData(data, opts);
+							 			loadFinished(data, opts, account_id);
+							 		},
+						 			loadFailed
+					 			);
+					 		},
+					 		loadFailed
+					 	);
+					 	break;
+					case SPAZ_COLUMN_LIST:
+						loadStarted();
+						window.AppCache.getUser(account.username, account.type, account.id,
+							function(user) {
+								self.twit.getListTimeline(self.info.list,user.service_id,
+									function(data) {
+										self.processData(data.statuses, opts);
+										loadFinished();
+									},
+									loadFinished
+							);},
+							loadFinished
+						);
+						break;
+				}
 			}
 
 		} catch(e) {
 			console.error(e);
 			// AppUtils.showBanner('you probably need to make an account');
 		}
-		
+
 	},
-	processData: function(data, opts) {
+	processData: function(arrayOfData, opts, account_id) {
 		var self = this;
-		
+
 		opts = sch.defaults({
 			'mode':'newer',
 			'since_id':null,
 			'max_id':null
 		}, opts);
-		
-		if (data) {
+
+		if (arrayOfData) {
 			enyo.log('adding new data');
 			switch (this.info.type) {
-				default:					
-					
+				default:
+					var data = [], earliestPublishDate = 0;
+					_.each(arrayOfData, function(array){
+
+						if (!array) {
+							return;
+						}
+
+						/* convert to our internal format */
+						array = AppUtils.convertToEntries(array);
+
+						//if the EARLIEST item is more recent, set it to our earliestPublishDate
+						if(_.first(array).publish_date > earliestPublishDate){
+							earliestPublishDate = _.first(array).publish_date;
+						}
+						data = data.concat(array);
+					});
+
 					/* check for duplicates based on the .id property */
 					/* we do this before conversion to save converting stuff
 					   that won't be needed */
 					data = _.reject(data, function(item) {
 						for (var i = 0; i < self.entries.length; i++) {
-							if (item.id === self.entries[i].service_id) {
+							if (item.service_id === self.entries[i].service_id) {
 								return true;
 							} else {
 								if (opts.mode === 'older') {
@@ -323,14 +377,14 @@ enyo.kind({
 							}
 						}
 					});
-					
+
 					if (data.length > 0) {
 						/* convert to our internal format */
-						data = AppUtils.convertToEntries(data);
+						//data = AppUtils.convertToEntries(data);
 
 						/* add more entry properties */
-						data = AppUtils.setAdditionalEntryProperties(data, this.info.accounts[0]);
-						
+						data = AppUtils.setAdditionalEntryProperties(data);
+
 						// mark new as read or not read, depending on mode
 						for (var i = data.length - 1; i >= 0; i--){
 							if (opts.mode === 'older') {
@@ -343,42 +397,48 @@ enyo.kind({
 						/* concat to existing entries */
 						this.entries = [].concat(data.reverse(), this.entries);
 
+						this.entries = _.reject(this.entries, function(item) {
+							if ((item.publish_date < earliestPublishDate)) {
+								return true;
+							}
+						});
+
 						/* sort our good stuff */
 						this.sortEntries();
-						
+
 						this.scrollOffset = 0;
 						if(data.length > 0){
 							this.$.list.refresh();
 						}
-						
+
 					}
 					break;
 			}
 		} else {
 			enyo.log('No new data');
 		}
-		
+
 		this.markOlderAsRead();
-		
+
 		if(opts.forceCountUnread) {
 			this.countUnread();
 		}
-		
+
 		this.setLastRead();
-		
+
 		this.notifyOfNewEntries();
-		
+
 	},
-	
-	
+
+
 	notifyOfNewEntries: function() {
 		var new_entries = _.reject(this.entries, function(item) { return !!item.read; } );
-		
+
 		for (var i=0; i < new_entries.length; i++) {
 			AppUI.addEntryToNotifications(new_entries[i]);
 		}
 	},
-	
+
 	markAllAsRead: function() {
 		enyo.log('Marking all as read');
 		var changed = 0;
@@ -394,7 +454,7 @@ enyo.kind({
 			this.countUnread();
 		}
 	},
-	
+
 	markOlderAsRead: function() {
 		var last_read_date = this.getLastRead();
 		var changed = 0;
@@ -404,11 +464,11 @@ enyo.kind({
 					changed++;
 				//}
 				this.entries[i].read = true;
-			}			
+			}
 		}
 		if (changed > 0) {
 			this.countUnread();
-		}		
+		}
 	},
 	countUnread: function() {
 		var count = 0;
@@ -419,25 +479,25 @@ enyo.kind({
 		});
 		if(count > 0){
 			this.$.unreadCount.show();
-			this.$.unreadCount.setContent(count);			
+			this.$.unreadCount.setContent(count);
 		} else {
 			this.$.unreadCount.hide();
 		}
-		this.$.header.applyStyle("max-width", 
+		this.$.header.applyStyle("max-width",
 			this.$.toolbar.getBounds().width
-				 - this.$.unreadCount.getBounds().width 
-				 - this.$.accountName.getBounds().width 
-				 - this.$.topRightButton.getBounds().width 
+				 - this.$.unreadCount.getBounds().width
+				 - this.$.accountName.getBounds().width
+				 - this.$.topRightButton.getBounds().width
 				 - this.$.topLeftButton.getBounds().width
 				 - this.$.refresh.getBounds().width
 				 - 30
 				 + "px");
-			
+
 
 	},
 	scrollToFirstUnread: function(){
 		this.setScrollPosition();
-		this.$.list.refresh();
+		this.$.list.punt();
 
 	},
 	setScrollPosition: function() {
@@ -445,22 +505,22 @@ enyo.kind({
 			for(var i = 0; i < this.entries.length; i++){
 				if(this.entries[i].read === true){ //this is the first read entry
 					this.scrollOffset = (i > 0) ? (i-1): 0;
-					//console.log("this.scrollOffset", this.scrollOffset);
+					//set scrollOffset to be first unread item
 					break;
 				}
-			};	
+			};
 		} else {
 			this.scrollOffset = 0;//this.loadOffset; @TODO
 		}
 
 	},
-	
+
 	sortEntries: function() {
 		this.entries.sort(function(a,b){
 			return b.service_id - a.service_id; // newest first
 		});
 	},
-	
+
 	setupRow: function(inSender, inIndex) {
 		var entry;
 		if ( (entry = this.entries[inIndex + this.scrollOffset]) ) {
@@ -474,14 +534,14 @@ enyo.kind({
 		if(App.Prefs.get("entry-tap") === "panel"){
 			AppUI.viewEntry(inSender.entry);
 		} else {
-			this.$.entryClickPopup.showAtEvent(inSender.entry, inEvent);	
+			this.$.entryClickPopup.showAtEvent(inSender.entry, inEvent);
 		}
 
 	},
 	entryHold: function(inSender, inEvent, inRowIndex) {
 		inSender.entry.columnIndex = parseInt(this.name.replace('Column', ''), 10);
 		if(App.Prefs.get("entry-hold") === "popup"){
-			this.$.entryClickPopup.showAtEvent(inSender.entry, inEvent);	
+			this.$.entryClickPopup.showAtEvent(inSender.entry, inEvent);
 		} else if(App.Prefs.get("entry-hold") === "panel"){
 			AppUI.viewEntry(inSender.entry);
 		}
@@ -497,51 +557,51 @@ enyo.kind({
 		this.inherited(arguments);
 		if (this.hasNode()) {
 			this.$.header.setContent("");
-			
+
 			// this.$.header.applyStyle("max-width", this.$.accountName.getBounds().left - this.$.header.getBounds().left + "px");
 			// this.$.header.setContent(_.capitalize(this.info.type));
-			
+
 			var headerBounds = this.$.header.getBounds();
 			var accountNameBounds = this.$.accountName.getBounds();
 			this.$.header.applyStyle("max-width", accountNameBounds.left - headerBounds.left + "px");
 			if(this.info.type === "list") {
-				this.$.header.setContent(this.info.query);
+				this.$.header.setContent(this.info.list);
 			} else {
 				this.$.header.setContent(_.capitalize(this.info.type));
 			}
 		}
 	},
-	refreshList: function(){
+	refreshList: function(forceReload){
 		this.$.list.refresh();
-		
-		if(this.info.type === SPAZ_COLUMN_FAVORITES){
+
+		if(this.info.type === SPAZ_COLUMN_FAVORITES || forceReload === true){
 			this.entries = [];
 			this.loadData();
 		}
 	},
-	
+
 	getHash: function() {
 		return sch.MD5(this.info.type + "_" + this.info.id);
 	},
-	
+
 	getLastRead: function() {
 		return LastRead.get(this.getHash());
 	},
-	
+
 	setLastRead: function() {
 		var last_read_date = 1;
 
 		if (this.entries.length > 0) {
 			// find newest publish_date
-			// we assume we're newest first	
+			// we assume we're newest first
 			var newest_item = _.max(this.entries, function(item) { return item.publish_date; });
 			last_read_date = newest_item.publish_date;
 		}
-		
+
 		LastRead.set(this.getHash(), last_read_date);
-		
+
 	},
-	
+
 	removeEntryById: function(inEntryId) {
 		for (var i = this.entries.length - 1; i >= 0; i--) {
 			if (this.entries[i].service_id === inEntryId) {
@@ -550,20 +610,25 @@ enyo.kind({
 		}
 		this.$.list.refresh();
 	},
-	
+
 	deleteClicked: function(inSender, inEvent) {
 		this.doDeleteClicked();
-		
+
 		// we've handled this event, stop it from propagating up
 		return true;
 	},
-	
+
 	unreadClicked: function(inSender, inEvent) {
 		// @TODO Maybe some fancy animation to hide the unread count?
 		this.markAllAsRead();
-		
+
 		// we've handled this event, stop it from propagating up
 		return true;
+	},
+
+	showHideEntries: function(inShowHide){
+		this.$.list.setShowing(inShowHide);
+		// this.$.spazLogo.setShowing(!inShowHide);
 	}
-	
+
 });

@@ -1,12 +1,12 @@
 var SPAZ_DEFAULT_PREFS = {
-	
+
 	'last_username':null,
 	'last_type':null,
 	'last_userid':null,
-	
+
 	//'app-theme':'Dreadnaught',
 
-	'users':[], // an array of user objects with properties { 'id', 'username', 'password', 'type', 'meta' }	
+	'users':[], // an array of user objects with properties { 'id', 'username', 'password', 'type', 'meta' }
 	'always-go-to-my-timeline':false,
 
     'use-markdown': true,
@@ -25,15 +25,15 @@ var SPAZ_DEFAULT_PREFS = {
 	'notify-mentions':true,
 	'notify-dms':true,
 	'notify-searchresults':false,
-	
+
 	'network-refresh-auto':true,
 	'network-refresh-wake':false,
-	
+
     'timeline-scrollonupdate': true,
 
     'timeline-maxentries': 100,
-    'timeline-maxentries-dm': 50, 
-    'timeline-maxentries-reply': 50, 
+    'timeline-maxentries-dm': 50,
+    'timeline-maxentries-reply': 50,
 
     'timeline-friends-getcount': 100,
     'timeline-replies-getcount': 10,
@@ -64,7 +64,7 @@ var SPAZ_DEFAULT_PREFS = {
 	'entry-text-size': '13px',
 	'entry-tap': 'panel',
 	'entry-hold': 'popup',
-	
+
 	'post-rt-cursor-position': 'beginning', // 'beginning' or 'end'
 	'post-send-on-enter': true,
 	'refresh-after-posting': true,
@@ -73,5 +73,5 @@ var SPAZ_DEFAULT_PREFS = {
 	'run-lastVersion':'0.0.1',
 	'run-isFirst':true,
 	'run-isNew':true,
-	'run-count':0 
+	'run-count':0
 };

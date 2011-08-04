@@ -25,7 +25,7 @@ enyo.kind({
 		]},
 		{kind: "HFlexBox", name: "inReplyEntryText", content: "", allowHtml: true, style: "overflow: hidden; color:#666666; font-size:14px; padding-bottom:1em;" },
 		{name: "postTextBoxContainer", kind: "Control", style: "min-height: 50px", components: [
-			{name:"postTextBox", kind: "Spaz.RichText", alwaysLooksFocused: true, flex: 1, oninput: "postTextBoxInput", hint: "Type message here...", onkeyup: "postTextBoxKeydown", onfocus: "postTextBoxFocus", components: [
+			{name:"postTextBox", kind: "Spaz.RichText", alwaysLooksFocused: true, flex: 1, oninput: "postTextBoxInput", hint: "Type message here...", onkeydown: "postTextBoxKeydown", onfocus: "postTextBoxFocus", components: [
 				{name: "remaining", style: "color: grey; padding-left: 5px;", content: "140"}
 			]}
 		]},
@@ -49,7 +49,7 @@ enyo.kind({
 	},
 	close: function(){
 		this.inherited(arguments);
-		
+
 		enyo.keyboard.forceHide();
 	},
 	buildAccounts: function() {
@@ -86,28 +86,28 @@ enyo.kind({
 			this.validateComponents();
 		}
 		this.buildAccounts();
-		
+
 		var width = 0;
 		_.each(this.accounts, function(account){
 			if(account.caption.length > width){
-				width = account.caption.length;			
+				width = account.caption.length;
 			}
 		});
 		this.applyStyle("width", 490 + width + "px"); //set the width based on the longest username.
 
 		this.setAllDisabled(false);
 		this.$.postTextBoxContainer.setShowing(true);
-		
+
 		this.openAtTopCenter();
 		this.$.postTextBox.forceFocus();
-		
+
 		if(!this.isRepost) {
 			enyo.keyboard.show(4);
 		}
 	},
 
 	dmUserChanged: function(){
-		//this can be set by calling this.$.composePopup.setDmUser({}); (from parent) 
+		//this can be set by calling this.$.composePopup.setDmUser({}); (from parent)
 		//this should be cleared on send
 		//set flag?
 		if (!this.dmUser) {
@@ -116,29 +116,29 @@ enyo.kind({
 			this.$.composeHeader.setContent('Message to '+this.dmUser);
 			this.isDM = true;
 		}
-		
+
 	},
-	
+
 	inReplyEntryChanged: function(){
 		this.$.inReplyEntryText.setContent(this.inReplyEntryText);
-		
+
 		if (!this.isDM) { // we can set the irtText when it's a DM too, so check
 			if (!this.inReplyToId) {
 				this.$.inReplyEntryText.hide();
 			} else {
 				this.$.composeHeader.setContent('Reply');
 				this.$.inReplyEntryText.show();
-			}		
+			}
 		}
-		
-		
+
+
 		if (this.inReplyEntryText) {
 			this.$.inReplyEntryText.show();
 		} else {
 			this.$.inReplyEntryText.hide();
 		}
-		
-		
+
+
 	},
 	setPostingAccount: function(account_id) {
 		for (var i = 0; i < this.$.accountSelection.items.length; i++) {
@@ -161,7 +161,7 @@ enyo.kind({
 	onSendClick: function(inSender) {
 		this.$.sendButton.setActive(true);
 		this.setAllDisabled(true);
-		
+
 		if (this.isDM) {
 			this.twit.sendDirectMessage('@'+this.dmUser, this.$.postTextBox.getValue(),
 				enyo.bind(this, function() {
@@ -169,7 +169,7 @@ enyo.kind({
 					this.$.sendButton.setActive(false);
 					this.setAllDisabled(false);
 					if(App.Prefs.get("refresh-after-posting")) {
-						AppUI.refresh();
+						AppUI.refresh(this.$.accountSelection.getValue());
 					}
 					this.close();
 				}),
@@ -179,22 +179,22 @@ enyo.kind({
 					this.$.sendButton.setActive(false);
 					this.setAllDisabled(false);
 				})
-			);			
+			);
 		} else if(this.isRepost){
-		
+
 			this.twit.retweet(
 				this.repostEntry.service_id,
 				enyo.bind(this, function(data){
 					this.repostEntry = null;
 					this.isRepost = null;
-					
+
 					this.$.sendButton.setActive(false);
 					this.setAllDisabled(false);
 					if(App.Prefs.get("refresh-after-posting")) {
-						AppUI.refresh();
+						AppUI.refresh(this.$.accountSelection.getValue());
 					}
 					this.close();
-				}), 
+				}),
 				enyo.bind(this, function(xhr, msg, exc){
 					this.$.sendButton.setActive(false);
 				})
@@ -206,7 +206,7 @@ enyo.kind({
 					this.$.sendButton.setActive(false);
 					this.setAllDisabled(false);
 					if(App.Prefs.get("refresh-after-posting")) {
-						AppUI.refresh();
+						AppUI.refresh(this.$.accountSelection.getValue());
 					}
 					this.close();
 				}),
@@ -216,14 +216,14 @@ enyo.kind({
 					this.$.sendButton.setActive(false);
 					this.setAllDisabled(false);
 				})
-			);			
+			);
 		}
 	},
 
 	onShortenClick: function(inSender) {
 		this.$.shortenPopup.openAroundControl(inSender);
 	},
-	
+
 	itemSelect: function(inSender, inSelected) {
 		switch(inSelected.value){
 			case "shortenURLs":
@@ -232,33 +232,33 @@ enyo.kind({
 			case "shortenText":
 				this.onShortenTextClick();
 				break;
-			default: 
+			default:
 				console.error(inSelected.value + " has no handler");
 				break;
-		}		
+		}
 	},
-	
+
 	onShortenTextClick: function(inSender) {
 		this.$.postTextBox.setValue(new SpazShortText().shorten(this.$.postTextBox.getValue()));
 		this.$.postTextBox.forceFocus();
 		this.postTextBoxInput();
 	},
-	
+
 	onShortenURLsClick: function(inSender) {
 		var urls = sc.helpers.extractURLs(this.$.postTextBox.getValue());
 		if (urls.length > 0) {
 			this.$.shortenButton.setActive(true);
 			this.$.shortenButton.setDisabled(true);
-			
+
 			var shortener = App.Prefs.get('url-shortener');
 			var apiopts = {};
-			
+
 			switch (shortener) {
 				case SPAZCORE_SHORTURL_SERVICE_ISGD:
 				case SPAZCORE_SHORTURL_SERVICE_GOOGLE:
 				case SPAZCORE_SHORTURL_SERVICE_GOLOOKAT:
 					break;
-					
+
 				default:
 					enyo.log("Unknown shortener: " + shortener + ", falling back to " + SPAZCORE_SHORTURL_SERVICE_JMP);
 					shortener = SPAZCORE_SHORTURL_SERVICE_JMP;
@@ -272,7 +272,7 @@ enyo.kind({
 					};
 					break;
 			}
-			
+
 			new SpazShortURL(shortener).shorten(urls, {
 				apiopts: apiopts,
 				onSuccess: enyo.bind(this, function(inData) {
@@ -289,7 +289,7 @@ enyo.kind({
 			});
 		}
 	},
-	
+
 	postTextBoxInput: function(inSender, inEvent, inValue) {
 		if (!inValue) {
 			inValue = this.$.postTextBox.getValue();
@@ -307,14 +307,14 @@ enyo.kind({
 			this.$.sendButton.setDisabled(true);
 		}
 	},
-	
-	
+
+
 	clear: function() {
-		
+
 		if(this.lazy) { // build the components in case they don't exist yet
 			this.validateComponents();
 		}
-		
+
 		this.$.postTextBox.setValue('');
 		this.dmUser = "";
 		this.inReplyEntryText = "";
@@ -326,7 +326,7 @@ enyo.kind({
 		this.isDM = false;
 		this.isRepost = false;
 	},
-	
+
 	postTextBoxKeydown: function(inSender, inEvent) {
 		// RichText.setDisabled(true) doesn't really work, so we'll check
 		// if the control is disabled and throw out the event if it is.
@@ -339,8 +339,8 @@ enyo.kind({
 				// Enter to send - this should be a pref evenutally.
 				this.onSendClick();
 			}
-			inEvent.preventDefault();	
-			
+			inEvent.preventDefault();
+
 		}
 	},
 
@@ -349,29 +349,29 @@ enyo.kind({
 			inSender.forceBlur();
 		}
 	},
-	
-	
+
+
 	compose: function(opts) {
-		
+
 		this.showAtCenter();
-		
+
 		this.clear();
-		
+
 		opts = sch.defaults({
 			'text':null,
 			'account_id':null
 		}, opts);
-		
+
 		if (opts.account_id) {
 			this.setPostingAccount(opts.account_id);
 		}
-		
+
 		var text = opts.text;
 
 		this.showAtCenter();
 
 		this.clear();
-		
+
 		this.$.postTextBox.setValue(text);
 		this.$.postTextBox.forceFocus();
 		this.cursorToEnd();
@@ -380,14 +380,14 @@ enyo.kind({
 		this.dmUserChanged();
 		this.inReplyEntryChanged();
 	},
-	
-	
+
+
 	replyTo: function(opts) {
-		
+
 		this.showAtCenter();
-		
+
 		this.clear();
-		
+
 		opts = sch.defaults({
 			'to':null,
 			'text':null,
@@ -395,26 +395,26 @@ enyo.kind({
 			'account_id':null,
 			'all':false
 		}, opts);
-		
+
 		var text = '';
 		var skip_usernames = [];
-		
+
 		if (opts.account_id) {
 			this.setPostingAccount(opts.account_id);
 		}
-		
+
 		if (opts.entry) {
-			
+
 			this.inReplyEntryText = opts.entry.text_raw;
-			
+
 			this.inReplyToId = opts.entry.service_id;
-			
+
 			if (opts.account_id) {
 				skip_usernames.push(App.Users.get(opts.account_id).username);
 			}
-			
+
 			skip_usernames.push(opts.entry.author_username);
-			
+
 			var usernames = sch.extractScreenNames(opts.entry.text_raw, skip_usernames);
 
 			// get entry id
@@ -424,16 +424,16 @@ enyo.kind({
 			if (usernames_str.length > 0) {
 				usernames_str = '@'+usernames_str;
 			}
-			
-			text = _.clean(['@'+opts.entry.author_username, usernames_str, opts.text].join(' ')); 
+
+			text = _.clean(['@'+opts.entry.author_username, usernames_str, opts.text].join(' '));
 					//use clean for when usernames_str and/ops.text are blank. We don't want the extra spaces.
-			
+
 		} else if (opts.to) {
 			text = '@'+opts.to;
 		} else {
 			text = '@';
 		}
-		
+
 		this.$.postTextBox.setValue(text + "&nbsp;"); //add a space at the end.
 		this.$.postTextBox.forceFocus();
 		this.cursorToEnd();
@@ -442,37 +442,37 @@ enyo.kind({
 		this.postTextBoxInput();
 		this.dmUserChanged();
 		this.inReplyEntryChanged();
-			
+
 	},
-	
-	
+
+
 	directMessage: function(opts) {
-		
+
 		this.showAtCenter();
-		
+
 		this.clear();
 
 		this.isDM = true;
-		
+
 		opts = sch.defaults({
 			'to':null,
 			'text':null,
 			'entry':null,
 			'account_id':null
 		}, opts);
-		
+
 		if (opts.account_id) {
 			this.setPostingAccount(opts.account_id);
 		}
-		
+
 		this.dmUser = opts.to;
-		
+
 		var text = opts.text || '';
-		
+
 		if (opts.entry) {
 			this.inReplyEntryText = opts.entry.text_raw;
 		}
-		
+
 		this.$.postTextBox.setValue(text);
 		this.$.postTextBox.forceFocus();
 		this.cursorToEnd();
@@ -485,12 +485,12 @@ enyo.kind({
 		this.postTextBoxInput();
 		this.inReplyEntryChanged();
 		this.dmUserChanged();
-		
+
 		// AppUtils.showBanner('NYI!');
-		
+
 	},
-	
-	
+
+
 	repost: function(opts) {
 
 		var self = this;
@@ -503,12 +503,12 @@ enyo.kind({
 
 		// a superhack to get the components to render
 		//this.close();
-		
+
 		opts = sch.defaults({
 			'entry':null,
 			'account_id':null
 		}, opts);
-		
+
 		if (!opts.entry || !opts.account_id) {
 			sch.error("No account and/or entry obj set");
 			return;
@@ -516,35 +516,35 @@ enyo.kind({
 		this.repostEntry = opts.entry;
 		this.setPostingAccount(opts.account_id);
 		this.$.inReplyEntryText.show();
-		
+
 		this.$.inReplyEntryText.setContent("<span style='font-weight: bold'>@" + opts.entry.author_username + ":</span> " + opts.entry.text);
 		this.$.postTextBoxContainer.setShowing(false);
 		this.setRepostDisabled(true);
 
 
 	},
-	
-	
+
+
 	repostManual: function(opts) {
-		
+
 		this.showAtCenter();
-		
+
 		this.clear();
-		
+
 		opts = sch.defaults({
 			'entry':null,
 			'account_id':null
 		}, opts);
-		
+
 		var text = opts.entry.text_raw;
 		var screenname = opts.entry.author_username;
 
 		text = 'RT @' + opts.entry.author_username+' '+opts.entry.text_raw;
-		
+
 		this.showAtCenter();
 
 		this.clear();
-		
+
 		this.$.postTextBox.setValue(text);
 		this.$.postTextBox.forceFocus();
 		this.cursorToEnd();
@@ -553,22 +553,22 @@ enyo.kind({
 		this.dmUserChanged();
 		this.inReplyEntryChanged();
 		this.setPostingAccount(opts.entry.account_id);
-	
+
 	},
-	
-	
+
+
 	quoteMessage: function(opts) {
-		
+
 		this.showAtCenter();
-		
+
 		this.clear();
-		
+
 		opts = sch.defaults({
 			'message':null,
 			'account_id':null
 		}, opts);
 	},
-	
+
 	setAllDisabled: function(inDisabled) {
 		enyo.forEach (this.getComponents(),
 			function(component) {
@@ -581,10 +581,10 @@ enyo.kind({
 		if(inDisabled){
 			this.$.postTextBox.applyStyle("color", "gray");
 		} else {
-			this.$.postTextBox.applyStyle("color", "black");			
+			this.$.postTextBox.applyStyle("color", "black");
 		}
 	},
-	
+
 	setRepostDisabled: function(inDisabled) {
 		enyo.forEach (this.getComponents(),
 			function(component) {
@@ -597,10 +597,10 @@ enyo.kind({
 		if(inDisabled){
 			this.$.postTextBox.applyStyle("color", "gray");
 		} else {
-			this.$.postTextBox.applyStyle("color", "black");			
+			this.$.postTextBox.applyStyle("color", "black");
 		}
 	},
-	
+
 	cursorToEnd : function() {
 		this.$.postTextBox.forceSelect();
 		window.setTimeout(function() {window.getSelection().collapseToEnd();}, 1);
@@ -610,46 +610,46 @@ enyo.kind({
 		this.$.postTextBox.forceSelect();
 		window.setTimeout(function() {window.getSelection().collapseToStart();}, 1);
 	},
-	
-	
-	
+
+
+
 	/********************************
-	 * pickin files 
+	 * pickin files
 	 ********************************/
 	showFilePicker: function(inSender, inEvent) {
 		enyo.keyboard.setManualMode(false);
 		this.$.filePicker.pickFile();
 	},
-	
+
 	handleResult: function(inSender, msg) {
 		this.$.filePicker.close();
-		
+
 		enyo.keyboard.forceShow(4);
-		
+
 		if (msg && msg[0] && msg[0].fullPath) {
 			AppUtils.showBanner($L("Uploading image"));
 			this.upload(msg[0].fullPath);
 		}
 	},
-	
+
 	upload:function(inFileUrl) {
-		
+
 		var image_upl_status = this.$.postTextBox.getValue();
-		
+
 		if (this.isDM) {
 		    image_upl_status = 'from '+enyo.fetchAppInfo().title;
 		}
-		
-		
+
+
 		var self = this;
-		
+
 		var auth = AppUtils.getAuthObj(this.$.accountSelection.getValue());
-		
+
 		var image_uploader = new SpazImageUploader();
-		
+
 		var image_uploader_srvc = App.Prefs.get('image-uploader') || 'twitpic';
 
-		
+
 		this.image_uploader_opts = {
 			'auth_obj': auth,
 			'service' : image_uploader_srvc, // @TODO use pref
@@ -672,16 +672,16 @@ enyo.kind({
 			this.image_uploader_opts['service'] = 'pikchur';
 			this.image_uploader_opts['extra']['service'] = 'identi.ca';
 		}
-		
+
 		image_uploader.setOpts(this.image_uploader_opts);
 
 		image_uploader.upload();
 	},
-	
+
 	onUploadProgress: function(inResponse) {
 		enyo.error(enyo.json.stringify(inResponse));
 	},
-	
+
 	onUploadSuccess: function(inResponse) { // onSuccess
 		if (inResponse.url) {
 			var msg = this.$.postTextBox.getValue();
@@ -691,7 +691,7 @@ enyo.kind({
 				this.$.postTextBox.setValue(inResponse.url);
 			}
 			this.postTextBoxInput();
-			
+
 			AppUtils.showBanner($L("Image uploaded"));
 		} else if (inResponse.error && typeof inResponse.error === 'string') {
 			AppUtils.showBanner($L("Posting image failed:") + " " + inResponse.error);
@@ -699,12 +699,12 @@ enyo.kind({
 			AppUtils.showBanner($L("Posting image failed"));
 		}
 	},
-	
+
 	onUploadFailure: function(inSender, inResponse) { // onFailure
 		AppUtils.showBanner('Posting image FAILED');
 		AppUtils.showBanner("Error!");
 	}
-	
+
 
 });
 

@@ -324,6 +324,8 @@ enyo.kind({
 		// App.versionCookie = new VersionCookie(this.App.Prefs);
 		// App.versionCookie.init();
 
+		this.initAppCache();
+
 	},
 
 	/**
@@ -563,12 +565,12 @@ enyo.kind({
 	getViewEvents: function(){
 		return this.viewEvents;
 	},
-	createColumn: function(inSender, inAccountId, inColumn, inQuery){
-		this.$.container.createColumn(inAccountId, inColumn, inQuery);
+	createColumn: function(inSender, inObj){
+		this.$.container.createColumn(inObj);
 	},
 
-	refreshAll: function() {
-		this.$.container.refreshAll();
+	refreshAll: function(inSender, account_id) {
+		this.$.container.refreshAll(account_id);
 	},
 
 	refreshAllFinished: function() {
@@ -674,7 +676,7 @@ enyo.kind({
 		this.$.container.accountAdded(inAccountId);
 	},
 	accountRemoved: function(inSender, inAccountId) {
-		this.$.container.removeColummnsForAccount(inAccountId);
+		this.$.container.checkAccountChanges(inAccountId);
 	},
 	showAccountsPopup: function(inSender) {
 		this.$.sidebar.showAccountsPopup();
@@ -723,5 +725,10 @@ enyo.kind({
 			platform: sch.getPlatform(),
 			appVersion: enyo.fetchAppInfo().version
 		});
+	},
+	initAppCache: function() {
+		App.Cache = {
+			'EntriesHTML' : new Cache(750)
+		}
 	}
 });

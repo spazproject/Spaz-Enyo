@@ -1,6 +1,6 @@
 ﻿enyo.kind({
-	name: "Spaz.ActivityIconButton", 
-	kind: "enyo.IconButton", 
+	name: "Spaz.ActivityIconButton",
+	kind: "enyo.IconButton",
 	published: {
 		active: false
 	},

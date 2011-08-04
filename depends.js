@@ -9,7 +9,7 @@ enyo.depends(
 	"vendors/showdown.js",
 	"vendors/spazcore.js", // includes underscore, underscore.string
 	"vendors/spazcore-enyo-webos-network.js",
-	
+
 	"vendors/ekl/List/",
 	"vendors/ekl/Layout/",
 
@@ -28,7 +28,7 @@ enyo.depends(
 	"source/javascript/libs/emoticons.js",
 	"source/javascript/libs/emoticons/simplesmileys.js",
 	"source/javascript/libs/emoticons/sae-tweek.js",
-	
+
 	// filters
 	"source/javascript/filters/default_filters.js",
 
@@ -41,18 +41,18 @@ enyo.depends(
 	"source/javascript/SpazPopup.js",
 	"source/javascript/SpazNotifier.js",
 	"source/javascript/SpazRichText.js",
-	
+
 	//views
 	"source/javascript/Sidebar.js",
 	"source/javascript/Container.js", //container for columns
 	"source/javascript/Column.js",
 	"source/javascript/SearchColumn.js",
 	"source/javascript/UnifiedColumn.js",
-	
+
 	//popouts
 	"source/javascript/EntryView.js",
 	"source/javascript/UserView.js",
-	
+
 	//popups
 	"source/javascript/ComposePopup.js",
 	"source/javascript/ColumnsPopup.js",
@@ -62,7 +62,7 @@ enyo.depends(
 	"source/javascript/EntryClickPopup.js",
 	"source/javascript/ImageViewPopup.js",
 	"source/javascript/AboutPopup.js",
-	
+
 	//containers
 	"source/javascript/NewColumnsContainer.js",
 	"source/javascript/AccountsList.js",

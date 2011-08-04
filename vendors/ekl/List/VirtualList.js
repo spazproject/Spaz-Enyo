@@ -15,7 +15,7 @@ enyo.kind({
     events: {
 		onPullToRefresh: ""
     },
-    
+
     mousewheelHandler: function(inSender, inEvent) {
         if (this.mousewheel) {
                 //if at top, don't let you scroll up.
@@ -36,7 +36,7 @@ enyo.kind({
                 //Simulate ending a drag
                 this.$.scroller.$.scroll.dragFinish();
            //}
-           
+
         }
     },
 	holdMousePoller: function() {
@@ -95,4 +95,5 @@ enyo.kind({
     	this.dragHoldTime = 0;
 	*/
     }
+
 });

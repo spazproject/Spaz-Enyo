@@ -31,7 +31,28 @@ a:active,
 .avatar, .small-avatar {
 	-webkit-border-radius: 5px;
 }
+.Column {
+}
 
+.Column .timeline {
+	background-color: #D8D8D8;
+	margin: 0px 3px;
+	min-height: 200px;
+	background-position:center top;
+	background-image:url(../images/column-bg.png);
+}
+/*.Column .spazLogo {
+	position: absolute;
+	left: 0px;
+	right: 0px;
+	top: 0px;
+	bottom: 0px;
+	margin: auto;
+	background-color: #D8D8D8;
+	pointer-events: none;
+
+}
+*/
 
 /* Entries */
 .entry .avatar {
@@ -146,7 +167,7 @@ a:active,
 	from {
 		-webkit-transform: rotate(0deg);
 	}
-	to { 
+	to {
 		-webkit-transform: rotate(360deg);
 	}
 }
@@ -255,14 +276,6 @@ a:active,
 	/*bottom: 1px;*/
 }
 
-.ptrTeaser {
-	background-color: #D8D8D8;
-	font-size: 13px;
-	padding-top: 10px;
-	margin: 0 3px;
-	text-align: center;
-}
-
 .columnSpacer {
 	-webkit-transition: width 0.2s ease-in-out;
 }
@@ -272,10 +285,25 @@ a:active,
     -webkit-box-shadow: 10px #000000;
     box-shadow: 10px #000000;
 }
-
+.Column {
+	position: relative;
+}
 .Column.moving {
 	position: absolute;
 	z-index: 50000;
 	-webkit-user-drag: none;
 	pointer-events: none;
+}
+
+.spaz-entry-item {
+	background-color:#D8D8D8;
+}
+.spaz-entry-item.is_private_message {
+	background-color:#e0c7c7;
+}
+.spaz-entry-item.is_mention {
+	background-color:#c3ccd7;
+}
+.spaz-entry-item.is_author {
+	background-color:#c2dbc2;
 }

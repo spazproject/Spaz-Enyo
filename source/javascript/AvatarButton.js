@@ -5,7 +5,7 @@ enyo.kind({
 	kind: "CustomButton",
 	className: "enyo-button-avatar",
 	published: {
-		avatar: ""	
+		avatar: ""
 	},
 	components: [
 		{kind: "Image", width: "100%", height: "100%", src: ""}
@@ -22,7 +22,7 @@ enyo.kind({
 		if(this.avatar === avatar){
 			this.setDepressed(true);
 		} else {
-			this.setDepressed(false);			
+			this.setDepressed(false);
 		}
 	},
 });

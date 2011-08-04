@@ -19,12 +19,12 @@ enyo.kind({
 		var account = App.Users.get(this.entry.account_id);
 		var auth = new SpazAuth(account.type);
 		auth.load(account.auth);
-			
+
 		var twit =new SpazTwit();
 		twit.setBaseURLByService(account.type);
 		twit.setSource(App.Prefs.get('twitter-source'));
 		twit.setCredentials(auth);
-			
+
 		if (this.entry.is_favorite) {
 			enyo.log('UNFAVORITING %j', this.entry);
 			twit.unfavorite(
@@ -46,7 +46,7 @@ enyo.kind({
 					this.entry.is_favorite = true;
 					AppUtils.showBanner($L('Added favorite'));
 					AppUI.rerenderTimelines();
-					
+
 				}),
 				function(xhr, msg, exc) {
 					AppUtils.showBanner($L('Error adding favorite'));
@@ -83,22 +83,22 @@ enyo.kind({
 		enyo.forEach (this.$.menu.getControls(), function (control) {
 			 control.destroy();
 		});
-		
+
 		var components = [
 			{caption: enyo._$L("Details"), onclick: "detailsClicked"},
 			{caption: enyo._$L("Reply"), onclick: "replyClicked"}
 		];
-		
+
 		if(this.entry.is_favorite){
 			components.push({caption: enyo._$L("Unfavorite"), onclick: "favoriteClicked"});
 		} else if(!this.entry.is_private_message){
 			components.push({caption: enyo._$L("Favorite"), onclick: "favoriteClicked"});
 		}
-		
+
 		if((this.entry.is_author) || (this.entry.is_private_message)) {
 			components.push({caption: enyo._$L("Delete"), onclick: "deleteClicked"});
 		}
-		
+
 		components.push({caption: enyo._$L("Share"), onclick: "shareClicked", components: [
 			{caption: enyo._$L("Repost"), onclick: "repostClicked"},
 			{caption: enyo._$L("Edit & Repost"), onclick: "editRepostClicked"},
@@ -106,7 +106,7 @@ enyo.kind({
 			{caption: enyo._$L("SMS/IM"), onclick: "smsClicked"},
 			{caption: enyo._$L("Copy To Clipboard"), onclick: "clipboardClicked"}
 		]});
-		
+
 		this.$.menu.createComponents(components, {owner:this});
 		this.$.menu.render();
 	}

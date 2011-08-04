@@ -1,18 +1,18 @@
 /**
  * A model for interfacing with the Entries depot
- * 
+ *
  */
 var Entries = function(opts) {
-	
+
 	this.opts = sch.defaults({
 		'replace':false,
 		'prefs_obj':null
 	}, opts);
-	
+
 	this.bucket = new Lawnchair({name:"ext:entries"});
 	this.dm_bucket = new Lawnchair({name:"ext:dms"});
 	this.user_bucket = new Lawnchair({name:"ext:users"});
-	
+
 	this.user_bucket.each = function(callback, onFinish) {
 		var cb = this.adaptor.terseToVerboseCallback(callback);
 		var onfin = this.adaptor.terseToVerboseCallback(onFinish);
@@ -24,7 +24,7 @@ var Entries = function(opts) {
 			onfin(l);
 		});
 	};
-	
+
 	this.user_bucket.match = function(condition, callback) {
 		var is = (typeof condition == 'string') ? function(r){return eval(condition);} : condition;
 		var cb = this.adaptor.terseToVerboseCallback(callback);
@@ -39,12 +39,12 @@ var Entries = function(opts) {
 			cb(matches);
 		});
 	};
-	
+
 	this._init(this.opts.replace);
 };
 
 /**
- * max size of a bucket. We need to be able to cull older entries 
+ * max size of a bucket. We need to be able to cull older entries
  */
 Entries.prototype.maxBucketSize = 20000;
 
@@ -62,14 +62,14 @@ Entries.prototype._init  = function(replace) {
 
 Entries.prototype.get    = function(id, isdm, onSuccess, onFailure) {
 	var bucket = this.getBucket(isdm);
-	
+
 	var that = this;
-	
+
 	/*
 		make sure this is an integer
-	*/	
+	*/
 	// id = parseInt(id, 10);
-	
+
 	bucket.get(id,
 		function(data) { // wrapper for the passed onSuccess
 			if (!data) {
@@ -96,24 +96,24 @@ Entries.prototype.get    = function(id, isdm, onSuccess, onFailure) {
 
 Entries.prototype.save   = function(object, onSuccess, onFailure) {
 	var objid = object.id;
-	
+
 	/*
 		make sure this is an integer
 	*/
 	// objid = parseInt(objid, 10);
-	
+
 	object.key = objid;
 
 	sch.debug("Saving object "+sch.enJSON(object));
-	
-	
+
+
 	sch.debug("Saving id "+objid);
 	if (!object.SC_is_dm) {
 		sch.debug("Saving TWEET "+objid);
 		this.bucket.save(object);
 		if (object.user) {
 			sch.debug("Saving user "+object.user.id);
-			this.saveUser(object.user);			
+			this.saveUser(object.user);
 		} else {
 			sch.debug('Tweet '+objid+' did not have a user object');
 		}
@@ -139,14 +139,14 @@ Entries.prototype.remove = function(objid, isdm, onSuccess, onFailure) {
 	isdm = isdm === true || false;
 
 	var bucket = this.getBucket(isdm);
-	
+
 	// objid = parseInt(objid, 10);
 	bucket.remove(objid);
 };
 
 
 
-Entries.prototype.saveUser = function(userobj) { 
+Entries.prototype.saveUser = function(userobj) {
 	// userobj.key = parseInt(userobj.id, 10);
 	userobj.key = userobj.id;
 	this.user_bucket.save(userobj);
@@ -156,13 +156,13 @@ Entries.prototype.saveUser = function(userobj) {
 Entries.prototype.getUser = function(id, onSuccess, onFailure, extra) {
 	var that = this;
 	var screen_name;
-	
+
 	sch.debug('passed id is "'+id+'"');
-	
+
 	if (extra) {
 		console.error('extra passed to getUser:%j', extra);
 	}
-	
+
 	var onDataSuccess = function(data) { // wrapper for the passed onSuccess
 		if (!data) {
 			sch.debug("Couldn't retrieve id "+id+"; getting remotely");
@@ -175,7 +175,7 @@ Entries.prototype.getUser = function(id, onSuccess, onFailure, extra) {
 					} else {
 						sch.debug('saving remotely retrieved user');
 						that.saveUser(data);
-						onSuccess(data);					
+						onSuccess(data);
 					}
 				},
 				onFailure,
@@ -186,7 +186,7 @@ Entries.prototype.getUser = function(id, onSuccess, onFailure, extra) {
 			onSuccess(data);
 		}
 	};
-	
+
 	/*
 		if the id starts with a '@', we have a screen_name
 	*/
@@ -209,7 +209,7 @@ Entries.prototype.getUser = function(id, onSuccess, onFailure, extra) {
 				}
 			}
 		);
-		
+
 	/*
 		otherwise, we assume we have a numeric ID
 	*/
@@ -224,7 +224,7 @@ Entries.prototype.getUser = function(id, onSuccess, onFailure, extra) {
 
 
 	}
-	
+
 };
 
 Entries.prototype.removeUser = function(id) {
@@ -235,7 +235,7 @@ Entries.prototype.removeUser = function(id) {
 
 Entries.prototype.getSince = function(unixtime, isdm) {
 	var bucket = this.getBucket(isdm);
-	
+
 	bucket.find(
 		function(r) {
 			return r.SC_created_at_unixtime > unixtime;
@@ -249,7 +249,7 @@ Entries.prototype.getSince = function(unixtime, isdm) {
 
 Entries.prototype.getSinceId = function(since_id, isdm) {
 	var bucket = this.getBucket(isdm);
-	
+
 	bucket.find(
 		function(r) {
 			return r.key > since_id;
@@ -263,7 +263,7 @@ Entries.prototype.getSinceId = function(since_id, isdm) {
 
 Entries.prototype.removeBefore = function(unixtime, isdm) {
 	var bucket = this.getBucket(isdm);
-	
+
 	bucket.find(
 		function(r) {
 			return r.SC_created_at_unixtime < unixtime;
@@ -276,7 +276,7 @@ Entries.prototype.removeBefore = function(unixtime, isdm) {
 
 Entries.prototype.removeBeforeId = function(id, isdm) {
 	var bucket = this.getBucket(isdm);
-	
+
 	bucket.find(
 		function(r) {
 			return r.key < id;
@@ -308,7 +308,7 @@ Entries.prototype.getRemote = function(id, isdm, onSuccess, onFailure, twit_opts
 	}
 
 	sch.debug("getting message id "+id+" remotely!!");
-	
+
 	if (isdm) {
 		thisA.showAlert($L('There was an error retrieving this direct message from cache'));
 	} else {
@@ -318,17 +318,17 @@ Entries.prototype.getRemote = function(id, isdm, onSuccess, onFailure, twit_opts
 
 Entries.prototype.getRemoteUser = function(id, onSuccess, onFailure, twit_opts) {
 	var twit;
-	
+
 	if (twit_opts) {
 		twit = this.initTempSpazTwit(twit_opts);
 	} else {
 		this.initSpazTwit();
 		twit = this.twit;
 	}
-	
-	
+
+
 	sch.debug("getting user id "+id+" remotely!!");
-	
+
 	twit.getUser(id, onSuccess, onFailure);
 };
 
@@ -338,61 +338,61 @@ Entries.prototype.getRemoteUser = function(id, onSuccess, onFailure, twit_opts) 
 
 Entries.prototype.initSpazTwit = function(event_mode) {
 	event_mode = event_mode || 'jquery'; // default this to jquery because we have so much using it
-	
+
 	var users = new SpazAccounts(this.opts.prefs_obj);
-	
+
 	this.twit = new SpazTwit({
 		'event_mode':event_mode,
 		'timeout':1000*60
 	});
 	this.twit.setSource(this.opts.prefs_obj.get('twitter-source'));
-	
-	
+
+
 	var auth;
 	if ( (auth = AppPrefs.getAuthObject()) ) {
 		this.twit.setCredentials(auth);
 		this.twit.setBaseURLByService(AppPrefs.getAccountType());
 	} else {
 		// alert('NOT seetting credentials for!');
-	}	
+	}
 
 };
 
 
 /**
  * in situations where we want to use different credentials/access a different
- * service, we make a new, temporary SpazTwit object 
+ * service, we make a new, temporary SpazTwit object
  */
 Entries.prototype.initTempSpazTwit = function(opts) {
 	var twit, auth;
-	
+
 	opts = sch.defaults({
 		'event_mode':'jquery',
 		'auth_obj':null,
 		'user_type':SPAZCORE_ACCOUNT_TWITTER,
 		'user_api_url':null
 	}, opts);
-	
-	console.error('initTempSpazTwit opts:%j', opts);	
-	
+
+	console.error('initTempSpazTwit opts:%j', opts);
+
 	twit = new SpazTwit({
 		'event_mode':opts.event_mode,
 		'timeout':1000*60
 	});
 	twit.setSource(this.opts.prefs_obj.get('twitter-source'));
-	
+
 	if ( opts.auth_obj ) {
 		twit.setCredentials(opts.auth_obj);
 	}
-	
+
 	if (opts.user_api_url) {
 		twit.setBaseURL(opts.user_api_url);
 	} else if (opts.user_type) {
 		twit.setBaseURLByService(opts.user_type);
 	}
-	
+
 	return twit;
-	
+
 };
 
 

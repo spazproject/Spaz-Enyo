@@ -430,10 +430,11 @@ AppUtils.convertToEntry = function(item) {
 
 			entry.service       = item.SC_service;
 			entry.service_id    = item.id;
-			entry.spaz_id       = sch.UUID();
+			entry.spaz_id       = item.SC_service+item.id+item.SC_created_at_unixtime;
 			entry.text          = item.text;
 			entry.text_raw      = item.SC_text_raw;
 			entry.publish_date  = item.SC_created_at_unixtime;
+			entry.account_id	= item.account_id || undefined;
 
 			if (item.SC_is_dm) {
 				entry.author_username = item.sender.screen_name;
@@ -539,18 +540,21 @@ AppUtils.convertToEntry = function(item) {
 
 };
 
-
 AppUtils.setAdditionalEntryProperties = function(entries, account_id) {
-	// add in the account used to get this entry. this seems sloppy here.
+
 	for (var j = entries.length - 1; j >= 0; j--){
-		entries[j].account_id = account_id;
+		//entries[j].account_id = account_id;
 
-		var acc_username = App.Users.get(account_id).username;
-		var acc_service  = App.Users.get(account_id).type;
+		var users = App.Users.getByType(entries[j].service)
+		for(var i = users.length - 1; i >= 0; i--){
+			if(users[i].username.toLowerCase() === entries[j].author_username.toLowerCase()){
+				entries[j].is_author = true; //set isAuthor flag
 
-		if (entries[j].author_username && acc_username.toLowerCase() === entries[j].author_username.toLowerCase()
-			&& acc_service === entries[j].service) {
-			entries[j].is_author = true;
+				if(!entries[j].is_private_message){
+					entries[j].account_id = users[i].id; //change the account_id to the author, if it is not a pm
+				}
+				break;
+			}
 		}
 
 	}
@@ -587,6 +591,9 @@ AppUtils.getBiggerAvatar = function(entry_or_user) {
 
 AppUtils.convertToEntries = function(item_array) {
 
+	if (!item_array) {
+		return [];
+	}
 	for (var i = 0; i < item_array.length; i++) {
 		item_array[i] = AppUtils.convertToEntry(item_array[i]);
 	};
@@ -667,4 +674,8 @@ AppUtils.getQueryVars = function(qstring) {
 		qvars[y[0]] = decodeURIComponent(y[1]);
 	};
 	return qvars;
+};
+
+AppUtils.isService = function(inService){
+	return (inService === SPAZCORE_SERVICE_TWITTER || inService === SPAZCORE_SERVICE_IDENTICA || inService === SPAZCORE_SERVICE_CUSTOM)
 };

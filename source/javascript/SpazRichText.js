@@ -1,5 +1,5 @@
 /**
- * This overrides the getValue method so we get back text, even though the 
+ * This overrides the getValue method so we get back text, even though the
  * RichText field has HTML in it. Lets us use a trailing space in value.
  * Adds getCharCount() method to get length based on non-html value
  */

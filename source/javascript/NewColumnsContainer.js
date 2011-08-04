@@ -2,20 +2,24 @@ enyo.kind({
 	kind: "HFlexBox",
 	name: "Spaz.NewColumnsContainer",
 	events: {
-		onNewColumn: ""	
+		onNewColumn: ""
 	},
 	published: {
-		selectedAccount: ""	
+		selectedAccount: ""
 	},
 	created: function(){
 		this.inherited(arguments);
 	},
 	selectedAccountChanged: function(){
-		this.buildColumnSelection();	
+		this.buildColumnSelection();
 	},
 	buildColumnSelection: function(inSender){
-		var account = App.Users.get(this.selectedAccount),
-			columns = SPAZ_COLUMN_TYPES[account.type]; //array of available columns
+		var columns;
+		if(AppUtils.isService(this.selectedAccount)){
+			columns = SPAZ_COLUMN_TYPES_ALL[this.selectedAccount]
+		} else {
+			columns = SPAZ_COLUMN_TYPES[App.Users.get(this.selectedAccount).type]; //array of available columns
+		}
 
 		this.destroyComponents();
 		var components = [];

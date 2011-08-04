@@ -1,11 +1,11 @@
-/*jslint 
+/*jslint
 browser: true,
 nomen: false,
 debug: true,
 forin: true,
 undef: true,
 white: false,
-onevar: false 
+onevar: false
  */
 
 /**
@@ -18,11 +18,11 @@ onevar: false
  * 		sceneAssistant:{} // REQ; the sceneAssistant we're firing the service req from
  *  }
  * 	extra:{...} // extra post fields (text/plain only atm)
- * } 
- * @param Function onSuccess 
+ * }
+ * @param Function onSuccess
  */
 sc.helpers.HTTPUploadFile = function(opts, onSuccess, onFailure) {
-	
+
 	opts = sch.defaults({
         'method':'POST',
         'content_type':'img',
@@ -36,7 +36,7 @@ sc.helpers.HTTPUploadFile = function(opts, onSuccess, onFailure) {
 		'onProgress':null
     }, opts);
 
-	
+
 	var key, val, postparams = [], customHttpHeaders = [];
 	var file_url   = opts.file_url || null;
 	var url        = opts.url      || null;
@@ -49,15 +49,15 @@ sc.helpers.HTTPUploadFile = function(opts, onSuccess, onFailure) {
 			postparams.push({ 'key' :key, 'data':val, contentType:'text/plain' });
 		}
 	}
-	
+
 	if (opts.username) {
 		postparams.push({ 'key' :'username', 'data':opts.username, contentType:'text/plain' });
 	}
 	if (opts.password) {
 		postparams.push({ 'key' :'password', 'data':opts.password, contentType:'text/plain' });
 	}
-	
-	
+
+
 	if (opts.platform) {
 		var owner = opts.platform.owner;
 		var componentName = opts.platform.componentName||'spazcore_http_uploader';
@@ -68,7 +68,7 @@ sc.helpers.HTTPUploadFile = function(opts, onSuccess, onFailure) {
 
 	var onSuccessCheck = _.bind(function(inSender, inResponse) {
 		if (inResponse.completed) { // we're actually done
-			this[componentName+'onSuccess'](inResponse); 
+			this[componentName+'onSuccess'](inResponse);
 		} else { // fire a progress event
 			if (opts.onProgress) {
 				opts.onProgress(inResponse);
@@ -76,7 +76,7 @@ sc.helpers.HTTPUploadFile = function(opts, onSuccess, onFailure) {
 		}
 	}, owner);
 
-	
+
 	var headers = [];
 	if (opts.headers) {
 		for(key in opts.headers) {
@@ -86,26 +86,26 @@ sc.helpers.HTTPUploadFile = function(opts, onSuccess, onFailure) {
 
 
 	if (!owner.$[componentName]) {
-		
+
 		// map the callback function names to the functions we passed
-		
+
 		owner[componentName+'onSuccessCheck'] = onSuccessCheck;
 		owner[componentName+'onSuccess'] = onSuccess;
 		owner[componentName+'onFailure'] = onFailure;
-		
+
 		owner.createComponent({
 				'name': componentName,
 				'kind': 'enyo.PalmService',
 				'service': 'palm://com.palm.downloadmanager',
-				'method': 'upload', 
+				'method': 'upload',
 				'subscribe': true,
 				'onResponse' : componentName+'onSuccessCheck',
 				'onFailure' : componentName+'onFailure'
 			}, {'owner': owner}
-		);		
+		);
 	}
 
-	
+
 	var request = owner.$[componentName].call({
 		'url'        : url,
 		'contentType': content_type,

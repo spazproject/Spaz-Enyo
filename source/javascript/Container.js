@@ -32,7 +32,12 @@ enyo.kind({
 		this.loadAndCreateColumns();
 
 		AppUI.addFunction("search", function(inQuery, inAccountId){
-			this.createColumn(inAccountId, "search", inQuery);
+			this.createColumn({
+				type: "search",
+				accounts: [inAccountId],
+				query: inQuery
+			});
+
 		}, this);
 		AppUI.addFunction("rerenderTimelines", function(){
 			this.columnsFunction("refreshList");
@@ -76,13 +81,15 @@ enyo.kind({
 		return default_columns;
 	},
 
-	createColumns: function() {
+	createColumns: function(fadeInEntries) {
 		this.$.columnsScroller.destroyControls();
 
 		if(this.columnData.length === 0){
 			this.columnData = this.getDefaultColumns();
 		}
 		var cols = [];
+
+		this.checkAccountChanges();
 
 		for (var i = 0; i < this.columnData.length; i++) {
 			if(!this.columnData[i].id){
@@ -92,6 +99,7 @@ enyo.kind({
 				name:'Column'+i,
 				info: this.columnData[i],
 				kind: "Spaz.Column",
+				fadeInEntries: fadeInEntries,
 				onDeleteClicked: "deleteColumn",
 				onLoadStarted: "loadStarted",
 				onLoadFinished: "loadFinished",
@@ -117,16 +125,17 @@ enyo.kind({
 				col
 			);
 		};
-		cols.push({kind: "Control", name: "ColumnSpacer" + this.columnData.length, width: "0px", ondragover: "spacerDragOver", ondrop: "spacerDrop", ondragout: "spacerDragOut"
-		});
+		cols.push({kind: "Control", name: "ColumnSpacer" + this.columnData.length, width: "0px", ondragover: "spacerDragOver", ondrop: "spacerDrop", ondragout: "spacerDragOut"});
 		this.$.columnsScroller.createComponents(cols, {owner: this});
 		this.$.columnsScroller.render();
 
 		this.saveColumnData();
 	},
-	createColumn: function(inAccountId, inColumn, inQuery){
-
-		this.columnData.push({type: inColumn, accounts: [inAccountId], query: inQuery, id: _.uniqueId(new Date().getTime())});
+	createColumn: function(inObj){
+		//object required:		{type: string, accounts: array of ids}
+		//optional properties:  {service: string, query: string, list: string}
+		inObj.id = _.uniqueId(new Date().getTime());
+		this.columnData.push(inObj);
 
 		this.saveColumnEntries();
 		this.createColumns();
@@ -134,6 +143,30 @@ enyo.kind({
 		this.$.columnsScroller.snapTo(this.$.columnsScroller.getControls().length-2);
 
 	},
+	checkAccountChanges: function(accountIdToRemove, forceRecreate){
+		var recreateFlag = false;
+		for(var i = 0; i < this.columnData.length; i++){
+			var column = this.columnData[i];
+			if(column.service){
+				if(column.accounts.length !== App.Users.getByType(column.service).length){
+					recreateFlag = true;
+					column.accounts = [];
+					var accounts = App.Users.getByType(column.service);
+					for(var j = 0; j < accounts.length; j++){
+						column.accounts.push(accounts[j].id);
+					}
+				}
+			} else if(accountIdToRemove && this.columnData[i].accounts.length === 1 && this.columnData[i].accounts[0] === accountIdToRemove){
+				this.columnData.splice(i, 1);
+				recreateFlag = true;
+			}
+		};
+		if(recreateFlag || forceRecreate) {
+			this.createColumns();
+			this.columnsFunction("refreshList", true);
+		}
+	},
+
 	saveColumnData: function(){
 
 		var save_cols = [];
@@ -145,7 +178,12 @@ enyo.kind({
 			this_col.id = columnData.id;
 			this_col.type = columnData.type;
 			this_col.accounts = columnData.accounts.slice(0,columnData.accounts.length);
-			this_col.query = columnData.query;
+
+			//special arguments
+			this_col.query = columnData.query;  //search
+			this_col.service = columnData.service; //multiAccountColumns
+			this_col.list = columnData.list; //list id
+
 			save_cols.push(this_col);
 		});
 
@@ -203,6 +241,14 @@ enyo.kind({
 		_.each(this.$.columnsScroller.getControls(), function(column){
 			try {
 				if(column.kind === "Spaz.Column" || column.kind === "Spaz.SearchColumn" || column.kind === "Spaz.UnifiedColumn"){
+					// opts may restrict us to columns with a certain account_id
+					if(opts && opts.account_id && opts.account_id !== column.getInfo().accounts[0]) {
+						return;
+					}
+					// or opts may restrict us to columns of a certain type
+					if(opts && opts.column_types && opts.column_types.indexOf(column.getInfo().type) === -1) {
+						return;
+					}
 					columnCount++;
 					if(sync) {
 						enyo.call(column, functionName, opts);
@@ -218,9 +264,16 @@ enyo.kind({
 		return columnCount;
 	},
 
-	refreshAll: function() {
+	refreshAll: function(account_id) {
 		this.loadingColumns = 0;
-		if(this.columnsFunction("loadNewer") === 0) {
+
+		var opts = { };
+		if(account_id) {
+			opts.account_id = account_id;
+			opts.column_types = [SPAZ_COLUMN_HOME, SPAZ_COLUMN_SENT];
+		}
+
+		if(this.columnsFunction("loadNewer", opts) === 0) {
 			this.loadFinished();
 		}
 	},
@@ -238,26 +291,16 @@ enyo.kind({
 	},
 
 	search: function(inSender, inQuery){
-		this.createColumn(inSender.info.accounts[0], "search", inQuery);
+		console.error("deprecated called", inSender);
 	},
 
 	accountAdded: function(inAccountId) {
 		this.columnData = this.columnData.concat(this.getDefaultColumns(inAccountId));
-		this.createColumns();
+
+		this.checkAccountChanges(null, true); //creates the columns
+
 	},
 
-	removeColummnsForAccount: function(inAccountId) {
-		var lengthBefore = this.columnData.length;
-		for(var i = lengthBefore - 1; i >= 0; i--) {
-			//TODO: this needs to be more intelligent when there are multiple accounts in one column.
-			if(this.columnData[i].accounts[0] === inAccountId) {
-				this.columnData.splice(i, 1);
-			}
-		}
-		if(this.columnData.length !== lengthBefore) {
-			this.createColumns();
-		}
-	},
 
 	removeEntryById: function (inEntryId) {
 		this.columnsFunction("removeEntryById", inEntryId);
@@ -304,7 +347,9 @@ enyo.kind({
 			var column = this.columnData.splice(del_idx, 1)[0];
 			this.columnData.splice(new_idx, 0, column);
 
-			this.createColumns();
+			var self = this;
+			setTimeout(function() { self.createColumns(true); }, 1);
+
 			//@TODO: this creates issues with starting a column drag. To replicate: Hold onto a column toolbar, move it slightly, release. It will float in an awkward postion.
 			//this doesn't happen if this.createColumns() is commented out.
 		}
@@ -319,7 +364,6 @@ enyo.kind({
 
 		this.activeColumn.addClass("moving");
 		this.activeColumn.applyStyle("height", window.innerHeight - 12 + "px");
-
 
 		this.trackColumn(inEvent);
 	},
@@ -336,6 +380,8 @@ enyo.kind({
 				if(_.includes(control.name, "ColumnSpacer")){
 					control.removeClass("columnSpacer");
 					control.applyStyle("width", "0px");
+				} else {
+					control.showHideEntries(true);
 				}
 			}));
 
@@ -344,14 +390,19 @@ enyo.kind({
 	},
 
 	columnDragStart: function(inSender, inEvent){
+
+
 		if (Math.abs(inEvent.dx) < 200) { //make sure the user isn't trying to scroll
 
 			if(this.isHolding){
+
 				//console.error("drag start");
 				enyo.forEach(this.$.columnsScroller.getControls(), enyo.bind(this, function(control) {
 					if(_.includes(control.name, "ColumnSpacer")){
 						control.addClass("columnSpacer");
 						control.applyStyle("width", "10px");
+					} else {
+						control.showHideEntries(false);
 					}
 					if(control.name.replace("ColumnSpacer", "") === this.activeColumn.name.replace('Column', '')){
 						control.applyStyle("width", "322px");
@@ -382,6 +433,7 @@ enyo.kind({
 		}
 	},
 	columnDragFinish: function(inSender, inEvent){
+
 		if (this.dragColumn) {
 			//console.error("done dragging column");
 
@@ -392,6 +444,8 @@ enyo.kind({
 				if(_.includes(control.name, "ColumnSpacer")){
 					control.applyStyle("width", "0px");
 					control.removeClass("columnSpacer");
+				} else {
+					control.showHideEntries(true);
 				}
 			}));
 

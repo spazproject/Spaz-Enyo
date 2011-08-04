@@ -34,8 +34,8 @@ enyo.kind({
     						]},
     						{name: "url", allowHtml: true, className: "small"},
     						{kind: "Spacer"}
-						]},	
-						{kind: "ToolButton", icon: "source/images/icon-close.png", style: "position: relative; bottom: 10px; right: 10px; float: right;", onclick: "doDestroy"}	
+						]},
+						{kind: "ToolButton", icon: "source/images/icon-close.png", style: "position: relative; bottom: 10px; right: 10px; float: right;", onclick: "doDestroy"}
 					]},
 					{name: "bio", width: "305px", allowHtml: true, style: "padding-right: 10px", onclick: "entryClick", className: "small"}
 
@@ -61,7 +61,7 @@ enyo.kind({
 						]}
 				]}
 				//]},
-				
+
 	        ]},
 	        {kind: "Toolbar", components: [
 				{kind: "Spacer"},
@@ -82,7 +82,7 @@ enyo.kind({
 		]}
 	],
 	entryChanged: function(inOldEntry){
-		
+
 		if(this.entry.service_id !== inOldEntry.service_id){
 
 			var events = this.doGetViewEvents();
@@ -97,17 +97,17 @@ enyo.kind({
 			    		this.$.viewManagementText.setContent("Back to @" + lastEvent.entry.author_username + "'s Entry");
 		    			break;
 					case "message":
-			    		this.$.viewManagementText.setContent("Back to @" + lastEvent.entry.author_username + "'s Private Message");					
+			    		this.$.viewManagementText.setContent("Back to @" + lastEvent.entry.author_username + "'s Private Message");
 						break;
 		    	}
 		    } else {
-		    	this.$.viewManagement.setShowing(false);		    	
+		    	this.$.viewManagement.setShowing(false);
 		    }
 
 		    this.$.detail_scroller.setScrollPositionDirect(0,0);
-		    
+
 			this.$.image.setSrc(this.entry.author_avatar_bigger);
-			this.$.image.applyStyle("display", "");			
+			this.$.image.applyStyle("display", "");
 			this.$.realname.setContent(this.entry.author_fullname||this.entry.author_username);
 			this.$.username.setContent("@" + this.entry.author_username);
 			this.$['private'].setShowing(this.entry.author_is_private);
@@ -116,10 +116,11 @@ enyo.kind({
 			this.$.url.setContent(sch.autolink(url), url.length);
 			this.$.bio.setContent(AppUtils.makeItemsClickable(this.entry.author_description) || '');
 
+			var entryURL = null;
 			if (this.entry.service === SPAZCORE_SERVICE_TWITTER){
-				var entryURL = "http://twitter.com/" + this.entry.author_username + "/status/" + this.entry.service_id;
+				entryURL = "http://twitter.com/" + this.entry.author_username + "/status/" + this.entry.service_id;
 			} else if(this.entry.service === SPAZCORE_SERVICE_IDENTICA){
-				var entryURL = "http://identi.ca/notice/" + this.entry.service_id;
+				entryURL = "http://identi.ca/notice/" + this.entry.service_id;
 			}
 			if(entryURL){
 				this.$.time.setContent("<a href='" + entryURL + "'>" + sch.getRelativeTime(this.entry.publish_date) + "</a>");
@@ -133,8 +134,8 @@ enyo.kind({
 				control.destroy();
 			});
 			this.$.entry.setContent(AppUtils.applyEntryTextFilters(this.entry.text));
-			
-			
+
+
 			// expand URLs
 			var shurl = new SpazShortURL();
 			var entryhtml = this.$.entry.getContent();
@@ -154,11 +155,11 @@ enyo.kind({
 			} else {
 				this.buildMediaPreviews();
 			}
-			
+
 			// Twitter's search API doesn't tell us if this is part of a conversation.
 			// Make another call to figure that out.
 			if((this.entry.is_search_result) && (this.entry.service === SPAZCORE_SERVICE_TWITTER)) {
-				AppUtils.makeTwitObj(this.entry.account_id).getOne(this.entry.service_id, 
+				AppUtils.makeTwitObj(this.entry.account_id).getOne(this.entry.service_id,
 					enyo.bind(this, function(data) {
 						this.entry.in_reply_to_id = data.in_reply_to_status_id;
 						this.showOrHideConversation();
@@ -178,11 +179,11 @@ enyo.kind({
 
 				this.$.time.setContent(sch.getRelativeTime(this.entry.repost_orig_date));
 			} else {
-				this.$.repost.setShowing(false);			
+				this.$.repost.setShowing(false);
 			}
-			
+
 			this.setFavButtonState();
-			
+
 			this.$.deleteButton.setShowing((this.entry.is_author) || (this.entry.is_private_message));
 		} else {
 			//this.doDestroy();
@@ -197,14 +198,14 @@ enyo.kind({
 			this.$.conversation.setEntry(this.entry);
 		} else {
 			this.$.conversation_button.hide();
-			this.$.conversation.clearConversationMessages();    
+			this.$.conversation.clearConversationMessages();
 		}
 	},
-	
+
 	buildMediaPreviews: function() {
-		
+
 		var self = this;
-		
+
 		var siu = new SpazImageURL();
 		var imageThumbUrls = siu.getThumbsForUrls(this.$.entry.getContent());
 		enyo.log(this.entry.text_raw, imageThumbUrls);
@@ -226,14 +227,14 @@ enyo.kind({
 				i++;
 			}
 		} else {
-			jQuery('#spaz_entryview_entry').embedly({
+			jQuery('#'+this.$.entry.id).embedly({
 				maxWidth: 300,
 				maxHeight:300,
 				'method':'afterParent',
 				'wrapElement':'div',
 				'className':'thumbnails',
 				'success':function(oembed, dict) {
-					
+
 					if (oembed.code.indexOf('<embed') === -1) { // webOS won't render Flash inside an app. DERP.
 						var embedlyComponent = self.$.images.createComponent({
 							kind: "enyo.Control",
@@ -254,7 +255,7 @@ enyo.kind({
 			});
 		};
 	},
-	
+
 	entryClick: function(inSender, inEvent) {
 		var className = inEvent.target.className;
 		if(_.includes(className, "username")){
@@ -267,11 +268,11 @@ enyo.kind({
 		}
 	},
 	toggleDrawer: function(inSender, inEvent){
-		this.$.conversation_drawer.toggleOpen();	
+		this.$.conversation_drawer.toggleOpen();
 	},
 	onConversationOpenChanged: function(inSender, inEvent) {
 	    if(this.$.conversation_drawer.open){
-	        this.loadConversation();	
+	        this.loadConversation();
 	    } else {
 			setTimeout(enyo.bind(this, function(){ this.$.detail_scroller.scrollTo(0, 0); }), 100);
 		}
@@ -307,12 +308,12 @@ enyo.kind({
 		var account = App.Users.get(this.entry.account_id);
 		var auth = new SpazAuth(account.type);
 		auth.load(account.auth);
-			
+
 		that.twit = that.twit || new SpazTwit();
 		that.twit.setBaseURLByService(account.type);
 		that.twit.setSource(App.Prefs.get('twitter-source'));
 		that.twit.setCredentials(auth);
-			
+
 		if (that.entry.is_favorite) {
 			enyo.log('UNFAVORITING %j', that.entry);
 			that.twit.unfavorite(
@@ -335,21 +336,21 @@ enyo.kind({
 					that.entry.is_favorite = true;
 					that.setFavButtonState();
 					AppUI.rerenderTimelines();
-					AppUtils.showBanner($L('Added favorite'));								
+					AppUtils.showBanner($L('Added favorite'));
 				},
 				function(xhr, msg, exc) {
 					AppUtils.showBanner($L('Error adding favorite'));
 				}
 			);
 		}
-	}, 
+	},
 	setFavButtonState: function(){
 		if(this.entry.is_favorite === true){
 			this.$.favoriteButton.setDisabled(false);
 			this.$.favoriteButton.setIcon("source/images/icon-favorite.png");
 		} else if(this.entry.is_private_message === true){
 			this.$.favoriteButton.setDisabled(true);
-		} else {		
+		} else {
 			this.$.favoriteButton.setIcon("source/images/icon-favorite-outline.png");
 			this.$.favoriteButton.setDisabled(false);
 		}

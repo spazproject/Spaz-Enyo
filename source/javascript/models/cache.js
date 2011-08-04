@@ -6,7 +6,7 @@ window.AppCache._data = {
 };
 
 /**
- *  
+ *
  */
 window.AppCache.addUser = function(username, service, obj) {
 	var key = service+"___"+username;
@@ -14,12 +14,12 @@ window.AppCache.addUser = function(username, service, obj) {
 };
 
 /**
- * 
+ *
  */
 window.AppCache.getUser = function(username, service, account_id, onSuccess, onFailure) {
 	var key = service+"___"+username;
 	var user_obj = AppCache._data.users.getItem(key);
-	
+
 	if (user_obj) {
 		onSuccess(user_obj);
 		return user_obj;

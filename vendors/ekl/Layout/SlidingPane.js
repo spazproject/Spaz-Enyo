@@ -3,7 +3,7 @@ enyo.kind({
 	kind: enyo.SlidingPane,
 	defaultKind: "ekl.Layout.SlidingView",
 	events: {
-		onDismiss: ""	
+		onDismiss: ""
 	},
 	dragfinishHandler: function(inSender, inEvent) {
 		if (this.dragging) {

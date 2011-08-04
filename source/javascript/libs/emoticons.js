@@ -19,7 +19,7 @@ Emoticons.prototype.set = function(set_name) {
 /**
  * Create a regular expression to match all emoticons
  * defined for a particular emoticons set.
- * 
+ *
  * Some characters must be escaped with a backslash "\"; many of
  * these may be present in emoticon character sequences. This function
  * adds the escape where necessary. Chars to be replaced are defined by
@@ -27,10 +27,10 @@ Emoticons.prototype.set = function(set_name) {
  */
 Emoticons.prototype.buildRegexp = function(mappings, open, close) {
     var result = "";
-	
+
 	if (!open) open = this.REGEX_OPEN;
 	if (!close) close = this.REGEX_CLOSE;
-	
+
     for (smiley in mappings) {
         if (result > "") {
             result += "|";
@@ -45,17 +45,17 @@ Emoticons.prototype.buildRegexp = function(mappings, open, close) {
 
 
 Emoticons.prototype.apply = function(str) {
-	
+
 	var regexp    = this.regexp;
 	var mappings  = this.set.mappings;
 	var className = this.set.className;
 	var imgPath   = this.set.imgPath;
-	
+
 	return str.replace(regexp, function(matched, p1, p2, p3) {
-		
+
 		if (p1 === undefined) { p1 = ''; }
 		if (p3 === undefined) { p3 = ''; }
-		
+
 		return [
 				p1+'<img ',
 				'class="' + className + ' emoticon" ',
