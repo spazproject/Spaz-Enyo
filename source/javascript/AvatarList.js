@@ -4,10 +4,10 @@ enyo.kind({
 	name: "Spaz.AvatarList",
 	kind: "HFlexBox",
 	//published: {
-	//	filterValue: ""	
+	//	filterValue: ""
 	//},
 	events: {
-		onShowAccountColumns: ""	
+		onShowAccountColumns: ""
 	},
 	create: function(){
 		this.inherited(arguments);
@@ -17,7 +17,7 @@ enyo.kind({
 		{name: "Tibfib", type: "identi.ca", avatar: "http://a3.twimg.com/profile_images/1281983040/simpsons_profile.png"}
 	],
 	//filterValueChanged: function(){
-		//this.buildList();	
+		//this.buildList();
 	//},
 	buildList: function(){
 		this.destroyComponents();
@@ -27,7 +27,7 @@ enyo.kind({
 			//if(this.filterValue === "all" || this.filterValue === account.type ){
 				//custom toggle buttons with images being the profile pic
 				objs.push({name: account.name, kind: "Spaz.AvatarButton", avatar: account.avatar, toggling: true, onclick: "focusAccount"});
-			//}	
+			//}
 		}, this);
 		this.createComponents(objs);
 		this.focusAccount(objs[0]);
@@ -37,11 +37,11 @@ enyo.kind({
 	focusAccount: function(inSender, inEvent){
 		_.each(this.accounts, function(account){
 			//if(this.filterValue === "all" || this.filterValue === account.type ){
-				this.$[account.name].focusOne(inSender.avatar);	
+				this.$[account.name].focusOne(inSender.avatar);
 				if(account.avatar === inSender.avatar){//TODO: change to unique id or something
 					this.doShowAccountColumns(account);
 				}
-			//}	
+			//}
 		}, this);
 
 	}

@@ -14,7 +14,7 @@ enyo.kind({
 			{content: "Settings"},
 			{kind: "Spacer"},
 			{kind: "ToolButton", icon: "source/images/icon-close.png", style: "position: relative; bottom: 7px;", onclick: "doClose"}
-		]},	
+		]},
 		{name: "scroller", kind: "FadeScroller", flex: 1, components: [ // @TODO: scroll fades.
 			/*{kind: "Group", caption: "Columns", components: [
 				{kind: "Item", layoutKind: "HFlexLayout", components: [
@@ -29,7 +29,7 @@ enyo.kind({
 						"400px",
 						"450px",
 						"500px"
-					
+
 					]}
 				]},   //@TODO: implement
 			]},*/
@@ -48,14 +48,14 @@ enyo.kind({
 						"17px",
 						"18px",
 						"19px",
-						"20px"					
+						"20px"
 					]}
 				]},
 				{kind: "Item", layoutKind: "HFlexLayout", components: [
 					{content: "Tap"},
 					{kind: "Spacer"},
 					{kind: "ListSelector", value: "", preferenceProperty: "entry-tap", onChange: "setPreference", items: [
-						{caption: "Opens Panel", value: "panel"},				
+						{caption: "Opens Panel", value: "panel"},
 						{caption: "Opens Popup", value: "popup"}
 					]}
 				]},
@@ -63,7 +63,7 @@ enyo.kind({
 					{content: "Hold"},
 					{kind: "Spacer"},
 					{kind: "ListSelector", value: "", preferenceProperty: "entry-hold", onChange: "setPreference", items: [
-						{caption: "Opens Panel", value: "panel"},				
+						{caption: "Opens Panel", value: "panel"},
 						{caption: "Opens Popup", value: "popup"},
 						{caption: "Does Nothing", value: "nothing"}
 
@@ -93,8 +93,8 @@ enyo.kind({
 					{content: "Interval"},
 					{kind: "Spacer"},
 					{kind: "ListSelector", value: "", preferenceProperty: "network-refreshinterval", onChange: "setRefreshPreference", items: [
-						{caption:$L('Never'), value:0}, 
-						{caption:$L('5min'),  value:300000}, 
+						{caption:$L('Never'), value:0},
+						{caption:$L('5min'),  value:300000},
 						{caption:$L('10min'), value:600000},
 						{caption:$L('15min'), value:900000},
 						{caption:$L('30min'), value:1800000},
@@ -102,7 +102,7 @@ enyo.kind({
 						{caption:$L('2hr'),   value:7200000},
 						{caption:$L('4hr'),   value:14400000},
 						{caption:$L('8hr'),   value:28800000}
-										
+
 					]}
 				]},
 				{kind: "Item", layoutKind: "HFlexLayout", components: [
@@ -110,8 +110,8 @@ enyo.kind({
 					{kind: "Spacer"},
 					{kind: "CheckBox", preferenceProperty: "timeline-scrollonupdate", onChange: "setPreference"}
 				]},
-				
-				
+
+
 				//{kind: "Item", content: "Interval for Searches"},
 			]},
 			{kind: "Group", caption: "Notify", components: [
@@ -135,7 +135,7 @@ enyo.kind({
 					{kind: "Spacer"},
 					{kind: "CheckBox", preferenceProperty: "notify-searchresults", onChange: "setPreference"}
 				]},
-				
+
 			]},
 			{kind: "Group", caption: "URL Shortening", components: [
 				{kind: "Item", layoutKind: "HFlexLayout", components: [
@@ -150,7 +150,7 @@ enyo.kind({
 					{kind: "Spacer"},
 					{kind: "ListSelector", preferenceProperty: "image-uploader", onChange: "setPreference", items: [
 						"drippic",
-						"pikchur",	
+						"pikchur",
 						"twitpic",
 						"twitgoo",
 						"identi.ca",
@@ -182,7 +182,7 @@ enyo.kind({
 				]}
 			]},*/
 		]}
-		
+
 	],
 	create: function(){
 		this.inherited(arguments);
@@ -191,12 +191,12 @@ enyo.kind({
 		if(this.lazy) {
 			this.validateComponents();
 		}
-		
+
 		this.$.scroller.setScrollTop(0);
 		this.openAtCenter();
-		
+
 		this.$.shurl.setItems(new SpazShortURL().getServiceLabels());
-		
+
 		_.each(this.getComponents(), function(component){
 			if(component.preferenceProperty){
 				component.kind
@@ -215,11 +215,11 @@ enyo.kind({
 		} else {
 			App.Prefs.set(inSender.preferenceProperty, inValue);
 		}
-		
+
 		if(inSender.rerender){
 			AppUI.rerenderTimelines();
 		}
-		
+
 	},
 	setRefreshPreference: function(inSender, inValue){
 		this.setPreference(inSender, inValue);

@@ -4,7 +4,7 @@ AppUI = {
 	}
 };
 	//setup the namespace. These are global references to component-owned functions, so they are set up in the components.
-	/* 
+	/*
 	syntax:
 		functionName
 			(argument1, argument2, argument3)
@@ -14,9 +14,9 @@ AppUI = {
 	available functions:
 
 		refresh
-			() 
-			- refresh all columns 
-			- source/javascript/Sidebar.js 
+			()
+			- refresh all columns
+			- source/javascript/Sidebar.js
 		rerenderTimelines
 			()
 			- re-render all timelines, gets all favorites again
@@ -35,7 +35,7 @@ AppUI = {
 			- source/javascript/Spaz.js
 		search
 			(inQuery, inAccountId)
-			- create search column 
+			- create search column
 			- source/javascript/Container.js
 		confirmDeleteEntry
 			(inEntry)

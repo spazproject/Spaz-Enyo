@@ -541,10 +541,10 @@ AppUtils.convertToEntry = function(item) {
 };
 
 AppUtils.setAdditionalEntryProperties = function(entries, account_id) {
-	
+
 	for (var j = entries.length - 1; j >= 0; j--){
 		//entries[j].account_id = account_id;
-		
+
 		var users = App.Users.getByType(entries[j].service)
 		for(var i = users.length - 1; i >= 0; i--){
 			if(users[i].username.toLowerCase() === entries[j].author_username.toLowerCase()){
@@ -553,7 +553,7 @@ AppUtils.setAdditionalEntryProperties = function(entries, account_id) {
 				if(!entries[j].is_private_message){
 					entries[j].account_id = users[i].id; //change the account_id to the author, if it is not a pm
 				}
-				break;			
+				break;
 			}
 		}
 

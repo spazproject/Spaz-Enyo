@@ -17,7 +17,7 @@ enyo.kind({
 			{kind: "Spacer"},
 			{name: "accountName", content: "", style: "padding: 0px 5px; color: grey;"},
 			{kind: "ToolButton", icon: "source/images/icon-close.png", style: "position: relative; bottom: 7px;", onclick: "doClose"},
-		
+
 		]},
 		{name: "newColumnsContainer", onNewColumn: "newColumn", selectedAccount: "", kind: "Spaz.NewColumnsContainer"},
 		{name: "searchBox", kind: "HFlexBox", showing: false, components: [
@@ -57,7 +57,7 @@ enyo.kind({
 				this.accounts.splice(i, 0, {caption: this.accounts[i].type, value: this.accounts[i].type});
 				//@TODO: style this differently
 				i++;
-			} 
+			}
 			i++;
 		}
 		this.$.accountSelection.setItems(this.accounts);
@@ -87,24 +87,24 @@ enyo.kind({
 	},
 	newColumn: function(inSender, inCaption){
 		if(inCaption === "search"){
-			this.$.listSelection.setShowing(false);				
-			
+			this.$.listSelection.setShowing(false);
+
 			if(this.$.searchBox.getShowing() === false){
 				this.$.searchBox.setShowing(true);
 			} else {
-				this.$.searchBox.setShowing(false);				
+				this.$.searchBox.setShowing(false);
 			}
 
 		} else if(inCaption === "list") {
-			this.$.searchBox.setShowing(false);				
-			
+			this.$.searchBox.setShowing(false);
+
 			if(this.$.listSelection.getShowing() === false){
 				this.$.listSelection.setShowing(true);
 				this.$.ListListButton.hide();
 				this.$.submitListSelection.hide();
 				this.$.noListsMessage.show();
 			} else {
-				this.$.listSelection.setShowing(false);				
+				this.$.listSelection.setShowing(false);
 			}
 
 			var currentUser = App.Users.get(this.$.accountSelection.value);
@@ -135,7 +135,7 @@ enyo.kind({
 			}
 			this.doCreateColumn(obj);
 			this.doClose();
-		
+
 		} else {
 			enyo.log("new column");
 			if(AppUtils.isService(this.$.accountSelection.getValue())){
@@ -153,8 +153,8 @@ enyo.kind({
 				service: (AppUtils.isService(this.$.accountSelection.getValue()) ? this.$.accountSelection.getValue() : null)
 			}
 			this.doCreateColumn(obj);
-			this.doClose();	
+			this.doClose();
 		}
-		
+
 	}
 });

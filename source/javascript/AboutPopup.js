@@ -9,18 +9,18 @@ enyo.kind({
 	components: [
 		{kind: "enyo.VFlexBox", width:"400px", height:"400px", components: [
 		   	{kind: "enyo.Image", style: "position: absolute; right: 20px; top: 0px; opacity: 0.1; width: 90%; z-index: -100", src: "spaz-icon-flat-512.png"},
- 
+
 			{kind: "HFlexBox", className: "enyo-header-dark", name:"header", style:"border-radius:10px", components:[
 				{kind: "HtmlContent", content:enyo.fetchAppInfo().title + ' v' + enyo.fetchAppInfo().version, style: "padding-left: 10px", flex:1},
 				{kind: "enyo.ToolButton", icon: "source/images/icon-close.png", style: "position: relative; bottom: 4px;", onclick: "doClose", align:"right"},
 				// {kind: "enyo.Image", style: "position: absolute; left:-100px; top:-100px; opacity: 0.2; width: 90%; z-index: -100", src: "spaz-icon-flat-512.png"},
 			]},
-			
+
 			{name: "contentScroller", flex:1, kind: "enyo.BasicScroller", autoVertical: true, onclick: "entryClick", components: [
 				{kind: "HtmlContent", name:"aboutContent", style: "font-size: 14px", srcId: "aboutContent"},
 				{kind: "HtmlContent", name:"licenseContent", style: "font-size: 14px", srcId: "licenseContent"}
 			]},
-			
+
 			{kind: "HFlexBox", style: "border-radius:10px", height:"50px", components: [
 				{kind: "Button", caption: $L("Get Help"), style:"color:#000; padding-top: 6px;", onclick:"openHelp"},
 				{kind: "Button", flex: 1, caption: $L("Volunteer Now"), style:"color:#000; padding-top: 6px;", onclick:"openVolunteerInfo"},
@@ -29,7 +29,7 @@ enyo.kind({
 		]},
 
 	],
-	
+
 	showAtCenter: function(){
 		if(this.lazy) {
 			this.validateComponents();
@@ -38,7 +38,7 @@ enyo.kind({
 		this.openAtTopCenter();
 		this.showLicense(false);
 	},
-	
+
 	entryClick: function(inSender, inEvent) {
 		var className = inEvent.target.className;
 		if(_.includes(className, "username")){
@@ -55,15 +55,15 @@ enyo.kind({
 			this.doClose();
 		}
 	},
-	
+
 	openHelp: function() {
 		sch.openInBrowser('http://help.getspaz.com');
 	},
-	
+
 	openVolunteerInfo: function() {
 		sch.openInBrowser('http://getspaz.com/helpus');
 	},
-	
+
 	toggleLicense: function(inSender) {
 		if (this.$.licenseContent.showing) {
 			this.showLicense(false);
@@ -71,7 +71,7 @@ enyo.kind({
 			this.showLicense(true);
 		}
 	},
-	
+
 	showLicense: function(state) {
 		this.$.contentScroller.setScrollTop(0);
 		if (state === false) {

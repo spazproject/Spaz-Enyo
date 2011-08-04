@@ -1,7 +1,7 @@
 enyo.kind({
     name: "ekl.List.VirtualList",
     kind: enyo.VirtualList,
-    
+
     published: {
         mousewheel: true,
         //Dampens mousewheel delta strength
@@ -9,7 +9,7 @@ enyo.kind({
     },
     events: {
     },
-    
+
     mousewheelHandler: function(inSender, inEvent) {
         if (this.mousewheel) {
                 //if at top, don't let you scroll up.
@@ -28,10 +28,10 @@ enyo.kind({
                 //Simulate dropping a drag at the same point (prevents flick, lets OS provide accelleration)
                 this.$.scroller.$.scroll.dragDrop(dragTo);
                 //Simulate ending a drag
-                this.$.scroller.$.scroll.dragFinish();     
+                this.$.scroller.$.scroll.dragFinish();
            //}
-           
+
         }
     }
-    
+
 });

@@ -2,7 +2,7 @@ enyo.kind({
 	name: "Spaz.UnifiedColumn",
 	kind: "Spaz.Column",
 	create: function(){
-		this.inherited(arguments);	
+		this.inherited(arguments);
 	},
 	model : {
 		'home_entries':[],
@@ -57,11 +57,11 @@ enyo.kind({
 			function loadStarted() {
 				self.$.refresh.addClass("spinning");
 				self.$.refresh.setShowing(true);
-				self.$.header.applyStyle("max-width", 
+				self.$.header.applyStyle("max-width",
 					self.$.toolbar.getBounds().width
-					 - self.$.unreadCount.getBounds().width 
-				 	 - self.$.accountName.getBounds().width 
-					 - self.$.topRightButton.getBounds().width 
+					 - self.$.unreadCount.getBounds().width
+				 	 - self.$.accountName.getBounds().width
+					 - self.$.topRightButton.getBounds().width
 					 - self.$.topLeftButton.getBounds().width
 					 - self.$.refresh.getBounds().width
 					 - 30
@@ -75,27 +75,27 @@ enyo.kind({
 
 				self.$.refresh.removeClass("spinning");
 				self.$.refresh.setShowing(false);
-				self.$.header.applyStyle("max-width", 
+				self.$.header.applyStyle("max-width",
 					self.$.toolbar.getBounds().width
-					 - self.$.unreadCount.getBounds().width 
-				 	 - self.$.accountName.getBounds().width 
-					 - self.$.topRightButton.getBounds().width 
+					 - self.$.unreadCount.getBounds().width
+				 	 - self.$.accountName.getBounds().width
+					 - self.$.topRightButton.getBounds().width
 					 - self.$.topLeftButton.getBounds().width
 					 - self.$.refresh.getBounds().width
 					 - 30
 					 + "px");
 
-				
+
 				self.doLoadFinished();
 
 				if(dataLength !== self.entries.length && opts.mode !== 'older'){
 					if(App.Prefs.get("timeline-scrollonupdate")){
-						
+
 						//go to first unread
 						self.setScrollPosition();
 						self.$.list.punt();
 
-						//self.$.list.refresh();	
+						//self.$.list.refresh();
 					}
 				}
 			}
@@ -129,17 +129,17 @@ enyo.kind({
 			console.error(e);
 			// AppUtils.showBanner('you probably need to make an account');
 		}
-				
+
 	},
 	processData: function(data, opts) {
 		var self = this;
-		
+
 		opts = sch.defaults({
 			'mode':'newer',
 			'since_id':null,
 			'max_id':null
 		}, opts);
-		
+
 		if (data) {
 			switch (this.info.type) {
 				default:
@@ -160,7 +160,7 @@ enyo.kind({
 								} else {
 									item.read = false;
 								}
-								
+
 							}
 						};
 						return false;
@@ -171,7 +171,7 @@ enyo.kind({
 
 					/* convert to our internal format */
 					data = AppUtils.convertToEntries(data);
-					
+
 					// mark new as read or not read, depending on mode
 					for (var i = data.length - 1; i >= 0; i--){
 						if (opts.mode === 'older') {
@@ -180,17 +180,17 @@ enyo.kind({
 							data[i].read = false;
 						}
 					}
-					
+
 					this.entries = [].concat(data.reverse(), this.entries);
 					this.entries.sort(function(a,b){
 						return b.publish_date - a.publish_date; // newest first by date
 					});
 					//enyo.log("Sorted by publish date. length now "+this.entries.length);
-				
-				
+
+
 					var last_home_entry = this.getLastHomeTimelineEntry();
 					//enyo.log("last_home_entry.publish_date", last_home_entry.publish_date);
-				
+
 					//console.time('unify_process_reject2');
 					this.entries = _.reject(this.entries, function(item) {
 						if ((item.publish_date < last_home_entry.publish_date)
@@ -199,17 +199,17 @@ enyo.kind({
 						}
 					});
 					//console.timeEnd('unify_process_reject2');
-				
+
 					//enyo.log("rejected non-home items with older pub date. length now "+this.entries.length);
-				
+
 					//enyo.log('current HOME entries:'+this.getHomeEntries().length);
 					//enyo.log('current MENTION entries:'+this.getMentionEntries().length);
 					//enyo.log('current DMS entries:'+this.getDMEntries().length);
 					//enyo.log('current DMSENT entries:'+this.getDMSentEntries().length);
-				
+
 					/* add more entry properties */
 					this.entries = AppUtils.setAdditionalEntryProperties(this.entries, this.info.accounts[0]);
-				
+
 					this.$.list.refresh();
 					this.resizeHandler();
 					//console.timeEnd('unify_process');
@@ -218,38 +218,38 @@ enyo.kind({
 		}
 
 		this.markOlderAsRead();
-		
+
 		if(opts.forceCountUnread) {
 			this.countUnread();
 		}
-		
+
 		this.setLastRead();
-		
+
 		this.notifyOfNewEntries();
 
 	},
-	
-	
+
+
 	getLastHomeTimelineEntry : function() {
-		
+
 		var entries = this.getHomeEntries();
 		var last_home_entry = "999999999999999999999999999999999";
-		
+
 		if (entries.length > 0) {
 			last_home_entry = _.min(entries, function(item) {
 				return item.service_id;
-			});			
+			});
 		}
-		
+
 		return last_home_entry;
 	},
-	
-	
-	
+
+
+
 	getMaxIdOfType : function(type) {
-		
+
 		var entries = this.getEntriesOfType(type);
-		
+
 		var rs = _.max(entries, function(entry) {
 			if (entry._orig.SC_timeline_from === type) {
 				return entry.service_id;
@@ -263,13 +263,13 @@ enyo.kind({
 			return '1';
 		}
 	},
-	
-	
-	
+
+
+
 	getMinIdOfType : function(type) {
-		
+
 		var entries = this.getEntriesOfType(type);
-		
+
 		var rs = _.min(entries, function(entry) {
 			if (entry._orig.SC_timeline_from === type) {
 				return entry.service_id;
@@ -283,11 +283,11 @@ enyo.kind({
 			return '999999999999999999999999999999';
 		}
 	},
-	
-	
+
+
 	getEntriesOfType : function(type) {
 		var entries = [];
-		
+
 		switch(type) {
 			case SPAZCORE_SECTION_HOME:
 				entries = this.getHomeEntries();
@@ -304,7 +304,7 @@ enyo.kind({
 		}
 		return entries;
 	},
-	
+
 	getHomeEntries : function() {
 		return _.select(this.entries, function(entry) {
 			return entry._orig.SC_timeline_from === SPAZCORE_SECTION_HOME;
@@ -325,5 +325,5 @@ enyo.kind({
 			return entry._orig.SC_timeline_from === SPAZCORE_SECTION_DMSENT;
 		});
 	}
-	
+
 });

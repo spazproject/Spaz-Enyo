@@ -566,7 +566,7 @@ enyo.kind({
 		return this.viewEvents;
 	},
 	createColumn: function(inSender, inObj){
-		this.$.container.createColumn(inObj);	
+		this.$.container.createColumn(inObj);
 	},
 
 	refreshAll: function(inSender, account_id) {

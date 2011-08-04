@@ -33,7 +33,7 @@ enyo.kind({
 				label:App.Users.getLabel(allusers[key].id),
 				type:allusers[key].type
 			});
-		}	
+		}
 		if(this.accounts.length === 0){
 			this.$.group.setShowing(false);
 		} else {
@@ -46,10 +46,10 @@ enyo.kind({
 
 			this.$.label.setContent(item.label);
 			this.$.icon.setSrc(SPAZ_ACCOUNT_ICONS[item.type]);
-			
+
 			// this.$.label.setContent(item.label);
 			return true;
-		}		
+		}
 	},
 	deleteRow: function() {
 		//@TODO how do we delete a row?

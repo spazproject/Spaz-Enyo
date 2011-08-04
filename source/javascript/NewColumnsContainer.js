@@ -2,16 +2,16 @@ enyo.kind({
 	kind: "HFlexBox",
 	name: "Spaz.NewColumnsContainer",
 	events: {
-		onNewColumn: ""	
+		onNewColumn: ""
 	},
 	published: {
-		selectedAccount: ""	
+		selectedAccount: ""
 	},
 	created: function(){
 		this.inherited(arguments);
 	},
 	selectedAccountChanged: function(){
-		this.buildColumnSelection();	
+		this.buildColumnSelection();
 	},
 	buildColumnSelection: function(inSender){
 		var columns;

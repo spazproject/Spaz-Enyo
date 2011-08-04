@@ -17,7 +17,7 @@ enyo.kind({
 		if(!isNaN(this.number)){
 			this.$.number.setContent(this.number)
 		} else {
-			this.$.number.setContent(0)			
+			this.$.number.setContent(0)
 		}
 	},
 	captionChanged: function() {

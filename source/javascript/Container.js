@@ -34,7 +34,7 @@ enyo.kind({
 		AppUI.addFunction("search", function(inQuery, inAccountId){
 			this.createColumn({
 				type: "search",
-				accounts: [inAccountId], 
+				accounts: [inAccountId],
 				query: inQuery
 			});
 
@@ -157,8 +157,8 @@ enyo.kind({
 					}
 				}
 			} else if(accountIdToRemove && this.columnData[i].accounts.length === 1 && this.columnData[i].accounts[0] === accountIdToRemove){
-				this.columnData.splice(i, 1);	
-				recreateFlag = true;			
+				this.columnData.splice(i, 1);
+				recreateFlag = true;
 			}
 		};
 		if(recreateFlag || forceRecreate) {
@@ -166,7 +166,7 @@ enyo.kind({
 			this.columnsFunction("refreshList", true);
 		}
 	},
-	
+
 	saveColumnData: function(){
 
 		var save_cols = [];
@@ -178,7 +178,7 @@ enyo.kind({
 			this_col.id = columnData.id;
 			this_col.type = columnData.type;
 			this_col.accounts = columnData.accounts.slice(0,columnData.accounts.length);
-			
+
 			//special arguments
 			this_col.query = columnData.query;  //search
 			this_col.service = columnData.service; //multiAccountColumns
@@ -296,7 +296,7 @@ enyo.kind({
 
 	accountAdded: function(inAccountId) {
 		this.columnData = this.columnData.concat(this.getDefaultColumns(inAccountId));
-		
+
 		this.checkAccountChanges(null, true); //creates the columns
 
 	},
@@ -391,7 +391,7 @@ enyo.kind({
 
 	columnDragStart: function(inSender, inEvent){
 
-		
+
 		if (Math.abs(inEvent.dx) < 200) { //make sure the user isn't trying to scroll
 
 			if(this.isHolding){

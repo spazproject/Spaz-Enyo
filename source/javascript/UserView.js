@@ -18,7 +18,7 @@ enyo.kind({
 				{name: "viewManagementText", content: "", className: "underlineOnClick", style: "color: #ccc; font-size: 14px;"},
 				{kind: "Spacer"}
 
-			]},		   
+			]},
 			{name: "content", layoutKind: "VFlexLayout", flex: 1, components: [
 		        {kind: "Header", width: "322px", components: [
         			{kind: "VFlexBox", className: "header", components: [
@@ -31,11 +31,11 @@ enyo.kind({
 								{kind: "HFlexBox", components: [
 	    							{name: "username", className: " author-username"},
 	    							{name: "private", kind: "Image", width: "13px", height: "13px", src: "source/images/tiny-lock-icon.png", showing: false}
-    							]},        						
+    							]},
     							{name: "url", allowHtml: true, className: "small"},
         						{kind: "Spacer"}
-        					]},	
-        					{kind: "ToolButton", icon: "source/images/icon-close.png", style: "position: relative; bottom: 10px; right: 10px; float: right;", onclick: "doDestroy"}	
+        					]},
+        					{kind: "ToolButton", icon: "source/images/icon-close.png", style: "position: relative; bottom: 10px; right: 10px; float: right;", onclick: "doDestroy"}
         				]},
         				{name: "bio", allowHtml: true, width: "305px", style: "padding-right: 10px", onclick: "bioClick", className: "small"},
 						{kind: "HFlexBox", style: "margin-top: 2px; margin-right: 18px;", components: [
@@ -46,9 +46,9 @@ enyo.kind({
 							{kind: "ActivityButton", name: "following", caption: "Loading", disabled: true, style: "padding-top: 6px; margin-bottom: 0px;", onclick: "toggleFollow"}
 						]},
         			]},
-					
+
         		]},
-				
+
     			{name: "radioGroup", kind: "RadioGroup", onChange: "switchDataType", width: "310px", style: "padding-left: 10px; padding-top: 7px;", components: [
     			    {name: "entries", kind: "Spaz.RadioButton", label: "Entries", number: ""},
     			    {name: "followers", kind: "Spaz.RadioButton", label: "Followers", number: ""},
@@ -63,7 +63,7 @@ enyo.kind({
 		    		]},
     				{name: "list", kind: "VirtualRepeater", onSetupRow: "loadItem", style: "", components: [
 						{
-							name: "entryItem", 
+							name: "entryItem",
 							kind: "Spaz.Entry",
 							ignoreUnread: true,
 							onEntryClick: "entryClick",
@@ -86,16 +86,16 @@ enyo.kind({
 					]}
 				]}
 			]},
-			
+
         	{name: "loading", layoutKind: "VFlexLayout", align: "center", pack: "center", flex: 1, components: [
     			{kind: "SpinnerLarge"}
     		]},
-    		
+
 	        {kind: "Toolbar", components: [
 				//{kind: "GrabButton"},
 				{kind: "Spacer"},
-				
-				
+
+
 				// follow only enabled when we check if following. may adjust icon
 				//{kind: "ToolButton", name: "follow", caption: "Following", disabled: true, /*icon: "source/images/icon-start-following.png",*/ onclick: "toggleFollow"},
 				{kind: "ToolButton", name: "mention", disabled: false, icon: "source/images/icon-mention.png", onclick: "mention"},
@@ -104,9 +104,9 @@ enyo.kind({
         		{kind: "ToolButton", name: "userSearch", disabled: false, icon: "source/images/icon-search.png", onclick: "userSearch"},
         		{kind: "Spacer"}
 			]},
-			
+
 			{name: "entryClickPopup", kind: "Spaz.EntryClickPopup"},
-			
+
 			{name: "confirmPopup", kind: "enyo.Popup", scrim : true, components: [
 				{content: enyo._$L("Block user?")},
 				{style: "height: 10px;"},
@@ -117,7 +117,7 @@ enyo.kind({
 			]}
 		]}
 	],
-	
+
 	showLoading: function(inShowing) {
 	   	this.$.content.setShowing(!inShowing);
 		this.$.loading.setShowing(inShowing);
@@ -125,7 +125,7 @@ enyo.kind({
 	},
 
 	showSpinner: function(inShowing) {
-		this.$.listSpinner.setShowing(inShowing);		
+		this.$.listSpinner.setShowing(inShowing);
 	},
 
 	showUser: function(inUsername, inService, inAccountId) {
@@ -150,7 +150,7 @@ enyo.kind({
 		);
 	},
 	buildAccountButton: function(){
-		
+
 		this.accounts = [];
 		var allusers = App.Users.getAll();
 		for (var key in allusers) {
@@ -165,18 +165,18 @@ enyo.kind({
 		}
 		this.$.accountSelection.setItems(this.accounts);
 		this.$.accountSelection.setValue(this.account_id);
-		
+
 		this.setRelationshipState();
-	
+
 	},
 	setRelationshipState: function() {
-		
-		var self = this;		
+
+		var self = this;
 		this.enableFollowButton(false);
 		if (App.Users.get(this.$.accountSelection.getValue()).type === SPAZCORE_ACCOUNT_TWITTER) {
 			this.getTwitterRelationship();
 		} else if (this.user._orig.following !== null) { // the .following attribute exists and this is not twitter
-		
+
 			this.enableFollowButton(true);
 			if (this.user._orig.following === true) {  // i am following this user
 				this.user.are_following = 'yes';
@@ -184,15 +184,15 @@ enyo.kind({
 				this.user.are_following = 'no';
 			}
 			this.setFollowButtonIcon(this.user.are_following);
-			
+
 		}
-		
+
 	},
-	
+
 	userChanged: function(inOldValue){
-		
+
 		if(this.$.username.getContent() !== "@" + this.user.username){
-							
+
 			var events = this.doGetViewEvents();
 		   	if(events.length > 1){
 		    	this.$.viewManagement.setShowing(true);
@@ -205,23 +205,23 @@ enyo.kind({
 			    		this.$.viewManagementText.setContent("Back to @" + lastEvent.entry.author_username + "'s Entry");
 		    			break;
 					case "message":
-			    		this.$.viewManagementText.setContent("Back to @" + lastEvent.entry.author_username + "'s Private Message");					
+			    		this.$.viewManagementText.setContent("Back to @" + lastEvent.entry.author_username + "'s Private Message");
 						break;
 		    	}
 		    } else {
-		    	this.$.viewManagement.setShowing(false);		    	
+		    	this.$.viewManagement.setShowing(false);
 		    }
 
 			this.$.image.setSrc(this.user.avatar_bigger);
-			this.$.image.applyStyle("display", null);			
+			this.$.image.applyStyle("display", null);
 			this.$.realname.setContent(this.user.fullname||this.user.username);
 			this.$.username.setContent("@" + this.user.username);
 			this.$.private.setShowing(this.user.is_private);
 			this.$.bio.setContent(AppUtils.makeItemsClickable(this.user.description) || '');
-			
+
 			switch(this.user.service){
 				case SPAZCORE_SERVICE_IDENTICA:
-				case SPAZCORE_SERVICE_CUSTOM: 
+				case SPAZCORE_SERVICE_CUSTOM:
 				case SPAZCORE_SERVICE_TWITTER:
 					this.$.followers.setNumber(this.user._orig.followers_count);
 					this.$.friends.setNumber(this.user._orig.friends_count);
@@ -232,7 +232,7 @@ enyo.kind({
 					this.switchDataType(this.$.radioGroup);
 					break;
 			}
-			
+
 		}// else {
 		//	this.doDestroy();
 			//this.$.image.applyStyle("display", "none");
@@ -316,7 +316,7 @@ enyo.kind({
 			return true;
 		}
 	},
-		
+
 	bioClick: function(inSender, inEvent){
 		var className = inEvent.target.className;
 		if(_.includes(className, "username")){
@@ -330,29 +330,29 @@ enyo.kind({
 		if(App.Prefs.get("entry-tap") === "panel"){
 			AppUI.viewEntry(inSender.entry);
 		} else {
-			this.$.entryClickPopup.showAtEvent(inSender.entry, inEvent);	
+			this.$.entryClickPopup.showAtEvent(inSender.entry, inEvent);
 		}
 
 	},
 	entryHold: function(inSender, inEvent, inRowIndex) {
 		if(App.Prefs.get("entry-hold") === "popup"){
-			this.$.entryClickPopup.showAtEvent(inSender.entry, inEvent);	
+			this.$.entryClickPopup.showAtEvent(inSender.entry, inEvent);
 		} else if(App.Prefs.get("entry-hold") === "panel"){
 			AppUI.viewEntry(inSender.entry);
 		}
 	},
-	
+
 	userItemClick: function(inSender, inEvent) {
 		AppUI.viewUser(this.items[inEvent.rowIndex].screen_name, this.items[inEvent.rowIndex].SC_service, this.account_id);
 	},
-	
-	
+
+
 	toggleFollow: function(inSender, inEvent) {
-		
+
 		var self = this;
 		this.$.following.setActive(true);
 		var twit = AppUtils.makeTwitObj(this.$.accountSelection.getValue());
-		
+
 		if (this.user.are_following) {
 			if (this.user.are_following === 'yes') {
 				twit.removeFriend(
@@ -368,7 +368,7 @@ enyo.kind({
 					function(xhr, msg, exc){
 						self.$.following.setActive(false);
 						AppUtils.showBanner(enyo.macroize($L('Failed to stop following {$screen_name}'), {'screen_name':self.user.username}));
-					}	
+					}
 				);
 			} else {
 				twit.addFriend(
@@ -383,11 +383,11 @@ enyo.kind({
 					function(xhr, msg, exc){
 						self.$.following.setActive(false);
 						AppUtils.showBanner(enyo.macroize($L('Failed to start following {$screen_name}'), {'screen_name':self.user.username}));
-					}		
+					}
 				);
 			}
 		}
-		
+
 	},
 	mention: function(inSender, inEvent) {
 		AppUI.compose('@'+this.user.username+' ');
@@ -395,14 +395,14 @@ enyo.kind({
 	message: function(inSender, inEvent) {
 		AppUI.directMessage(this.user.username, this.$.accountSelection.getValue());
 	},
-	
+
 	block: function(inSender, inEvent) {
 		this.$.confirmPopup.openAtCenter();
 	},
-	
+
 	confirmBlock: function(inSender) {
 		this.$.confirmPopup.close();
-		
+
 		var twit = AppUtils.makeTwitObj(this.account_id);
 		twit.block(
 			this.user.service_id,
@@ -414,17 +414,17 @@ enyo.kind({
 			}
 		);
 	},
-	
+
 	cancelBlock: function(inEvent) {
 		this.$.confirmPopup.close();
 	},
 	userSearch: function(inEvent) {
 		AppUI.search('@'+this.user.username + " OR from:"+ this.user.username, this.$.accountSelection.getValue());
   	},
-    
+
 	getTwitterRelationship: function() {
 		var self = this;
-		
+
 		var twit = AppUtils.makeTwitObj(this.$.accountSelection.getValue());
 		twit.showFriendship(
 			this.user.service_id,
@@ -447,11 +447,11 @@ enyo.kind({
 			}
 		);
 	},
-	
+
 	enableFollowButton: function(enabled) {
 		this.$.following.setDisabled(!enabled);
 	},
-	
+
 	setFollowButtonIcon: function(current_state) {
 		this.$.following.setDisabled(false);
 		if (current_state === 'yes') {
@@ -473,6 +473,6 @@ enyo.kind({
 			//this.$.follow.setIcon('source/images/icon-start-following.png');
 		}
 	}
-	
-	
+
+
 });

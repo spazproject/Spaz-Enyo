@@ -35,20 +35,20 @@ a:active,
 }
 
 .Column .timeline {
-	background-color: #D8D8D8; 
-	margin: 0px 3px; 
+	background-color: #D8D8D8;
+	margin: 0px 3px;
 	min-height: 200px;
 	background-position:center top;
 	background-image:url(../images/column-bg.png);
 }
 /*.Column .spazLogo {
-	position: absolute; 
-	left: 0px; 
-	right: 0px; 
-	top: 0px; 
-	bottom: 0px; 
-	margin: auto; 
-	background-color: #D8D8D8;	
+	position: absolute;
+	left: 0px;
+	right: 0px;
+	top: 0px;
+	bottom: 0px;
+	margin: auto;
+	background-color: #D8D8D8;
 	pointer-events: none;
 
 }
@@ -167,7 +167,7 @@ a:active,
 	from {
 		-webkit-transform: rotate(0deg);
 	}
-	to { 
+	to {
 		-webkit-transform: rotate(360deg);
 	}
 }

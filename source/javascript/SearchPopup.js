@@ -14,7 +14,7 @@ enyo.kind({
 			{content: "Search"},
 			{kind: "Spacer"},
 			{kind: "ToolButton", icon: "source/images/icon-close.png", style: "position: relative; bottom: 7px;", onclick: "doClose"}
-		]},	
+		]},
 		{name: "radioGroup", kind: "enyo.RadioGroup", onChange: "switchSearchType", components: [
 			{name: "topics", kind: "enyo.RadioButton", label: enyo._$L("Topics")},
 			{name: "users", kind: "enyo.RadioButton", label: enyo._$L("Users")}
@@ -30,7 +30,7 @@ enyo.kind({
 			{kind: "Spacer", style: "min-width: 50px"},
 			{name: "searchButton", kind: "Button", style: "padding-top: 6px;", label: enyo._$L("Search"), onclick: "search"}
 		]}
-		
+
 	],
 	close: function(){
 		this.inherited(arguments);
@@ -46,7 +46,7 @@ enyo.kind({
 
 		this.buildAccounts();
 		this.openAtTopCenter();
-		
+
 		enyo.keyboard.forceShow(4);
 
 	},
@@ -69,7 +69,7 @@ enyo.kind({
 	searchBoxKeydown: function(inSender, inEvent) {
 		if (inEvent.keyCode === 13) {
 			this.search();
-			inEvent.preventDefault();	
+			inEvent.preventDefault();
 		}
 	},
 	search: function() {

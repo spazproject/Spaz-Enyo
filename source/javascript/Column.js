@@ -2,7 +2,7 @@ enyo.kind({
 	name: "Spaz.Column",
 	kind: enyo.VFlexBox,
 	width: "322px",
-	style: "margin: 3px;", 
+	style: "margin: 3px;",
 	className: "Column",
 	events: {
 		onDeleteClicked: "",
@@ -14,28 +14,28 @@ enyo.kind({
 
 		onToolbarmousehold: "",
 		onToolbarmouserelease: "",
-		onToolbardragstart: "", 
-		onToolbardrag: "", 
+		onToolbardragstart: "",
+		onToolbardrag: "",
 		onToolbardragfinish: ""
 	},
 	published: {
 		info: {
 			//type: home/direct/search/replies
 			//display: what is in the header
-			//accounts: object array of accounts 
+			//accounts: object array of accounts
 			//		{"type": "twitter", "username": "@Tibfib" etc
 			//
 
 		},
 		entries: []
 	},
-	
+
 	components: [
-		{kind: "Toolbar", height: "42px", defaultKind: "Control", onclick: "scrollToTop", style: "min-height: 42px; color: white; color: white; padding-left: 5px;", 
+		{kind: "Toolbar", height: "42px", defaultKind: "Control", onclick: "scrollToTop", style: "min-height: 42px; color: white; color: white; padding-left: 5px;",
 			onmousehold: "doToolbarmousehold",
 			onmouserelease: "doToolbarmouserelease",
-			ondragstart: "doToolbardragstart", 
-			ondrag: "doToolbardrag", 
+			ondragstart: "doToolbardragstart",
+			ondrag: "doToolbardrag",
 			ondragfinish: "doToolbardragfinish",
 			components: [
 				//gotta do this to get the header title to center and not be a button. "defaultKind" in Toolbar is key.
@@ -50,7 +50,7 @@ enyo.kind({
 		{kind: enyo.VFlexBox, flex: 1, className: "timeline", components: [
 				{name: "list", kind: "Spaz.VirtualList", flex: 1, horizontal: false, className: "list", onAcquirePage:'acquirePage', onSetupRow: "setupRow", components: [
 					{
-						name: "item", 
+						name: "item",
 						kind: "Spaz.Entry",
 						onEntryClick: "entryClick",
 						onEntryHold: "entryHold"
@@ -64,9 +64,9 @@ enyo.kind({
 	create: function(){
 		this.inherited(arguments);
      	this.infoChanged();
-		this.checkArrows();     
+		this.checkArrows();
 		this.scrollOffset = 0;
-		
+
 		// if this column does not already have entries, gotta fetch from the network
 		if(this.entries.length === 0) {
 			enyo.asyncMethod(this, this.loadNewer, {forceCountUnread: true});
@@ -81,7 +81,7 @@ enyo.kind({
      		//this.$.moveColumnLeftButton.setDisabled(true);
      	}
 		if(this.name === "Column" + (this.owner.columnData.length-1)){
-     		//this.$.moveColumnRightButton.setDisabled(true);			
+     		//this.$.moveColumnRightButton.setDisabled(true);
 		}
 	},
 	infoChanged: function(){
@@ -122,13 +122,13 @@ enyo.kind({
 
 		var self = this;
 
-		
+
 
 		try {
 			var since_id;
-			
+
 			if (this.entries.length > 0) {
-				if (opts.mode === 'newer') {					
+				if (opts.mode === 'newer') {
 					since_id = _.first(this.entries).service_id;
 					// mark all existing as read
 					this.markAllAsRead();
@@ -151,11 +151,11 @@ enyo.kind({
 					self.doLoadStarted();
 					self.$.refresh.addClass("spinning");
 					self.$.refresh.setShowing(true);
-					self.$.header.applyStyle("max-width", 
+					self.$.header.applyStyle("max-width",
 						self.$.toolbar.getBounds().width
-						 - self.$.unreadCount.getBounds().width 
-					 	 - self.$.accountName.getBounds().width 
-						 - self.$.topRightButton.getBounds().width 
+						 - self.$.unreadCount.getBounds().width
+					 	 - self.$.accountName.getBounds().width
+						 - self.$.topRightButton.getBounds().width
 						 - self.$.topLeftButton.getBounds().width
 						 - self.$.refresh.getBounds().width
 						 - 30
@@ -164,10 +164,10 @@ enyo.kind({
 					dataLength = self.entries.length;
 				}
 				accountsLoaded++;
-				
+
 
 			}
-			function loadFinished(data, opts, account_id) {	
+			function loadFinished(data, opts, account_id) {
 				accountsLoaded--;
 				if(data !== undefined){
 					_.each(data, function(d){
@@ -182,11 +182,11 @@ enyo.kind({
 
 					self.$.refresh.setShowing(false);
 					self.$.refresh.removeClass("spinning");
-					self.$.header.applyStyle("max-width", 
+					self.$.header.applyStyle("max-width",
 						self.$.toolbar.getBounds().width
-						 - self.$.unreadCount.getBounds().width 
-					 	 - self.$.accountName.getBounds().width 
-						 - self.$.topRightButton.getBounds().width 
+						 - self.$.unreadCount.getBounds().width
+					 	 - self.$.accountName.getBounds().width
+						 - self.$.topRightButton.getBounds().width
 						 - self.$.topLeftButton.getBounds().width
 						 - self.$.refresh.getBounds().width
 						 - 30
@@ -196,12 +196,12 @@ enyo.kind({
 					if(dataLength !== self.entries.length && opts.mode !== 'older'){
 						//go to top.
 						if(App.Prefs.get("timeline-scrollonupdate")){
-							
+
 							//go to first unread
 							self.setScrollPosition();
 							self.$.list.punt();
 
-							//self.$.list.refresh();	
+							//self.$.list.refresh();
 						}
 					}
 				}
@@ -214,11 +214,11 @@ enyo.kind({
 
 					self.$.refresh.setShowing(false);
 					self.$.refresh.removeClass("spinning");
-					self.$.header.applyStyle("max-width", 
+					self.$.header.applyStyle("max-width",
 						self.$.toolbar.getBounds().width
-						 - self.$.unreadCount.getBounds().width 
-					 	 - self.$.accountName.getBounds().width 
-						 - self.$.topRightButton.getBounds().width 
+						 - self.$.unreadCount.getBounds().width
+					 	 - self.$.accountName.getBounds().width
+						 - self.$.topRightButton.getBounds().width
 						 - self.$.topLeftButton.getBounds().width
 						 - self.$.refresh.getBounds().width
 						 - 30
@@ -226,7 +226,7 @@ enyo.kind({
 				}
 			}
 
-			function loadData(account_id){	
+			function loadData(account_id){
 				var account = App.Users.get(account_id);
 				var auth = new SpazAuth(account.type);
 				auth.load(account.auth);
@@ -278,7 +278,7 @@ enyo.kind({
 							loadFailed
 						);
 						break;
-						
+
 					case SPAZ_COLUMN_FAVORITES:
 						loadStarted();
 						self.twit.getFavorites(since_id, null, null,
@@ -287,7 +287,7 @@ enyo.kind({
 								loadFinished(data, opts, account_id);
 							},
 							loadFailed
-						);					
+						);
 						break;
 					 case SPAZ_COLUMN_SENT:
 					 	loadStarted();
@@ -325,17 +325,17 @@ enyo.kind({
 			console.error(e);
 			// AppUtils.showBanner('you probably need to make an account');
 		}
-		
+
 	},
 	processData: function(arrayOfData, opts, account_id) {
 		var self = this;
-		
+
 		opts = sch.defaults({
 			'mode':'newer',
 			'since_id':null,
 			'max_id':null
 		}, opts);
-		
+
 		if (arrayOfData) {
 			enyo.log('adding new data');
 			switch (this.info.type) {
@@ -350,8 +350,8 @@ enyo.kind({
 							earliestPublishDate = _.first(array).publish_date;
 						}
 						data = data.concat(array);
-					});	
-					
+					});
+
 					/* check for duplicates based on the .id property */
 					/* we do this before conversion to save converting stuff
 					   that won't be needed */
@@ -368,14 +368,14 @@ enyo.kind({
 							}
 						}
 					});
-					
+
 					if (data.length > 0) {
 						/* convert to our internal format */
 						//data = AppUtils.convertToEntries(data);
 
 						/* add more entry properties */
 						data = AppUtils.setAdditionalEntryProperties(data);
-						
+
 						// mark new as read or not read, depending on mode
 						for (var i = data.length - 1; i >= 0; i--){
 							if (opts.mode === 'older') {
@@ -401,35 +401,35 @@ enyo.kind({
 						if(data.length > 0){
 							this.$.list.refresh();
 						}
-						
+
 					}
 					break;
 			}
 		} else {
 			enyo.log('No new data');
 		}
-		
+
 		this.markOlderAsRead();
-		
+
 		if(opts.forceCountUnread) {
 			this.countUnread();
 		}
-		
+
 		this.setLastRead();
-		
+
 		this.notifyOfNewEntries();
-		
+
 	},
-	
-	
+
+
 	notifyOfNewEntries: function() {
 		var new_entries = _.reject(this.entries, function(item) { return !!item.read; } );
-		
+
 		for (var i=0; i < new_entries.length; i++) {
 			AppUI.addEntryToNotifications(new_entries[i]);
 		}
 	},
-	
+
 	markAllAsRead: function() {
 		enyo.log('Marking all as read');
 		var changed = 0;
@@ -445,7 +445,7 @@ enyo.kind({
 			this.countUnread();
 		}
 	},
-	
+
 	markOlderAsRead: function() {
 		var last_read_date = this.getLastRead();
 		var changed = 0;
@@ -455,11 +455,11 @@ enyo.kind({
 					changed++;
 				//}
 				this.entries[i].read = true;
-			}			
+			}
 		}
 		if (changed > 0) {
 			this.countUnread();
-		}		
+		}
 	},
 	countUnread: function() {
 		var count = 0;
@@ -470,20 +470,20 @@ enyo.kind({
 		});
 		if(count > 0){
 			this.$.unreadCount.show();
-			this.$.unreadCount.setContent(count);			
+			this.$.unreadCount.setContent(count);
 		} else {
 			this.$.unreadCount.hide();
 		}
-		this.$.header.applyStyle("max-width", 
+		this.$.header.applyStyle("max-width",
 			this.$.toolbar.getBounds().width
-				 - this.$.unreadCount.getBounds().width 
-				 - this.$.accountName.getBounds().width 
-				 - this.$.topRightButton.getBounds().width 
+				 - this.$.unreadCount.getBounds().width
+				 - this.$.accountName.getBounds().width
+				 - this.$.topRightButton.getBounds().width
 				 - this.$.topLeftButton.getBounds().width
 				 - this.$.refresh.getBounds().width
 				 - 30
 				 + "px");
-			
+
 
 	},
 	scrollToFirstUnread: function(){
@@ -499,19 +499,19 @@ enyo.kind({
 					//set scrollOffset to be first unread item
 					break;
 				}
-			};	
+			};
 		} else {
 			this.scrollOffset = 0;//this.loadOffset; @TODO
 		}
 
 	},
-	
+
 	sortEntries: function() {
 		this.entries.sort(function(a,b){
 			return b.service_id - a.service_id; // newest first
 		});
 	},
-	
+
 	setupRow: function(inSender, inIndex) {
 		var entry;
 		if ( (entry = this.entries[inIndex + this.scrollOffset]) ) {
@@ -525,14 +525,14 @@ enyo.kind({
 		if(App.Prefs.get("entry-tap") === "panel"){
 			AppUI.viewEntry(inSender.entry);
 		} else {
-			this.$.entryClickPopup.showAtEvent(inSender.entry, inEvent);	
+			this.$.entryClickPopup.showAtEvent(inSender.entry, inEvent);
 		}
 
 	},
 	entryHold: function(inSender, inEvent, inRowIndex) {
 		inSender.entry.columnIndex = parseInt(this.name.replace('Column', ''), 10);
 		if(App.Prefs.get("entry-hold") === "popup"){
-			this.$.entryClickPopup.showAtEvent(inSender.entry, inEvent);	
+			this.$.entryClickPopup.showAtEvent(inSender.entry, inEvent);
 		} else if(App.Prefs.get("entry-hold") === "panel"){
 			AppUI.viewEntry(inSender.entry);
 		}
@@ -548,10 +548,10 @@ enyo.kind({
 		this.inherited(arguments);
 		if (this.hasNode()) {
 			this.$.header.setContent("");
-			
+
 			// this.$.header.applyStyle("max-width", this.$.accountName.getBounds().left - this.$.header.getBounds().left + "px");
 			// this.$.header.setContent(_.capitalize(this.info.type));
-			
+
 			var headerBounds = this.$.header.getBounds();
 			var accountNameBounds = this.$.accountName.getBounds();
 			this.$.header.applyStyle("max-width", accountNameBounds.left - headerBounds.left + "px");
@@ -564,35 +564,35 @@ enyo.kind({
 	},
 	refreshList: function(forceReload){
 		this.$.list.refresh();
-		
+
 		if(this.info.type === SPAZ_COLUMN_FAVORITES || forceReload === true){
 			this.entries = [];
 			this.loadData();
 		}
 	},
-	
+
 	getHash: function() {
 		return sch.MD5(this.info.type + "_" + this.info.id);
 	},
-	
+
 	getLastRead: function() {
 		return LastRead.get(this.getHash());
 	},
-	
+
 	setLastRead: function() {
 		var last_read_date = 1;
 
 		if (this.entries.length > 0) {
 			// find newest publish_date
-			// we assume we're newest first	
+			// we assume we're newest first
 			var newest_item = _.max(this.entries, function(item) { return item.publish_date; });
 			last_read_date = newest_item.publish_date;
 		}
-		
+
 		LastRead.set(this.getHash(), last_read_date);
-		
+
 	},
-	
+
 	removeEntryById: function(inEntryId) {
 		for (var i = this.entries.length - 1; i >= 0; i--) {
 			if (this.entries[i].service_id === inEntryId) {
@@ -601,18 +601,18 @@ enyo.kind({
 		}
 		this.$.list.refresh();
 	},
-	
+
 	deleteClicked: function(inSender, inEvent) {
 		this.doDeleteClicked();
-		
+
 		// we've handled this event, stop it from propagating up
 		return true;
 	},
-	
+
 	unreadClicked: function(inSender, inEvent) {
 		// @TODO Maybe some fancy animation to hide the unread count?
 		this.markAllAsRead();
-		
+
 		// we've handled this event, stop it from propagating up
 		return true;
 	},
@@ -621,5 +621,5 @@ enyo.kind({
 		this.$.list.setShowing(inShowHide);
 		// this.$.spazLogo.setShowing(!inShowHide);
 	}
-	
+
 });

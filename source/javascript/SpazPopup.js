@@ -17,19 +17,19 @@ enyo.kind({
 			left: Math.max(0, (vp.width - s.width) / 2),
 			top: Math.max(0, ((vp.height - s.height) / 2) / 8) // dividing by 8 to get the popup close to top
 		};
-		
+
 		if (this.fixPositionY && this.showing && x_only && this.current_y != null) {
 			o.top = this.current_y;
 		} else {
 			this.current_y = o.top;
 		}
-		
+
 		return o;
 	},
 	resizeHandler: function() {
 		if (this.isOpen) {
 			var args = arguments;
-			// FIXME: Wait a beat to resize. We need to do this to dismiss correctly via a click 
+			// FIXME: Wait a beat to resize. We need to do this to dismiss correctly via a click
 			// when the device keyboard hides as the result of the click.
 			// This is because the keyboard hides on mouse up and if it is in resize window mode, the
 			// window resizes, prompting this resize handler to be called. Resizing a popup can result

@@ -149,7 +149,7 @@ echo "Swapping in spazcore-titanium.js"
 cp "/Users/coj/Applications/Projects/Spaz HD/Resources/vendors/spazcore-titanium.js" \
         "/Users/coj/Applications/Projects/Spaz HD/Resources/vendors/spazcore.js"
 
-ls -al "/Users/coj/Applications/Projects/Spaz HD/Resources/vendors/spazcore.js" 
+ls -al "/Users/coj/Applications/Projects/Spaz HD/Resources/vendors/spazcore.js"
 
 echo "Building..."
 echo "${SDKPATH}/tibuild.py" -r -v -p PACKAGE --type=bundle -d "${BLDPATH}" "${SRCPATH}"

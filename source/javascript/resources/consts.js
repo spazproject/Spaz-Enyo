@@ -17,11 +17,11 @@ var SPAZ_RELATIVE_TIME_LABELS = {
 	'hour':'hr',
 	'hours':'hr',
 	'day':'d',
-	'days':'d'	
+	'days':'d'
 };
 
 /*
- use this data to identify columns and 
+ use this data to identify columns and
  populate the columns popup
 */
 var SPAZ_COLUMN_HOME     = 'home';
