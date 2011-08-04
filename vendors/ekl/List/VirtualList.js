@@ -38,10 +38,10 @@ enyo.kind({
 		}
 	},
 	holdMousePoller: function() {
-		console.log('mousepoll', this.$.scroller.$.scroll.y);
+		// console.log('mousepoll', this.$.scroller.$.scroll.y);
 		if (this.dragHoldTimeMax < this.dragHoldTime) {
 			window.clearTimeout(this.dragPoller);
-			console.log("hit max; exiting");
+			// console.log("hit max; exiting");
 			return;
 		}
 
@@ -82,7 +82,7 @@ enyo.kind({
 
 		window.clearTimeout(this.dragPoller);
 		if(this.dragHoldTime >= this.dragHoldTrigger && this.pulledPastThreshold()) {
-			console.log('firing pull to refresh');
+			// console.log('firing pull to refresh');
 			this.doPullToRefresh();
 		}
 		this.dragHoldTime = 0;
