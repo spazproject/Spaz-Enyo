@@ -59,7 +59,7 @@ enyo.kind({
 	},
 
 	getDefaultColumns: function(inAccountId) {
-		var accountIds = [], service = undefined;
+		var accountIds = [], service = undefined, default_columns;
 		if(!inAccountId) {
 			var allUsers = App.Users.getAll();
 			if(allUsers.length === 0){
@@ -73,17 +73,18 @@ enyo.kind({
 
 			_(App.Users.getByType(service)).each(function(user){
 				accountIds.push(user.id);
-			})
-		} else {
-			accountIds = [inAccountId];
-		}
+			});
 
-		
-		var default_columns = [
-			{type: SPAZ_COLUMN_HOME,	 accounts: [inAccountId], id: _.uniqueId(new Date().getTime())},
-			{type: SPAZ_COLUMN_MENTIONS, service: service, accounts: accountIds, id: _.uniqueId(new Date().getTime())},
-			{type: SPAZ_COLUMN_MESSAGES, service: service, accounts: accountIds, id: _.uniqueId(new Date().getTime())}
-		];
+			default_columns = [
+				{type: SPAZ_COLUMN_HOME,	 accounts: [inAccountId], id: _.uniqueId(new Date().getTime())},
+				{type: SPAZ_COLUMN_MENTIONS, service: service, accounts: accountIds, id: _.uniqueId(new Date().getTime())},
+				{type: SPAZ_COLUMN_MESSAGES, service: service, accounts: accountIds, id: _.uniqueId(new Date().getTime())}
+			];
+		} else {
+			default_columns = [
+				{type: SPAZ_COLUMN_HOME,	 accounts: [inAccountId], id: _.uniqueId(new Date().getTime())}
+			];
+		}
 
 		return default_columns;
 	},
@@ -162,8 +163,12 @@ enyo.kind({
 					for(var j = 0; j < accounts.length; j++){
 						column.accounts.push(accounts[j].id);
 					}
+					if(column.accounts.length === 0){
+						this.columnData.splice(i, 1);
+					}
 				}
 			} else if(accountIdToRemove && this.columnData[i].accounts.length === 1 && this.columnData[i].accounts[0] === accountIdToRemove){
+				console.log("remove column", this.columnData[i]);
 				this.columnData.splice(i, 1);
 				recreateFlag = true;
 			}
@@ -302,7 +307,7 @@ enyo.kind({
 	},
 
 	accountAdded: function(inAccountId) {
-		//this.columnData = this.columnData.concat(this.getDefaultColumns(inAccountId));
+		this.columnData = this.columnData.concat(this.getDefaultColumns(inAccountId));
 
 		this.checkAccountChanges(null, true); //creates the columns
 
