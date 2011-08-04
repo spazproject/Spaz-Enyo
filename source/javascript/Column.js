@@ -342,6 +342,11 @@ enyo.kind({
 				default:
 					var data = [], earliestPublishDate = 0;
 					_.each(arrayOfData, function(array){
+
+						if (!array) {
+							return;
+						}
+
 						/* convert to our internal format */
 						array = AppUtils.convertToEntries(array);
 
