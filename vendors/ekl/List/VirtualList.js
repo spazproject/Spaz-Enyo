@@ -9,8 +9,8 @@ enyo.kind({
 		//Dampens mousewheel delta strength
 		mousewheelDamp: 40.0,
 		// sensitivity for pull-to-refresh events
-		dragHoldInterval: 100,
-		dragHoldTrigger: 300,
+		dragHoldInterval: 50,
+		dragHoldTrigger: 200,
 		dragHoldTimeMax: 5000, // if a pull exceeds this time without firing, exite
 		pullToRefreshThreshold: 50, // px
 	},
@@ -46,9 +46,9 @@ enyo.kind({
 		}
 
 		if ((this.dragHoldTime > this.dragHoldInterval*4) && this.pulledPastThreshold()) {
-			this.owner.$.pulltoRefreshTextTeaser.setShowing(true);
+			this.owner.$.pulltoRefreshTextTeaser.applyStyle("opacity", 1);
 		}
-		this.owner.$.pulltoRefreshTextTeaser.render();
+		//this.owner.$.pulltoRefreshTextTeaser.render();
 		if (this.$.scroller.$.scroll.y >= 0) {
 			// console.log('continuing poller', this.$.scroller.$.scroll.y);
 			this.dragHoldTime+=this.dragHoldInterval;
@@ -87,7 +87,7 @@ enyo.kind({
 		}
 		this.dragHoldTime = 0;
 
-		this.owner.$.pulltoRefreshTextTeaser.setShowing(false);
+		this.owner.$.pulltoRefreshTextTeaser.applyStyle("opacity", 0);
 	},
 
 

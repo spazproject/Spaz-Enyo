@@ -48,7 +48,9 @@ enyo.kind({
 				{name: "topRightButton", kind: "ToolButton", icon: "source/images/icon-close.png", onclick: "deleteClicked"}
 		]},
 		{kind: enyo.VFlexBox, flex: 1, className: "timeline", components: [
-				{name: "pulltoRefreshTextTeaser", className: "ptrTeaser", content: "Release to refresh &uarr;", showing: false},
+				{name: "pulltoRefreshTextTeaser", className: "ptrOuter", style: "opacity: 0", components: [
+					{content: "Release to refresh &uarr;", className: "ptrInside"}
+				]},
 				{name: "list", kind: "Spaz.VirtualList", flex: 1, horizontal: false, className: "list", onAcquirePage:'acquirePage', onSetupRow: "setupRow", onPullToRefresh: "pullToRefresh", components: [
 					{
 						name: "item",
