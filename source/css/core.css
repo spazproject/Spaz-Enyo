@@ -38,8 +38,10 @@ a:active,
 	background-color: #D8D8D8; 
 	margin: 0px 3px; 
 	min-height: 200px;
+	background-position:center top;
+	background-image:url(../images/column-bg.png);
 }
-.Column .spazLogo {
+/*.Column .spazLogo {
 	position: absolute; 
 	left: 0px; 
 	right: 0px; 
@@ -50,7 +52,7 @@ a:active,
 	pointer-events: none;
 
 }
-
+*/
 
 /* Entries */
 .entry .avatar {
@@ -291,11 +293,6 @@ a:active,
 	z-index: 50000;
 	-webkit-user-drag: none;
 	pointer-events: none;
-}
-
-.timeline.list {
-	background-position:center top;
-	background-image:url(../images/column-bg.png);
 }
 
 .spaz-entry-item {
