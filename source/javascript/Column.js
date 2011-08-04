@@ -53,8 +53,7 @@ enyo.kind({
 						name: "item", 
 						kind: "Spaz.Entry",
 						onEntryClick: "entryClick",
-						onEntryHold: "entryHold",
-						className: "spaz-entry-item"
+						onEntryHold: "entryHold"
 					}
 				]},
 				{kind: enyo.Image, name: "spazLogo", src: "spaz-icon-flat-512.png", width: "300px", showing: false, className: "spazLogo"},

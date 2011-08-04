@@ -292,3 +292,21 @@ a:active,
 	-webkit-user-drag: none;
 	pointer-events: none;
 }
+
+.timeline.list {
+	background-position:center top;
+	background-image:url(../images/column-bg.png);
+}
+
+.spaz-entry-item {
+	background-color:#D8D8D8;
+}
+.spaz-entry-item.is_private_message {
+	background-color:#e0c7c7;
+}
+.spaz-entry-item.is_mention {
+	background-color:#c3ccd7;
+}
+.spaz-entry-item.is_author {
+	background-color:#c2dbc2;
+}

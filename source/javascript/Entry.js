@@ -11,7 +11,7 @@ enyo.kind({
 		ignoreUnread: false
 	},
 	components: [
-		{className: "entry", kind: "Item", layoutKind: "HFlexLayout", onclick: "entryClick", onmousehold: "entryHold", flex: 1, tapHighlight: true, style: "padding-right: 5px;", components: [
+		{className: "spaz-entry-item entry", kind: "Item", layoutKind: "HFlexLayout", onclick: "entryClick", onmousehold: "entryHold", flex: 1, tapHighlight: true, style: "padding-right: 5px;", components: [
 			{kind: "Control", components: [
 					{name: "authorAvatar", kind: "Image", width: "50px", height: "50px", className: "avatar"},
 					{name: "reposterAvatar", kind: "Image", width: "25px", height: "25px", className: "small-avatar", showing: false}
@@ -66,13 +66,13 @@ enyo.kind({
 		toMacroize += "</span>";
 
 		if(this.entry.is_private_message === true){
-			this.applyStyle("background-color", "rgba(255, 0, 0, .1)");
+			this.$.item.addClass("is_private_message");
 		} else if(this.entry.is_mention === true){
-			this.applyStyle("background-color", "rgba(0, 95, 200, .1)");
+			this.$.item.addClass("is_mention");
 		} else if(this.entry.is_author === true){
-			this.applyStyle("background-color", "rgba(0, 255, 0, .1)");
+			this.$.item.addClass("is_author");
 		} else {
-			this.applyStyle("background-color", null);
+			// do nothing
 		}
 
 		this.$.text.applyStyle("font-size", App.Prefs.get("entry-text-size"));
