@@ -1,7 +1,8 @@
 #!/bin/bash
 CHROME_EXE="/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+SCRIPT_DIR="$( cd "$( dirname "$0" )" && pwd )"
 
 "${CHROME_EXE}" --disable-web-security \
     --allow-file-access-from-files \
     --allow-file-access \
-    "${APP_PATH}" $@ &
+    "${APP_PATH}" "${SCRIPT_DIR}/index.html" $@ &
