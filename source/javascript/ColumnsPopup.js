@@ -109,9 +109,9 @@ enyo.kind({
 
 			var currentUser = App.Users.get(this.$.accountSelection.value);
 			window.AppCache.getUser(currentUser.username, currentUser.type, currentUser.id,
-						function(user) {
+						_.bind(function(user) {
 							this.owner.owner.twit.getLists(user.service_id,
-								function(data) {
+								_.bind(function(data) {
 									if(data.lists.length > 0){
 										this.$.ListListButton.show();
 										this.$.submitListSelection.show();
@@ -123,9 +123,9 @@ enyo.kind({
 									}
 									this.$.ListList.setItems(items);
 									this.$.ListList.render();
-								}.bind(this)
+								}, this)
 							)
-						}.bind(this)
+						}, this)
 			);
 		} else if(inSender.caption === "Add List") {
 			var obj = {
