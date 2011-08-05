@@ -296,16 +296,16 @@ a:active,
 	pointer-events: none;
 }
 
-.spaz-entry-item {
+.is_normal {
 	background-color:#D8D8D8;
 }
-.spaz-entry-item.is_private_message {
+.is_private_message {
 	background-color:#e0c7c7;
 }
-.spaz-entry-item.is_mention {
+.is_mention {
 	background-color:#c3ccd7;
 }
-.spaz-entry-item.is_author {
+.is_author {
 	background-color:#c2dbc2;
 }
 

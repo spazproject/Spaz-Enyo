@@ -66,13 +66,13 @@ enyo.kind({
 		toMacroize += "</span>";
 
 		if(this.entry.is_private_message === true){
-			this.$.item.addClass("is_private_message");
+			this.setClassName("is_private_message");
 		} else if(this.entry.is_mention === true){
-			this.$.item.addClass("is_mention");
+			this.setClassName("is_mention");
 		} else if(this.entry.is_author === true){
-			this.$.item.addClass("is_author");
+			this.setClassName("is_author");
 		} else {
-			// do nothing
+			this.setClassName("is_normal")
 		}
 
 		this.$.text.applyStyle("font-size", App.Prefs.get("entry-text-size"));
