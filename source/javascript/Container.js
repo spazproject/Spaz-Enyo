@@ -28,6 +28,8 @@ enyo.kind({
 	create: function(){
 		this.inherited(arguments);
 
+		this.checkForUsers();
+
 		this.loadingColumns = 0;
 		this.loadAndCreateColumns();
 
@@ -64,8 +66,6 @@ enyo.kind({
 			allUsers = App.Users.getAll();
 
 		if(allUsers.length === 0){
-			AppUtils.showBanner(enyo._$L('No accounts! You should add one.'));
-			setTimeout(enyo.bind(this, this.doShowAccountsPopup, 1));
 			return [];
 		}
 		
@@ -473,5 +473,13 @@ enyo.kind({
 	},
 	reclaimSpace: function() {
 		this.$.columnsScroller.snapTo(this.$.columnsScroller.getIndex());
+	},
+	checkForUsers: function() {
+		if(App.Users.getAll().length === 0){
+			AppUtils.showBanner(enyo._$L('No accounts! You should add one.'));
+			setTimeout(enyo.bind(this, this.doShowAccountsPopup, 1));
+			return false;
+		}
+		return true;
 	}
 });
