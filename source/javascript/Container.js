@@ -59,18 +59,21 @@ enyo.kind({
 	},
 
 	getDefaultColumns: function(inAccountId) {
-		var accountIds = [], service = undefined, default_columns;
-		if(!inAccountId) {
-			var allUsers = App.Users.getAll();
-			if(allUsers.length === 0){
-				AppUtils.showBanner(enyo._$L('No accounts! You should add one.'));
-				setTimeout(enyo.bind(this, this.doShowAccountsPopup, 1));
-				return [];
-			}
+		var accountIds = [], 
+			default_columns = [], 
+			allUsers = App.Users.getAll();
 
-			service = allUsers[0].type;
-			inAccountId = allUsers[0].id;
-
+		if(allUsers.length === 0){
+			AppUtils.showBanner(enyo._$L('No accounts! You should add one.'));
+			setTimeout(enyo.bind(this, this.doShowAccountsPopup, 1));
+			return [];
+		}
+		
+		if(this.columnData.length === 0) {	
+			//leave in code for when there isn't an inAccountId... which currently never should happen.
+			var account = (inAccountId) ? App.Users.get(inAccountId) :  allUsers[0];
+			var service = account.type, inAccountId = account.id;
+			
 			_(App.Users.getByType(service)).each(function(user){
 				accountIds.push(user.id);
 			});
@@ -80,7 +83,7 @@ enyo.kind({
 				{type: SPAZ_COLUMN_MENTIONS, service: service, accounts: accountIds, id: _.uniqueId(new Date().getTime())},
 				{type: SPAZ_COLUMN_MESSAGES, service: service, accounts: accountIds, id: _.uniqueId(new Date().getTime())}
 			];
-		} else {
+		} else if(inAccountId){
 			default_columns = [
 				{type: SPAZ_COLUMN_HOME,	 accounts: [inAccountId], id: _.uniqueId(new Date().getTime())}
 			];
@@ -92,9 +95,6 @@ enyo.kind({
 	createColumns: function(fadeInEntries) {
 		this.$.columnsScroller.destroyControls();
 
-		if(this.columnData.length === 0){
-			this.columnData = this.getDefaultColumns();
-		}
 		var cols = [];
 
 		this.checkAccountChanges();
@@ -241,7 +241,7 @@ enyo.kind({
 			this.columnData.splice(del_idx, 1);
 
 			this.columnToDelete.destroy();
-			this.columnToDelete = null;
+			this.columnToDelete = undefined;
 
 			this.saveColumnData();
 
@@ -322,7 +322,9 @@ enyo.kind({
 		enyo.forEach(this.$.columnsScroller.getControls(), enyo.bind(this, function(control) {
 			if(_.includes(control.kind, "Column") && !_.includes(control.kind, "Spacer")){
 				var col_idx = parseInt(control.name.replace('Column', ''), 10);
-				this.columnData[col_idx].entries = control.getEntries();
+				if(!control.destroyed) {
+					this.columnData[col_idx].entries = control.getEntries();					
+				}
 			}
 		}));
 	},
