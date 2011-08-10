@@ -473,7 +473,7 @@ enyo.kind({
 			dontPush = false;
 
 		if( (topEvent = this.viewEvents[this.viewEvents.length-1]) ){
-			if(topEvent.type === "entry" && topEvent.entry.id === newEvent.entry.id){
+			if(topEvent.type === "entry" && topEvent.entry.service_id === newEvent.entry.service_id){
 				dontPush = true;
 			}
 		}
