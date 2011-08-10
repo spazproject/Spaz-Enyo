@@ -59,6 +59,7 @@ enyo.kind({
 						onEntryHold: "entryHold"
 					}
 				]},
+				{kind: enyo.Control, name: "scrollFade", className: "scrollFade", width: "100%", height: "50px"}
 				// {kind: enyo.Image, name: "spazLogo", src: "spaz-icon-flat-512.png", width: "300px", showing: false, className: "spazLogo"},
 			]
 		},

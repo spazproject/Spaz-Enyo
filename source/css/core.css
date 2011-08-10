@@ -42,6 +42,12 @@ a:active,
 	background-position:center top;
 	background-image:url(../images/column-bg.png);
 }
+
+.Column .scrollFade {
+	position: absolute; 
+	bottom: 0px; 
+	background: url(../images/scroll-fade.png) top left repeat-x;
+}
 /*.Column .spazLogo {
 	position: absolute;
 	left: 0px;
