@@ -8,7 +8,7 @@ enyo.kind({
 	},
 	components: [
 		{kind: "enyo.VFlexBox", width:"400px", height:"400px", components: [
-		   	{kind: "enyo.Image", style: "position: absolute; right: 20px; top: 0px; opacity: 0.1; width: 90%; z-index: -100", src: "spaz-icon-flat-512.png"},
+		   	{kind: "enyo.Image", style: "position: absolute; right: 20px; top: 0px; opacity: 0.1; width: 90%;", src: "spaz-icon-flat-512.png"},
 
 			{kind: "HFlexBox", className: "enyo-header-dark", name:"header", style:"border-radius:10px", components:[
 				{kind: "HtmlContent", content:enyo.fetchAppInfo().title + ' v' + enyo.fetchAppInfo().version, style: "padding-left: 10px", flex:1},
