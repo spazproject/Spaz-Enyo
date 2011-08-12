@@ -317,12 +317,13 @@ enyo.kind({
 							function(user) {
 								self.twit.getListTimeline(self.info.list,user.service_id,
 									function(data) {
-										self.processData(data.statuses, opts);
-										loadFinished();
+										//self.processData(data.statuses, opts);
+										loadFinished(data, opts, account_id);
 									},
-									loadFinished
-							);},
-							loadFinished
+									loadFailed
+								);
+							},
+							loadFailed
 						);
 						break;
 				}
