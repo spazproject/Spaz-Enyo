@@ -40,7 +40,6 @@ enyo.kind({
 	},
 
 	holdMousePoller: function() {
-	    console.log("HOLD POLL");
 		window.clearTimeout(this.dragPoller);
 		
 		if (this.dragHoldTimeMax < this.dragHoldTime) {
@@ -55,7 +54,6 @@ enyo.kind({
 		if (this.$.scroller.$.scroll.y >= 0) {
 			this.dragHoldTime += this.dragHoldInterval;
 		} else {
-		    console.log("CLEARING PULL TO REFRESH BUT CONTINUING TO LISTEN!");
 		    this._clearPullToRefresh();
 		}
         
@@ -63,7 +61,6 @@ enyo.kind({
 	},
 	
 	mousedownHandler: function() {
-	    console.log("MOUSEDOWN");
 	    this._clearPullToRefresh();
 
 		if (this.$.scroller.$.scroll.y < 0) {
@@ -74,7 +71,6 @@ enyo.kind({
 	},
 	
 	mouseupHandler: function(e) {
-	    console.log("MOUSEUP");
 		if(this.dragHoldTime >= this.dragHoldTrigger && this.pulledPastThreshold()) {
 			this.doPullToRefresh();
 		}
