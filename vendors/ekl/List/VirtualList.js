@@ -41,7 +41,7 @@ enyo.kind({
 
 	holdMousePoller: function() {
 		window.clearTimeout(this.dragPoller);
-		
+
 		if (this.dragHoldTimeMax < this.dragHoldTime) {
 		    this._clearPullToRefresh();
 			return;
@@ -50,50 +50,67 @@ enyo.kind({
 		if (this.dragHoldTime >= this.dragHoldTrigger && this.pulledPastThreshold()) {
 			this.owner.$.pulltoRefreshTextTeaser.applyStyle("opacity", 1);
 		}
-		
+
 		if (this.$.scroller.$.scroll.y >= 0) {
 			this.dragHoldTime += this.dragHoldInterval;
 		} else {
 		    this._clearPullToRefresh();
 		}
-        
+
 		this._resetMousePoller();
 	},
-	
+
 	mousedownHandler: function() {
-	    this._clearPullToRefresh();
+		// this._logScrollerInfo();
+		this._clearPullToRefresh();
 
 		if (this.$.scroller.$.scroll.y < 0) {
 			return;
 		}
-		
+
 		this._resetMousePoller();
 	},
-	
+
 	mouseupHandler: function(e) {
+		// this._logScrollerInfo();
 		if(this.dragHoldTime >= this.dragHoldTrigger && this.pulledPastThreshold()) {
 			this.doPullToRefresh();
 		}
-		
+
 		this._clearPullToRefresh();
 	},
-	
+
 	pulledPastThreshold: function(e) {
 		if (this.$.scroller.$.scroll.y >= this.pullToRefreshThreshold) {
 			return true;
 		}
-		
+
 		return false;
 	},
-	
+
 	_clearPullToRefresh: function() {
 	    window.clearTimeout(this.dragPoller);
 	    this.dragHoldTime = 0;
 		this.owner.$.pulltoRefreshTextTeaser.applyStyle("opacity", 0);
 	},
-	
+
 	_resetMousePoller: function() {
 	    window.clearTimeout(this.dragPoller);
 	    this.dragPoller = window.setTimeout(_.bind(this.holdMousePoller, this), this.dragHoldInterval);
+	},
+
+	_logScrollerInfo: function() {
+		console.log(
+			'this.$.scroller.$.scroll.owner', this.$.scroller.$.scroll.owner,
+			'owner.pageOffset', this.$.scroller.$.scroll.owner.pageOffset,
+			'owner.pageTop', this.$.scroller.$.scroll.owner.pageTop,
+			'owner.top', this.$.scroller.$.scroll.owner.top,
+			"my:", this.$.scroller.$.scroll.my,
+			"py:", this.$.scroller.$.scroll.py,
+			"uy", this.$.scroller.$.scroll.uy,
+			"y", this.$.scroller.$.scroll.y,
+			"y0", this.$.scroller.$.scroll.y0
+		);
+
 	}
 });

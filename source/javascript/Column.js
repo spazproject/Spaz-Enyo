@@ -66,7 +66,14 @@ enyo.kind({
 		{name: "entryClickPopup", kind: "Spaz.EntryClickPopup"}
 	],
 	pullToRefresh: function() {
-		this.loadNewer();
+		// this is a sanity check to ensure we're really
+		// dragging from the top of the list. After we scrollToUnread,
+		// the list scroller thinks that the top of the list is
+		// the newest unread item, not the actual top of the list
+		if (this.$.list.$.scroller.pageTop >= 0) {
+			console.log("pullToRefresh executing");
+			this.loadNewer();
+		}
 	},
 	create: function(){
 		this.inherited(arguments);
@@ -397,7 +404,7 @@ enyo.kind({
 								data[i].read = false;
 							}
 						}
-						
+
 						var filteredData = _.reject(data, function(item) {
 							if ((item.publish_date < earliestPublishDate)) {
 								return true;
@@ -405,7 +412,7 @@ enyo.kind({
 						});
 						if(filteredData.length < 10 && data.length > 5){
 							//console.log("filteredData length is less than 10, so just getting the 10 most recent entries");
-							
+
 							data = _.sortBy(data, function(item){
 								return earliestPublishDate - item.publish_date;
 							}).slice(0, 10);

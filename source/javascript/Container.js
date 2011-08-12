@@ -61,19 +61,19 @@ enyo.kind({
 	},
 
 	getDefaultColumns: function(inAccountId) {
-		var accountIds = [], 
-			default_columns = [], 
+		var accountIds = [],
+			default_columns = [],
 			allUsers = App.Users.getAll();
 
 		if(allUsers.length === 0){
 			return [];
 		}
-		
-		if(this.columnData.length === 0) {	
+
+		if(this.columnData.length === 0) {
 			//leave in code for when there isn't an inAccountId... which currently never should happen.
 			var account = (inAccountId) ? App.Users.get(inAccountId) :  allUsers[0];
 			var service = account.type, inAccountId = account.id;
-			
+
 			_(App.Users.getByType(service)).each(function(user){
 				accountIds.push(user.id);
 			});
@@ -323,7 +323,7 @@ enyo.kind({
 			if(_.includes(control.kind, "Column") && !_.includes(control.kind, "Spacer")){
 				var col_idx = parseInt(control.name.replace('Column', ''), 10);
 				if(!control.destroyed) {
-					this.columnData[col_idx].entries = control.getEntries();					
+					this.columnData[col_idx].entries = control.getEntries();
 				}
 			}
 		}));
