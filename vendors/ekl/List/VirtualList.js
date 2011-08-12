@@ -2,21 +2,22 @@ enyo.kind({
 	name: "ekl.List.VirtualList",
 	kind: enyo.VirtualList,
 
-	dragHoldTime: 0,
-
 	published: {
 		mousewheel: true,
 		//Dampens mousewheel delta strength
 		mousewheelDamp: 40.0,
 		// sensitivity for pull-to-refresh events
 		dragHoldInterval: 50,
-		dragHoldTrigger: 200,
+		dragHoldTrigger: 500,
 		dragHoldTimeMax: 5000, // if a pull exceeds this time without firing, exite
 		pullToRefreshThreshold: 50, // px
 	},
+
 	events: {
 		onPullToRefresh: ""
 	},
+
+    dragHoldTime: 0,
 	dragPoller: null,
 
 	mousewheelHandler: function(inSender, inEvent) {
@@ -37,64 +38,66 @@ enyo.kind({
 			this.$.scroller.$.scroll.dragFinish();
 		}
 	},
+
 	holdMousePoller: function() {
-		// console.log('mousepoll', this.$.scroller.$.scroll.y);
+	    console.log("HOLD POLL");
+		window.clearTimeout(this.dragPoller);
+		
 		if (this.dragHoldTimeMax < this.dragHoldTime) {
-			window.clearTimeout(this.dragPoller);
-			// console.log("hit max; exiting");
+		    this._clearPullToRefresh();
 			return;
 		}
 
-		if ((this.dragHoldTime > this.dragHoldInterval*4) && this.pulledPastThreshold()) {
+		if (this.dragHoldTime >= this.dragHoldTrigger && this.pulledPastThreshold()) {
 			this.owner.$.pulltoRefreshTextTeaser.applyStyle("opacity", 1);
 		}
-		//this.owner.$.pulltoRefreshTextTeaser.render();
+		
 		if (this.$.scroller.$.scroll.y >= 0) {
-			// console.log('continuing poller', this.$.scroller.$.scroll.y);
-			this.dragHoldTime+=this.dragHoldInterval;
+			this.dragHoldTime += this.dragHoldInterval;
 		} else {
-			// console.log('cancelling poller', this.$.scroller.$.scroll.y);
-
-			// always clear before starting timeout
-			window.clearTimeout(this.dragPoller);
-			//this.dragHoldInterval = 0;
-			return;
+		    console.log("CLEARING PULL TO REFRESH BUT CONTINUING TO LISTEN!");
+		    this._clearPullToRefresh();
 		}
-
-		// always clear before starting timeout
-		window.clearTimeout(this.dragPoller);
-		this.dragPoller = window.setTimeout(_.bind(this.holdMousePoller, this), this.dragHoldInterval);
+        
+		this._resetMousePoller();
 	},
+	
 	mousedownHandler: function() {
+	    console.log("MOUSEDOWN");
+	    this._clearPullToRefresh();
 
 		if (this.$.scroller.$.scroll.y < 0) {
 			return;
 		}
-		// always clear before starting timeout
-		window.clearTimeout(this.dragPoller);
-		this.dragPoller = window.setTimeout(_.bind(this.holdMousePoller, this), this.dragHoldInterval);
-
-		// console.log('mousedown', this.$.scroller.$.scroll.y);
-
+		
+		this._resetMousePoller();
 	},
+	
 	mouseupHandler: function(e) {
-		//console.log('mouseup', this.$.scroller.$.scroll.y);
-
-		window.clearTimeout(this.dragPoller);
+	    console.log("MOUSEUP");
 		if(this.dragHoldTime >= this.dragHoldTrigger && this.pulledPastThreshold()) {
-			// console.log('firing pull to refresh');
 			this.doPullToRefresh();
 		}
-		this.dragHoldTime = 0;
-
-		this.owner.$.pulltoRefreshTextTeaser.applyStyle("opacity", 0);
+		
+		this._clearPullToRefresh();
 	},
-
-
+	
 	pulledPastThreshold: function(e) {
 		if (this.$.scroller.$.scroll.y >= this.pullToRefreshThreshold) {
 			return true;
 		}
+		
 		return false;
+	},
+	
+	_clearPullToRefresh: function() {
+	    window.clearTimeout(this.dragPoller);
+	    this.dragHoldTime = 0;
+		this.owner.$.pulltoRefreshTextTeaser.applyStyle("opacity", 0);
+	},
+	
+	_resetMousePoller: function() {
+	    window.clearTimeout(this.dragPoller);
+	    this.dragPoller = window.setTimeout(_.bind(this.holdMousePoller, this), this.dragHoldInterval);
 	}
 });
