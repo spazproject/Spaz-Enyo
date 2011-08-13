@@ -45,6 +45,7 @@ a:active,
 
 .Column .scrollFade {
 	position: absolute;
+	pointer-events: none;
 	bottom: 0px;
 	background: url(../images/scroll-fade.png) top left repeat-x;
 }
