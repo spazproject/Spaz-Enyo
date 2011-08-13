@@ -255,6 +255,9 @@ enyo.kind({
 						this.showSpinner(false);
 						this.items = AppUtils.convertToEntries(data.reverse());
 						this.items = AppUtils.setAdditionalEntryProperties(this.items, this.account_id);
+						this.items.sort(function(a,b){
+							return b.service_id - a.service_id; // newest first
+						});
 						this.$.list.render();
 						this.$.scroller.setScrollTop(0);
 					}),
