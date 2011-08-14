@@ -62,6 +62,7 @@ enyo.depends(
 	"source/javascript/EntryClickPopup.js",
 	"source/javascript/ImageViewPopup.js",
 	"source/javascript/AboutPopup.js",
+    "source/javascript/EmoticonPopup.js",
 
 	//containers
 	"source/javascript/NewColumnsContainer.js",

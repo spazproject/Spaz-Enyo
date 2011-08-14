@@ -18,6 +18,7 @@ enyo.kind({
 	showKeyboardWhenOpening:false, // opens the keyboard and positions the popup correctly
 	components: [
 		{name:'filePicker', kind: "FilePicker", fileType:["image"], allowMultiSelect:false, onPickFile: "handleResult"},
+		{name: "emoticonPopup", kind: "Spaz.EmoticonPopup", onEmoticonSelected: "emoticonSelected"},
 		{layoutKind: "HFlexLayout", components: [
 			{name: "composeHeader", content: "New Entry", style: "padding-bottom: 0px"},
 			{kind: "Spacer"},
@@ -34,6 +35,7 @@ enyo.kind({
 			   {name: "accountSelection", "kind":"ListSelector", onChange: "onChangeAccount", className: "accountSelection"}
 			]},
 			{kind: "Spacer", style: "min-width: 50px"},
+			{name: "emoticonButton", kind: "IconButton", icon: "source/emoticons/simple-smileys/smile.png", onclick: "onEmoticonClick"},
 			{name: "imageButton", kind: "IconButton", icon: "source/images/icon-imageattach.png", onclick: "showFilePicker"},
 			{name: "shortenButton", kind: "Spaz.ActivityIconButton", icon: "source/images/icon-shorten.png", style: "padding-top: 6px;", onclick: "onShortenClick"},
 			{name: "sendButton", kind: "ActivityButton", style: "min-width: 100px; padding-top: 6px;", label: enyo._$L("Send"), onclick: "onSendClick"}
@@ -93,7 +95,7 @@ enyo.kind({
 				width = account.caption.length;
 			}
 		});
-		this.applyStyle("width", 490 + width + "px"); //set the width based on the longest username.
+		this.applyStyle("width", 540 + width + "px"); //set the width based on the longest username.
 
 		this.setAllDisabled(false);
 		this.$.postTextBoxContainer.setShowing(true);
@@ -703,8 +705,17 @@ enyo.kind({
 	onUploadFailure: function(inSender, inResponse) { // onFailure
 		AppUtils.showBanner('Posting image FAILED');
 		AppUtils.showBanner("Error!");
+	},
+	
+	onEmoticonClick: function(inSender, inResponse) {
+		this.$.emoticonPopup.openAtTopCenter();
+	},
+	
+	emoticonSelected: function(inSender, inCode) {
+		this.$.postTextBox.forceFocus();
+		enyo.asyncMethod(this, function() {
+			this.$.postTextBox.insertAtCursor(inCode);
+		});
 	}
-
-
 });
 
