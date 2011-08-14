@@ -1,6 +1,7 @@
 enyo.kind({
 	name: "Spaz.EmoticonPopup",
 	kind: "Spaz.Popup",
+	height: "75%",
 	events: {
 		onEmoticonSelected: ""
 	},
@@ -8,7 +9,7 @@ enyo.kind({
 		{
 			name: "list",
 			kind: "enyo.VirtualList",
-			height: "600px",
+			height: "100%",
 			flex: 1,
 			onSetupRow: "setupRow",
 			onclick: "rowClick",
