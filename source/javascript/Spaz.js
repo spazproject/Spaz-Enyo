@@ -5,6 +5,7 @@ enyo.kind({
 		{kind: enyo.ApplicationEvents, onApplicationRelaunch: "relaunchHandler",
 			onWindowActivated:"windowActivated", onWindowDeactivated:"windowDeactivated",
 			onUnload:"unloaded"},
+		{name: "alarmService", kind: "PalmService", service: "palm://com.palm.power/timeout/", subscribe: true},
 	    {name: "slider", kind: ekl.Layout.SlidingPane, flex: 1, dismissDistance: 100, onDismiss: "hideDetailPane", style:"background:#000", components: [
 	        {name: "main", layoutKind: enyo.HFlexLayout, flex: 1, components: [
 	            {
@@ -61,9 +62,13 @@ enyo.kind({
 	},
 
 	// called when app is opened or reopened
-    relaunchHandler: function() {
-    	this.processLaunchParams(enyo.windowParams);
+	relaunchHandler: function() {
+		this.processLaunchParams(enyo.windowParams);
 		this.$.dashboard.setLayers([]); // empty the notifications
+
+		// Do not bring window to front when refreshing.
+		if (enyo.windowParams.action == "refresh")
+			return true;
     },
 
 	windowActivated: function() {
@@ -77,6 +82,11 @@ enyo.kind({
 
 	// the window is closed
 	unloaded: function() {
+		enyo.log("Unloading");
+
+		// Must stop refresh alarm, otherwise it will continue to relaunch app.
+		AppUI.stopAutoRefresher(); 
+
 		this.$.dashboard.setLayers([]);
 	},
 
@@ -198,6 +208,13 @@ enyo.kind({
 				break;
 			case 'relaunch':
 				// should have "from" param, we will parse in future
+				break;
+
+			case 'refresh':
+				AppUI.refresh();
+
+				// Schedule next refresh since alarms are one time only.
+				AppUI.startAutoRefresher();
 				break;
 		}
 	},
@@ -394,15 +411,22 @@ enyo.kind({
 		AppUI.addFunction("startAutoRefresher", function() {
 			if (App.Prefs.get('network-refreshinterval') > 0) {
 				enyo.log('Starting auto-refresher', App.Prefs.get('network-refreshinterval'));
-				App._refresher = setInterval(function() {
+				this.$.alarmService.call({"key": "refresh",
+									  "in": "00:01:00",
+									  "uri": "palm://com.palm.applicationManager/launch",
+									  "params": {"id": SPAZ_DEFAULT_APPID, "params": {"action": "refresh"}}},
+                                      {"method": "set"})
+
+				/*App._refresher = setInterval(function() {
 					enyo.log("Auto-refreshing");
 					AppUI.refresh();
-				}, App.Prefs.get('network-refreshinterval'));
+				}, App.Prefs.get('network-refreshinterval'));*/
 			}
 		}, this);
 		AppUI.addFunction("stopAutoRefresher", function() {
 			enyo.log("Clearing auto-refresher");
-			clearInterval(App._refresher);
+            this.$.alarmService.call({"key": "refresh"}, {"method": "clear"});
+			//clearInterval(App._refresher);
 		}, this);
 		AppUI.addFunction("restartAutoRefresher", function() {
 			enyo.log("Restarting auto-refresher");
