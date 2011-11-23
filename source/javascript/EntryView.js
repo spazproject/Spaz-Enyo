@@ -141,12 +141,14 @@ enyo.kind({
 			var entryhtml = this.$.entry.getContent();
 			var urls = shurl.findExpandableURLs(entryhtml);
 			if (urls) {
+				var urlsExpanded = 0;
 				for (var i = 0; i < urls.length; i++) {
 					shurl.expand(urls[i], {
 						'onSuccess': enyo.bind(this, function(data) {
 							entryhtml = shurl.replaceExpandableURL(entryhtml, data.shorturl, data.longurl);
 							this.$.entry.setContent(entryhtml);
-							if ((i + 1) >= urls.length) {
+							urlsExpanded++;
+							if (urlsExpanded >= urls.length) {
 								this.buildMediaPreviews();
 							}
 						})
