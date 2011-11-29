@@ -457,7 +457,7 @@ enyo.kind({
 	hideDetailPane: function() {
 		console.log("hiding detail pane");
 		this.$.slider.selectViewByName("main");
-		this.$.detail.setShowing(false);
+		enyo.asyncMethod(this.$.detail, "setShowing", false);
 		this.viewEvents = [];
 		enyo.asyncMethod(this.$.container, "reclaimSpace");
 	},
