@@ -9,9 +9,9 @@ enyo.depends(
 	"vendors/showdown.js",
 	"vendors/spazcore.js", // includes underscore, underscore.string
 	"vendors/spazcore-enyo-webos-network.js",
-
 	"vendors/ekl/List/",
 	"vendors/ekl/Layout/",
+	"vendors/twitter-text.js",
 
 	// config
 	"source/javascript/config/auth_config.js",
