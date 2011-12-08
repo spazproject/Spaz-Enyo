@@ -305,7 +305,7 @@ enyo.kind({
 			// Twitter t.co expands to 20 chars
 			// TODO Get this from the help/configuration API endpoint, but there doesn't
 			// seem to be a Twitter-compatible endpoint for StatusNet. Not sure how to handle that.
-			var urls = twttr.txt.extractUrlsWithIndices(inValue);
+			var urls = twttr.txt.extractUrlsWithIndices(this.$.postTextBox.normalize(inValue));
 			for (var i = 0; i != urls.length; i++) {
 				charCount = charCount - (urls[i].indices[1] - urls[i].indices[0]) + 20;
 			}
