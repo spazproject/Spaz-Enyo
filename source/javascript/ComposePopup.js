@@ -299,22 +299,21 @@ enyo.kind({
 		if (!inValue) {
 			inValue = this.$.postTextBox.getValue();
 		}
+		var charCount = this.$.postTextBox.getCharCount();
 		
 		if(App.Users.get(this.$.accountSelection.getValue()).type === SPAZCORE_SERVICE_TWITTER) {
 			// Twitter t.co expands to 20 chars
 			// TODO Get this from the help/configuration API endpoint, but there doesn't
 			// seem to be a Twitter-compatible endpoint for StatusNet. Not sure how to handle that.
-			var dummyUrl = "https://t.co/xxxxxxx";
-			
-			var urls = twttr.txt.extractUrls(inValue);
+			var urls = twttr.txt.extractUrlsWithIndices(inValue);
 			for (var i = 0; i != urls.length; i++) {
-				inValue = inValue.replace(urls[i], dummyUrl);
+				charCount = charCount - (urls[i].indices[1] - urls[i].indices[0]) + 20;
 			}
 			this.$.shortenedLabelSingular.setShowing(urls.length === 1);
 			this.$.shortenedLabelPlural.setShowing(urls.length > 1);
 		}
 		
-		var remaining = 140 - this.$.postTextBox.normalize(inValue).length;
+		var remaining = 140 - charCount;
 		this.$.remaining.setContent(remaining);
 		if(remaining > 0){
 			this.$.remaining.applyStyle("color", "grey");
