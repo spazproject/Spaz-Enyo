@@ -314,7 +314,7 @@ enyo.kind({
 			this.$.shortenedLabelPlural.setShowing(urls.length > 1);
 		}
 		
-		var remaining = 140 - inValue.length;
+		var remaining = 140 - this.$.postTextBox.normalize(inValue).length;
 		this.$.remaining.setContent(remaining);
 		if(remaining > 0){
 			this.$.remaining.applyStyle("color", "grey");

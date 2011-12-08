@@ -11,8 +11,11 @@ enyo.kind({
 		maxTextHeight: null,
 		selection: null
 	},
+	normalize: function(inValue) {
+		return inValue.replace(/&nbsp;/g, ' ');
+	},
 	getValue: function() {
-		return this.getText().replace(/&nbsp;/g, ' ');
+		return this.normalize(this.getText());
 	},
 	getCharCount: function() {
 		return this.getValue().length;
