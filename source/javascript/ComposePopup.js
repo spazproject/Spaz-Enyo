@@ -354,13 +354,13 @@ enyo.kind({
 			inEvent.preventDefault();
 			return;
 		}
-		if (inEvent.keyCode === 13 && App.Prefs.get("post-send-on-enter") === true) {
-			if(this.$.sendButton.disabled === false){
-				// Enter to send - this should be a pref evenutally.
-				this.onSendClick();
+		if (inEvent.keyCode === 13) {
+			if(App.Prefs.get("post-send-on-enter") === true) {
+				if(this.$.sendButton.disabled === false) {
+					this.onSendClick();
+				}
 			}
 			inEvent.preventDefault();
-
 		}
 	},
 
