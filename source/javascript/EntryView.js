@@ -133,13 +133,33 @@ enyo.kind({
 			enyo.forEach (this.$.images.getControls(), function (control) {
 				control.destroy();
 			});
-			this.$.entry.setContent(AppUtils.applyEntryTextFilters(this.entry.text));
 
+			// expand Twitter URLs
+			var entryText = this.entry.text;
+			var urls = [];
+			if(this.entry._orig.entities) {
+				if(this.entry._orig.entities.urls) {
+					urls = urls.concat(this.entry._orig.entities.urls);
+				}
+				if(this.entry._orig.entities.media) {
+					urls = urls.concat(this.entry._orig.entities.media);
+				}
+			}
+			if(this.entry._orig.retweeted_status && this.entry._orig.retweeted_status.entities && this.entry._orig.retweeted_status.entities.urls) {
+				urls = urls.concat(this.entry._orig.retweeted_status.entities.urls);
+			}
+			for (var i = 0; i != urls.length; i++) {
+				if(urls[i].expanded_url) {
+					entryText = entryText.replace(urls[i].url, urls[i].expanded_url);
+				}
+			}
+
+			this.$.entry.setContent(AppUtils.applyEntryTextFilters(entryText));
 
 			// expand URLs
 			var shurl = new SpazShortURL();
 			var entryhtml = this.$.entry.getContent();
-			var urls = shurl.findExpandableURLs(entryhtml);
+			urls = shurl.findExpandableURLs(entryhtml);
 			if (urls) {
 				var urlsExpanded = 0;
 				for (var i = 0; i < urls.length; i++) {
@@ -212,6 +232,29 @@ enyo.kind({
 		var imageThumbUrls = siu.getThumbsForUrls(this.$.entry.getContent());
 		enyo.log(this.entry.text_raw, imageThumbUrls);
 		var imageFullUrls = siu.getImagesForUrls(this.$.entry.getContent());
+
+		// Twitter photos are different than other services - you can't pull
+		// the direct photo URLs from the contents of the entry. You must use
+		// the entities field instead. I guess ideally this would be in SpazImageURL?
+		var media = [];
+		if(this.entry._orig.entities && this.entry._orig.entities.media) {
+			media = media.concat(this.entry._orig.entities.media);
+		}
+		if(this.entry._orig.retweeted_status && this.entry._orig.retweeted_status.entities && this.entry._orig.retweeted_status.entities.media) {
+			media = media.concat(this.entry._orig.retweeted_status.entities.media);
+		}
+		for(var i = 0; i != media.length; i++) {
+			var url = media[i].media_url;
+			if(!imageThumbUrls) {
+				imageThumbUrls = [];
+			}
+			if(!imageFullUrls) {
+				imageFullUrls = [];
+			}
+			imageThumbUrls.push(url + ":thumb");
+			imageFullUrls.push(url + ":large");
+		}
+
 		this.imageFullUrls = [];
 		if (imageThumbUrls) {
 			var i = 0;

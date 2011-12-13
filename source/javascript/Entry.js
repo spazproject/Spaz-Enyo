@@ -48,7 +48,25 @@ enyo.kind({
 
 		var entryBody = App.Cache.EntriesHTML.getItem(this.entry.spaz_id);
 		if (!entryBody) {
-			entryBody = AppUtils.applyEntryTextFilters(this.entry.text);
+			var entryText = this.entry.text;
+			var urls = [];
+			if(this.entry._orig.entities) {
+				if(this.entry._orig.entities.urls) {
+					urls = urls.concat(this.entry._orig.entities.urls);
+				}
+				if(this.entry._orig.entities.media) {
+					urls = urls.concat(this.entry._orig.entities.media);
+				}
+			}
+			if(this.entry._orig.retweeted_status && this.entry._orig.retweeted_status.entities && this.entry._orig.retweeted_status.entities.urls) {
+				urls = urls.concat(this.entry._orig.retweeted_status.entities.urls);
+			}
+			for (var i = 0; i != urls.length; i++) {
+				if(urls[i].expanded_url) {
+					entryText = entryText.replace(urls[i].url, urls[i].expanded_url);
+				}
+			}
+			entryBody = AppUtils.applyEntryTextFilters(entryText);
 			App.Cache.EntriesHTML.setItem(this.entry.spaz_id, entryBody);
 		}
 		toMacroize += entryBody;
