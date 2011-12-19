@@ -1,4 +1,4 @@
-/*********** Built 2011-12-13 21:31:38 EST ***********/
+/*********** Built 2011-12-18 22:56:17 EST ***********/
 /*jslint
 browser: true,
 nomen: false,
@@ -13809,6 +13809,7 @@ SpazTwit.prototype.getUserTimeline = function(id, count, page, onSuccess, onFail
 		data['page'] = opts.page;
 	}
 	data['include_entities'] = true;
+	data['include_rts'] = true;
 
 
 	var url = this.getAPIURL('user_timeline', data);
