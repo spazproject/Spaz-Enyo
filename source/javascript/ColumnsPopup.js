@@ -102,7 +102,7 @@ enyo.kind({
 				this.$.listSelection.setShowing(true);
 				this.$.ListListButton.hide();
 				this.$.submitListSelection.hide();
-				this.$.noListsMessage.show();
+				this.$.noListsMessage.hide();
 			} else {
 				this.$.listSelection.setShowing(false);
 			}
@@ -110,12 +110,17 @@ enyo.kind({
 			var currentUser = App.Users.get(this.$.accountSelection.value);
 			window.AppCache.getUser(currentUser.username, currentUser.type, currentUser.id,
 						_.bind(function(user) {
+							var auth = new SpazAuth(currentUser.type);
+							auth.load(currentUser.auth);
+							this.owner.owner.twit.setCredentials(auth);
 							this.owner.owner.twit.getLists(user.service_id,
 								_.bind(function(data) {
 									if(data.lists.length > 0){
 										this.$.ListListButton.show();
 										this.$.submitListSelection.show();
 										this.$.noListsMessage.hide();
+									} else {
+										this.$.noListsMessage.show();
 									}
 									var items = [];
 									for(var i = 0; i < data.lists.length; i++) {

@@ -393,7 +393,7 @@ enyo.kind({
 
 	},
 	mention: function(inSender, inEvent) {
-		AppUI.compose('@'+this.user.username+' ');
+		AppUI.compose('@'+this.user.username+"&nbsp;");
 	},
 	message: function(inSender, inEvent) {
 		AppUI.directMessage(this.user.username, this.$.accountSelection.getValue());

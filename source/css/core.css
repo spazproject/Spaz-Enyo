@@ -25,6 +25,16 @@ a:active,
 	text-decoration: underline;
 }
 
+@-webkit-keyframes pulse {
+    
+0%{ -webkit-transform: scale(0);}
+80%{ -webkit-transform: scale(1.2);}
+100%{ -webkit-transform: scale(1);}
+   
+}
+
+.enyo-popup {-webkit-animation: pulse .2s ease-in;}
+
 
 
 /* all avatars */

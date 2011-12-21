@@ -1,4 +1,4 @@
-/*********** Built 2011-07-16 18:56:10 EDT ***********/
+/*********** Built 2011-12-19 21:05:47 EST ***********/
 /*jslint
 browser: true,
 nomen: false,
@@ -9813,7 +9813,7 @@ SpazImageURL.prototype.initAPIs = function() {
 	});
 
 	this.addAPI('twitpic', {
-		'url_regex'       : new RegExp("http://twitpic.com/([a-zA-Z0-9]+)", "gi"),
+		'url_regex'       : new RegExp("http://(?:www\.)?twitpic.com/([a-zA-Z0-9]+)", "gi"),
 		'getThumbnailUrl' : function(id) {
 			var url = 'http://twitpic.com/show/thumb/'+id;
 			return url;
@@ -9867,16 +9867,14 @@ SpazImageURL.prototype.initAPIs = function() {
 	});
 
 
-	this.addAPI('tweetphoto', {
-		'url_regex'       : /http:\/\/tweetphoto.com\/([a-zA-Z0-9]+)/gi,
+	this.addAPI('lockerz', {
+		'url_regex'       : /http:\/\/lockerz.com\/s\/([a-zA-Z0-9]+)/gi,
 		'getThumbnailUrl' : function(id) {
-			// http://TweetPhotoAPI.com/api/TPAPI.svc/json/imagefromurl?size=thumbnail&url=http://tweetphoto.com/iyb9azy4
-			var url = 'http://TweetPhotoAPI.com/api/TPAPI.svc/imagefromurl?size=thumbnail&url=http://tweetphoto.com/'+id;
+			var url = 'http://api.plixi.com/api/tpapi.svc/imagefromurl?url=http://plixi.com/p/'+id+'&size=small';
 			return url;
 		},
 		'getImageUrl'     : function(id) {
-			// http://TweetPhotoAPI.com/api/TPAPI.svc/imagefromurl?size=big&url=http://tweetphoto.com/iyb9azy4
-			var url = 'http://TweetPhotoAPI.com/api/TPAPI.svc/imagefromurl?size=big&url=http://tweetphoto.com/'+id;
+			var url = 'http://api.plixi.com/api/tpapi.svc/imagefromurl?url=http://plixi.com/p/'+id+'&size=big';
 			return url;
 		}
 	});
@@ -13482,6 +13480,7 @@ SpazTwit.prototype.getHomeTimeline = function(since_id, count, page, processing_
 	if (page) {
 		data['page'] = page;
 	}
+	data['include_entities'] = true;
 
 
 	var url = this.getAPIURL('home_timeline', data);
@@ -13597,6 +13596,7 @@ SpazTwit.prototype.getReplies = function(since_id, count, page, processing_opts,
 	if (count) {
 		data['count'] = count;
 	}
+	data['include_entities'] = true;
 
 	var url = this.getAPIURL('replies_timeline', data);
 	this._getTimeline({
@@ -13654,6 +13654,7 @@ SpazTwit.prototype.getDirectMessages = function(since_id, count, page, processin
 	if (count) {
 		data['count'] = count;
 	}
+	data['include_entities'] = true;
 
 	var url = this.getAPIURL('dm_timeline', data);
 	this._getTimeline({
@@ -13697,6 +13698,7 @@ SpazTwit.prototype.getFavorites = function(since_id, page, processing_opts, onSu
 	if (page) {
 		data['page'] = page;
 	}
+	data['include_entities'] = true;
 
 	var url = this.getAPIURL('favorites', data);
 
@@ -13755,6 +13757,7 @@ SpazTwit.prototype.getSentDirectMessages = function(since_id, count, page, proce
 	if (count) {
 		data['count'] = count;
 	}
+	data['include_entities'] = true;
 
 	var url = this.getAPIURL('dm_sent', data);
 	this._getTimeline({
@@ -13805,6 +13808,8 @@ SpazTwit.prototype.getUserTimeline = function(id, count, page, onSuccess, onFail
 	if (opts.page) {
 		data['page'] = opts.page;
 	}
+	data['include_entities'] = true;
+	data['include_rts'] = true;
 
 
 	var url = this.getAPIURL('user_timeline', data);
@@ -13945,6 +13950,7 @@ SpazTwit.prototype.search = function(query, since_id, results_per_page, page, la
 	if (geocode) {
 		data['geocode'] = geocode;
 	}
+	data['include_entities'] = true;
 
 	var url = this.getAPIURL('search', data);
 	this._getTimeline({
@@ -15380,6 +15386,7 @@ SpazTwit.prototype.destroyDirectMessage = function(id, onSuccess, onFailure) {
 SpazTwit.prototype.getOne = function(id, onSuccess, onFailure) {
 	var data = {};
 	data['id'] = id;
+	data['include_entities'] = true;
 
 	var url = this.getAPIURL('show', data);
 
@@ -15458,6 +15465,7 @@ SpazTwit.prototype.getRelated = function(id, onSuccess, onFailure) {
 SpazTwit.prototype.retweet = function(id, onSuccess, onFailure) {
 	var data = {};
 	data['id'] = id;
+	data['include_entities'] = true;
 
 	var url = this.getAPIURL('retweet', data);
 
@@ -15523,6 +15531,7 @@ SpazTwit.prototype.retweetedByMe = function(since, max, count, page){
 		page = 1;
 	}
 	params['page'] = page;
+	params['include_entities'] = true;
 	var url = this.getAPIURL('retweeted_by_me', params);
 
 	var opts = {
@@ -15561,6 +15570,7 @@ SpazTwit.prototype.retweetedToMe = function(since, max, count, page){
 		page = 1;
 	}
 	params['page'] = page;
+	params['include_entities'] = true;
 	var url = this.getAPIURL('retweeted_to_me', params);
 
 	var opts = {
@@ -15599,6 +15609,7 @@ SpazTwit.prototype.retweetsOfMe = function(since, max, count, page){
 		page = 1;
 	}
 	params['page'] = page;
+	params['include_entities'] = true;
 	var url = this.getAPIURL('retweets_of_me', params);
 
 	var opts = {
@@ -16096,7 +16107,7 @@ SpazTwit.prototype.getListTimeline = function(list, user, onSuccess, onFailure) 
 
 	var url = this.getAPIURL('lists_timeline', {
 	    'user':user,
-		'slug':list
+		'slug':list.replace(/\W/g,'-')
 	});
 
 	var opts = {

@@ -29,6 +29,9 @@ enyo.kind({
 				{name: "remaining", style: "color: grey; padding-left: 5px;", content: "140"}
 			]}
 		]},
+		{style: "height: 5px;"},
+		{name: "shortenedLabelSingular", content: enyo._$L("Link will appear shortened"), style: "font-size:14px;", showing: false},
+		{name: "shortenedLabelPlural", content: enyo._$L("Links will appear shortened"), style: "font-size:14px;", showing: false},
 		{name: "controls", layoutKind: "HFlexLayout", style: "padding-top: 5px", components: [
 			{name: "accountSelectionButton", kind: "Button", style: "padding: 0px 5px;", components: [
 			   {name: "accountSelection", "kind":"ListSelector", onChange: "onChangeAccount", className: "accountSelection"}
@@ -97,6 +100,8 @@ enyo.kind({
 
 		this.setAllDisabled(false);
 		this.$.postTextBoxContainer.setShowing(true);
+		this.$.shortenedLabelSingular.setShowing(false);
+		this.$.shortenedLabelPlural.setShowing(false);
 
 		this.openAtTopCenter();
 		this.$.postTextBox.forceFocus();
@@ -294,7 +299,21 @@ enyo.kind({
 		if (!inValue) {
 			inValue = this.$.postTextBox.getValue();
 		}
-		var remaining = 140 - this.$.postTextBox.getCharCount();
+		var charCount = this.$.postTextBox.getCharCount();
+		
+		if(App.Users.get(this.$.accountSelection.getValue()).type === SPAZCORE_SERVICE_TWITTER) {
+			// Twitter t.co expands to 20 chars
+			// TODO Get this from the help/configuration API endpoint, but there doesn't
+			// seem to be a Twitter-compatible endpoint for StatusNet. Not sure how to handle that.
+			var urls = twttr.txt.extractUrlsWithIndices(this.$.postTextBox.normalize(inValue));
+			for (var i = 0; i != urls.length; i++) {
+				charCount = charCount - (urls[i].indices[1] - urls[i].indices[0]) + 20;
+			}
+			this.$.shortenedLabelSingular.setShowing(urls.length === 1);
+			this.$.shortenedLabelPlural.setShowing(urls.length > 1);
+		}
+		
+		var remaining = 140 - charCount;
 		this.$.remaining.setContent(remaining);
 		if(remaining > 0){
 			this.$.remaining.applyStyle("color", "grey");
@@ -336,7 +355,6 @@ enyo.kind({
 		}
 		if (inEvent.keyCode === 13 && App.Prefs.get("post-send-on-enter") === true) {
 			if(this.$.sendButton.disabled === false){
-				// Enter to send - this should be a pref evenutally.
 				this.onSendClick();
 			}
 			inEvent.preventDefault();
